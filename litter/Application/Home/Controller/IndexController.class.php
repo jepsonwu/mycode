@@ -26,5 +26,6 @@ class IndexController extends Controller
 	 */
 	protected function _initialize()
 	{
+		define("__PUBLIC__",__ROOT__."/Public");
 	}
 }

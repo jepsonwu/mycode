@@ -9,7 +9,7 @@
  
 /*
  * FIXME: Smarty_Security API
- *      - getter and setter instead of public properties would allow cultivating an internal cache properly
+ *      - getter and setter instead of Public properties would allow cultivating an internal cache properly
  *      - current implementation of isTrustedResourceDir() assumes that Smarty::$template_dir and Smarty::$config_dir are immutable
  *        the cache is killed every time either of the variables change. That means that two distinct Smarty objects with differing
  *        $template_dir or $config_dir should NOT share the same Smarty_Security instance, 
@@ -313,7 +313,7 @@ class Smarty_Security {
         $_template_dir = $this->smarty->getTemplateDir();
         $_config_dir = $this->smarty->getConfigDir();
 
-        // check if index is outdated
+        // check if Index is outdated
         if ((!$this->_template_dir || $this->_template_dir !== $_template_dir)
                 || (!$this->_config_dir || $this->_config_dir !== $_config_dir)
                 || (!empty($this->secure_dir) && (!$this->_secure_dir || $this->_secure_dir !== $this->secure_dir))
@@ -324,7 +324,7 @@ class Smarty_Security {
             $_secure = !empty($this->secure_dir);
         }
 
-        // rebuild template dir index
+        // rebuild template dir Index
         if ($_template) {
             $this->_template_dir = $_template_dir;
             foreach ($_template_dir as $directory) {
@@ -333,7 +333,7 @@ class Smarty_Security {
             }
         }
 
-        // rebuild config dir index
+        // rebuild config dir Index
         if ($_config) {
             $this->_config_dir = $_config_dir;
             foreach ($_config_dir as $directory) {
@@ -342,7 +342,7 @@ class Smarty_Security {
             }
         }
 
-        // rebuild secure dir index
+        // rebuild secure dir Index
         if ($_secure) {
             $this->_secure_dir = $this->secure_dir;
             foreach ((array) $this->secure_dir as $directory) {
@@ -388,7 +388,7 @@ class Smarty_Security {
             throw new SmartyException("directory '{$filepath}' not allowed by security setting (no trusted_dir specified)");
         }
 
-        // check if index is outdated
+        // check if Index is outdated
         if (!$this->_trusted_dir || $this->_trusted_dir !== $this->trusted_dir) {
             $this->_php_resource_dir = array();
 

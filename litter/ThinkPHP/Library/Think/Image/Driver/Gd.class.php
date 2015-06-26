@@ -95,7 +95,7 @@ class Gd{
         }elseif('gif' == $type && !empty($this->gif)){
             $this->gif->save($imgname);
         }else{
-            $fun  =   'image'.$type;
+            $fun  =   'img'.$type;
             $fun($this->img, $imgname);
         }
     }

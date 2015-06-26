@@ -25,7 +25,7 @@
  */
 
 class Template_Lite_Compiler extends Template_Lite {
-	// public configuration variables
+	// Public configuration variables
 	var $left_delimiter			= "";
 	var $right_delimiter			= "";
 	var $plugins_dir			= "";
@@ -845,7 +845,7 @@ class Template_Lite_Compiler extends Template_Lite {
 //					$_result .= "['$var']";
 					$parts = explode('.', $var);
 					$section = $parts[0];
-					$section_prop = isset($parts[1]) ? $parts[1] : 'index';
+					$section_prop = isset($parts[1]) ? $parts[1] : 'Index';
 					$_result .= "[\$this->_sections['$section']['$section_prop']]";
 				}
 			}

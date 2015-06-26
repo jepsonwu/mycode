@@ -51,7 +51,7 @@ function smarty_function_fetch($params, $template)
                 // set defaults
                 $host = $server_name = $uri_parts['host'];
                 $timeout = 30;
-                $accept = "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*";
+                $accept = "img/gif, img/x-xbitmap, img/jpeg, img/pjpeg, */*";
                 $agent = "Smarty Template Engine ". Smarty::SMARTY_VERSION;
                 $referer = "";
                 $uri = !empty($uri_parts['path']) ? $uri_parts['path'] : '/';

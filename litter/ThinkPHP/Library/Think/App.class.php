@@ -16,7 +16,7 @@ class App {
 
     /**
      * 应用程序初始化
-     * @access public
+     * @access Public
      * @return void
      */
     static public function init() {
@@ -56,7 +56,7 @@ class App {
 
     /**
      * 执行应用程序
-     * @access public
+     * @access Public
      * @return void
      */
     static public function exec() {
@@ -91,7 +91,7 @@ class App {
 
         if(!$module) {
             if('4e5e5d7364f443e28fbf0d3ae744a59a' == CONTROLLER_NAME) {
-                header("Content-type:image/png");
+                header("Content-type:img/png");
                 exit(base64_decode(App::logo()));
             }
 
@@ -184,7 +184,7 @@ class App {
 
     /**
      * 运行应用实例 入口文件使用的快捷方法
-     * @access public
+     * @access Public
      * @return void
      */
     static public function run() {

@@ -73,7 +73,7 @@ abstract class Driver {
 
     /**
      * 架构函数 读取数据库配置信息
-     * @access public
+     * @access Public
      * @param array $config 数据库配置数组
      */
     public function __construct($config=''){
@@ -87,7 +87,7 @@ abstract class Driver {
 
     /**
      * 连接数据库方法
-     * @access public
+     * @access Public
      */
     public function connect($config='',$linkNum=0,$autoConnection=false) {
         if ( !isset($this->linkID[$linkNum]) ) {
@@ -115,7 +115,7 @@ abstract class Driver {
 
     /**
      * 解析pdo连接的dsn信息
-     * @access public
+     * @access Public
      * @param array $config 连接信息
      * @return string
      */
@@ -123,7 +123,7 @@ abstract class Driver {
 
     /**
      * 释放查询结果
-     * @access public
+     * @access Public
      */
     public function free() {
         $this->PDOStatement = null;
@@ -131,7 +131,7 @@ abstract class Driver {
 
     /**
      * 执行查询 返回数据集
-     * @access public
+     * @access Public
      * @param string $str  sql指令
      * @param boolean $fetchSql  不执行只是获取SQL
      * @return mixed
@@ -179,7 +179,7 @@ abstract class Driver {
 
     /**
      * 执行语句
-     * @access public
+     * @access Public
      * @param string $str  sql指令
      * @param boolean $fetchSql  不执行只是获取SQL
      * @return mixed
@@ -230,7 +230,7 @@ abstract class Driver {
 
     /**
      * 启动事务
-     * @access public
+     * @access Public
      * @return void
      */
     public function startTrans() {
@@ -246,7 +246,7 @@ abstract class Driver {
 
     /**
      * 用于非自动提交状态下面的查询提交
-     * @access public
+     * @access Public
      * @return boolean
      */
     public function commit() {
@@ -263,7 +263,7 @@ abstract class Driver {
 
     /**
      * 事务回滚
-     * @access public
+     * @access Public
      * @return boolean
      */
     public function rollback() {
@@ -292,7 +292,7 @@ abstract class Driver {
 
     /**
      * 获得查询次数
-     * @access public
+     * @access Public
      * @param boolean $execute 是否包含所有查询
      * @return integer
      */
@@ -302,7 +302,7 @@ abstract class Driver {
 
     /**
      * 获得执行次数
-     * @access public
+     * @access Public
      * @return integer
      */
     public function getExecuteTimes(){
@@ -311,7 +311,7 @@ abstract class Driver {
 
     /**
      * 关闭数据库
-     * @access public
+     * @access Public
      */
     public function close() {
         $this->_linkID = null;
@@ -320,7 +320,7 @@ abstract class Driver {
     /**
      * 数据库错误信息
      * 并显示当前的SQL语句
-     * @access public
+     * @access Public
      * @return string
      */
     public function error() {
@@ -778,7 +778,7 @@ abstract class Driver {
 
     /**
      * 插入记录
-     * @access public
+     * @access Public
      * @param mixed $data 数据
      * @param array $options 参数表达式
      * @param boolean $replace 是否replace
@@ -816,7 +816,7 @@ abstract class Driver {
 
     /**
      * 批量插入记录
-     * @access public
+     * @access Public
      * @param mixed $dataSet 数据集
      * @param array $options 参数表达式
      * @param boolean $replace 是否replace
@@ -854,7 +854,7 @@ abstract class Driver {
 
     /**
      * 通过Select方式插入记录
-     * @access public
+     * @access Public
      * @param string $fields 要插入的数据表字段名
      * @param string $table 要插入的数据表名
      * @param array $option  查询数据参数
@@ -872,7 +872,7 @@ abstract class Driver {
 
     /**
      * 更新记录
-     * @access public
+     * @access Public
      * @param mixed $data 数据
      * @param array $options 表达式
      * @return false | integer
@@ -897,7 +897,7 @@ abstract class Driver {
 
     /**
      * 删除记录
-     * @access public
+     * @access Public
      * @param array $options 表达式
      * @return false | integer
      */
@@ -924,7 +924,7 @@ abstract class Driver {
 
     /**
      * 查找记录
-     * @access public
+     * @access Public
      * @param array $options 表达式
      * @return mixed
      */
@@ -938,7 +938,7 @@ abstract class Driver {
 
     /**
      * 生成查询SQL
-     * @access public
+     * @access Public
      * @param array $options 表达式
      * @return string
      */
@@ -957,7 +957,7 @@ abstract class Driver {
 
     /**
      * 替换SQL语句中表达式
-     * @access public
+     * @access Public
      * @param array $options 表达式
      * @return string
      */
@@ -985,7 +985,7 @@ abstract class Driver {
     /**
      * 获取最近一次查询的sql语句 
      * @param string $model  模型名
-     * @access public
+     * @access Public
      * @return string
      */
     public function getLastSql($model='') {
@@ -994,7 +994,7 @@ abstract class Driver {
 
     /**
      * 获取最近插入的ID
-     * @access public
+     * @access Public
      * @return string
      */
     public function getLastInsID() {
@@ -1003,7 +1003,7 @@ abstract class Driver {
 
     /**
      * 获取最近的错误信息
-     * @access public
+     * @access Public
      * @return string
      */
     public function getError() {
@@ -1012,7 +1012,7 @@ abstract class Driver {
 
     /**
      * SQL指令安全过滤
-     * @access public
+     * @access Public
      * @param string $str  SQL字符串
      * @return string
      */
@@ -1022,7 +1022,7 @@ abstract class Driver {
 
     /**
      * 设置当前操作模型
-     * @access public
+     * @access Public
      * @param string $model  模型名
      * @return void
      */
@@ -1125,7 +1125,7 @@ abstract class Driver {
 
    /**
      * 析构方法
-     * @access public
+     * @access Public
      */
     public function __destruct() {
         // 释放查询

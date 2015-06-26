@@ -81,7 +81,7 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
         if ($has_name) {
             $usesSmartyFirst = strpos($tpl->source->content, $SmartyVarName . 'first') !== false;
             $usesSmartyLast = strpos($tpl->source->content, $SmartyVarName . 'last') !== false;
-            $usesSmartyIndex = strpos($tpl->source->content, $SmartyVarName . 'index') !== false;
+            $usesSmartyIndex = strpos($tpl->source->content, $SmartyVarName . 'Index') !== false;
             $usesSmartyIteration = strpos($tpl->source->content, $SmartyVarName . 'iteration') !== false;
             $usesSmartyShow = strpos($tpl->source->content, $SmartyVarName . 'show') !== false;
             $usesSmartyTotal = strpos($tpl->source->content, $SmartyVarName . 'total') !== false;
@@ -94,7 +94,7 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
 
         $usesPropFirst = $usesSmartyFirst || strpos($tpl->source->content, $ItemVarName . 'first') !== false;
         $usesPropLast = $usesSmartyLast || strpos($tpl->source->content, $ItemVarName . 'last') !== false;
-        $usesPropIndex = $usesPropFirst || strpos($tpl->source->content, $ItemVarName . 'index') !== false;
+        $usesPropIndex = $usesPropFirst || strpos($tpl->source->content, $ItemVarName . 'Index') !== false;
         $usesPropIteration = $usesPropLast || strpos($tpl->source->content, $ItemVarName . 'iteration') !== false;
         $usesPropShow = strpos($tpl->source->content, $ItemVarName . 'show') !== false;
         $usesPropTotal = $usesSmartyTotal || $usesSmartyShow || $usesPropShow || $usesPropLast || strpos($tpl->source->content, $ItemVarName . 'total') !== false;
@@ -112,7 +112,7 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
             $output .= " \$_smarty_tpl->tpl_vars[$item]->iteration=0;\n";
         }
         if ($usesPropIndex) {
-            $output .= " \$_smarty_tpl->tpl_vars[$item]->index=-1;\n";
+            $output .= " \$_smarty_tpl->tpl_vars[$item]->Index=-1;\n";
         }
         if ($usesPropShow) {
             $output .= " \$_smarty_tpl->tpl_vars[$item]->show = (\$_smarty_tpl->tpl_vars[$item]->total > 0);\n";
@@ -125,7 +125,7 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
                 $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['iteration']=0;\n";
             }
             if ($usesSmartyIndex) {
-                $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['index']=-1;\n";
+                $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['Index']=-1;\n";
             }
             if ($usesSmartyShow) {
                 $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['show']=(\$_smarty_tpl->tpl_vars[$item]->total > 0);\n";
@@ -139,10 +139,10 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
             $output .= " \$_smarty_tpl->tpl_vars[$item]->iteration++;\n";
         }
         if ($usesPropIndex) {
-            $output .= " \$_smarty_tpl->tpl_vars[$item]->index++;\n";
+            $output .= " \$_smarty_tpl->tpl_vars[$item]->Index++;\n";
         }
         if ($usesPropFirst) {
-            $output .= " \$_smarty_tpl->tpl_vars[$item]->first = \$_smarty_tpl->tpl_vars[$item]->index === 0;\n";
+            $output .= " \$_smarty_tpl->tpl_vars[$item]->first = \$_smarty_tpl->tpl_vars[$item]->Index === 0;\n";
         }
         if ($usesPropLast) {
             $output .= " \$_smarty_tpl->tpl_vars[$item]->last = \$_smarty_tpl->tpl_vars[$item]->iteration === \$_smarty_tpl->tpl_vars[$item]->total;\n";
@@ -155,7 +155,7 @@ class Smarty_Internal_Compile_Foreach extends Smarty_Internal_CompileBase {
                 $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['iteration']++;\n";
             }
             if ($usesSmartyIndex) {
-                $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['index']++;\n";
+                $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['Index']++;\n";
             }
             if ($usesSmartyLast) {
                 $output .= " \$_smarty_tpl->tpl_vars['smarty']->value['foreach'][$name]['last'] = \$_smarty_tpl->tpl_vars[$item]->last;\n";

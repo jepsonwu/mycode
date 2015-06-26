@@ -35,7 +35,7 @@ class RestController extends Controller {
 
    /**
      * 架构函数
-     * @access public
+     * @access Public
      */
     public function __construct() {
         // 资源类型检测
@@ -61,7 +61,7 @@ class RestController extends Controller {
 
     /**
      * 魔术方法 有不存在的操作的时候执行
-     * @access public
+     * @access Public
      * @param string $method 方法名
      * @param array $args 参数
      * @return mixed
@@ -104,9 +104,9 @@ class RestController extends Controller {
             'atom'  =>  'application/atom+xml',
             'pdf'   =>  'application/pdf',
             'text'  =>  'text/plain',
-            'png'   =>  'image/png',
-            'jpg'   =>  'image/jpg,image/jpeg,image/pjpeg',
-            'gif'   =>  'image/gif',
+            'png'   =>  'img/png',
+            'jpg'   =>  'img/jpg,img/jpeg,img/pjpeg',
+            'gif'   =>  'img/gif',
             'csv'   =>  'text/csv',
             'html'  =>  'text/html,application/xhtml+xml,*/*'
         );
@@ -205,7 +205,7 @@ class RestController extends Controller {
 
     /**
      * 设置页面输出的CONTENT_TYPE和编码
-     * @access public
+     * @access Public
      * @param string $type content_type 类型对应的扩展名
      * @param string $charset 页面输出编码
      * @return void

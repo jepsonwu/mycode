@@ -19,7 +19,7 @@ class Mysql extends Driver{
 
     /**
      * 解析pdo连接的dsn信息
-     * @access public
+     * @access Public
      * @param array $config 连接信息
      * @return string
      */
@@ -41,7 +41,7 @@ class Mysql extends Driver{
 
     /**
      * 取得数据表的字段信息
-     * @access public
+     * @access Public
      */
     public function getFields($tableName) {
         $this->initConnect(true);
@@ -75,7 +75,7 @@ class Mysql extends Driver{
 
     /**
      * 取得数据库的表信息
-     * @access public
+     * @access Public
      */
     public function getTables($dbName='') {
         $sql    = !empty($dbName)?'SHOW TABLES FROM '.$dbName:'SHOW TABLES ';
@@ -103,7 +103,7 @@ class Mysql extends Driver{
 
     /**
      * 批量插入记录
-     * @access public
+     * @access Public
      * @param mixed $dataSet 数据集
      * @param array $options 参数表达式
      * @param boolean $replace 是否replace
