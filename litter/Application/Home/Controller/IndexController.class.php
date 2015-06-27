@@ -1,31 +1,14 @@
 <?php
 namespace Home\Controller;
 
-use Think\Controller;
+use Home\Controller\CommonController;
 
-class IndexController extends Controller
+class IndexController extends CommonController
 {
 	public function index()
 	{
-
-		$this->assign("title","welcome to the payMin's blog");
+		$this->assign("title", "welcome to the payMin's blog");
 
 		$this->display();
-	}
-
-	/**
-	 * 当访问不存在的方法时执行
-	 */
-	protected function _empty()
-	{
-//		header("http://1.1 404");
-	}
-
-	/**
-	 * 控制器初始化类，由controller执行
-	 */
-	protected function _initialize()
-	{
-		define("__PUBLIC__",__ROOT__."/Public");
 	}
 }
