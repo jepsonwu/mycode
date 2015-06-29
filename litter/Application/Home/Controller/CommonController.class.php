@@ -10,7 +10,8 @@ class CommonController extends Controller
 	 */
 	protected function _initialize()
 	{
-		define("__PUBLIC__", __ROOT__ . "/Public");
+		defined("__PUBLIC__") || define("__PUBLIC__", __ROOT__ . "/Public");
+		defined("__URL__") || define("__URL__", $_SERVER['HTTP_HOST'] . "/" . MODULE_NAME);
 	}
 
 	/**

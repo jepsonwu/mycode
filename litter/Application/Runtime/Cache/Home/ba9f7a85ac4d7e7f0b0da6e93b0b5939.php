@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>welcome to the payMin's blog</title>
 <link rel="stylesheet" type="text/css" href="/Public/css/base.css" />
+<!--<link rel="stylesheet" type="text/css" href="/Public/bootstrap_3/css/bootstrap.min.css" />-->
 </head>
 
 <body>
@@ -138,6 +139,8 @@
         </div>
     </div>
 </section>
+<script type="text/javascript" src="/Public/jquery/jquery.js"></script>
+<script type="text/javascript" src="/Public/js/common.js"></script>
 </body>
 
 </html>
