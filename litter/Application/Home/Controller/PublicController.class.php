@@ -1,21 +1,15 @@
 <?php
 namespace Home\Controller;
 
-use Home\Controller\CommonController;
+use Think\Controller;
 
-class PublicController extends CommonController
+class PublicController extends Controller
 {
 
 	public function Login()
 	{
 		$this->display();
 	}
-
-	public function Check_login()
-	{
-		
-	}
-
 
 	/**
 	 * 生成验证码
