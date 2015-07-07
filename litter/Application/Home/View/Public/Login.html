@@ -1,5 +1,28 @@
 <div class="container">
-    <form action="" method="post">
-
+    <form action="URL/User_login" method="post">
+        <table>
+            <tr>
+                <td>用户名：</td>
+                <td><input type="text" name="uname" value=""></td>
+            </tr>
+            <tr>
+                <td>密码：</td>
+                <td><input type="password" name="password" value=""></td>
+            </tr>
+            <tr>
+                <td>验证码：</td>
+                <td><input type="text" name="verify" value=""></td>
+                <td><img id="verify" title="点击刷新验证码" src="__URL__/Verify"></td>
+            </tr>
+        </table>
     </form>
+    <div><input id="btn_login" type="button" value="登录"></div>
 </div>
+
+<script>
+    $(function () {
+        $("#btn_login").click(function () {
+            show_dialog("degnluy");
+        });
+    });
+</script>

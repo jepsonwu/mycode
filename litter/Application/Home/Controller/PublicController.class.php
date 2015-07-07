@@ -6,6 +6,9 @@ use Think\Controller;
 class PublicController extends Controller
 {
 
+	/**
+	 * 登录
+	 */
 	public function Login()
 	{
 		$this->display();
@@ -16,7 +19,15 @@ class PublicController extends Controller
 	 */
 	public function Verify()
 	{
-		$verify = new \Think\Verify();
+		$verify = new \Think\Verify(C("VERIFY_CONFIG"));
 		$verify->entry();
+	}
+
+	/**
+	 * 登录
+	 */
+	public function User_login()
+	{
+		pre("a");
 	}
 }
