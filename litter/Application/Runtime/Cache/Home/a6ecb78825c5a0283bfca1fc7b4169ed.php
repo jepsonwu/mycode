@@ -119,6 +119,8 @@
 
 <script>
     $(function () {
+        alert(demo);
+
         $("#btn_login").click(function () {
             show_dialog("degnluy");
         });

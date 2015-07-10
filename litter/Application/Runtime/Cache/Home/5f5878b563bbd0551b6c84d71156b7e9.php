@@ -7,8 +7,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>welcome to the payMin's blog</title>
 <link rel="stylesheet" type="text/css" href="/Public/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/Public/css/jquery-ui.css" />
 <!--<link rel="stylesheet" type="text/css" href="/Public/bootstrap_3/css/bootstrap.min.css" />-->
 </head>
+
+<script type="text/javascript" src="/Public/jquery/jquery.js"></script>
+<script type="text/javascript" src="/Public/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="/Public/js/common.js"></script>
+
+<script>
+    var GROUP = "/index.php/Home";
+    var URL = "/index.php/Home/Index";
+</script>
 
 <body>
 <nav id="main-nav" class="navbar navbar-default" role="navigation">
@@ -87,11 +97,18 @@
 </nav>
 
 <style>
-    .main{
+    .main {
         height: 700px;
     }
 </style>
+<script type="text/javascript">
+    $(function () {
+        var demo = "123";
+        alert(demo);
+    });
+</script>
 <div class="container main">
+    <a href="/index.php/Home/Public/Login" target="_blank">登录</a>
     welcome to the payMin's blog
 </div>
 
@@ -144,8 +161,8 @@
         </div>
     </div>
 </section>
-<script type="text/javascript" src="/Public/jquery/jquery.js"></script>
-<script type="text/javascript" src="/Public/js/common.js"></script>
+<div id="dialog" title="系统消息"></div>
+
 </body>
 
 </html>

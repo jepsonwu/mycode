@@ -19,6 +19,7 @@ class PublicController extends Controller
 	 */
 	public function Verify()
 	{
+		ob_end_clean();
 		$verify = new \Think\Verify(C("VERIFY_CONFIG"));
 		$verify->entry();
 	}
