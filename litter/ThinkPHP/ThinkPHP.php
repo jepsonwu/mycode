@@ -91,6 +91,9 @@ if(!IS_CLI) {
     }
 }
 
+defined("PUBLIC_PATH") or define("PUBLIC_PATH", __ROOT__ . "Public/");//公共目录
+defined("PUBLIC_UPLOAD_PATH") or define("PUBLIC_UPLOAD_PATH", PUBLIC_PATH . "Uploads/");//上传目录
+
 // 加载核心Think类
 require CORE_PATH.'Think'.EXT;
 // 应用初始化 
