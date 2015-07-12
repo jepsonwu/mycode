@@ -14,10 +14,12 @@
 <script type="text/javascript" src="/Public/jquery/jquery.js"></script>
 <script type="text/javascript" src="/Public/jquery/jquery-ui.js"></script>
 <script type="text/javascript" src="/Public/js/common.js"></script>
+<script type="text/javascript" src="/Public/js/ajax.js"></script>
+<script type="text/javascript" src="/Public/js/dialog.js"></script>
 
 <script>
-    var GROUP = "/index.php/Home";
-    var URL = "/index.php/Home/Index";
+    var MODULE = "/Home";
+    var URL = "/Home/Index";
 </script>
 
 <body>
@@ -103,12 +105,18 @@
 </style>
 <script type="text/javascript">
     $(function () {
-        var demo = "123";
-        alert(demo);
+//        show_dialog("aaa");
+
+        $("input[type='button']").click(function () {
+            show_dialog_confirm("确认删除")
+        });
     });
 </script>
 <div class="container main">
-    <a href="/index.php/Home/Public/Login" target="_blank">登录</a>
+    <a href="/Home/Public/Login" target="_blank">登录</a>
+    <input class="btn_confirm" type="button" value="删除">
+    <input id="datepicker" type="text" name="time_one" value="">
+    <input id="datepicker1" type="text" name="time_one" value="">
     welcome to the payMin's blog
 </div>
 
@@ -162,7 +170,7 @@
     </div>
 </section>
 <div id="dialog" title="系统消息"></div>
-
+<div id="dialog_confirm" title="确认消息"></div>
 </body>
 
 </html>

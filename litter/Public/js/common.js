@@ -1,11 +1,4 @@
-/**
- * 显示提示框
- * @param msg
- */
-function show_dialog(msg) {
-    $("#dialog").html(msg);
-    $("#dialog").dialog("open");
-}
+
 
 /**
  * 设置cookie
@@ -49,10 +42,14 @@ function delCookie() {
 }
 
 $(function () {
-    //dialog
-    $("#dialog").dialog({
-        autoOpen: false
-    });
+    //日期
+    $( "input[id^='datepicker']" ).datepicker();
+
+    //Menu Widget 导航栏
+    //Progressbar Widget 进度条
+    //Slider Widget 拖动手柄选择一个值
+    //Spinner Widget 向上，向下箭头选择值
+    //Tabs Widget  多面板
 
     //刷新验证码
     $("#verify").css("cursor", "pointer");

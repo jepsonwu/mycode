@@ -10,4 +10,8 @@ class IndexController extends CommonController
 		$this->assign("title", "welcome to the payMin's blog");
 		$this->display();
 	}
+
+	public function delete(){
+		parent::ajax_succ("删除失败");
+	}
 }
