@@ -1,0 +1,170 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+DIR_PATH=`pwd`/
+
+CONF_PATH=conf/core_conf
+CONF_BACK_PATH=conf/core_conf_bak
+CONF_TEMPLATE=conf/merge_conf
+CONF_UPDATE=conf/update_conf
+
+help=no
+
+update=no
+
+test $# = 0 && help=yes
+
+for option
+do
+
+   case "$option" in
+       -*=*)
+       value=`echo $option |sed 's/[-_0-9a-zA-Z]*=//'`
+       value_dir=`echo $value |sed "s|/$||"`/
+       ;;
+       *) value="" ;;
+   esac
+
+   case "$option" in
+       -h)                          help=yes ;;
+       --help)                      help=yes ;;
+
+       -u)                          update=yes ;;
+
+       -rl)                         MERGE_TYPE=RL ;;
+       -rr)                         MERGE_TYPE=RR ;;
+       -lr)                         MERGE_TYPE=LR ;;
+       -ll)                         MERGE_TYPE=LL ;;
+       --r-mysql-dir=*)             RE_MYSQL_HOST=="$value_dir" ;;
+       --r-mysql-host=*)            RE_MYSQL_HOST="$value" ;;
+       --r-mysql-user=*)            RE_MYSQL_USER="$value" ;;
+       --r-mysql-pass=*)            RE_MYSQL_PASS="$value" ;;
+       --r-mysql-port=*)            RE_MYSQL_PORT="$value" ;;
+
+       --l-mysql-dir=*)             LC_MYSQL_DIR="$value_dir" ;;
+       --l-mysql-host=*)            LC_MYSQL_HOST="$value" ;;
+       --l-mysql-user=*)            LC_MYSQL_USER="$value" ;;
+       --l-mysql-pass=*)            LC_MYSQL_PASS="$value" ;;
+       --l-mysql-port=*)            LC_MYSQL_PORT="$value" ;;
+
+       --dbname=*)                  DB_NAME="("`echo $value|sed 's/,/ /g'`")" ;;
+       --all-table)                 ALL_TABLE=yes ;;
+       --in-table=*)
+          ALL_TABLE=no
+          IN_TABLE="("`echo $value|sed 's/,/ /g'`")"
+       ;;
+       --ex-table=*)
+          ALL_TABLE=no
+          EX_TABLE="("`echo $value|sed 's/,/ /g'`")"
+       ;;
+
+       --log-path=*)                LOG_PATH="$value"  ;;
+
+       --bin-format=*)              BINLOG_FORMAT="$value" ;;
+
+       --php-dir=*)                 PHP_DIR="$value_dir" ;;
+
+       -ext)                        EXPECT=yes ;;
+       -exf)                        EXPECT=no ;;
+
+       --exp-ip=*)                  EXP_IP="$value" ;;
+       --exp-user=*)                EXP_USER="$value" ;;
+       --exp-dir=*)                 EXP_DIR="$value_dir" ;;
+       --exp-pass=*)                EXP_PASS="$value" ;;
+       --exp-port=*)                EXP_PORT="$value" ;;
+
+       --exp-mysql-dir=*)           EXP_MYSQL_DIR="$value_dir" ;;
+       --exp-mysql-host=*)          EXP_MYSQL_HOST="$value" ;;
+       --exp-mysql-user=*)          EXP_MYSQL_USER="$value" ;;
+       --exp-mysql-pass=*)          EXP_MYSQL_PASS="$value" ;;
+       --exp-mysql-port=*)          EXP_MYSQL_PORT="$value" ;;
+
+        *)
+           echo "$0: error: invalid option \"$option\""
+           exit 1
+        ;;
+
+   esac
+
+done
+
+if [ $help = yes ];then
+
+cat <<END
+   -h                           print this message
+   --help                       print this message
+
+   -u                           update the configure file,default new configure
+
+   -rl                          set the merge type as remote to local
+   -rr                          set the merge type as remote to remote
+   -lr                          set the merge type as local to remote
+   -ll                          set the merge type as local to local
+
+   --r-mysql-dir                set the remote mysql dir
+   --r-mysql-host               set the remote mysql host
+   --r-mysql-user               set the remote mysql username
+   --r-mysql-pass               set the remote mysql password
+   --r-mysql-port               set the remote mysql port
+
+   --l-mysql-dir                set the local mysql directory
+   --l-mysql-host               set the local mysql host
+   --l-mysql-user               set the local mysql username
+   --l-mysql-pass               set the local mysql password
+   --l-mysql-port               set the lcoal mysql port
+
+   --bin-format                 set the binlog format for sync.(mixed|row)
+
+   --php-dir                    set the php dir,only row binlog format
+
+   --dbname                     set the rsync dbname.one or more.Multiple separated by a comma(",")
+   --all-table                  set rsync all table
+   --in-table                   set rsync include table,fomat:db.table,db1.table1
+   --ex-table                   set rsync exclude table
+
+   --log-path                   set the sync log file path
+
+   -ext                         set the expect is true
+   -exf                         set the expect is false
+
+   --exp-ip                     set the expect ip
+   --exp-user                   set the expect user
+   --exp-dir                    set the expect dir
+   --exp-pass                   set the expect pass
+   --exp-port                   set the expect port
+
+   --exp-mysql-dir              set the expect mysql dir
+   --exp-mysql-host             set the expect mysql host
+   --exp-mysql-user             set the expect mysql user
+   --exp-mysql-pass             set the expect mysql pass
+   --exp-mysql-port             set the expect mysql port
+
+   [default]
+
+   -rl                          yes
+   -rr                          no
+   -lr                          no
+   -ll                          no
+
+   --r-mysql-port               3306
+
+   --l-mysql-host               localhost
+   --l-mysql-port               3306
+
+   --log-path                   log/sync_binlog.log
+
+   --all-table                  yes
+
+   --bin-format                 mixed
+
+   -ext                         no
+   -exf                         yes
+
+   --exp-port                   22
+   --exp-mysql-host             localhost
+   --exp-mysql-port             3306
+
+END
+
+   exit 1
+fi

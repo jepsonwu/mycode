@@ -1,0 +1,22 @@
+#!/bin/sh
+#auth wujp
+#lvm vg moriter
+
+if [ -z "$1" ];then
+   echo "sorry,please specify pareams"
+   exit 1
+fi
+
+case $1 in
+  free_vg)
+  result=`vgdisplay |awk '/Free/{print $5*4*1024*1024}'`
+  echo $result
+  ;;
+  total_vg)
+  result=`vgdisplay |awk '/Total/{print $3*4*1024*1024}'`
+  echo $result
+  ;;
+  *)
+  echo "Usage:$0 free_vg|total_vg"
+  ;;
+esac

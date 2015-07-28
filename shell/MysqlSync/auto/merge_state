@@ -1,0 +1,95 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+
+lc_info=(LC_MYSQL_HOST LC_MYSQL_USER LC_MYSQL_PASS LC_MYSQL_PORT)
+re_info=(RE_MYSQL_HOST RE_MYSQL_USER RE_MYSQL_PASS RE_MYSQL_PORT)
+exp_info=(EXP_IP EXP_DIR EXP_USER EXP_PASS EXP_PORT EXP_MYSQL_DIR EXP_MYSQL_HOST EXP_MYSQL_USER EXP_MYSQL_PASS EXP_MYSQL_PORT)
+
+#本地mysql
+if [ -z "$LC_MYSQL_DIR" ];then
+   write_log 0 'mysql dir is not found!'
+   exit 1
+fi
+
+#php信息
+if [ ! -f ${PHP_DIR}bin/php ];then
+   write_log 0 'sorry,sir.php file is not correct!'
+   exit 1
+else
+   ${PHP_DIR}bin/php -v|grep "command not found" >/dev/null 2>&1
+
+   if [ $? = 0 ];then
+      write_log 0 'sorry,sir.php is not found!'
+      exit 1
+   fi
+fi
+
+#合并模式
+case  $MERGE_TYPE in
+RL)
+  args_defined "${re_info[*]}"
+  args_defined "${lc_info[*]}"
+
+  mysql_args="-h${RE_MYSQL_HOST} -u${RE_MYSQL_USER} -p${RE_MYSQL_PASS} -P${RE_MYSQL_PORT}"
+  remote_argu="-R "$mysql_args
+
+  mysql_args_loc="-h${LC_MYSQL_HOST} -u${LC_MYSQL_USER} -p${LC_MYSQL_PASS} -P${LC_MYSQL_PORT}"
+  merge_fun=remote
+;;
+RR)
+  if [ ! -f "/usr/bin/expect" ];then
+        write_log 0 'sorry,sir.expect tools is not found,please exec\"yum -y install expect expect-devel\"'
+        exit 1
+     fi
+
+  mysql_args="-h${RE_MYSQL_HOST} -u${RE_MYSQL_USER} -p${RE_MYSQL_PASS} -P${RE_MYSQL_PORT}"
+  remote_argu="-R "$mysql_args
+
+  args_defined "${exp_info[*]}"
+  args_defined "${re_info[*]}"
+  merge_fun=remote
+  mysql_args_loc="-h${EXP_MYSQL_HOST} -u${EXP_MYSQL_USER} -p${EXP_MYSQL_PASS} -P${EXP_MYSQL_PORT}"
+;;
+LR)
+  if [ ! -f "/usr/bin/expect" ];then
+        write_log 0 'sorry,sir.expect tools is not found,please exec\"yum -y install expect expect-devel\"'
+        exit 1
+  fi
+
+  args_defined "${exp_info[*]}"
+  args_defined "${re_info[*]}"
+
+  if [ -z "$RE_MYSQL_DIR" ];then
+     write_log 0 'mysql dir is not found!'
+     exit 1
+  fi
+  merge_fun=local
+  mysql_args="-h${LC_MYSQL_HOST} -u${LC_MYSQL_USER} -p${LC_MYSQL_PASS} -P${LC_MYSQL_PORT}"
+  remote_argu="-R "$mysql_args
+
+  mysql_args_loc="-h${RE_MYSQL_HOST} -u${RE_MYSQL_USER} -p${RE_MYSQL_PASS} -P${RE_MYSQL_PORT}"
+;;
+LL)
+  args_defined "${lc_info[*]}"
+
+  mysql_args="-h${LC_MYSQL_HOST} -u${LC_MYSQL_USER} -p${LC_MYSQL_PASS} -P${LC_MYSQL_PORT}"
+  remote_argu="-R "$mysql_args
+  merge_fun=local
+  mysql_args_loc="-h${LC_MYSQL_HOST} -u${LC_MYSQL_USER} -p${LC_MYSQL_PASS} -P${LC_MYSQL_PORT}"
+;;
+esac
+
+
+#日志目录
+log_dir=`echo $LOG_PATH |sed 's|/.*$||'`
+test -d $log_dir || mkdir -pv $log_dir >/dev/null 2>&1
+
+test -d ${DATA_DIR} || mkdir -pv ${DATA_DIR} >/dev/null 2>&1
+
+#二进制日志格式
+if [ "$BINLOG_FORMAT" = "row" ];then
+   bin_format="-v --base64-output=DECODE-ROWS"
+else
+   simple="-s"
+fi

@@ -1,0 +1,159 @@
+#!/bin/sh
+#describe:online hg update shell
+#author:wujp
+
+#init
+RETVAL=0
+
+case "$1" in
+    -v)
+    echo "publish version: publish/1.0.1"
+    ;;
+    -u)
+    BRANCH=0
+    ;;
+    -r)
+    if [ ! -z $2 ];then
+        BRANCH=$2
+    else
+        echo 'ERROR:sorry,sir,please specify branch to update'
+        RETVAL=1
+    fi
+    ;;
+    -h)
+    echo -e "用法：online [-v] [-u] [-r] [h] [branch]\n
+    -u  默认更新以“线上”命名的最新分支
+    -r  branch"
+    ;;
+    *)
+     echo -e "版本发布小工具 ---wujp\n
+     -v  查看版本信息
+     -u  默认更新线上
+     -r  更新指定分支
+     -h  查看帮助信息\n
+谢谢使用!"   #echo 想要特殊符号有用,加上-e选项
+esac
+
+if [ $RETVAL == 0 ] && [ ! -z $BRANCH ];then  #这里用-n无效
+   #hg confiure
+   #PUBLISH_CFG_FILE=$($(pwd)"/publish.cfg")
+   #if [ ! -f $PUBLISH_CFG_FILE ];then
+    #  echo "ERROR:publish.cfg not found!"
+     # exit 1
+   #else
+    #  . $PUBLISH_CFG_FILE
+   #fi
+
+   HG_HOST='hg.qq.com'
+   HG_USER='wujp'
+   HG_PASSWORD='d221cf36372662dd6b273b719b0b6b8e'
+   HG_NAME='simba'
+   HG_PUBLISH_ERROR_LOG='/data0/logs/publish_err.log'
+   HG_PUBLISH_LOG_FILE='/data0/logs/publish.log'
+   HG_BACKUP_CODE_PATH='/data0/logs'
+
+   #check confiure
+   #数组定义：加上()
+   #打印数组：${ARRAY[@|*]} 一定要加上{},否则打印数组第一个
+   #打印数组长度：${#ARRAY[@|*]}
+   #获取数组键值：${!ARRAY[*]}
+   #打印元素：${ARRAY[2]}
+   #删除、替换还未用到
+   CFG_ARRAY=(HG_HOST HG_USER HG_PASSWORD HG_NAME)
+
+   for val in ${CFG_ARRAY[*]}
+      do
+       if [ -z $$val ];then   #$$val写法,$val本身是一个变量
+          echo "ERROR:sorry,sir,there is a variable not found: "$val  #字符串之间链接什么也不需要
+          exit 1
+       fi
+   done
+
+
+   #local hg dir
+   LOCAL_HG_DIR=$(pwd)
+
+   #pull hg
+   return=$(hg --repository ${LOCAL_HG_DIR} pull --verbose --force http://${HG_USER}:${HG_PASSWORD}@${HG_HOST}/${HG_NAME})
+   if [ $? == 0 ];then
+      #-u
+      if [ $1 == '-u' ];then
+         BRANCH=$(hg branches |grep "线上"| head -n1 |awk -F[:] '{print $1}' |awk -F " " '{print $2}')
+
+         if(($?!=0));then
+            echo "ERROR:sorry,sir,branch of online not found!"
+            exit 1
+         fi
+      fi
+
+      #-r
+      if [ $1 == '-r' ];then
+         last=$(hg branches | head -n1 |awk -F[:] '{print $1}' |awk -F " " '{print $2}')  #awk -F[:" "] 不支持,不知到为什么
+
+         if(($?!= 0)) || (($last<$BRANCH));then
+           echo "ERROR:sorry,sir,the branch not found!"
+           exit
+         fi
+      fi
+
+   else
+      exit 1
+   fi
+
+   #update online branch  --check:检查 --clean:清除修改
+   return=$(hg update --repository ${LOCAL_HG_DIR} --config ui.merge=internal:fail --rev ${BRANCH} --clean)
+
+   if [ $? == 0 ];then
+      parent=$(hg parents |egrep "修改集:|分支:|摘要:"|awk -F[:] '{print $1"：\t",$2"|"}')
+   else
+      parent='[失败]'
+   fi
+
+   echo -e $return"\n"$parent"\n"谢谢使用！
+
+   #trace update log
+   if [ -z $HG_PUBLISH_LOG_FILE ];then
+      path='/data0/logs'
+   else
+      path='/data0/logs'
+   fi
+
+   tep=0
+   if [ ! -d $path ];then
+     tep=$(mkdir -p $path)
+     if(($?!=0));then
+           echo "Waring:"$return
+           tep=1
+     else
+        tep=0
+     fi
+   fi
+
+   if(($tep==0));then
+      date +"%Y-%m-%d %H:%M:%S" >>$HG_PUBLISH_LOG_FILE
+      echo -e $return"\n"$parent"\n\n" >>$HG_PUBLISH_LOG_FILE
+   fi
+
+   #backup online code
+   #if [ -z $HG_BACKUP_CODE_PATH ];then
+    #  path='/data0/code'
+   #else
+    #  path='/data0/logs'
+   #fi
+
+   #return=0
+   #if [ ! -d $path ];then
+    #  return=$(mkdir -p $path)
+     # if(($?!=0));then
+      #   echo "Waring:"$return
+       #  return=1
+      #fi
+   #fi
+
+   #if(($return==0));then
+    #  date +"%Y-%m-%d %H:%M:%S" >>$HG_PUBLISH_LOG_FILE
+     # echo -e $return"\n"$parent"\n\n" >>$HG_PUBLISH_LOG_FILE
+   #fi
+fi
+
+exit $RETVAL

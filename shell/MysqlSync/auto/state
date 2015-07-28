@@ -1,0 +1,20 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+if [ ! "$USER" = "root" ];then
+  echo 'sorry,sir.the user for runing must be root!'
+  exit 1
+fi
+
+if [ ! -f "conf/core_conf" ];then
+  echo 'sorry,sir.the core configure file is not found,please configure first!'
+  exit 1
+fi
+
+#判断bash本版,大于4.0 否则 declare -A选项无效 版本号比较
+bash_version=`bash --version |awk -F[.] '/GNU bash/{print $1}'`
+if [ `echo "${bash_version:${#bash_version}-1}>=4"|bc` = 0 ];then
+   echo 'sorry,sir.the bash version mush gt 4.0,please update bash!'
+   exit 1
+fi
+

@@ -1,0 +1,34 @@
+#!/bin/sh
+#Copyright wujp
+
+if [ $# = 0 ];then
+    echo "sorry,sir.arguement is not found:"
+    exit 1
+fi
+
+user=root
+passwd=123456
+mysql_path=/app/mysql-cluster-7.3/bin/
+
+case $1 in
+    tablespace_total)
+        result=`${mysql_path}mysql -u${user} -p${passwd} -e"SELECT SUM(MAXIMUM_SIZE) AS data_total FROM (SELECT MAXIMUM_SIZE FROM information_schema.FILES WHERE FILE_TYPE='DATAFILE' GROUP BY FILE_NAME) AS t1\G" 2>&1|awk '/data_total/{print $2}'`
+                echo $result
+                ;;
+    tablespace_free)
+        result=`${mysql_path}mysql -u${user} -p${passwd} -e"SELECT SUM(data_free) AS data_free FROM (SELECT FREE_EXTENTS*EXTENT_SIZE AS data_free FROM information_schema.FILES WHERE FILE_TYPE='DATAFILE' GROUP BY FILE_NAME) AS t1\G" 2>&1|awk '/data_free/{print $2}'`
+                echo $result
+                ;;
+    undo_total)
+result=`${mysql_path}mysql -u${user} -p${passwd} -e"SELECT SUM(MAXIMUM_SIZE) AS undo_total  FROM (SELECT MAXIMUM_SIZE FROM information_schema.FILES WHERE FILE_TYPE='UNDO LOG' AND FILE_NAME IS NOT NULL GROUP BY FILE_NAME) AS t1\G" 2>&1|awk '/undo_total/{print $2}'`
+echo $result
+;;
+undo_free)
+result=`${mysql_path}mysql -u${user} -p${passwd} -e"SELECT FREE_EXTENTS*EXTENT_SIZE AS undo_free FROM information_schema.FILES WHERE FILE_TYPE='UNDO LOG' AND FREE_EXTENTS IS NOT NULL\G" 2>&1|awk '/undo_free/{print $2}'`
+echo $result
+;;
+
+        *)
+        echo "Usage:$0(tablespace|undo  _free|total)"
+        ;;
+esac

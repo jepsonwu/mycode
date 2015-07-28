@@ -1,0 +1,161 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+#自定义
+if [ $defined = yes ];then
+
+   all=no
+   ${merge_fun}_jb $bin_log e
+
+   echo 'read binlog:mysql-bin.'$de_start_binlog'-------------'
+
+   ${LC_MYSQL_DIR}bin/mysqlbinlog $remote_argu -f $simple -d$db ${start_time:+'--start-datetime='$start_time} ${stop_time:+'--stop-datetime='$stop_time}\
+   $bin_format ${local_argu}${bin_log} >$bt_file
+
+   echo 'done binlog:mysql-bin.'$de_start_binlog'-------------'
+
+   let binlog=10#`echo $bin_log|awk -F[.] '{print $2}'`+1
+   binlog=`echo $binlog|awk '{printf("%06d",$0)}'`
+
+   ${merge_fun}_jb mysql-bin.${binlog}
+
+   if test ! $? = 0;then
+      bin_while=no
+   else
+      start_binlog=${binlog}
+   fi
+
+fi
+
+#全部
+if [ $all = yes ];then
+
+    #自动按时间段获取
+    if [ -f $bt_tmp ];then
+
+       while read line
+       do
+         eval $(echo $line |awk -F"=" '{print $1"="$2}')
+       done <$bt_tmp
+
+       ${merge_fun}_jb mysql-bin.${de_start_binlog} e
+
+       if [ -n "$de_start_time" ];then
+          echo 'read binlog:mysql-bin.'$de_start_binlog'-------------' #进度条输出
+
+          ${LC_MYSQL_DIR}bin/mysqlbinlog $remote_argu -f --start-datetime=${de_start_time} --stop-datetime=${time}\
+          $simple -d$db $bin_format ${local_argu} mysql-bin.${de_start_binlog} >>$bt_file
+
+          write_log 2 'doing read binlog:mysql-bin.'$de_start_binlog
+       fi
+
+       let binlog=10#$de_start_binlog+1
+       binlog=`echo $binlog|awk '{printf("%06d",$0)}'`
+
+       ${merge_fun}_jb mysql-bin.${binlog}
+
+       if test ! $? = 0;then
+          bin_while=no
+       else
+          start_binlog=${binlog}
+       fi
+
+    else
+       #SHOW BINLOG EVENTS: Could not find target log  只能从46开始
+       ${merge_fun}_binlog
+    fi
+
+fi
+
+if [ $bin_while = yes ];then
+
+   while true
+   do
+
+      ${merge_fun}_jb mysql-bin.${binlog} e
+      echo 'read binlog:mysql-bin.'$binlog'-------------' #进度条输出
+      ${LC_MYSQL_DIR}bin/mysqlbinlog $remote_argu -f $simple -d$db --stop-datetime=${time} $bin_format ${local_argu}mysql-bin.${binlog} >>$bt_file
+
+      write_log 2 'doing read binlog:mysql-bin.'$binlog
+
+      let binlog=10#$binlog+1
+      binlog=`echo $binlog|awk '{printf("%06d",$0)}'`
+
+      ${merge_fun}_jb mysql-bin.${binlog}
+
+      if test ! $? = 0;then
+         break
+      else
+         start_binlog=${binlog}
+      fi
+
+    done
+
+fi
+
+if [ ! -f $bt_file ];then
+   write_log 0 'binary temporary file not found!'
+   exit 1
+fi
+
+if [ ! -s $bt_file ];then
+    write_log 1 'binary temporary file is empty!'
+    continue
+fi
+
+write_log 2 'binary log file read done'
+
+#备份二进制日志
+write_log 2 "doing back $bt_file to $bt_file_bak"
+cp $bt_file $bt_file_bak 2>&1
+write_log 2 "done back $bt_file to $bt_file_bak"
+
+
+if [ "$BINLOG_FORMAT" = "mixed" ];then
+   . file/format_mixed
+fi
+
+if [ "$BINLOG_FORMAT" = "row" ];then
+    #获取到所有表对应的字段关系的文件,每一行为如下格式：`simba_nala`.`trade`.`eid`
+    write_log 2 "doing select db fields about all table,db:$db"
+    >$dt_field
+
+    ${LC_MYSQL_DIR}bin/mysql $mysql_args -e"show tables from $db\G" |awk -F[:]  '/Tables_in/{print $2}' |sed 's/ //g' >$db_table
+    if [ $? = 0 ];then
+       while read line
+       do
+         str=`${LC_MYSQL_DIR}bin/mysql $mysql_args -e"show columns from $line from $db\G" |grep "Field:"|sed -e 's/ //g' -e 's/^Field://'`
+
+         if [ ! $? = 0 ];then
+            write_log 0 "can not show columns from $line from $db"
+            continue
+         else
+            echo $str|awk -v table=$line '{for(k=1;k<=NF;k++) print table"#"k"="$k}' >>$dt_field
+         fi
+         done <$db_table
+    else
+       write_log 0 'can not select tables from '$db
+       continue
+    fi
+    write_log 2 "done select db fields about all table,db:$db"
+
+    >$bt_file_tmp
+    ${PHP_DIR}bin/php ./file/format_row.php "bt_file=$bt_file&fields=$dt_field&bt_tmp=$bt_file_tmp&db=$db"
+
+    #计算insert\update 成功率
+    let total_insert=`cat $bt_file |grep "INSERT" |wc -l`
+    let succ_insert=`cat $bt_file_tmp |grep "INSERT" |wc -l`
+    printf "time:"`date "+%F"`",format_row insert succ percent:%.2f" `echo "$succ_insert*100/$total_insert"|bc` >>$statis
+
+    let total_insert=`cat $bt_file |grep "UPDATE" |wc -l`
+    let succ_insert=`cat $bt_file_tmp |grep "UPDATE" |wc -l`
+    printf "time:"`date "+%F"`",format_row update succ percent:%.2f" `echo "$succ_insert*100/$total_insert"|bc` >>$statis
+
+    if [ ! -s $bt_file_tmp ];then
+       write_log 1 "bt_file_tmp is empty db:$db,please check php file is realy exec"
+       continue
+    fi
+
+    mv $bt_file_tmp $bt_file
+    . file/format_mixed
+fi

@@ -1,0 +1,61 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+#local mysql info
+LC_MYSQL_DIR=
+LC_MYSQL_HOST=localhost
+LC_MYSQL_USER=
+LC_MYSQL_PASS=
+LC_MYSQL_PORT=3306
+
+#remote mysql info
+RE_MYSQL_DIR=
+RE_MYSQL_HOST=
+RE_MYSQL_USER=
+RE_MYSQL_PASS=
+RE_MYSQL_PORT=3306
+
+#MDMerge log
+LOG_PATH=log/MDMerge.log
+
+#tmp data dir
+DATA_DIR=data/
+
+#merge type
+MERGE_TYPE=RL
+
+#mysql binlog format
+BINLOG_FORMAT=mixed
+
+#php info
+PHP_DIR=
+
+#expect info
+EXPECT=no
+EXP_IP=
+EXP_DIR=
+EXP_USER=
+EXP_PASS=
+EXP_PORT=22
+
+EXP_MYSQL_DIR=
+EXP_MYSQL_HOST=localhost
+EXP_MYSQL_USER=
+EXP_MYSQL_PASS=
+EXP_MYSQL_PORT=3306
+
+#dbname
+DB_NAME=
+
+#default merge table is all
+ALL_TABLE=yes
+
+#include tables
+IN_TABLE=
+
+#exclude tables
+EX_TABLE=
+
+
+
+

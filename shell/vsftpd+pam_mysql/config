@@ -1,0 +1,114 @@
+#[anonymous]
+#login name:ftp or anonymous, login passwd:empty,  ftp dir:/var/ftp
+
+anonymous_enable=NO
+no_anon_password=YES
+
+ftp_username=ftp
+anon_root=/var/ftp
+
+anon_upload_enable=NO
+anon_world_readable_only=YES
+anon_mkdir_write_enable=NO
+anon_other_write_enable=NO
+
+anon_max_rate=0
+
+#chown_uploads=YES/NO
+#chown_username=username
+#anon_umask=077
+#deny_email_enable=YES/NO
+#banned_email_file=/etc/vsftpd/banner_emails
+
+#[local]
+#login name:local user, login passwd:local passwd, ftp dir:local path, exclude user in:/etc/vsftpd.ftpusers
+
+local_enable=YES
+local_root=/home/virtual
+
+local_umask=077
+file_open_mode=0755
+
+local_max_rate=0
+
+#chroot_list_enable=YES，chroot_local_user=YES:vsftpd.chroot_list is allow
+#chroot_list_enable=YES，chroot_local_user=NO:vsftpd.chroot_list is deny
+#chroot_list_enable=NO，chroot_local_user=YES:all deny
+#chroot_list_enable=NO，chroot_local_user=NO:all allow
+chroot_list_enable=NO
+#chroot_list_file=/etc/vsftpd/chroot_list
+chroot_local_user=NO
+allow_writeable_chroot=YES
+#[welcome message]
+#message type:file or string
+
+#dirmessage_enable=YES
+#message_file=.message
+#banner_file=/etc/vsftpd/banner
+
+ftpd_banner=Welcome to NALA's FTP server
+
+#[other]
+text_userdb_names=NO
+ls_recurse_enable=NO
+hide_ids=NO
+download_enable=YES
+
+
+#[globle]
+#all config is about this globle config
+write_enable=NO
+
+#[transfer mode]
+#image or exec file:BINARY,CGI file or HTML file:ASCII
+
+#ascii_upload_enable=NO
+#ascii_download_enable=NO
+
+#[access control]
+#type:host control(hosts.allow) ,user control  ftpusers level is gt vsftpd.user_list
+
+tcp_wrappers=YES
+
+userlist_enable=YES
+userlist_file=/etc/vsftpd/user_list
+userlist_deny=YES
+
+
+#[timeout]
+accept_timeout=60
+connect_timeout=60
+data_connection_timeout=120
+idle_session_timeout=300
+
+#[logfile]
+xferlog_enable=YES
+xferlog_file=/var/log/vsftpd.log
+xferlog_std_format=NO
+log_ftp_protocol=YES
+
+#[ftp work type and work port]
+#work type:PORT FTP and PASV FTP
+
+listen_port=12366
+#connect_from_port_20=YES
+#ftp_data_port=20
+
+pasv_enable=YES
+pasv_max_port=55000
+pasv_min_port=53000
+
+#[connect]
+listen=YES
+max_clients=100
+max_per_ip=10
+
+#listen_address=IP
+#setproctitle_enable=NO
+
+#[pam user]           #########定义虚拟用户
+guest_enable=YES
+pam_service_name=vsftpd
+guest_username=virtual
+virtual_use_local_privs=NO
+user_config_dir=/etc/vsftpd/userconf

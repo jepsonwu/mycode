@@ -1,0 +1,340 @@
+#!/bin/sh
+#auth wujp
+#kickstart nginx+mysql+php
+#初级版本  后期做判断，安装错误终止程序
+
+#判断为root用户
+if [ ! "$USER" == "root" ];then
+   echo "sorry,sir.The current user must be a root" && exit 1
+fi
+
+#安装路径
+prefix=/app/
+
+if [ -z "$prefix" ];then
+   echo "sorry,sir.please specify the installation path.
+   Edit the current file,Add a path in \"prefix=\" line.
+   It is best not to specify a user directory.
+   if yes, please create a user" && exit 1
+fi
+
+mkdir -pv $prefix
+
+#关闭服务
+echo "Close some redundant services......................."
+
+/etc/init.d/iptables stop
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/sysconfig/selinux
+
+chkconfig iptables off
+chkconfig ip6tables off
+chkconfig postfix off
+
+echo "done....................................."
+sleep 3
+
+#基础安装
+echo "install the dependent packages..................................."
+
+cd /
+mkdir -pv app
+cd app/
+
+yum -y install gcc gcc-c++ cmake make vim wget tar
+yum -y install sysstat bzip2  bzip2-devel openssh-clients curl curl-devel zlibc libxml2-devel libstdc++-devel glibc \
+glibc-devel libevent libevent-devel  ntpdate
+yum -y install ncurses ncurses-devel bison
+yum -y install libjpeg-turbo libjpeg-turbo-devel libpng libpng-devel freetype-devel freetype
+
+
+#添加FTP源
+#echo "192.168.121.244 nala.down.com:8044" >>/etc/hosts
+
+#安装依赖包
+wget -nc http://nala.down.com:8044/pcre-8.20.tar.gz
+wget -nc http://nala.down.com:8044/libiconv-1.14.tar.gz
+wget -nc http://nala.down.com:8044/mhash-0.9.9.9.tar.gz
+wget -nc http://nala.down.com:8044/libmcrypt-2.5.8.tar.gz
+wget -nc http://nala.down.com:8044/mcrypt-2.6.8.tar.gz
+
+tar zxvf pcre-8.20.tar.gz
+cd pcre-8.20
+./configure && make && make install
+cd ../
+
+tar zxvf libiconv-1.14.tar.gz
+cd libiconv-1.14
+./configure && make && make install
+cd ../
+
+tar zxvf mhash-0.9.9.9.tar.gz
+cd mhash-0.9.9.9
+./configure && make && make install
+cd ../
+
+tar zxvf libmcrypt-2.5.8.tar.gz
+cd libmcrypt-2.5.8
+./configure && make && make install
+cd ../
+
+export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
+/sbin/ldconfig
+
+#这里如果安装失败会导致mysql安装失败
+tar zxvf mcrypt-2.6.8.tar.gz
+cd mcrypt-2.6.8
+./configure
+
+if [ $? == 1 ];then
+   echo "mcrypt install faild..............." && exit 1
+fi
+
+make && make install
+cd ../
+
+rm -rf *.tar.gz
+
+echo 'done.........................................'
+sleep 3
+
+/usr/sbin/ntpdate asia.pool.ntp.org >> /var/log/ntpdate.log
+echo "*/5 * * * *  /usr/sbin/ntpdate asia.pool.ntp.org >> /var/log/ntpdate.log" >>/var/spool/cron/root
+
+
+#安装mysql
+echo "install mysql......................................"
+rm -rf ${prefix}mysql5/
+
+wget -nc http://nala.down.com:8044/mysql-5.5.27.tar.gz
+tar zxvf mysql-5.5.27.tar.gz
+cd mysql-5.5.27
+
+groupadd mysql
+useradd -g mysql mysql
+
+cmake -DCMAKE_INSTALL_PREFIX=${prefix}mysql5 -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_unicode_ci -DMYSQL_DATADIR=${prefix}mysql5/data \
+-DWITH_INNOBASE_STORAGE_ENGINE=1 -DENABLED_LOCAL_INFILE=1   -DSYSCONFDIR=/etc  -DWITH_READLINE=on
+make install
+
+chmod +w ${prefix}mysql5
+chown -R mysql:mysql ${prefix}mysql5
+
+cp ${prefix}mysql5/support-files/my-innodb-heavy-4G.cnf /etc/my.cnf
+${prefix}mysql5/scripts/mysql_install_db --user=mysql --basedir=${prefix}mysql5 --datadir=${prefix}mysql5/data
+
+cp -f support-files/mysql.server /etc/init.d/mysqld
+chmod +x /etc/init.d/mysqld
+chkconfig mysqld on
+
+/etc/init.d/mysqld start
+${prefix}mysql5/bin/mysqladmin -u root password 'admin'
+ln -s ${prefix}mysql5/bin/mysql /usr/bin
+cd ../
+
+echo 'done.......................................................'
+sleep 3
+
+
+#安装php
+echo "install php................................................."
+
+wget -nc http://nala.down.com:8044/php-5.4.34.tar.gz
+tar zxvf php-5.4.29.tar.gz
+
+groupadd www
+useradd -g www www
+
+cd php-5.4.29
+./configure --prefix=${prefix}php5 --with-config-file-path=${prefix}php5/etc --with-mysql=${prefix}mysql5 --with-mysqli=mysqlnd \
+--with-iconv-dir=/usr/local --with-zlib --with-libxml-dir=/usr --enable-xml  --enable-bcmath --enable-shmop --enable-sysvsem \
+--enable-inline-optimization --with-curl --with-curlwrappers \
+--enable-mbregex --enable-fpm --enable-mbstring --with-mcrypt --enable-gd-native-ttf --with-mhash --enable-pcntl \
+--enable-sockets --with-xmlrpc --enable-zip --enable-soap --with-pdo-mysql=mysqlnd  \
+--enable-mysqlnd --with-gettext \
+--with-jpeg-dir --with-png-dir  --with-freetype-dir  --with-gd
+
+make ZEND_EXTRA_LIBS='-liconv'
+make install
+
+cp php.ini-production ${prefix}php5/etc/php.ini
+
+#sed -i 's/; extension_dir = ".\/"/extension_dir = "${prefix}php5/lib/php/extensions/no-debug-non-zts-20100525"/' ${prefix}php5/etc/php.ini
+#dev modle need to start display_error
+sed -i 's/memory_limit = 128M/memory_limit = 512M/' ${prefix}php5/etc/php.ini
+sed -i 's/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/' ${prefix}php5/etc/php.ini
+sed -i 's/;date.timezone =/date.timezone =PRC/' ${prefix}php5/etc/php.ini
+
+
+cp ${prefix}php5/etc/php-fpm.conf.default ${prefix}php5/etc/php-fpm.conf
+
+sed -i 's/;pid = run\/php-fpm.pid/pid = run\/php-fpm.pid/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/;error_log = log\/php-fpm.log/error_log = log\/php-fpm.log/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/;log_level = notice/log_level = notice/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/user = nobody/user = www/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/group = nobody/group = www/' ${prefix}php5/etc/php-fpm.conf
+
+sed -i 's/pm.max_children = 5/pm.max_children = 100/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/pm.start_servers = 2/pm.start_servers = 10/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/pm.min_spare_servers = 1/pm.min_spare_servers = 10/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/pm.max_spare_servers = 3/pm.max_spare_servers = 15/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/;request_slowlog_timeout = 0/request_slowlog_timeout = 5/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 30/' ${prefix}php5/etc/php-fpm.conf
+sed -i 's/;slowlog = log\/$pool.log.slow/slowlog = var\/log\/$pool.log.slow/' ${prefix}php5/etc/php-fpm.conf
+
+
+cp -f sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+chmod +x /etc/init.d/php-fpm
+chkconfig php-fpm on
+ln -s ${prefix}php5/bin/php /usr/bin/
+/etc/init.d/php-fpm start
+cd ../
+
+echo 'done...............................................'
+sleep 3
+
+echo "install xdebug....................................."
+
+wget http://nala.down.com:8044/xdebug-2.2.5.tgz
+tar zxvf xdebug-2.2.5.tgz
+cd xdebug-2.2.5
+
+${prefix}php5/bin/phpize
+./configure --enable-xdebug --with-php-config=${prefix}php5/bin/php-config
+make && make install
+echo "zend_extension=${prefix}php5/lib/php/extensions/no-debug-non-zts-20100525/xdebug.so" >>${prefix}php5/etc/php.ini
+cd ../
+/etc/init.d/php-fpm restart
+
+
+rm -rf libiconv-1.14/ mcrypt-2.6.8/ package.xml libmcrypt-2.5.8/ mhash-0.9.9.9/ xdebug-2.2.5.tgz xdebug-2.2.5
+rm -rf *.tar.gz
+
+echo 'done.....................................................'
+sleep 3
+
+#安装nginx
+echo "install nginx............................................"
+
+wget -nc http://nala.down.com:8044/nginx-1.7.6.tar.gz
+wget -nc http://nala.down.com:8044/nginx_concat_module.tar.gz
+
+tar zxvf nginx-1.7.6.tar.gz
+tar zxvf nginx_concat_module.tar.gz
+
+cd nginx-1.7.6
+./configure --user=www --group=www --prefix=${prefix}nginx --with-http_stub_status_module --with-pcre=../pcre-8.20 --add-module=../nginx_concat_module/
+make
+make install
+
+
+echo '#!/bin/sh
+# chkconfig: 345 85 15
+#describe:nginxd sh
+#author:wujp
+
+. /etc/init.d/functions
+
+. /etc/sysconfig/network
+
+[ $NETWORKING == "no" ] && echo "NETWORKING IS NO" && exit 0
+
+#path init
+nginxdir='${prefix}'nginx
+nginxd=$nginxdir/sbin/nginx
+nginxconf=$nginxdir/conf/nginx.conf
+nginxpid=$nginxdir/logs/nginx.pid
+
+#return init
+RETVAL=0
+prog="nginx"
+
+
+check_nginx(){
+    if [ -e $nginxfid ];then
+       ps -ef |grep -v grep |grep nginx:
+
+       if [ $? == 0 ];then
+          echo "$prog already runing"
+          return 0
+       else
+         rm -rf $nginxpid &>/dev/null
+       fi
+    fi
+
+    return 1
+}
+
+start(){
+   check_nginx
+
+   if [ ! $? == 0 ];then
+     echo "starting $prog"
+     daemon $nginxd -c $nginxconf
+     RETVAL=$?
+   fi
+
+}
+
+stop(){
+   echo "stoping $prog"
+   killproc $nginxd
+   RETVAL=$?
+   [ $RETVAL == 0 ] && rm -rf $nginxpid
+}
+
+
+reload(){
+  echo "reload $prog:"
+  $nginxd -s reload
+  RETVAL=$?
+}
+
+monitor(){
+   status $prog & >/dev/null
+   RETVAL=$?
+}
+
+#start
+case "$1" in
+   start)
+       start
+       ;;
+   stop)
+       stop
+       ;;
+   restart)
+       stop
+       start
+       ;;
+   reload)
+       reload
+       ;;
+   status)
+       status $prog
+       RETVAL=$?
+       ;;
+   monitor)
+       monitor
+       ;;
+   *)
+       echo "Usage:$0 {start|stop|restart|reload|status|monitor}"
+       RETVAL=1
+esac
+
+exit $RETVAL' >/etc/init.d/nginxd
+
+
+chmod +x /etc/init.d/nginxd
+chkconfig nginxd on
+ln -s ${prefix}nginx/sbin/nginx /usr/bin/
+
+/etc/init.d/nginxd start
+
+cd ../
+
+rm -rf *.tar.gz
+rm -rf pcre-8.20/ nginx_concat_module/
+
+echo "done............................................................"
+sleep 3

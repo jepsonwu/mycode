@@ -1,0 +1,1 @@
+cat /var/log/secure |awk -F' ' '/Failed/{print $(NF-3)}'|sort |uniq -c |sort -rn

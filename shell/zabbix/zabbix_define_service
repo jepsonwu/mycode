@@ -1,0 +1,21 @@
+#!/bin/sh
+#Copyright wujp
+#define_service simba|ftp|  other
+
+if [ $# = 0 ];then
+    echo "sorry,sir.arguement is not found:"
+fi
+
+case $1 in
+   simba)
+       curl "http://nala.wms.simbaerp.cn:2055" >/dev/null 2>&1
+       if [ $? = 0 ];then
+          echo 1
+       else
+          echo 0
+       fi
+   ;;
+   ftp)
+   echo "a"
+   ;;
+esac

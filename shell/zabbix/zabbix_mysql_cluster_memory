@@ -1,0 +1,36 @@
+#!/bin/sh
+#auth wujp
+#mysql cluster ndbd data|index memory usage status
+if [ $# = 0 ];then
+    echo "sorry,sir.arguement is not found:"
+    exit 1
+fi
+
+mgmd_path=/app/mysql-cluster-7.3/bin/ndb_mgm
+
+case $1 in
+	total_data)
+        result=`$mgmd_path -e "all report memory"|head -n3 |grep -v "Connected"|grep "Data"|awk -F"[ |(|)]" '{print $(NF-1)}'`
+	result=`echo "$result*32*1024"|bc`
+        echo $result
+	;;
+	free_data)
+        result=`$mgmd_path -e "all report memory"|head -n3 |grep -v "Connected"|grep "Data"|awk -F"[ |(|)]" '{print $(NF-1)-$(NF-6)}'`
+        result=`echo "$result*32*1024"|bc`
+        echo $result
+	;;
+	total_index)
+	result=`$mgmd_path -e "all report memory"|head -n3 |grep -v "Connected"|grep "Index"|awk -F"[ |(|)]" '{print $(NF-1)}'`
+        result=`echo "$result*8*1024"|bc`
+        echo $result
+	;;
+	free_index)
+	result=`$mgmd_path -e "all report memory"|head -n3 |grep -v "Connected"|grep "Index"|awk -F"[ |(|)]" '{print $(NF-1)-$(NF-6)}'`
+        result=`echo "$result*8*1024"|bc`
+        echo $result
+	;;
+	*)
+	echo "Usage:$0(total_data|free_data|total_index|free_index)"
+	;;
+
+esac

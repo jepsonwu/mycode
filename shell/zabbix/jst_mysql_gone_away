@@ -1,0 +1,5 @@
+#!/bin/sh
+#auth wujp
+#mysql gone away count percent minute
+
+mysqlfile=/data0/simba/data/log/1/mysql.log

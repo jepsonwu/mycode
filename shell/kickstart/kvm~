@@ -1,0 +1,132 @@
+#!/bin/sh
+#auth wujp
+#kvm kickstart
+
+
+#变量设置
+ip=
+gateway=
+lvm_disk=
+
+variables=(ip gateway lvm_disk)
+for v in ${variables[*]}
+do
+   if [ -z "${!v}" ];then
+      echo "$v is not found" && exit 1
+   fi
+done
+
+
+#判断为root用户
+if [ ! "$USER" == "root" ];then
+   echo "sorry,sir.The current user must be a root" && exit 1
+fi
+
+#基础
+echo "start install basic package........................."
+sleep 2
+
+mkdir -pv /app/{kvm,iso}
+
+yum -y update
+yum -y install gcc gcc-c++ make vim wget tar
+yum -y install sysstat openssh-clients ntpdate bc
+
+yum -y install kvm qemu-kvm bridge-utils tunctl tigervnc tigervnc-server libvirt virt-manager lvm2 bc
+ln -s /usr/libexec/qemu-kvm /usr/bin/
+
+echo "basic package install true............................."
+sleep 2
+
+#关闭不需要的服务
+echo "shutdown some services which Unnecessary............................."
+sleep 2
+
+/etc/init.d/iptables stop
+chkconfig iptables off
+chkconfig ip6tables off
+chkconfig postfix off
+
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/sysconfig/selinux
+
+echo "shutdown services true............................."
+sleep 2
+
+#网桥配置
+echo "config bridge for network............................."
+sleep 2
+
+cd /etc/sysconfig/network-scripts/
+mv ifcfg-eth0 ifcfg-eth0_bak
+
+echo "DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+BRIDGR=br0" >ifcfg-eth0
+
+sed -i 's/^ONBOOT=.*/ONBOOT=no/' ifcfg-eth0_bak
+
+echo "DEVICE=br0
+TYPE=Bridge
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR=${ip}
+GATEWAY=${gateway}
+NETMASK=255.255.255.0" >ifcfg-br0
+
+/etc/init.d/network restart
+brctl addif br0 eth0
+echo "brctl addif br0 eth0" >>/etc/rc.local
+
+echo "config bridge true............................."
+sleep 2
+
+#启动 libvirtd
+echo "add some services and some epel............................."
+sleep 2
+
+libvirtd -d
+echo "libvirtd -d" >>/etc/rc.local
+
+#crontab
+echo "#同步时间
+*/5 * * * *  /usr/sbin/ntpdate asia.pool.ntp.org >> /var/log/ntpdate.log" >>/var/spool/cron/root
+
+#添加软件源
+echo "192.168.121.244 nala.down.com"  >>/etc/hosts
+wget -nc -P /app/iso/ http://nala.down.com/CentOS-6.5-x86_64-minimal.iso
+
+echo "add true............................."
+sleep 2
+
+#lv创建
+echo "create lv............................."
+sleep 2
+
+pvcreate $lvm_disk
+vgcreate VGroup00 $lvm_disk
+
+lvcreate -L 10G -n lv00 VGroup00
+mkfs.ext4 /dev/VGroup00/lv00
+
+#创建后置镜像
+#--autostart
+echo "create first img............................."
+sleep 2
+
+qemu-img create -f qcow2 /app/kvm/centos.img 10G
+virt-install -n centos -r 2048 --vcpus 2,sockets=1,cores=1,threads=2 --cdrom=/app/iso/CentOS-6.5-x86_64-minimal.iso \
+--os-type=linux --graphics vnc,listen=0.0.0.0,password=shadan,port=5900 --hvm \
+--disk path=/app/kvm/centos.img,size=10,bus=virtio,format=qcow2 --disk path=/dev/VGroup00/lv00,bus=virtio,format=raw \
+--network bridge=br0,model=virtio --accelerate
+
+echo "create first img true,please used vnc client to install centos OS,password is 'shadan'............................."
+
+
+
+
+
+
+
+

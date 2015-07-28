@@ -1,0 +1,390 @@
+#!/bin/bash
+#describe:自动检测user表，如果有关于user表的操作，则更新配置文件
+#vsftpd+pam_mysql+shell
+#这里用bash 版本>4.0 因为使用到了定义关联数组
+#author:wujp wujp@nalashop.com
+#支持：插入更新|修改一条或多条更新|暂不支持删除操作，删除操作已状态判断
+#更新内容：路径|名称|权限|ip限制
+#版本：1.0.1
+
+#vsftpd
+VSFTPDPATH='/usr/local/sbin/vsftpd'
+FTPCONFPATH='/etc/vsftpd/userconf/'
+FTPFILEPATH='/home/virtual/'
+
+#mysql
+MYSQLPATH='/app/mysql5/'
+MYSQLDB='ftp'
+MYSQLUSER='vsftpd'
+MYSQLPASS='nalanala'
+
+#监控的表分割符
+TABLE='user'
+declare -A FIELDS #定义关联数组
+FIELDS=([user_k]=username [permiss_k]=permiss [status_k]=status [allow_ip_k]=allow_ip)
+SEP='|'
+RE_SEP=','
+
+#配置文件模板
+TEMPLTE="
+local_root={root}\n
+write_enable=YES\n
+anon_upload_enable=YES\n
+anon_world_readable_only=NO\n
+anon_mkdir_write_enable=YES\n
+anon_other_write_enable=YES\n
+cmds_allowed={cmd}\n"
+
+#用户目录权限
+USER='virtual'
+GROUP='users'
+MODE='700'
+
+#创建日志目录
+LOGPATH='/data0/logs/'
+if [ ! -d $LOGPATH ];then
+   mkdir -pv $LOGPATH >/dev/null
+fi
+LOGFILE=$LOGPATH'pam_mysql.log'
+CONF_TMP=$LOGPATH'tmpconf'
+
+MONITOR_TIME=''
+
+#允许传参数
+if(($#>0));then
+    case $1 in
+      -v)
+      echo "ftpm version:ftpm/1.0.1"
+      exit
+      ;;
+      -h)
+      echo -e "---------------------welcome----------------------------!\n
+    First of all, the file is used for monitoring Table of VSFTPD
+configuration file. This file can be monitored Table insert, update, but
+does not support Table delete operation.
+    Then, update the configuration contains The following contents:
+the configuration file name, the user local path ,the user Permissions,
+the user was allowed to IP.
+    An IP can only corresponding to a user, but a user can correspond to
+multiple IP
+    At last. Welcome to provide more, thank you!
+
+   -v version
+   -h help
+   -c Clear the cache file, such as:configuration temporary file
+   How long does it take from the recent monitoring :
+   -M  minutes
+   -H  hours
+   -d  day
+   -w  week
+   -m  month
+   -y  years
+"
+      exit
+      ;;
+      -c) #清除临时文件
+      if [ -f $CONF_TMP ];then
+          rm -rf $CONF_TMP >/dev/null
+      fi
+      exit
+      ;;
+      *)
+      declare -A time_type
+      time_type=([-M]=minutes [-H]=hours [-d]=day [-w]=week [-m]=month [-y]=years)
+
+      #判断是否存在于数组中
+      echo ${!time_type[*]} |sed 's/-//g' |grep `echo $1|sed 's/-//'` >/dev/null
+      if [ ! $? == 0 ];then
+         echo "sorry,sir.can't found the argument,please '-h' operation"
+         exit
+      fi
+
+      #判断是否是数字
+      echo $2|grep -e'^[0-9]\+$' >/dev/null
+      
+      if(($?==0));then
+          MONITOR_TIME='-'$2' '${time_type[$1]}
+      else
+         echo "sorry,sir.please specify the argument"
+         exit
+      fi
+      ;;
+    esac
+fi
+if [ -z "$MONITOR_TIME" ];then
+  MONITOR_TIME='-1 minutes'
+fi
+
+if [ ! -f $CONF_TMP ];then
+   echo -e $TEMPLTE >$CONF_TMP
+fi
+
+#日志方法,type:error|waring|  string:error string
+write_log(){
+   declare -A error_type
+   error_type['e']='ERROR'
+   error_type['w']='WARING'
+   error_type['t']='TRUE'
+   
+   now=$(date "+%F %H:%M:%S")
+
+   echo $2
+   echo $now"   "${error_type[$1]}":"$2 >>$LOGFILE
+}
+
+#binlog临时文件
+BINLOGTMP=$LOGPATH'binlog_tmpfile'
+
+#间隔时间 采用inotify 监听文件
+#INTVAL_TIME='30'
+
+
+#权限过滤，过滤非法权限  cmds
+#必须：PASS,QUIT,USER,REIN,PASV,TYPE，HELP
+#不允许：ABOR PORT SITE ACCT STAT STOU STRU SYST NOOP MODE
+#1.显示目录：LIST|CWD|PWD 同时选   MDTM，NLST SIZE，CDUP  好像没什么用
+#2.重命名：RNTO|RNFR 同时选
+#2.下载：RETR
+#2.上传：STOR
+#2.追加：APPE  好像没什么用
+#2.删除文件：DELE
+#3.删除目录：RMD
+#3.新建目录：MKD
+
+
+ALLOW_PERMISS='PASS,QUIT,USER,REIN,PASV,TYPE' #TYPE也必须默认
+DENY_PERMISS=(ABOR PORT SITE ACCT HELP STAT STOU STRU SYST MODE)
+#shell 函数只能返回数字，输出值和赋值变量用来返回其它类型值
+permiss_filter(){
+    local res=$1
+    for per in ${DENY_PERMISS[*]}
+    do
+       res=$(echo $res |sed "s/$per,//g"|sed "s/,$per//g")
+    done
+
+    echo $res
+}
+
+#生成和修改配置文件 username cmds
+write_conf(){
+   file=$FTPCONFPATH$1
+
+   if [ -f $file ];then
+     rm -rf $file >/dev/null
+      write_log 't' 'delete conf file '$1
+   fi
+
+   #sed中使用变量请使用"" 或者 '"$var"'
+   
+   cmd_all=$(echo $2|sed "s/$SEP/$RE_SEP/g")
+   cmd_all=$(echo $ALLOW_PERMISS$RE_SEP$cmd_all |sed "s/$RE_SEP$//")
+   cmd_all=$(permiss_filter $cmd_all)
+   
+   path_file=$FTPFILEPATH$1
+   sed "s#{root}#$path_file#" $CONF_TMP |sed "s/{cmd}/$cmd_all/" >$file  #这里file含有特殊字符:"/" ,可以更改sed分割符为“#”予以区分
+   
+   if(($?==0));then
+      write_log 't' 'conf file '$1' is write true'
+   else
+      write_log 'e' 'conf file '$1' is write false!'
+   fi
+   
+   if [ ! -f $path_file ];then
+      mkdir -pv $path_file >/dev/null
+      write_log 't' 'user local path '$file' is make true'
+   fi
+   
+   chmod $MODE $path_file
+   if(($?==0));then
+      write_log 't' 'conf file '$1' is change mode true'
+   else
+      write_log 'e' 'conf file '$1' is change mode false!'
+   fi
+
+   chown -R $USER.$GROUP $path_file
+   if(($?==0));then
+       write_log 't' 'conf file '$1' is change user true'
+   else
+       write_log 'e' 'conf file '$1' is change user false!'
+   fi
+}
+
+#ip写入方法
+write_ip(){
+    if [ ! -z $1 ];then
+       sed "/$1/d" /etc/hosts.allow |sed "/$2/d"  >${LOGPATH}allow_tmp #删除ip和名称对应的行
+       
+       mv -f ${LOGPATH}allow_tmp /etc/hosts.allow >/dev/null
+
+       write_log 't' 'conf file '$1' allow_ip is delete true'
+
+       echo "vsftpd:"$2":setenv VSFTPD_LOAD_CONF "$FTPCONFPATH$1 >> /etc/hosts.allow 
+
+       write_log 't' 'conf file '$1' allow_ip is change true'
+    fi
+}
+
+   #是否重启vsftpd
+   #RESTART=1 下面的while循环无法更改这个变量，每次都重启
+   
+   #每次只读五分中前的记录
+   TIME=$(date -d "$MONITOR_TIME" "+%F^%H:%M:%S") #这里中间用^不然就没用，不能用空格
+   
+   #得到最近的binlog
+   num=$(ls $MYSQLPATH'data'/|grep -v "mysql-bin.index" |grep "mysql-bin.*"|awk -F[.] '{print $2}'|sort -rn |head -1)
+   
+   if(($?==0));then
+      BINLOG=$MYSQLPATH"data/mysql-bin."$num
+      write_log 't' 'binlog is '$BINLOG
+   else
+      write_log 'e' 'binlog is not found!'
+      continue
+   fi
+   
+   #得到符合要求的binlog
+   if [ ! -z $BINLOG ];then
+        ${MYSQLPATH}bin/mysqlbinlog -d${MYSQLDB} -f -s --start-datetime=$TIME $BINLOG >$BINLOGTMP #这里的写法一定要注意，就这么简单，不要搞什么单引号，双引号
+   fi
+   
+   #处理binlog
+   if [ -f $BINLOGTMP ];then
+      cat $BINLOGTMP |while read line   #read 还有很多高级用法，获取终端输入
+      do 
+         RESTART=1
+         #得到插入数据  INSERT INTO user (username, passwd) VALUES (test, nala)
+         line=$(echo $line|sed 's/\/\*.*\*\///g' |sed "s/[\/|\!|\*|;|\(|\)]//g")
+         
+         ins_line=$(echo $line |sed "s/[\'|\`]//g")
+         echo $ins_line |grep "INSERT INTO "$TABLE >/dev/null  #INSERT IGNORE INTO 
+         
+         if(($?==0));then
+             let RESTART+=1  #这里不能用$RESTART赋值
+             
+             #获取键和值数组 eval的用法 把field['']=''直接显现为命令行上看到的字符
+             eval $(echo $ins_line |sed "s/^INSERT INTO $TABLE//" |sed 's/VALUES.*//'|sed 's/ //g'|awk -F[,] '{for(k=1;k<=NF;k++) print "field["k"]="$k}')
+             eval $(echo $ins_line |sed 's/^.*VALUES//' |sed 's/ //g'|awk -F[,] '{for(k=1;k<=NF;k++) print "value["k"]="$k}')
+             
+             #获取名称和权限
+             for key in ${!field[*]}
+             do
+                  #获取用户名
+                  if [ ${field[$key]} == ${FIELDS['user_k']} ];then #只能用[]这种方式 不能用(()) 如果变量有可能为空，可以这样比较 if [ "$a"x == "$b"x ]
+                      username=${value[$key]}
+                  fi
+
+                  #获取权限  权限判断，过滤非法权限
+                  if [ ${field[$key]} == ${FIELDS['permiss_k']} ];then #这里不能写成else if 只能写成elif
+                      cmds=$(echo ${value[$key]})
+                  fi
+
+                  #获取status
+                  if [ ${field[$key]} == ${FIELDS['status_k']} ] && [ ${value[$key]} != 'ONLINE' ];then
+                     if [ -f $FTPCONFPATH$username ];then
+                        rm -rf $FTPCONFPATH$username >/dev/null
+                        write_log 't' 'delete not online conf file '$FTPCONFPATH$username' of insert'
+                     fi
+
+                     username=''
+                  fi
+
+                  #获取allow_ip  可以加上检查 /etc/hosts.deny 是否只包涵  vsftpd:ALL
+                  if [ ${field[$key]} == ${FIELDS['allow_ip_k']} ];then
+                      #echo 'write_ip'                     
+                      write_ip $username ${value[$key]}
+                  fi
+             done
+             
+             #生成配置文件更改权限和用户组信息
+             if [ ! -z $username ];then
+                #echo 'write conf'
+                write_conf $username $cmds
+             fi
+         fi
+         
+         #得到修改数据  UPDATE user SET passwd=nala WHERE id=1 直接取where条件
+         echo $ins_line |grep "UPDATE "$TABLE" SET" >/dev/null
+         if(($?==0));then
+             let RESTART+=1
+             ID=$(echo $line |sed 's/.*WHERE //')
+             
+             #考虑值有空的情况
+             str=''
+             for val in ${FIELDS[*]}
+             do
+                str=$str'IF(CHAR_LENGTH('$val')=0 OR ISNULL('$val'),"NULL",'$val') AS '$val','
+             done
+             ID='SELECT '$(echo $str|sed 's/,$//')' FROM '$TABLE' WHERE '$ID'\G'
+             
+             #获取数据
+             res=$(${MYSQLPATH}bin/mysql -u${MYSQLUSER} -p${MYSQLPASS}  -D${MYSQLDB}  -e "$ID"|grep -v \*)  #$()|$(())|``|${} 使用方法和区别 里面直接带双引号
+             res=$(echo $res|sed 's/ /:/g'|sed 's/::/:/g'|sed "s/[\'$SEP']/$RE_SEP/g")  #处理一下空格
+             
+             #这里有一点很坑，权限包涵“|”字符，在eval里面它是管道 
+             eval $(echo $res | awk -F[:] '{for (k=1;k<=NF;k++) print "upd_arr["k"]="$k}')  #可以直接使用awk编程，很复杂
+             
+             #循环
+             for((k=1;k<=${#upd_arr[*]};k=k+2))
+             do
+                let val=$k+1                
+                
+                for key in ${!FIELDS[*]}
+                do
+                   if [ "${upd_arr[$k]}" == "${FIELDS[$key]}" ];then
+                      eval $key=${upd_arr[$val]} #eval 动态变量赋值
+                   fi
+                done
+                
+                if [ `expr $val % $(expr ${#FIELDS[*]} \* 2)` == 0 ] && [ $user_k != 'NULL' ];then
+                   file=$FTPCONFPATH$user_k
+                   if [ "$status_k" != 'ONLINE' ] && [ -f $file ];then #这里比较字符串，前面的变量要加双引号
+                      rm -rf $file >/dev/null
+                      write_log 't' 'delete conf file '$file' true'
+                   fi
+
+                   if [ "$permiss_k" == 'NULL' ];then
+                      permiss_k=''
+                   fi
+
+                   #生成配置文件更改权限和用户组信息
+                   if [ "$status_k" == 'ONLINE' ];then
+                      #echo 'write conf'
+                      write_conf $user_k $permiss_k
+                   fi
+
+                   #权限不存在，不做处理
+                   if [ "$allow_ip_k" != 'NULL' ];then
+                     write_ip $user_k $allow_ip_k
+                     #echo 'write_ip'
+                   fi
+                fi
+             done
+
+         fi
+
+         #得到删除数据  DELETE FROM user WHERE id=2  
+         #echo $line |grep "DELETE FROM "$TABLE >/dev/null   #todo 可不可以直接匹配到id
+         #if(($?==0));then
+          #   RESTART=0
+           #  ID=$(echo $line |sed "s/DELETE FROM $TABLE WHERE //" |awk -F[=] '{print $2}')
+            # username=$($MYSQLPATH'bin'/mysql -u$MYSQLUSER -p$MYSQLPASS -D$MYSQLDB -e 'SELECT '${FIELDS['user_k']}' FROM '$TABLE' WHERE id='$ID'\G')
+             
+             #file=$FTPCONFPATH$username
+             #if [ -f $file ];then
+                #rm -rf $file >/dev/null
+              #  if(($?==0));then
+               #     write_log 't' 'delete conf file '$file' is true'
+                #else
+                 #   write_log 'e' 'delete conf file '$file' is false!'
+                #fi
+             #fi
+         #fi
+      done
+     #这里双重循环，exit 只会推出一重  不太理解什么情况
+     rm -rf $BINLOGTMP >/dev/null
+     
+     #重启
+     killall vsftpd >/dev/null
+     $VSFTPDPATH &
+
+     write_log 't' 'restart vsftpd is true'
+   fi

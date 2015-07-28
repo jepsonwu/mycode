@@ -1,0 +1,38 @@
+#!/bin/sh
+#auth wujp
+#vmstat bi bo io
+
+if [ $# = 0 ];then
+    echo "sorry,sir.arguement is not found:"
+    exit
+fi
+
+tmp_file=/tmp/vmstat_io_$1
+if [ ! -f $tmp_file ];then
+   echo 0
+   vmstat 1 60 >$tmp_file &
+   exit
+fi
+
+line=`cat $tmp_file|wc -l`
+if [ "$line" -lt "60" ];then
+   echo 0
+   exit
+fi
+
+case $1 in
+   bi)
+   result=`cat $tmp_file |egrep -v "memory|free"|awk 'BEGIN{count=0} {count+=$9} END{printf("%0.2f",count/60)}'`
+   echo $result
+   ;;
+   bo)
+   result=`cat $tmp_file |egrep -v "memory|free"|awk 'BEGIN{count=0} {count+=$10} END{printf("%0.2f",count/60)}'`
+   echo $result
+   ;;
+   *)
+   echo "Usage:$0 si|so"
+   ;;
+esac
+
+>$tmp_file
+vmstat 1 60 >$tmp_file &

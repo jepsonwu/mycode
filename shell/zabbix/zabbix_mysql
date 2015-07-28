@@ -1,0 +1,92 @@
+#!/bin/sh
+#Copyright wujp
+#UserParameter=mysql.version,/home/mysql/app/mysql5/bin/mysql -V
+#UserParameter=mysql.ping,/home/mysql/app/mysql5/bin/mysqladmin -uroot -p123456 ping |grep -c alive
+#UserParameter=mysql.status[*],/app/shell/cmysqlperformance $1
+#eval $(ps aux|grep zabbix|awk '{print "kill "$2}')
+#/app/zabbix/sbin/zabbix_agentd -c /app/zabbix/conf/zabbix_agentd.conf
+#mysqladmin status|extended-status|ping 还有很多选项可以二次开发
+
+if [ $# = 0 ];then
+    echo "sorry,sir.arguement is not found:"
+    exit 1
+fi
+
+user=root
+passwd=123456
+mysql_path=/home/mysql/app/mysql5/bin/
+
+case $1 in
+    Uptime)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} status|awk -F"[: ]" '{print $3}'`
+            echo $result
+            ;;
+    Com_update)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_update"|cut -d"|" -f3|sed 's/ //g'`
+            echo $result
+            ;;
+    Slow_queries)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} status|awk -F"[: ]" '{print $16}'`
+            echo $result
+            ;;
+    Com_select)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_select"|cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Com_rollback)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_rollback"|cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Questions)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} status|awk -F"[: ]" '{print $11}'`
+                echo $result
+                ;;
+    Com_insert)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_insert"|cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Com_delete)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_delete"|cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Com_commit)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_commit"|cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Bytes_sent)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Bytes_sent" |cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Bytes_received)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Bytes_received" |cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+    Com_begin)
+        result=`${mysql_path}mysqladmin -u${user} -p${passwd} extended-status |grep -w "Com_begin"|cut -d"|" -f3|sed 's/ //g'`
+                echo $result
+                ;;
+
+        *)
+	threads_conn)
+        result=`${mysql_path}mysql -u${user} -p${passwd} -e"show status like 'Threads_connected'" 2>&1|awk '/Threads/{print $2}'`
+        echo $result
+    ;;
+    max_used_conn)
+        result=`${mysql_path}mysql -u${user} -p${passwd} -e"show status like 'Max_used_connections'" 2>&1|awk '/Max/{print $2}'`
+        echo $result
+    ;;
+    threads_conn_trigger)
+        curr_conn=`${mysql_path}mysql -u${user} -p${passwd} -e"show status like 'Threads_connected'" 2>&1|awk '/Threads/{print $2}'`
+
+        max_conn=`${mysql_path}mysql -u${user} -p${passwd} -e"show variables like 'max_connections'" 2>&1|awk '/max/{print $2}'`
+        if [ "$curr_conn" -ge "$max_conn" ];then
+           echo 0
+        else
+           echo 1
+        fi
+
+    ;;
+        echo "Usage:$0(Uptime|Com_update|Slow_queries|Com_select|Com_rollback|Questions|Com_insert|"\
+              "Com_delete|Com_commit|Bytes_sent|Bytes_received|Com_begin)"
+        ;;
+esac

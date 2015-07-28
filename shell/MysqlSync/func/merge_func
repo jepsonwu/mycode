@@ -1,0 +1,77 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+#write log function
+#type:error|waring|  string:error string
+write_log(){
+   error_type=(ERROR WARING TRUE)
+   now=$(date "+%F %H:%M:%S")
+
+   echo ${error_type[$1]}':'$2
+   echo $now"   "${error_type[$1]}":"$2 >>$LOG_PATH
+
+}
+
+args_defined(){
+   local args=$1
+   for k in ${args[@]}
+   do
+     if [ -z "${!k}" ];then
+           write_log 0 $k' argument is not found!'
+           exit 1
+     fi
+   done
+}
+
+#judge of binlog is correct when in remote state
+remote_jb(){
+
+   ${LC_MYSQL_DIR}bin/mysql $mysql_args -e"show binlog events IN'"$1"' limit 1\G" >/dev/null 2>&1
+   if [ ! $? = 0 ];then
+      write_log 0 'sorry,sir.please specify correct binary log file!'
+
+      test -n "$2" && exit 1
+      test -n "$2" || return 1
+   fi
+
+   return 0
+}
+
+#judge of binlog is correct when in local state
+local_jb(){
+
+   if [ ! -f ${LC_MYSQL_DIR}data/$1 ];then
+      write_log 0 'sorry,sir.please specify correct binary log file!'
+
+      test -n "$2" && exit 1
+      test -n "$2" || return 1
+   fi
+
+   return 0
+}
+
+#remote default binlog
+remote_binlog(){
+
+   binlog=`${LC_MYSQL_DIR}bin/mysql $mysql_args -e"show binlog events limit 1\G" 2>&1`
+
+   if [ ! $? = 0 ];then
+      write_log 0 'mysql binary log file not found!'
+      exit 1
+   fi
+
+   binlog=`echo $binlog |sed 's/.*Log_name: //' |awk -F'[. ]' '{print $2}'`
+
+}
+
+#local default binlog
+local_binlog(){
+
+   binlog=`ls ${LC_MYSQL_DIR}data/mysql-bin.* |grep -v "mysql-bin.index" |sed 's/^.*\///' |awk -F[.] '{print $2}' |sort -n |head -n1`
+
+   if [ ! $? = 0 ];then
+      write_log 0 'mysql binary log file not found!'
+      exit 1
+   fi
+
+}

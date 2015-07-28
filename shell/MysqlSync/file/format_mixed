@@ -1,0 +1,84 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+ #得到表的自增主键
+   write_log 2 "doing select table primary from $db"
+   >$db_primary  #清空文件
+
+   str=`${LC_MYSQL_DIR}bin/mysql $mysql_args_loc -e"SELECT k.TABLE_NAME,k.COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE AS k \
+   JOIN information_schema.TABLES AS t WHERE k.TABLE_SCHEMA=t.TABLE_SCHEMA AND k.TABLE_NAME=t.TABLE_NAME AND t.AUTO_INCREMENT !='NULL' \
+   AND k.TABLE_SCHEMA='"$db"' AND k.CONSTRAINT_NAME='PRIMARY'" |grep -v "\+" |grep -v "TABLE_NAME"`
+
+   if [ ! $? = 0 ];then
+      write_log 0 "can not select table primary from $db"
+   else
+      echo $str|awk '{for(k=1;k<=NF;k=k+2) print $k"="$(k+1)}' >>$db_primary
+   fi
+
+   write_log 2 "done select table primary from $db"
+
+   #目前只做插入和更新操作
+   #防止自增id插入重复报错：
+   #1.把自增id设为null,插入之后得到自增id和原id的map,作为修改时使用，map必须保存，不能被删除
+   #2.锁定所有表，在操作完成之后。先得到现在的最大自增id
+   #采用第二种方案
+   write_log 2 "doing change bt_file as line db:$db"
+   >$bt_file_tmp
+   >$db_autoinc
+   >$upd_file
+
+   #锁表
+   : <<EOF
+   str=`${LC_MYSQL_DIR}bin/mysql $mysql_args_loc \
+   -e"SHOW TABLES FROM $db"|grep -v "Tables_in_" |awk '{print $1" WRITE,"}'`
+
+   str=`echo ${str:0:${#str}-1}`
+   `${LC_MYSQL_DIR}bin/mysql $mysql_args_loc \
+   -e"use $db;UNLOCK TABLES;LOCK TABLES $str" >/dev/null 2>&1`
+
+   if [ $? = 0 ];then
+      lock_table=yes
+      write_log 2 "doing lock tables is true from db:$db"
+   else
+      write_log 2 "doing lock tables is false from db:$db"
+      continue
+   fi
+EOF
+
+   #获取表的主键对应最大值的关系
+   str=`${LC_MYSQL_DIR}bin/mysql $mysql_args_loc -e"SHOW TABLE STATUS FROM $db\G"|awk '/Name:/;/Auto_increment:/;'|awk -F[:] '{print $2}'`
+   if [ $? = 0 ];then
+      echo $str|awk '{for(k=1;k<=NF;k=k+2) print $k"="$(k+1)}' >>$db_autoinc
+   else
+      write_log 0 "can not select table Auto_increment from $db"
+      continue
+   fi
+
+   #处理二进制日志
+   ${PHP_DIR}bin/php ./file/format_mixed.php "bt_file=$bt_file&db_primary=$db_primary&bt_tmp=$bt_file_tmp&db=$db
+   &db_autoinc=$db_autoinc&map_file=$map_file&upd_file=$upd_file&type=$format_type&data_dir=$DATA_DIR"
+
+   #计算成功率
+   let total_insert=`cat $bt_file |grep "UPDATE" |wc -l`
+   let succ_insert=`cat $bt_file_tmp |grep "UPDATE" |wc -l`
+   printf "time:"`date "+%F"`",format_mixed update succ percent:%.2f" `echo "$succ_insert*100/$total_insert"|bc` >>$statis
+
+   let total_insert=`cat $bt_file |grep "INSERT" |wc -l`
+   let succ_insert=`cat $bt_file_tmp |grep "INSERT" |wc -l`
+   printf "time:"`date "+%F"`",format_mixed insert succ percent:%.2f" `echo "$succ_insert*100/$total_insert"|bc` >>$statis
+
+
+    if [ ! -s $bt_file_tmp ];then
+       write_log 1 "bt_file_tmp is empty db:$db,please check php file is realy exec"
+       continue
+    fi
+
+    #id_map 去重
+    cat $map_file|awk -F"&" '{for(k=1;k<=NF;k++) print $k}'|uniq |tr "\n" "&">${DATA_DIR}id_map_${db}_tmp
+    mv ${DATA_DIR}id_map_${db}_tmp $map_file
+
+    all_insert=`cat $bt_file |grep "INSERT INTO" |wc -l`
+
+    mv $bt_file_tmp $bt_file
+    write_log 2 "done change bt_file as line db:$db"
+

@@ -1,0 +1,78 @@
+#!/bin/sh
+#auth wujp
+#按天数截取nginx 日志 并保存
+
+nginx_file=/app/nginx/logs/simba_access.log
+
+if [ ! -f $nginx_file ];then
+   echo "$nginx_file is not file" && exit 1
+fi
+
+#目录
+nginx_dir=`dirname $nginx_file`
+
+#保存
+total_dir=$nginx_dir"/nginx_total_access"
+
+if [ ! -d $total_dir ];then
+   mkdir -pv $total_dir
+fi
+
+write_log(){
+    if [ ! -d "${total_dir}/${s_year}" ];then
+         mkdir -pv "${total_dir}/${s_year}"
+      fi
+
+      for month in ${month_map[*]}
+      do
+
+         echo "doing month ${month}............."
+
+         if [ ! -d "${total_dir}/${s_year}/${month}" ];then
+               mkdir -pv "${total_dir}/${s_year}/${month}"
+         fi
+
+         num=01
+         while [ "$num" -lt "31" ]
+         do
+           cat $nginx_file |grep "${num}/${month}/$s_year" >> "${total_dir}/${s_year}/${month}/${num}_access.log"
+
+           sed -i "/${num}\/${month}\/$s_year/d" $nginx_file
+
+           num=`echo "$num+1"|bc`
+           num=`printf "%02d" $num`
+         done
+
+      done
+}
+
+#月份map
+declare -A month_map
+month_map=([01]=Jan [02]=Feb [03]=Mar [04]=Apr [05]=May [06]=Jun [07]=Jul [08]=Aug [09]=Sep [10]=Oct [11]=Nov [12]=Dec)
+
+
+s_year=`head -n1 $nginx_file |awk '{print $4}'|awk -F":" '{print $1}'|cut -b '9-'`
+t_year=`tail -n1 $nginx_file |awk '{print $4}'|awk -F":" '{print $1}'|cut -b '9-'`
+
+s_year=2014
+
+if [ "$s_year" == "$t_year" ];then
+
+   echo "s_year is equal t_year..................."
+
+   write_log
+
+else
+   echo "s_year is different t_year................."
+
+   while [ "$s_year" -lt "$t_year" ]
+   do
+      echo "doing year $s_year....................."
+
+      write_log
+
+      s_year=`echo "$s_year+1"|bc`
+   done
+
+fi
+

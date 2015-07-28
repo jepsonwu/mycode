@@ -1,0 +1,38 @@
+#！/bin/sh
+#log tar
+
+path=/data0/simba/data/log/
+
+if [ ! -d $path ];then
+   echo 'directory is failed' && exit 0
+fi
+
+cd $path
+
+path_all=`ls`
+path_all=($path_all)
+
+
+now=`date +"%Y%m"`
+
+#xun huan suo you mu lu
+for path_com in ${path_all[*]}
+do
+   echo $path_com
+   cd $path_com
+   
+   years=`ls |grep -v $now |grep -v "tar.gz" |cut -b 1-6 |uniq -d`
+   years=($years)
+   
+  for year in  ${years[*]}
+   do
+      echo $year
+
+      tar zcvf log_${year}.tar.gz ${year}*
+
+      rm -rf ${year}*
+   done
+
+sleep 10
+  cd ../
+done

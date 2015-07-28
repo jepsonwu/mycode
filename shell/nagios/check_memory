@@ -1,0 +1,92 @@
+#!/bin/bash
+#describe:nagios  check_memory
+#return:0:OK|1:waring|2:critical|3:unknown
+#Usage:-w(waring) -c(cirtical) -u(KB|MB|GB|TB) -h(--help) -v(--version)
+
+WARING=
+CIRTICAL=
+
+UNIT=
+VERSION='1.0.1'
+
+declare -A UNIT_MAP
+UNIT_MAP=([KB]=0 [MB]=1 [GB]=2 [TB]=3)
+UNIT_MIX=1024
+
+help=no
+version=no
+
+for option
+do
+  case "$option" in
+     -*=*) value=`echo $option|sed 's/[-a-zA-Z0-9]*=//'` ;;
+     *) value="" ;;
+  esac
+
+  case "$option" in
+    -h) help=yes ;;
+    --help) help=yes ;;
+    -v) version=yes ;;
+    -w=*) WARING="$value" ;;
+    -c=*) CIRTICAL="$value" ;;
+    -u=*) UNIT="$value" ;;
+    *)
+    echo "$0: error: invalid option \"$option\""
+    exit 3
+    ;;
+  esac
+done
+
+if [ $help = yes ];then
+   cat << END
+       check_memory [option] [value]
+            nagios check memory
+            Support the percentage comparison, does not support equivalence comparison
+
+       --help              print this message
+       -h                  print this message
+       -v                  print this version
+
+       -w                  set waring value
+       -c                  set cirtical value
+       -u                  set the display unit
+END
+
+   exit 0
+fi
+
+
+if [ $version = yes ];then
+   echo "Copyright: check_memory/$VERSION"
+   exit 0
+fi
+
+WARING=${WARING:-'20'}
+CIRTICAL=${CIRTICAL:-'10'}
+UNIT=${UNIT:-'MB'}
+
+if [ -z ${UNIT_MAP[$UNIT]} ];then
+   UNIT='MB'
+fi
+
+UNIT_DIV=$(($UNIT_MIX**${UNIT_MAP[$UNIT]}))
+
+total=$(free |awk '/Mem/{print $2}')
+free_avg=$(free -s1 -c5|grep "+"|awk 'BEGIN{free=0}{free+=$4}END{printf("%.0f",free/5)}')
+precent=`echo "scale=0;"$free_avg \* 100 / $total |bc`
+
+free_avg=`echo "scale=2;"$free_avg / $UNIT_DIV |bc`
+total=`echo "scale=2;"$total / $UNIT_DIV |bc`
+
+if test $precent -le $CIRTICAL;then
+   echo "cirtical,total:$total$UNIT,free space:$free_avg$UNIT,precent:$precent%"
+   exit 2
+fi
+
+if test $precent -le $WARING;then
+   echo "waring,total:$total$UNIT,free space:$free_avg$UNIT,precent:$precent%"
+   exit 1
+fi
+
+echo "free ok,total:$total$UNIT,free space:$free_avg$UNIT,precent:$precent%"
+exit 0

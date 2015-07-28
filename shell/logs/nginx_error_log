@@ -1,0 +1,42 @@
+#!/bin/sh
+#describe
+
+#nginx
+nginx_error="/app/nginx/logs/"
+nginx_logs="/data0/nginx_logs/"
+
+if [ ! -d $nginx_logs ];then
+  mkdir -p $nginx_logs
+fi
+
+yed=$(date -d "-1 day" +"%Y/%m/%d")
+
+yedd=$(date -d "-1 day" +"%Y%m%d")
+twdd=$(date -d "-2 day" +"%Y%m%d")
+
+yedfile=${nginx_logs}$yedd"_nginx_error.log"
+twdfile=${nginx_error}$twdd"_nginx_error.log"
+
+#切割日志
+if [ -f $nginx_error"error.log" ];then
+cat $nginx_error"error.log" |grep $yed >$yedfile
+if [ -f $twdfile ];then
+   cat $twdfile |grep $yed>$yedfile
+   rm -f $twdfile
+fi
+mv $nginx_error"error.log" $twdfile
+fi
+
+#删除过去一个月的日志,并创建归档
+filenum=$(ls ${nginx_logs}*nginx_error.log |wc -l)
+month=$(date -d "-1 month" +"%Y%m")
+if(($filenum>=60));then
+  tar -zcvf ${nginx_logs}$month"_nginx_error.tar" ${nginx_logs}$month*"nginx_error.log"
+  rm -f ${nginx_logs}$month*"nginx_error.log"
+fi
+
+#备份到文件服务器
+
+
+
+

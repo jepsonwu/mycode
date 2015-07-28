@@ -1,0 +1,8 @@
+#!/bin/bash
+#describe: check iostat
+#具体临界参数指定需要实际情况大量数据来定
+#vmstat:级别1,表示waring(b>2 wa>20% bi+bo>1000),级别2,表示临界(b>3 wa>30% bi+bo>3000)持续30秒取平均值
+#iostat:级别1,表示waring(avgqu-sz>500 await/svctm>30 %util>80%),级别2,表示临界(avgqu-sz>1000 await/svctm>50 %util>90%) 持续30秒取平均值
+#iotop:
+#return:0:OK|1:waring|2:critical|3:unknown
+

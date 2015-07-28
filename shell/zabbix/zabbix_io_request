@@ -1,0 +1,17 @@
+#!/bin/sh
+#auth wujp
+#simba io request
+
+nginx_log=/app/nginx/logs/simba_access.log
+
+declare -A month_map
+month_map=([01]=Jan [02]=Feb [03]=Mar [04]=Apr [05]=May [06]=Jun [07]=Jul [08]=Aug [09]=Sep [10]=Oct [11]=Nov [12]=Dec)
+
+#默认获取前一分钟的日志
+now=`date -d "-1 min" "+%d/%m/%Y:%H:%M"`
+month=`echo $now|cut -b '4-5'`
+
+map=`echo $now|cut -b '1-3'`${month_map[$month]}`echo $now|cut -b '6-'`
+
+result=`cat $nginx_log |grep $map |awk 'BEGIN{count=0} {if($9=="200") count+=$10} END{printf("%0.2f",count/1000)}'`
+echo $result

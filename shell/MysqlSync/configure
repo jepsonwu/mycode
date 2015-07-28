@@ -1,0 +1,55 @@
+#!/bin/sh
+
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+. auto/options
+
+if [ ! -f $CONF_TEMPLATE ];then
+   echo "ERROR:sorry,sir.configure template file not found!"
+   exit 1
+fi
+
+if [ $update = yes ];then
+
+   if [ ! -f $CONF_PATH ];then
+      echo "ERROR:sorry,sir.configure file:\""${DIR_PATH}${CONF_PATH}"\" is not found!"
+      exit 1
+   fi
+
+   cp $CONF_PATH $CONF_BACK_PATH >/dev/null 2>&1
+   cat $CONF_UPDATE >>$CONF_BACK_PATH
+else
+   cp $CONF_TEMPLATE $CONF_BACK_PATH >/dev/null 2>&1
+fi
+
+> ${CONF_PATH}
+
+cat $CONF_BACK_PATH | while read line
+do
+
+  line=`echo $line |sed "s/^$//" |sed "s/^#.*//" |sed "s/ //g"`
+
+  if [ -n "$line" ];then
+
+     con_var=`echo -n $line|sed "s/=.*$//"`
+     con_val=`echo -n $line|sed "s/^.*=//"`
+
+     test -n "${!con_var}" && echo $con_var"="${!con_var} >>$CONF_PATH
+
+     (test -z "${!con_var}" && test -n "$con_val" )&& echo $con_var"="$con_val >>$CONF_PATH
+
+  fi
+
+done
+
+cat $CONF_PATH |sort |uniq >$CONF_BACK_PATH
+cp $CONF_BACK_PATH $CONF_PATH 2>&1
+
+rm -rf $CONF_BACK_PATH >/dev/null 2>&1
+
+if test -f ${CONF_PATH};then
+   echo 'configure----------done'
+else
+   echo 'ERROR:configure create faild!'
+fi

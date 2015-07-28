@@ -1,0 +1,85 @@
+#!/usr/bin/expect
+
+#引入文件得到变量
+set BT_FILE [lindex $argv 0]
+set SQL_FILE [lindex $argv 1]
+set CONF_FILE [lindex $argv 2]
+
+set timeout -1
+
+set err [catch {set str [open $CONF_FILE r]} errMsg]
+if {$err==1} {  #if和括号之间要有空格，后面两个括号之间也要有空格。中间等号可以不许要空格
+   puts "sorry,sir.configure file is not read.errMsg :$errMsg"
+   exit
+}
+
+while {[eof $str] !=1} {
+   gets $str line
+
+   #  #aaa(pos=0) aaa#bb(pos=3) aaa(pos=-1)
+   set pos [string first "#" $line]
+   if {$pos==0} {
+      continue
+   }
+
+   #pos=-1 不能做处理
+   if {$pos!=-1} {
+      set line [string range $line 0 [expr $pos-1]]
+   }
+
+   set line [string trim $line]
+
+   if {$line==""} {
+      continue
+   }
+
+   set pos [string first "=" $line]
+   if {$pos!=-1&&$pos!=0} {
+      set [string range $line 0 [expr $pos-1]] [string range $line [expr $pos+1] [string length $line]]
+   }
+
+}
+
+#复制
+spawn scp -l 1000 -P$EXP_PORT $BT_FILE $EXP_USER@$EXP_IP:$EXP_DIR
+expect "password:"
+send "$EXP_PASS\r"
+#这里$EXP_PASS必须放在引号里面，后面必须加“\r” 上面的语句，不能在后面接注释
+
+#目录不存在
+expect {
+  "Permission denied" {
+      puts "sorry,sir.please specify correct password for $EXP_USER"
+      set timeout 5
+      exit
+  }
+
+  "Is a directory" {
+      puts "sorry,sir.expect dir is not a directory"
+      set timeout 5
+      exit
+  }
+
+  "100%" {
+     spawn ssh -p$EXP_PORT $EXP_USER@$EXP_IP
+     expect "password:"
+     send "$EXP_PASS\r"
+  }
+}
+
+
+#解压
+expect "\$?"
+send "tar -xvf ${SQL_FILE}.tar\r"
+
+#执行  root用户判断：*#   普通用户判断：\$?
+expect "\$?"
+send "nohup ${EXP_MYSQL_DIR}bin/mysql -h$EXP_MYSQL_HOST -u$EXP_MYSQL_USER -p$EXP_MYSQL_PASS -P$EXP_MYSQL_PORT -f <$SQL_FILE &\r"
+
+set timeout 5
+
+#interact留在终端，这里是直接退出
+expect eof
+
+#输出结果
+

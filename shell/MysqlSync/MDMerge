@@ -1,0 +1,118 @@
+#!/bin/sh
+
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+cd `echo $0|grep -o ".*\/"`
+
+#当前文件参数
+. auto/merge_options
+
+#基本信息的判断
+. auto/state
+
+#核心配置
+. conf/core_conf
+
+#核心函数
+. func/merge_func
+
+#合并信息判断
+. auto/merge_state
+
+
+for db in ${DB_NAME[@]}
+do
+  echo "doing merge data ,db:$db.time_start:"`date "+%H:%M:%S"`
+
+  #data path
+  bt_tmp=${DATA_DIR}bt_tmp_${db}
+  bt_file=${DATA_DIR}bt_file_${db}
+  bt_file_tmp=${DATA_DIR}bt_file_tmp_${db}
+  bt_file_bak=${DATA_DIR}bt_file_${db}_bak
+
+  #row
+  db_table=${DATA_DIR}db_table
+  dt_field=${DATA_DIR}db_filed_${db}
+
+  #mixed
+  db_primary=${DATA_DIR}db_primary_${db}
+  db_autoinc=${DATA_DIR}db_autoinc_${db}
+  map_file=${DATA_DIR}id_map_${db}
+  upd_file=${DATA_DIR}update_tmp_${db}
+
+  #count
+  statis=${DATA_DIR}statis_count_${db}
+
+  lock_table=no
+
+  >${DATA_DIR}mixed_error_file_${db}
+
+  #判断db
+  ${LC_MYSQL_DIR}bin/mysqlshow $mysql_args |grep $db >/dev/null 2>&1
+  if [ ! $? = 0 ];then
+     write_log 1 'sorry,sir.'$db' db is not found,please update configure file'
+     continue
+  fi
+
+  #删除二进制日志
+  >$bt_file
+
+  #获取二进制日志
+  if [ $mysqldump = yes ];then
+     format_type=dump
+     . file/mergedump
+  else
+     format_type=binlog
+     . file/mergebinlog
+  fi
+
+  #计算成功率，只计算mysqlbinlog的插入成功率
+  let succ_insert=`cat ${DATA_DIR}mixed_error_file_${db}|wc -l`
+  let succ_insert=$all_insert-$succ_insert
+  printf "time:"`date "+%F"`",succ percent:%.2f" `echo "$succ_insert*100/$all_insert"|bc` >>$statis
+
+  #expect 实现自动输入密码
+  if [ $EXPECT = yes ];then
+     #打包
+     #gzip: stdin: invalid compressed data--format violated  如果加上-Z选项会出现上面的情况
+     write_log 2 "doing create tar ${bt_file}"
+     tar -cvf ${bt_file}.tar -C ${DATA_DIR} bt_file_${db} >/dev/null 2>&1
+     write_log 2 "done create tar ${bt_file}"
+
+     ./file/expect $bt_file.tar ${EXP_DIR}bt_file_${db} "conf/core_conf"
+     write_log 2 'binary log is merge done'
+  else
+     write_log 2 'binary log is merge doing'
+
+     ${LC_MYSQL_DIR}bin/mysql $mysql_args_loc -f <$bt_file
+
+     write_log 2 'binary log is merge done'
+  fi
+
+  : <<EOF
+  if [ $lock_table = yes ];then
+      `${LC_MYSQL_DIR}bin/mysql $mysql_args_loc -e"use $db;UNLOCK TABLES" >/dev/null 2>&1`
+       if [ $? = 0 ];then
+          write_log 2 "doing unlock tables is true from db:$db"
+       else
+          write_log 2 "doing unlock tables is false from db:$db"
+          continue
+       fi
+  fi
+EOF
+#定格写
+  #记录获取节点 所有结束完成才记录节点
+  if [ -n "$start_binlog" ];then
+     >$bt_tmp
+
+     echo -e \
+     "de_start_time="$time\
+     "\nde_start_binlog="$start_binlog\
+     >$bt_tmp
+  fi
+
+  echo "done merge data ,db:$db.time_done:"`date "+%H:%M:%S"`
+done
+
+

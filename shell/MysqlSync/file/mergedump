@@ -1,0 +1,33 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+write_log 2 "doing mysqldump $db data"
+
+echo "CREATE DATABASE IF NOT EXISTS  $db CHARACTER SET 'utf8';" >$bt_file
+echo "use $db;" >>$bt_file
+
+${LC_MYSQL_DIR}bin/mysqldump ${mysql_args} --add-drop-table --allow-keywords --single-transaction --triggers --add-locks \
+ -aKeqRcf ${db} >>$bt_file
+
+if [ ! -s $bt_file ];then
+    write_log 1 'binary temporary file is empty!'
+    continue
+fi
+
+
+#备份二进制日志
+write_log 2 "doing back $bt_file to $bt_file_bak"
+cp $bt_file $bt_file_bak 2>&1
+write_log 2 "done back $bt_file to $bt_file_bak"
+
+if [ $format_sql = yes ];then
+   . file/format_mixed
+fi
+
+#表和操作过滤
+#if [ ! $ALL_TABLE = yes ];then
+   #while read line
+   #do
+
+   #done <$bt_file
+#fi

@@ -1,0 +1,110 @@
+#Copyright (C) wujp
+#Copyright (C) MDMerge
+
+time=$(date "+%F^%H:%M:%S")
+
+VERSION=1.0
+PROJECT=MDMerge
+
+all=yes
+defined=no
+bin_while=yes
+binlog=
+
+#defined config
+bin_log=
+start_time=
+stop_time="$time"
+
+#default
+de_start_binlog=
+de_start_time=
+
+#option
+help=no
+version=no
+opt_num=$#
+mysqldump=no
+
+#format
+format_sql=no
+
+clean=no
+
+for option
+do
+   case "$option" in
+      -*=*) value=`echo $option|sed 's/[-_a-zA-Z0-9]*=//'` ;; #这里写成这样就错了:_-a-zA-Z0-9
+      *) value="" ;;
+   esac
+
+   case "$option" in
+      -h) help=yes ;;
+      --help) help=yes ;;
+
+      -v) version=yes ;;
+      -c) clean=yes ;;
+
+      -a) all=yes ;;
+      -d)
+         defined=yes
+         #怎么移除最后一个参数
+         bin_log="${!opt_num}"
+      ;;
+
+      --binlog=*) bin_log="$value" ;;
+
+      --start-t=*) start_time="$value" ;;
+      --stop-t=*) stop_time="$value" ;;
+
+      -dump)        mysqldump=yes ;;
+      -f)           format_sql=yes ;;
+
+       *)
+          echo "$0: error: invalid option \"$option\""
+          exit 1
+       ;;
+
+   esac
+
+done
+
+if [ $help = yes ];then
+
+cat <<END
+
+   sync [option] [binlog]
+
+   -h               print this message
+   --help           print this message
+
+   -v               print this version
+   -c               clean the bt_tmp file
+
+   -a               sync all data
+   -d               sync defined data
+
+   -dump            use mysqldump tools rsync data
+   -f               format dump sql
+
+   [defined type]
+   --binlog         binlog name
+   --start-t        binlog start-datetime
+   --stop-t         binlog stop-datetime
+   -f               no
+
+END
+
+    exit 1
+fi
+
+if [ $version = yes ];then
+   echo $PROJECT'/'$VERSION
+   exit 1
+fi
+
+if [ $clean = yes ];then
+   rm -rf data/bt_tmp_* >/dev/null 2>&1
+   echo "bt_tmp file is clean done"
+   exit 1
+fi
