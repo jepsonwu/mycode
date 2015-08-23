@@ -1,5 +1,4 @@
 <?php
-
 function curl($url,$type="GET",$data=null,$header=null,$option=null){
 	$ch=curl_init();
 
