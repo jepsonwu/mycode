@@ -11,46 +11,70 @@ class Ipc
 	//资源句柄
 	private $handler = "";
 
-	//配置参数
-	private $option = "";
-
-	static public function getInstance()
+	/**
+	 * @param $type (shmop
+	 * @param array $option
+	 * @return mixed
+	 */
+	static public function getInstance($type = '', $option = array())
 	{
-		echo "a";
+		static $_instances = array();
+		$uuid = md5($type . serialize($option));
+
+		if (!isset($_instances[$uuid])) {
+			$obj = new Ipc();
+			$_instances[$uuid] = $obj;
+			$obj->handler = $obj->connent($type, $option);
+		}
+
+		return $_instances[$uuid];
 	}
 
-	private function connent()
+	/**
+	 * @param string $type
+	 * @param $option
+	 * @return string
+	 * @throws \Exception
+	 */
+	private function connent($type = '', $option)
 	{
+		empty($type) && $type = "shmop";
+		$class = strpos($type, "\\") !== false ? $type : 'Lib\\Ipc\\' . ucwords(strtolower($type));
 
+		$cache = "";
+		if (class_exists($class))
+			$cache = new $class($option);
+		else
+			throw new \Exception("{$class} is not exists", 1001);//todo log set_exception_handler()
+
+		return $cache;
 	}
 
-	public function __get($name)
+	public function read($key)
 	{
-
+		return $this->handler->read($key);
 	}
 
-	public function __set($name, $value)
+	public function write($key, $value, $size)
 	{
-
+		return $this->handler->write($key, $value, $size);
 	}
 
-	public function __unset($name)
+	public function delete($key)
 	{
-
+		return $this->handler->delete($key);
 	}
 
-	public function setOptions($name, $value)
-	{
-
-	}
-
-	public function getOptions($name)
+	public function clear()
 	{
 
 	}
 
 	public function __call($method, $args)
 	{
-
+		if (method_exists($this->handler, $method))
+			return call_user_func_array(array($this->handler, $method), $args);
+		else
+			throw new \Exception("{$method} is not exists", 1001);
 	}
 }

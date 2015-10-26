@@ -9,11 +9,11 @@ namespace Lib\Ipc;
 abstract class IpcAbstract
 {
 	//读取数据
-	abstract public function read();
+	abstract public function read($key);
 
 	//写入数据
-	abstract public function write();
+	abstract public function write($key, $value, $size);
 
 	//删除数据
-	abstract public function delete();
+	abstract public function delete($key);
 }
