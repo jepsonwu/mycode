@@ -5,3 +5,8 @@
  * Date: 15-10-26
  * Time: 下午2:53
  */
+return array(
+	"DEFAULT_IPC_TYPE" => "shmop",
+
+	"LOG_FILE" => "log.txt"
+);

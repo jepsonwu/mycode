@@ -38,7 +38,7 @@ class Ipc
 	 */
 	private function connent($type = '', $option)
 	{
-		empty($type) && $type = "shmop";
+		empty($type) && $type = C("DEFAULT_IPC_TYPE");
 		$class = strpos($type, "\\") !== false ? $type : 'Lib\\Ipc\\' . ucwords(strtolower($type));
 
 		$cache = "";
