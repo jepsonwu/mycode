@@ -5,6 +5,7 @@
  * Date: 15-10-26
  * Time: 下午2:53
  */
+
 /**
  * 获取和设置配置参数 支持批量定义
  * @param string|array $name 配置变量

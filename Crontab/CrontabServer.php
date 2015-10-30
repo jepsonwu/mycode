@@ -3,11 +3,6 @@ use Lib\Ipc;
 
 /**
  *crontab server
- * 1.事件监听，包括服务和进程事件监听
- * 2.任务多进程
- * 3.进程间通信(system v:shmop 共享内存段<大小和权限限制>,queue 队列,sem 信号量)
- * 4.日志记录
- * 5.用户权限
  * User: jepson <jepson@abc360.com>
  * Date: 15-10-23
  * Time: 下午4:07
@@ -20,42 +15,72 @@ class CrontabServer
 	//运行模式
 	private $is_deaemon = false;
 
-	//任务栈
-	private $tasks = array();
+	//多进程数
+	private $multi_process = 1;
 
-	//当前可执行任务
-
-	//任务栈自动更新时间 凌晨
-	private $tasks_update_time = "00:00";
+	//日志级别
+	const LOG_EXIT = "Exit";
+	const LOG_ERROR = "Error";
+	const LOG_WARNING = "Warning";
+	const LOG_INFO = "Info";
 
 	/**
 	 * 开启服务
 	 */
 	public function Start()
 	{
-		//模式判断
-		if (php_sapi_name() != "cli")
-			exit("the mode must be cli");
-
-		//判断扩展
-		foreach (array("pcntl", "posix") as $exten) {
-			!extension_loaded($exten) && exit("{$exten} extension is not loaded");
-		}
-
-		//用户判断
-
+		//必要的处理
+		$this->Necessary();
 		//获取参数
 		$this->Params();
-
-		//开启服务 是否后台模式
-		if ($this->is_deaemon) {
-			//fork todo 
-		} else {
-			//获取终端命令
-			$this->Run();
-		}
+		//init
+		$this->Init();
+		//neccssary
+		$this->ServerNecc();
 	}
 
+	public function Sapi()
+	{
+		//必要的处理
+		$this->Necessary();
+		//解析
+		$this->SapiParse();
+		//init
+		$this->Init();
+		//run
+		$this->SapiRun();
+	}
+
+	/**
+	 * sapi 解析
+	 */
+	private function SapiParse()
+	{
+
+	}
+
+	/**
+	 * 必要的处理
+	 */
+	private function Necessary()
+	{
+		//模式
+		if (php_sapi_name() != "cli")
+			exit("Not allowed mode");
+
+		//扩展
+		foreach (array("pcntl", "posix") as $exten)
+			!extension_loaded($exten) && exit("{$exten} extension is not found");
+
+		//操作系统  目前只支持linux  有很多命令需要处理
+		$posix_uname = posix_uname();
+		if (!in_array($posix_uname['sysname'], array("Linux")))
+			exit("{$posix_uname['sysname']} operating system is not supported");
+	}
+
+	/**
+	 * 初始化
+	 */
 	private function Init()
 	{
 		//autoload
@@ -67,9 +92,15 @@ class CrontabServer
 		//多字节设置
 		mb_internal_encoding("UTF-8");
 
+		//错误级别设置
+		error_reporting(E_ALL ^ E_NOTICE);
+
 		//定义基本常量
 		!defined("BASE_PATH") && define("BASE_PATH", dirname(__FILE__) . "/");
-		!defined("COMMON_PATH") && define("COMMON_PATH", __DIR__ . "/Common/");
+		!defined("COMMON_PATH") && define("COMMON_PATH", BASE_PATH . "/Common/");
+		!defined("LIB_PATH") && define("LIB_PATH", BASE_PATH . "/Lib/");
+		!defined("LOG_PATH") && define("LOG_PATH", BASE_PATH . "/Log/");
+		!defined("TASK_PATH") && define("TASK_PATH", BASE_PATH . "/Task/");
 
 		//function
 		require_once COMMON_PATH . "Function.php";
@@ -78,137 +109,110 @@ class CrontabServer
 		C(include(COMMON_PATH . "Conf.php"));
 
 		//设置异常处理
-		set_exception_handler("ExceHandler");
+		//set_exception_handler("ExceHandler");
 
-		//php 错误日志处理
+		//daemon
+		$this->is_deaemon && $this->RestStd();
 	}
 
+	/**
+	 * 服务必要的处理
+	 */
+	private function ServerNecc()
+	{
+		//用户
+		if (posix_getuid() !== 0)
+			exit("Not allowed user,must be root");
+
+		//进程可用内存
+		exec("free|awk -F' ' '{print $7}'", $memory_avaliable);
+		if ($memory_avaliable[1] < C("MEMORY_AVALIABLE") * 1024 * 1024)
+			exit("There is out of memory");
+
+		//进程可用共享内存 todo 不准确
+//		if (C("DEFAULT_IPC_TYPE") == "shmop") {
+//			exec("cat /proc/sys/kernel/shmmax", $shmmax);
+//			exec("free|awk -F' ' '{print $5}'", $shused);
+//
+//			if (($shmmax[0] - $shused[1] * 1024) < (C("SHMMAX") + 2) * 1024 * 1024 * 1024)
+//				exit("There is out of shmop");
+//		}
+
+		//多进程数处理
+		exec("cat /proc/cpuinfo |grep processor|wc -l", $multi_process);
+		$multi_process_value = C("MULTI_PROCESS");
+		if ($multi_process_value) {
+			if ($multi_process_value > $multi_process[0])
+				$this->Log("Total number of multi-process set beyond the server CPU logic", self::LOG_WARNING);
+			$this->multi_process = $multi_process_value;
+		} else {
+			$this->multi_process = $multi_process[0];
+		}
+
+	}
+
+	/**
+	 * 运行单个任务
+	 */
+	private function SapiRun()
+	{
+
+	}
+
+	/**
+	 * 运行服务
+	 */
 	private function Run()
 	{
+		//获取任务
+
+		//开启服务 是否后台模式
+		if ($this->is_deaemon) {
+			//fork
+		} else {
+			//获取终端命令
+			$this->Run();
+		}
 		//time
 		define("START_TIME", time());
 
-		//初始化应用
-		$this->Init();
-
-		$this->RestStd();
-
-		//实力化进程通信
-		$ipc = Ipc::getInstance();
-
-		//fork进程 解析task
-		$pid = pcntl_fork();
-		switch ($pid) {
-			case -1:
-				exit("fork error");
-				break;
-			case 0:
-				pcntl_exec("/usr/bin/php", array("/data0/hapigou/index.php", "Crontab/CrontabServer/GetTask"));
-				break;
-			default:
-				pcntl_waitpid($pid, $status);
-				var_dump($status);
-				break;
-		}
-
-		//获取列表
-		var_dump($ipc->read(START_TIME));
-		exit;
-		$time = time();
-		$str = "sadfasdfs";
-		var_dump($ipc->write($time, $str, strlen($str)));
-		var_dump($ipc->read($time));
-		var_dump($ipc->delete($time));
-
-
-		//一分钟轮询一次
-		$i = 0;
-		do {
-			//fork 任务进程  非阻塞模式 通过信号方式处理执行结果
-
-			$pid = pcntl_fork();
-			switch ($pid) {
-				case -1:
-					exit("fork error");
-					break;
-				case 0:
-					pcntl_exec("/usr/bin/php", array("/data0/hapigou/index.php", "Crontab/CrontabServer/GetTask"));
-					break;
-				default:
-					pcntl_waitpid($pid, $status);
-					var_dump($status);
-					break;
-			}
-			//睡眠
-			//sleep(20);
-			exit;
-			$i++;
-		} while ($i < 5);
-	}
-
-	/**
-	 * 获取当前可执行任务
-	 */
-	public function GetTask()
-	{
-		echo "aaa";
-	}
-
-	/**
-	 * 判断是否可以刷新任务栈
-	 * 1.服务启动或者重起
-	 * 2.服务自动更新
-	 * 3.人为更新
-	 */
-	private function IsRefreshStack()
-	{
-
-	}
-
-	/*
-	 * 任务出栈
-	 */
-	private function PopStack()
-	{
-
-	}
-
-	/**
-	 * 任务入栈
-	 */
-	private function PushStack()
-	{
-
-	}
-
-	/**
-	 * fork 任务进程
-	 */
-	private function ForkTask()
-	{
-
+		//记录日志
+		$this->Log("start server", self::LOG_INFO);
 	}
 
 	/**
 	 * 错误日志
+	 * 日志级别
+	 * Exit 程序终止
+	 * Error 错误
+	 * Warning 警告
+	 * Info 信息
 	 * @param $msg
-	 * @param string $type
+	 * @param int|string $type
 	 */
-	private function Error($msg, $type = "ERROR")
+	private function Log($msg, $type = self::LOG_ERROR)
 	{
-		//$info=debug_backtrace();
+		$info = "Time:" . date("Y-m-d H:i:s") . "\n{$type}:{$msg}\n";
+		if ($type != self::LOG_INFO) {
+			$debug_info = debug_backtrace();
+			$info .= "Function:{$debug_info[1]['function']},Line:{$debug_info[1]['line']}\n\n\n";
+		}
 
-		echo $type . $msg;
+		echo $info;
+		$type == self::LOG_EXIT && exit();
 	}
 
 	/**
-	 * 重定向标准输出
+	 * 重定向标准输出 凌晨重定向
 	 * $str = fread(STDIN, 100);
 	 * echo $str;
 	 */
 	private function RestStd()
 	{
-		$file = BASE_PATH . "Log/" . C("LOG_FILE");
+		$dir = LOG_PATH . date("Ymd") . "/";
+		!is_dir($dir) && mkdir($dir, 0744, true);
+
+		$file = $dir . C("LOG_FILE");
 		if (is_file($file) && is_writable($file)) {
 			fclose(STDOUT);
 			fclose(STDERR);
@@ -231,16 +235,9 @@ class CrontabServer
 			switch ($_SERVER['argv'][1]) {
 				case "start":
 					//demo
-					if (isset($_SERVER['argv'][2])) {
-						switch ($_SERVER['argv'][2]) {
-							case "-d":
-								$this->is_deaemon = true;
-								break;
-							case "task":
-								$this->GetTask();
-								break;
-						}
-					}
+					isset($_SERVER['argv'][2]) &&
+					$_SERVER['argv'][2] == "-d" &&
+					$this->is_deaemon = true;
 					break;
 				case "stop":
 					break;
@@ -251,10 +248,10 @@ class CrontabServer
 				case "status":
 					break;
 				case "-v":
-					echo $this->version . "\n";
-					exit;
+					exit("Crontab version:" . $this->version . "\n");
 					break;
-				case "-V"://cat readme
+				case "-V":
+					exit(file_get_contents("README.md"));
 					break;
 				case "-h":
 					$this->Help();
@@ -281,6 +278,8 @@ class CrontabServer
 					$this->Help();
 					break;
 			}
+		} else {
+			$this->Help();
 		}
 	}
 
