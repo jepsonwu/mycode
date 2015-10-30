@@ -79,6 +79,8 @@ class CrontabServer
 
 		//设置异常处理
 		set_exception_handler("ExceHandler");
+
+		//php 错误日志处理
 	}
 
 	private function Run()
