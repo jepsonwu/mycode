@@ -16,15 +16,23 @@ class Core
 	 */
 	public function GetTask()
 	{
-		echo "aaa";
+		$str = "test data";
+		$ipc = Ipc::getInstance();
+		$res = $ipc->write(1446431328, $str, strlen($str));
+		var_dump("write data:" . $res);
 	}
 
 	public function CrontabServer()
 	{
 		//实力化进程通信
 		$ipc = Ipc::getInstance();
+		var_dump($ipc);
 
 		while (true) {
+
+			$data = $ipc->read(1446431328);
+			if ($data)
+				echo "read data:" . $data;
 
 		}
 

@@ -1,13 +1,16 @@
 <?php
-$url = "http://hpg.com/v2/upload/pic";
-$file_name = "wap.zip";
+$url = "http://hpg.com/v2/teachers/apply";
+$file_name = "aa.png";
 $data = array(
-	"user_id"=>1,
-	"feedback_id"=>2,
-	"data"=>base64_encode(file_get_contents($file_name))
+	"user_id"=>133,
+	"real_name"=>"wu",
+	"email"=>"wjp@163.com",
+	"certificate_photo"=>base64_encode(file_get_contents($file_name)),
+	"skype"=>"sdffas",
+	"job"=>"老师"
 );
 
-$result = curl($url, "POST", $data);
+$result = curl($url, "POST", $data,array("version:2"));
 var_dump($result);
 
 //$fp=fopen('data://text/plain;base64,','r');
@@ -102,6 +105,10 @@ function curl($url, $type = "GET", $data = null, $header = null, $option = null)
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 			break;
+	}
+
+	if(!is_null($header)&&is_array($header)){
+		curl_setopt($ch, CURLOPT_HTTPHEADER , $header);
 	}
 
 	// if(is_null($header))

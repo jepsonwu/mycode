@@ -165,6 +165,20 @@ class CrontabServer
 	private function Run()
 	{
 		//获取任务
+		$demo = "asdfas";
+		$pid = pcntl_fork();
+		switch ($pid) {
+			case -1:
+				exit("fork error");
+				break;
+			case 0:
+				pcntl_exec("/usr/bin/php", array("sapi.php"));
+				break;
+			default:
+				pcntl_waitpid($pid, $status);
+				var_dump($status);
+				break;
+		}
 
 		//开启服务 是否后台模式
 		if ($this->is_deaemon) {
