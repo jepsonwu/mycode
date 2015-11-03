@@ -5,6 +5,58 @@
  * Date: 15-10-26
  * Time: 下午2:53
  */
+//日志级别
+const LOG_EXIT = "Exit";
+const LOG_ERROR = "Error";
+const LOG_WARNING = "Warning";
+const LOG_INFO = "Info";
+
+/**
+ * Fork 进程
+ * @param $commond
+ * @param $argv
+ * @return int
+ */
+function Fork($commond, $argv)
+{
+	$pid = pcntl_fork();
+	switch ($pid) {
+		case -1:
+			Logs("Fork process field.commond:{$commond},argv:" . json_encode($argv));
+			break;
+		case 0:
+			pcntl_exec($commond, $argv);
+			break;
+		default:
+			pcntl_waitpid($pid, $status);
+			return $pid;
+			break;
+	}
+
+	return "";
+}
+
+/**
+ * 错误日志
+ * 日志级别
+ * Exit 程序终止
+ * Error 错误
+ * Warning 警告
+ * Info 信息
+ * @param $msg
+ * @param int|string $type
+ */
+function Logs($msg, $type = LOG_ERROR)
+{
+	$info = "Time:" . date("Y-m-d H:i:s") . "\n{$type}:{$msg}\n";
+	if ($type != LOG_INFO) {
+		$debug_info = debug_backtrace();
+		$info .= "Function:{$debug_info[1]['function']},Line:{$debug_info[1]['line']}\n\n\n";
+	}
+
+	echo $info;
+	$type == LOG_EXIT && exit();
+}
 
 /**
  * 获取和设置配置参数 支持批量定义

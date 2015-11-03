@@ -5,7 +5,6 @@
  * Date: 15-10-28
  * Time: 上午10:10
  */
-echo $aa;exit;
 require_once "./CrontabServer.php";
 $server = new CrontabServer();
 $server->Sapi();

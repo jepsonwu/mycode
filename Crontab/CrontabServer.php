@@ -18,11 +18,8 @@ class CrontabServer
 	//多进程数
 	private $multi_process = 1;
 
-	//日志级别
-	const LOG_EXIT = "Exit";
-	const LOG_ERROR = "Error";
-	const LOG_WARNING = "Warning";
-	const LOG_INFO = "Info";
+	//php exec
+	private $php_exec = "";
 
 	/**
 	 * 开启服务
@@ -37,6 +34,8 @@ class CrontabServer
 		$this->Init();
 		//neccssary
 		$this->ServerNecc();
+		//运行
+		$this->Run();
 	}
 
 	public function Sapi()
@@ -76,6 +75,7 @@ class CrontabServer
 		$posix_uname = posix_uname();
 		if (!in_array($posix_uname['sysname'], array("Linux")))
 			exit("{$posix_uname['sysname']} operating system is not supported");
+
 	}
 
 	/**
@@ -113,6 +113,9 @@ class CrontabServer
 
 		//daemon
 		$this->is_deaemon && $this->RestStd();
+
+		//php exec
+		$this->php_exec = C("PHP_EXEC");
 	}
 
 	/**
@@ -143,7 +146,7 @@ class CrontabServer
 		$multi_process_value = C("MULTI_PROCESS");
 		if ($multi_process_value) {
 			if ($multi_process_value > $multi_process[0])
-				$this->Log("Total number of multi-process set beyond the server CPU logic", self::LOG_WARNING);
+				Logs("Total number of multi-process set beyond the server CPU logic", LOG_WARNING);
 			$this->multi_process = $multi_process_value;
 		} else {
 			$this->multi_process = $multi_process[0];
@@ -165,20 +168,7 @@ class CrontabServer
 	private function Run()
 	{
 		//获取任务
-		$demo = "asdfas";
-		$pid = pcntl_fork();
-		switch ($pid) {
-			case -1:
-				exit("fork error");
-				break;
-			case 0:
-				pcntl_exec("/usr/bin/php", array("sapi.php"));
-				break;
-			default:
-				pcntl_waitpid($pid, $status);
-				var_dump($status);
-				break;
-		}
+		Fork($this->php_exec, array("sapi.php", "Core/Core/GetTask", "id/1"));
 
 		//开启服务 是否后台模式
 		if ($this->is_deaemon) {
@@ -191,29 +181,7 @@ class CrontabServer
 		define("START_TIME", time());
 
 		//记录日志
-		$this->Log("start server", self::LOG_INFO);
-	}
-
-	/**
-	 * 错误日志
-	 * 日志级别
-	 * Exit 程序终止
-	 * Error 错误
-	 * Warning 警告
-	 * Info 信息
-	 * @param $msg
-	 * @param int|string $type
-	 */
-	private function Log($msg, $type = self::LOG_ERROR)
-	{
-		$info = "Time:" . date("Y-m-d H:i:s") . "\n{$type}:{$msg}\n";
-		if ($type != self::LOG_INFO) {
-			$debug_info = debug_backtrace();
-			$info .= "Function:{$debug_info[1]['function']},Line:{$debug_info[1]['line']}\n\n\n";
-		}
-
-		echo $info;
-		$type == self::LOG_EXIT && exit();
+		$this->Log("start server", LOG_INFO);
 	}
 
 	/**

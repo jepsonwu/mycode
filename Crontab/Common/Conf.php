@@ -15,6 +15,9 @@ return array(
 	//多进程数量  如果为空默认为当前逻辑cpu数量 算超线程
 	"MULTI_PROCESS" => 5,
 
+	//php路径
+	"PHP_EXEC" => "/usr/bin/php",
+
 	//日志文件
 	"LOG_FILE" => "log.txt",
 );

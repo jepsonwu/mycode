@@ -1,0 +1,18 @@
+<load href="__PUBLIC__/NivoSlider/nivo-slider.css" />
+<load href='__PUBLIC__/NivoSlider/themes/default/default.css' />
+
+<load href='__PUBLIC__/NivoSlider/jquery.nivo.slider.pack.js' />
+
+<script type="text/javascript">
+	$(function(){
+		if ( $('#slider')[0] ) {
+	        $('#slider').nivoSlider({
+	        	pauseTime: 5000,
+	        	prevText: '',
+				nextText: '',
+				controlNav: true, 
+        		controlNavThumbs: false
+	        });
+		}
+	});
+</script>
