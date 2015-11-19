@@ -1,5 +1,8 @@
 <?php
 namespace Lib;
+
+use Lib\Conf;
+
 /**
  *进程通信 操作类
  * User: jepson <jepson@abc360.com>
@@ -38,14 +41,14 @@ class Ipc
 	 */
 	private function connent($type = '', $option)
 	{
-		empty($type) && $type = C("DEFAULT_IPC_TYPE");
+		empty($type) && $type = Conf::getInstance()->getConfig("DEFAULT_IPC_TYPE");
 		$class = strpos($type, "\\") !== false ? $type : 'Lib\\Ipc\\' . ucwords(strtolower($type));
 
 		$cache = "";
 		if (class_exists($class))
 			$cache = new $class($option);
 		else
-			throw new \Exception("{$class} is not exists", 1001);//todo log set_exception_handler()
+			throw new \Exception("{$class} is not exists");
 
 		return $cache;
 	}
@@ -75,6 +78,6 @@ class Ipc
 		if (method_exists($this->handler, $method))
 			return call_user_func_array(array($this->handler, $method), $args);
 		else
-			throw new \Exception("{$method} is not exists", 1001);
+			throw new \Exception("{$method} is not exists");
 	}
 }

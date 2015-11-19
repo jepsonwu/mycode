@@ -1,5 +1,9 @@
 <?php
 use Lib\Ipc;
+use Lib\Log;
+use Lib\Conf;
+use Lib\Pcntl;
+use Lib\Exception;
 
 /**
  *crontab server
@@ -55,7 +59,9 @@ class CrontabServer
 	 */
 	private function SapiParse()
 	{
+		//解析路径
 
+		//解析参数
 	}
 
 	/**
@@ -64,8 +70,7 @@ class CrontabServer
 	private function Necessary()
 	{
 		//模式
-		if (php_sapi_name() != "cli")
-			exit("Not allowed mode");
+		php_sapi_name() != "cli" && exit("Not allowed mode");
 
 		//扩展
 		foreach (array("pcntl", "posix") as $exten)
@@ -73,9 +78,11 @@ class CrontabServer
 
 		//操作系统  目前只支持linux  有很多命令需要处理
 		$posix_uname = posix_uname();
-		if (!in_array($posix_uname['sysname'], array("Linux")))
-			exit("{$posix_uname['sysname']} operating system is not supported");
+		!in_array($posix_uname['sysname'], array("Linux")) &&
+		exit("{$posix_uname['sysname']} operating system is not supported");
 
+		//php 版本控制
+		version_compare(phpversion(), "5.4.0", "<") && exit("Php version is to low");
 	}
 
 	/**
@@ -83,11 +90,10 @@ class CrontabServer
 	 */
 	private function Init()
 	{
-		//autoload
-		require_once "./Autoloader.php";
-
 		//时区
 		date_default_timezone_set("PRC");
+
+		//set_include_path
 
 		//多字节设置
 		mb_internal_encoding("UTF-8");
@@ -102,20 +108,21 @@ class CrontabServer
 		!defined("LOG_PATH") && define("LOG_PATH", BASE_PATH . "/Log/");
 		!defined("TASK_PATH") && define("TASK_PATH", BASE_PATH . "/Task/");
 
-		//function
-		require_once COMMON_PATH . "Function.php";
+		//autoload
+		require_once BASE_PATH . "Lib/Autoload.php";
+		new Autoload();
 
 		//配置文件
-		C(include(COMMON_PATH . "Conf.php"));
+		Conf::getInstance()->setConfig(include(COMMON_PATH . "Conf.php"));
 
-		//设置异常处理
-		//set_exception_handler("ExceHandler");
+		//异常处理机制
+		new Exception();
 
 		//daemon
 		$this->is_deaemon && $this->RestStd();
 
 		//php exec
-		$this->php_exec = C("PHP_EXEC");
+		$this->php_exec = Conf::getInstance()->getConfig("PHP_EXEC");
 	}
 
 	/**
@@ -125,12 +132,12 @@ class CrontabServer
 	{
 		//用户
 		if (posix_getuid() !== 0)
-			exit("Not allowed user,must be root");
+			Log::Log("Not allowed user,must be root", Log::LOG_EXIT);
 
 		//进程可用内存
 		exec("free|awk -F' ' '{print $7}'", $memory_avaliable);
-		if ($memory_avaliable[1] < C("MEMORY_AVALIABLE") * 1024 * 1024)
-			exit("There is out of memory");
+		if ($memory_avaliable[1] < Conf::getInstance()->getConfig("MEMORY_AVALIABLE") * 1024 * 1024)
+			Log::Log("There is out of memory", Log::LOG_EXIT);
 
 		//进程可用共享内存 todo 不准确
 //		if (C("DEFAULT_IPC_TYPE") == "shmop") {
@@ -143,10 +150,10 @@ class CrontabServer
 
 		//多进程数处理
 		exec("cat /proc/cpuinfo |grep processor|wc -l", $multi_process);
-		$multi_process_value = C("MULTI_PROCESS");
+		$multi_process_value = Conf::getInstance()->getConfig("MULTI_PROCESS");
 		if ($multi_process_value) {
 			if ($multi_process_value > $multi_process[0])
-				Logs("Total number of multi-process set beyond the server CPU logic", LOG_WARNING);
+				Log::Log("Total number of multi-process set beyond the server CPU logic", Log::LOG_WARNING);
 			$this->multi_process = $multi_process_value;
 		} else {
 			$this->multi_process = $multi_process[0];
@@ -159,7 +166,39 @@ class CrontabServer
 	 */
 	private function SapiRun()
 	{
+		$info = ",info:" . implode(" ", $_SERVER['argv']);
+		$_SERVER['argc'] < 2 && Log::Log("Task is not found{$info}", Log::LOG_ERROR);
 
+		//控制器
+		$action = substr($_SERVER['argv'][1], strrpos($_SERVER['argv'][1], "/") + 1);
+		$controller = substr($_SERVER['argv'][1], 0, strrpos($_SERVER['argv'][1], "/"));
+		$controller = "Task/{$controller}";
+
+		!is_file("{$controller}.php") && Log::Log("Task controller is not found{$info}", Log::LOG_ERROR);
+		define("CONTROLLER", substr($controller, strrpos($controller, "/") + 1));
+
+		//方法
+		$controller = "\\" . str_replace("/", "\\", $controller);
+		$class = new ReflectionClass($controller);
+		$obj = $class->newInstance();
+
+		//定义常量
+		!method_exists($obj, $action) && Log::Log("Task action is not found{$info}", Log::LOG_ERROR);
+		define("ACTION", $action);
+
+		//参数
+		if (isset($_SERVER['argv'][2])) {
+			$param = explode("/", $_SERVER['argv'][2]);
+			if ($param)
+				for ($i = 0; $i < count($param); $i = $i + 2)
+					isset($param[$i]) && isset($param[$i + 1]) && $_REQUEST[$param[$i]] = $param[$i + 1];
+		}
+
+		//todo 额外参数
+
+		//运行
+		$invoke = $class->getMethod($action);
+		$invoke->invoke($obj);
 	}
 
 	/**
@@ -168,8 +207,8 @@ class CrontabServer
 	private function Run()
 	{
 		//获取任务
-		Fork($this->php_exec, array("sapi.php", "Core/Core/GetTask", "id/1"));
-
+		Pcntl::getInstance()->fork($this->php_exec, array("sapi.php", "Core/Core/GetTask", "id/1/name/wu/sds"));
+		exit;
 		//开启服务 是否后台模式
 		if ($this->is_deaemon) {
 			//fork
@@ -177,11 +216,6 @@ class CrontabServer
 			//获取终端命令
 			$this->Run();
 		}
-		//time
-		define("START_TIME", time());
-
-		//记录日志
-		$this->Log("start server", LOG_INFO);
 	}
 
 	/**

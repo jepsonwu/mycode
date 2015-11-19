@@ -13,6 +13,7 @@ class Core
 {
 	/**
 	 * 获取当前可执行任务
+	 *
 	 */
 	public function GetTask()
 	{
@@ -20,6 +21,15 @@ class Core
 		$ipc = Ipc::getInstance();
 		$res = $ipc->write(1446431328, $str, strlen($str));
 		var_dump("write data:" . $res);
+		exit;
+	}
+
+
+	private function ParseRule()
+	{
+		//过滤
+
+		//todo 解析计算出以分为单位的时间戳
 	}
 
 	public function CrontabServer()
