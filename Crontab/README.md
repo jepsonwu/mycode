@@ -35,5 +35,8 @@ Event事件
 	2.可以写文件，也可以终端命令行执行
 
 TaskList任务列表配置
+	1.遵循linux crontab 规则即可
 
 LOG日志
+	1.调式模式
+	2.logfile模式

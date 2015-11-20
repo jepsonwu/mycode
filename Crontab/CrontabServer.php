@@ -123,6 +123,8 @@ class CrontabServer
 
 		//php exec
 		$this->php_exec = Conf::getInstance()->getConfig("PHP_EXEC");
+		//文件是否可执行
+		define("PHP_EXEC", $this->php_exec);
 	}
 
 	/**
@@ -228,7 +230,7 @@ class CrontabServer
 		$dir = LOG_PATH . date("Ymd") . "/";
 		!is_dir($dir) && mkdir($dir, 0744, true);
 
-		$file = $dir . C("LOG_FILE");
+		$file = $dir . Conf::getInstance()->getConfig("LOG_FILE");
 		if (is_file($file) && is_writable($file)) {
 			fclose(STDOUT);
 			fclose(STDERR);
