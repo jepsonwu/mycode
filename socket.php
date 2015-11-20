@@ -1,4 +1,4 @@
-<? php
+<?php
 /**
 * 
 */
@@ -15,7 +15,6 @@ class socket
 	}
 
 	public function createServer(){
-		$server=
 	}
 
 	public function send(){
