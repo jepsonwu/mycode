@@ -161,6 +161,9 @@ class CrontabServer
 			$this->multi_process = $multi_process[0];
 		}
 
+		//设置可获取任务列表最大时长
+		$task_exec_total_time = Conf::getInstance()->getConfig("TASK_EXEC_TOTAL_TIME");
+		Ipc::getInstance()->write(strtotime("last year"), $task_exec_total_time, strlen($task_exec_total_time));
 	}
 
 	/**

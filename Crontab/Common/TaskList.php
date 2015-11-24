@@ -7,14 +7,14 @@
  */
 return array(
 	//第三方任务
-//	"/usr/bin/php 5 * * * * /data/mycode/task1.php",
-//	"/usr/bash 5 * * * * Demo",
+	"/usr/bin/php 50 * * * * /data/mycode/task1.php",
+	//"/usr/bash 5 * * * * Demo",
 
 	//php任务  框架本身需要提供一些基础服务
 	//s(框架本身的任务) 时间格式 commond argv
-//	"s 5 * * * * /Demo/Demo/ id/1/name/test",
-//	"s 1,5 * * * * /Demo/Demo/ id/1/name/test",
-//	"s 1-5 * * * 1 /Demo/Demo/ id/1/name/test",
-	"s */5 * * May * /Demo/Demo/ id/1/name/test",
+	//"s 5 * * * * /Demo/Demo/ id/1/name/test",
+	//"s 1,5 * * * * /Demo/Demo/ id/1/name/test",
+	//"s 1-5 * * * 1 /Demo/Demo/ id/1/name/test",
+//	"s */5 * * May * /Demo/Demo/ id/1/name/test",
 //	"s */2 1-5 1-10 * * /Demo/Demo/ id/1/name/test"
 );

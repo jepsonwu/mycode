@@ -20,4 +20,7 @@ return array(
 
 	//日志文件
 	"LOG_FILE" => "log.txt",
+
+	//默认获取多少时长的可执行任务列表 单位分 程序会优化
+	"TASK_EXEC_TOTAL_TIME" => 60,
 );
