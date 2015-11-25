@@ -4,7 +4,7 @@ namespace Lib\Ipc;
 use Lib\Ipc\IpcAbstract;
 
 /**
- *
+ * http://www.tuicool.com/articles/qY7vm2
  * User: jepson <jepson@abc360.com>
  * Date: 15-10-26
  * Time: 上午10:57
