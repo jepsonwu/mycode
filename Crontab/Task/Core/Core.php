@@ -21,12 +21,7 @@ class Core
 		Task::getInstance()->getTask();
 		//todo 每一次准备计算的可执行任务列表总时长
 		//$task_total_time = 60;
-
-		$str = "test data";
-		$ipc = Ipc::getInstance();
-		$res = $ipc->write(1446431328, $str, strlen($str));
-		var_dump("write data:" . $res);
-		exit;
+		//todo do log
 	}
 
 

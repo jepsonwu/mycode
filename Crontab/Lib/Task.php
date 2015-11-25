@@ -2,7 +2,8 @@
 namespace Lib;
 
 /**
- *
+ * 任务解析类
+ * 遵循linux ctontab规则
  * User: jepson <jepson@duomai.com>
  * Date: 15-11-24
  * Time: 下午12:51
@@ -18,7 +19,7 @@ class Task
 	private $today = array();
 
 	private $week_en = array(
-		1 => 'Mon', 2 => 'Tues', 3 => 'Wed', 4 => 'Thur', 5 => 'Fri', 6 => 'Sat', 7 => 'Sun'
+		1 => 'Mon', 2 => 'Tues', 3 => 'Wed', 4 => 'Thur', 5 => 'Fri', 6 => 'Sat', 0 => 'Sun'
 	);
 
 	private $mon_en = array(
@@ -52,11 +53,12 @@ class Task
 	public function getTask()
 	{
 		$return = array();
+		//todo 缓存 只有当人为刷新的时候才会更新
 		$task_list = include_once COMMON_PATH . "TaskList.php";
 
 		if ($task_list) {
 			//过滤
-			$week_reg = "([0]?[1-7]|" . implode("|", $this->week_en) . ")";
+			$week_reg = "([0]?[0-6]|" . implode("|", $this->week_en) . ")";
 			$month_reg = "(1[0-2]|[0]?[1-9]|" . implode("|", $this->mon_en) . ")";
 			$task_list = preg_grep(
 				"/^(s|[\/|\w]+)[\s]+" .
@@ -91,8 +93,12 @@ class Task
 
 					//拼接日期值 注意几个临界值 递归
 					$exec_date = $this->GetDateString(array($this->today['year']), $task[4], "mon");
-					//todo 星期就是日 根据月得到指定的日即可
+
+					//日 星期
+					!empty($exec_date) && $exec_date_week = $this->GetDateStringByWeek($exec_date, $task[5]);
 					!empty($exec_date) && $exec_date = $this->GetDateString($exec_date, $task[3], "mday");
+					!empty($exec_date_week) && $exec_date = array_unique(array_merge($exec_date, $exec_date_week));
+
 					!empty($exec_date) && $exec_date = $this->GetDateString($exec_date, $task[2], "hours");
 					!empty($exec_date) && $exec_date = $this->GetDateString($exec_date, $task[1], "min");
 
@@ -109,19 +115,26 @@ class Task
 
 					$exec_argvs[] = $task[6];
 					isset($task[7]) && $exec_argvs[] = $task[7];
-					//缓存任务名称
-					foreach ($exec_date as $key) {
-						$return[$key][] = json_encode(array($exec_commond, $exec_argvs));
-					}
-				}
+					$task = json_encode(array($exec_commond, $exec_argvs));
 
-				print_r($return);
-				echo count($return);
-				exit;
+					//暂时直接存储
+					foreach ($exec_date as $key)
+						Ipc::getInstance()->write(strtotime($key), $task, strlen($task));
+				}
 			}
 		}
 
 		return $return;
+	}
+
+	/**
+	 * todo 不好实现
+	 * @param $task
+	 */
+	private function SaveTaskList($task)
+	{
+		//缓存任务名称 3年前的时间戳  ipc记录待执行任务
+		$start_time = "1132900787";
 	}
 
 	/**
@@ -163,61 +176,121 @@ class Task
 				break;
 		}
 
-		//返回值
 		$return = array();
-		$date = "";
-		switch ($rule) {
-			//*代表每  除了所有都为*的时候
-			case "*":
-				foreach ($exec_date as $val)
-					for ($i = 1; $i <= $total; $i++)
-						if ($date = $this->FilterDateString("{$val}{$sep}{$i}", $type))
+		try {
+			//返回值
+			switch ($rule) {
+				//*代表每  除了所有都为*的时候
+				case "*":
+					foreach ($exec_date as $val)
+						for ($i = 1; $i <= $total; $i++)
+							if ($date = $this->FilterDateString("{$val}{$sep}{$i}", $type))
+								$return[] = $date;
+					break;
+				case is_numeric($rule):
+					foreach ($exec_date as $val)
+						if ($date = $this->FilterDateString("{$val}{$sep}{$rule}", $type))
 							$return[] = $date;
-				break;
-			case is_numeric($rule):
-				foreach ($exec_date as $val)
-					if ($date = $this->FilterDateString("{$val}{$sep}{$rule}", $type))
-						$return[] = $date;
-				break;
-			case strpos($rule, ",") !== false:
-				$rule = explode(",", $rule);
-				foreach ($rule as $val)
+					break;
+				case strpos($rule, ",") !== false:
+					$rule = array_unique(explode(",", $rule));
+					//调换以下大小的顺序
+					sort($rule);
 					foreach ($exec_date as $val_e)
-						if ($date = $this->FilterDateString("{$val_e}{$sep}{$val}", $type))
-							$return[] = $date;
-				break;
-			case strpos($rule, "-") !== false:
-				$rule = explode("-", $rule);
-				if ($rule[0] <= $rule[1]) {
-					for ($i = $rule[0]; $i <= $rule[1]; $i++)
+						foreach ($rule as $val)
+							if ($date = $this->FilterDateString("{$val_e}{$sep}{$val}", $type))
+								$return[] = $date;
+					break;
+				case strpos($rule, "-") !== false:
+					$rule = array_unique(explode("-", $rule));
+					sort($rule);
+					if (count($rule) == 2) {
 						foreach ($exec_date as $val_e)
+							for ($i = $rule[0]; $i <= $rule[1]; $i++)
+								if ($date = $this->FilterDateString("{$val_e}{$sep}{$i}", $type))
+									$return[] = $date;
+					}
+					break;
+				case strpos($rule, "/") != false:
+					$rule = intval(substr($rule, strpos($rule, "/") + 1));
+					//这里从1开始
+					//注意 exec_date要放外面循环,因为放里面会大乱顺序
+					foreach ($exec_date as $val_e)
+						for ($i = 1; $i <= $total; $i = $i + $rule)
 							if ($date = $this->FilterDateString("{$val_e}{$sep}{$i}", $type))
 								$return[] = $date;
-				}
-				break;
-			case strpos($rule, "/") != false:
-				$rule = intval(substr($rule, strpos($rule, "/") + 1));
-				//todo 这里到底是从0还是1开始
-				for ($i = 1; $i <= $total; $i = $i + $rule)
-					foreach ($exec_date as $val_e)
-						if ($date = $this->FilterDateString("{$val_e}{$sep}{$i}", $type))
-							$return[] = $date;
-				break;
+					break;
+			}
+		} catch (Exception $e) {
 		}
 
 		return $return;
 	}
 
+	/**
+	 * 通过星期获取可执行时间
+	 * @param $exec_date
+	 * @param $rule
+	 * @return array
+	 */
+	private function GetDateStringByWeek($exec_date, $rule)
+	{
+		//替换英文
+		$rule = preg_replace(array_map(function ($val) {
+			return "/{$val}/";
+		}, $this->week_en), array_keys($this->week_en), $rule);
+
+		//处理规则
+		$return = array();
+		try {
+			switch ($rule) {
+				case "*":
+					return array();
+					break;
+				case is_numeric($rule):
+					$rule = array($rule);
+					break;
+				case strpos($rule, ",") !== false:
+					$rule = array_unique(explode(",", $rule));
+					sort($rule);
+					break;
+				case strpos($rule, "-") !== false:
+					$rule = array_unique(explode("-", $rule));
+					sort($rule);
+					if (count($rule) == 2) {
+						for ($i = $rule[0] + 1; $i < $rule[1]; $i++)
+							$rule[] = $i;
+						sort($rule);
+					}
+					break;
+			}
+
+			//处理结果
+			foreach ($exec_date as $val)
+				for ($i = 1; $i <= 31; $i++) {
+					$date_info = getdate(strtotime("{$val}-{$i}"));
+
+					if (in_array($date_info['wday'], $rule)) {
+						if ($date = $this->FilterDateString("{$val}-{$i}", "mday"))
+							$return[] = $date;
+					}
+				}
+		} catch (Exception $e) {
+		}
+
+		return $return;
+	}
 
 	/**
 	 * 当时间大于设置的最大获取可执行任务时长时不记
 	 * 当时间小于当前获取任务列表开始时间不记
 	 * @param $date
+	 * @param $type
 	 * @return string
+	 * @throws Exception
 	 */
 	private function FilterDateString($date, $type)
 	{
-		$tmp = "";
 		switch ($type) {
 			case "hours":
 				$tmp = $date . ":00:00";
@@ -231,49 +304,10 @@ class Task
 		if (strtotime($tmp) < $this->task_start_time[$type])
 			return "";
 
-		//最大可获取时长
+		//最大可获取时长  采用throw机制可以减少循环次数
 		if (strtotime($tmp) - $this->task_start_time['min'] > $this->task_exec_total_time)
-			return "";
+			throw new Exception();
 
 		return $date;
 	}
-
-//	private function GetDateString($exec_date, $rule, $type)
-//	{
-//		//过滤英文
-//		$filter="{$type}";
-//		if()
-//			$rule = preg_replace(array_map(function ($val) {
-//				return "/{$val}/";
-//			}, $this->mon_en), array_keys($this->mon_en), $rule);
-//
-//		$return = array();
-//		switch ($rule) {
-//			case "*":
-//				$return = array("{$exec_date}-{$this->today['mon']}");
-//				break;
-//			case is_numeric($rule):
-//				$return = array("{$exec_date}-{$rule}");
-//				break;
-//			case strpos($rule, ",") !== false:
-//				$rule = explode(",", $rule);
-//				foreach ($rule as $val)
-//					$return[] = "{$exec_date}-{$val}";
-//				break;
-//			case strpos($rule, "-") !== false:
-//				$rule = explode("-", $rule);
-//				if ($rule[0] <= $rule[1]) {
-//					for ($i = $rule[0]; $i <= $rule[1]; $i++)
-//						$return[] = "{$exec_date}-{$i}";
-//				}
-//				break;
-//			case strpos($rule, "/") != false:
-//				$rule = intval(substr($rule, strpos($rule, "/") + 1));
-//				for ($i = 1; $i <= 12; $i = $i + $rule)
-//					$return[] = "{$exec_date}-{$i}";
-//				break;
-//		}
-//
-//		return $return;
-//	}
 }

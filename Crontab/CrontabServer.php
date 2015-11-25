@@ -261,6 +261,8 @@ class CrontabServer
 					$this->is_deaemon = true;
 					break;
 				case "stop":
+					//todo 清除所有待执行的任务
+					//todo 回收内存
 					break;
 				case "restart":
 					break;
