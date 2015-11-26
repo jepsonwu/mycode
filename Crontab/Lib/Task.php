@@ -1,9 +1,13 @@
 <?php
 namespace Lib;
 
+use Lib\Ipc\Queue;
+use Lib\Ipc\Shmop;
+
 /**
  * 任务解析类
  * 遵循linux ctontab规则
+ * 采用sysvmsg存储
  * User: jepson <jepson@duomai.com>
  * Date: 15-11-24
  * Time: 下午12:51
@@ -84,7 +88,7 @@ class Task
 				);
 
 				//最大可执行时长
-				$this->task_exec_total_time = Ipc::getInstance()->read(strtotime("last year"));
+				$this->task_exec_total_time = Shmop::getInstance()->read("task_exec_total_time");
 				!$this->task_exec_total_time && $this->task_exec_total_time = Conf::getInstance()->getConfig("TASK_EXEC_TOTAL_TIME");
 				$this->task_exec_total_time = $this->task_exec_total_time * 60;
 
@@ -92,15 +96,15 @@ class Task
 					$task = preg_split("/[\s]+/", $task);
 
 					//拼接日期值 注意几个临界值 递归
-					$exec_date = $this->GetDateString(array($this->today['year']), $task[4], "mon");
+					$exec_date = $this->getDateString(array($this->today['year']), $task[4], "mon");
 
 					//日 星期
-					!empty($exec_date) && $exec_date_week = $this->GetDateStringByWeek($exec_date, $task[5]);
-					!empty($exec_date) && $exec_date = $this->GetDateString($exec_date, $task[3], "mday");
+					!empty($exec_date) && $exec_date_week = $this->getDateStringByWeek($exec_date, $task[5]);
+					!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[3], "mday");
 					!empty($exec_date_week) && $exec_date = array_unique(array_merge($exec_date, $exec_date_week));
 
-					!empty($exec_date) && $exec_date = $this->GetDateString($exec_date, $task[2], "hours");
-					!empty($exec_date) && $exec_date = $this->GetDateString($exec_date, $task[1], "min");
+					!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[2], "hours");
+					!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[1], "min");
 
 					//构建任务
 					$exec_argvs = array();
@@ -115,11 +119,12 @@ class Task
 
 					$exec_argvs[] = $task[6];
 					isset($task[7]) && $exec_argvs[] = $task[7];
-					$task = json_encode(array($exec_commond, $exec_argvs));
 
-					//暂时直接存储
-					foreach ($exec_date as $key)
-						Ipc::getInstance()->write(strtotime($key), $task, strlen($task));
+					//入队列任务执行时间和内存key todo 这里会一直追加 回收机制
+					$task = $this->saveTaskList(array($exec_commond, $exec_argvs));
+					if ($task)
+						foreach ($exec_date as $key)
+							Queue::getInstance()->write($task, strtotime($key));
 				}
 			}
 		}
@@ -128,13 +133,20 @@ class Task
 	}
 
 	/**
-	 * todo 不好实现
+	 * 保存任务到内存
+	 * 返回内存key
 	 * @param $task
+	 * @return int
 	 */
-	private function SaveTaskList($task)
+	private function saveTaskList($task)
 	{
-		//缓存任务名称 3年前的时间戳  ipc记录待执行任务
-		$start_time = "1132900787";
+		$key = String::stringToInt(serialize($task));
+		if (!Shmop::getInstance()->write($key, $task)) {
+			Log::Log("task save field,task:" . json_encode($task), Log::LOG_ERROR);
+			return false;
+		}
+
+		return $key;
 	}
 
 	/**
@@ -144,7 +156,7 @@ class Task
 	 * @param $type
 	 * @return array
 	 */
-	private function GetDateString($exec_date, $rule, $type)
+	private function getDateString($exec_date, $rule, $type)
 	{
 		//替换英文
 		$filter = "{$type}_en";
@@ -184,12 +196,12 @@ class Task
 				case "*":
 					foreach ($exec_date as $val)
 						for ($i = 1; $i <= $total; $i++)
-							if ($date = $this->FilterDateString("{$val}{$sep}{$i}", $type))
+							if ($date = $this->filterDateString("{$val}{$sep}{$i}", $type))
 								$return[] = $date;
 					break;
 				case is_numeric($rule):
 					foreach ($exec_date as $val)
-						if ($date = $this->FilterDateString("{$val}{$sep}{$rule}", $type))
+						if ($date = $this->filterDateString("{$val}{$sep}{$rule}", $type))
 							$return[] = $date;
 					break;
 				case strpos($rule, ",") !== false:
@@ -198,7 +210,7 @@ class Task
 					sort($rule);
 					foreach ($exec_date as $val_e)
 						foreach ($rule as $val)
-							if ($date = $this->FilterDateString("{$val_e}{$sep}{$val}", $type))
+							if ($date = $this->filterDateString("{$val_e}{$sep}{$val}", $type))
 								$return[] = $date;
 					break;
 				case strpos($rule, "-") !== false:
@@ -207,7 +219,7 @@ class Task
 					if (count($rule) == 2) {
 						foreach ($exec_date as $val_e)
 							for ($i = $rule[0]; $i <= $rule[1]; $i++)
-								if ($date = $this->FilterDateString("{$val_e}{$sep}{$i}", $type))
+								if ($date = $this->filterDateString("{$val_e}{$sep}{$i}", $type))
 									$return[] = $date;
 					}
 					break;
@@ -217,11 +229,11 @@ class Task
 					//注意 exec_date要放外面循环,因为放里面会大乱顺序
 					foreach ($exec_date as $val_e)
 						for ($i = 1; $i <= $total; $i = $i + $rule)
-							if ($date = $this->FilterDateString("{$val_e}{$sep}{$i}", $type))
+							if ($date = $this->filterDateString("{$val_e}{$sep}{$i}", $type))
 								$return[] = $date;
 					break;
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 		}
 
 		return $return;
@@ -233,7 +245,7 @@ class Task
 	 * @param $rule
 	 * @return array
 	 */
-	private function GetDateStringByWeek($exec_date, $rule)
+	private function getDateStringByWeek($exec_date, $rule)
 	{
 		//替换英文
 		$rule = preg_replace(array_map(function ($val) {
@@ -271,11 +283,11 @@ class Task
 					$date_info = getdate(strtotime("{$val}-{$i}"));
 
 					if (in_array($date_info['wday'], $rule)) {
-						if ($date = $this->FilterDateString("{$val}-{$i}", "mday"))
+						if ($date = $this->filterDateString("{$val}-{$i}", "mday"))
 							$return[] = $date;
 					}
 				}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 		}
 
 		return $return;
@@ -287,9 +299,9 @@ class Task
 	 * @param $date
 	 * @param $type
 	 * @return string
-	 * @throws Exception
+	 * @throws \Exception
 	 */
-	private function FilterDateString($date, $type)
+	private function filterDateString($date, $type)
 	{
 		switch ($type) {
 			case "hours":
@@ -306,7 +318,7 @@ class Task
 
 		//最大可获取时长  采用throw机制可以减少循环次数
 		if (strtotime($tmp) - $this->task_start_time['min'] > $this->task_exec_total_time)
-			throw new Exception();
+			throw new \Exception();
 
 		return $date;
 	}

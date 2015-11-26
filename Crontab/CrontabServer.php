@@ -1,9 +1,8 @@
 <?php
-use Lib\Ipc;
+use Lib\Ipc\Shmop;
 use Lib\Log;
 use Lib\Conf;
 use Lib\Pcntl;
-use Lib\Exception;
 
 /**
  *crontab server
@@ -116,7 +115,7 @@ class CrontabServer
 		Conf::getInstance()->setConfig(include(COMMON_PATH . "Conf.php"));
 
 		//异常处理机制
-		new Exception();
+		new Crontab_Exception();
 
 		//daemon
 		$this->is_deaemon && $this->RestStd();
@@ -163,7 +162,8 @@ class CrontabServer
 
 		//设置可获取任务列表最大时长
 		$task_exec_total_time = Conf::getInstance()->getConfig("TASK_EXEC_TOTAL_TIME");
-		Ipc::getInstance()->write(strtotime("last year"), $task_exec_total_time, strlen($task_exec_total_time));
+		//Shmop::getInstance()->delete("task_exec_total_time"); todo 两次指定的大小不一样便无法写进去
+		Shmop::getInstance()->write("task_exec_total_time", $task_exec_total_time);
 	}
 
 	/**

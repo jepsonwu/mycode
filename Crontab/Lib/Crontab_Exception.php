@@ -1,6 +1,4 @@
 <?php
-namespace Lib;
-
 use Lib\Log;
 
 /**
@@ -9,7 +7,7 @@ use Lib\Log;
  * Date: 15-11-19
  * Time: 下午2:17
  */
-class Exception extends \Exception
+class Crontab_Exception
 {
 	public function __construct()
 	{
@@ -19,8 +17,8 @@ class Exception extends \Exception
 		//set_error_handler
 	}
 
-	public function ExceHandler($exception = null)
+	public function ExceHandler($exception)
 	{
-		Log::Log($exception->getMessage(), Log::LOG_ERROR);
+		Log::Log($exception->getMessage(), Log::LOG_EXIT);
 	}
 }

@@ -7,7 +7,7 @@
  */
 return array(
 	//第三方任务
-	"/usr/bin/php */5 * 24 * 3 /data/mycode/task1.php",
+	"/usr/bin/php */5 * 26 * * /data/mycode/task1.php",
 	//"/usr/bash 5 * * * * Demo",
 
 	//php任务  框架本身需要提供一些基础服务

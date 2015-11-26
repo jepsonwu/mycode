@@ -1,7 +1,8 @@
 <?php
 namespace Task\Core;
 
-use Lib\Ipc;
+use Lib\Ipc\Shmop;
+use Lib\Ipc\Queue;
 use Lib\Task;
 
 /**
@@ -18,7 +19,13 @@ class Core
 	 */
 	public function GetTask()
 	{
-		Task::getInstance()->getTask();
+		$seg=sem_get("123456",2,0666,-1);
+		sem_acquire($seg);
+
+		exit;
+
+		//Task::getInstance()->getTask();
+		//var_dump(Queue::getInstance()->getCount());exit;
 		//todo 每一次准备计算的可执行任务列表总时长
 		//$task_total_time = 60;
 		//todo do log

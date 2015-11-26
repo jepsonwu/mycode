@@ -1,25 +1,42 @@
 <?php
 namespace Lib\Ipc;
 
-use Lib\Ipc\IpcAbstract;
-
 /**
- *
+ * system v shmop
+ * 支持传字符串键名
+ * todo sem 信号量实现原子性
+ * serialize 转换
  * User: jepson <jepson@abc360.com>
  * Date: 15-10-23
  * Time: 下午4:13
  */
-!extension_loaded("shmop") && exit("shmop extension is not loaded");
+use Lib\Conf;
+use Lib\String;
 
-class Shmop extends IpcAbstract
+if (!extension_loaded("shmop"))
+	throw new \Exception("Shmop extension is not loaded");
+
+class Shmop
 {
-	private $_option = array(
-		"mode" => 0666,
-	);
+	static public $instance = null;
+
+	private $option = array();
+
+	static public function getInstance($option = array())
+	{
+		if (is_null(self::$instance)) {
+			self::$instance = new self($option);
+		}
+
+		return self::$instance;
+	}
 
 	public function __construct($option)
 	{
-		$this->_option = array_merge($this->_option, $option);
+		$this->option = array_merge($this->option, $option);
+
+		if (!isset($this->option['mode']))
+			$this->option['mode'] = Conf::getInstance()->getConfig("SYSHM_MODE");
 	}
 
 	/**
@@ -28,22 +45,29 @@ class Shmop extends IpcAbstract
 	 */
 	public function read($key)
 	{
+		!is_int($key) && $key = String::stringToInt($key);
 		$shmid = shmop_open($key, "a", 0, 0);
-		if ($shmid)
-			return shmop_read($shmid, 0, shmop_size($shmid));
+
+		if ($shmid) {
+			$return = shmop_read($shmid, 0, shmop_size($shmid));
+			if ($return)
+				return unserialize($return);
+		}
 
 		return false;
 	}
 
 	/**
 	 * @param string $key
-	 * @param $value
+	 * @param $value mixed
 	 * @return bool|int
 	 */
-	public function write($key = '', $value, $size)
+	public function write($key, $value)
 	{
-		empty($key) && $key = ftok(__FILE__, "t");
-		$shmid = shmop_open($key, "c", $this->_option['mode'], $size);
+		!is_int($key) && $key = String::stringToInt($key);
+		$value = serialize($value);
+
+		$shmid = shmop_open($key, "c", $this->option['mode'], strlen($value));
 
 		if ($shmid)
 			return shmop_write($shmid, $value, 0);
@@ -57,6 +81,7 @@ class Shmop extends IpcAbstract
 	 */
 	public function delete($key)
 	{
+		!is_int($key) && $key = String::stringToInt($key);
 		$shmid = shmop_open($key, "a", 0, 0);
 		$return = false;
 

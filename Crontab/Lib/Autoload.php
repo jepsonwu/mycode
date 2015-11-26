@@ -15,11 +15,11 @@ class Autoload
 
 	private function autoload($name)
 	{
-		$filename = "";
-
 		//命令空间
 		if (strpos($name, "\\") !== false) {
 			$filename = BASE_PATH . str_replace("\\", "/", $name) . ".php";
+		} else {
+			$filename = LIB_PATH . $name . ".php";
 		}
 
 		file_exists($filename) && require_once $filename;
