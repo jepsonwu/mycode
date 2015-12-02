@@ -1,5 +1,6 @@
 <?php
 namespace Lib;
+
 use Lib\Ipc\Shmop;
 
 /**
@@ -39,7 +40,7 @@ class Pcntl
 				pcntl_exec($commond, $argv);
 				break;
 			default:
-				pcntl_waitpid($pid, $status);
+				//pcntl_waitpid($pid, $status);
 				return $pid;
 				break;
 		}
@@ -55,6 +56,6 @@ class Pcntl
 	 */
 	public function coreFork($name)
 	{
-		return $this->fork(PHP_EXEC, array("sapi.php", "Core/Core/{$name}"));
+		return $this->fork(PHP_BINARY, array("sapi.php", "Core/Core/{$name}"));
 	}
 }

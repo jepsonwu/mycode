@@ -6,10 +6,9 @@
  * Time: 下午2:53
  */
 return array(
-	//需要内存G
-	"MEMORY_AVALIABLE" => 1,
-	//需要共享内存
-	"SHMMAX" => 1,
+	//需要内存 单位G 默认2
+	"MEMORY_AVAILABLE" => 2,
+
 	//多进程数量  如果为空默认为当前逻辑cpu数量 算超线程
 	"MULTI_PROCESS" => 5,
 
@@ -21,13 +20,4 @@ return array(
 
 	//syshm
 	"SYSHM_MODE" => 0666,
-
-	//php路径
-	"PHP_EXEC" => "/usr/bin/php",
-
-	//日志文件
-	"LOG_FILE" => "log.txt",
-
-	//默认获取多少时长的可执行任务列表 单位分 程序会优化
-	"TASK_EXEC_TOTAL_TIME" => 60,
 );

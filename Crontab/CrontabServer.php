@@ -19,38 +19,46 @@ class CrontabServer
 	//运行模式
 	private $is_daemon = false;
 
-	//多进程数
-	private $multi_process = 1;
+	//默认最大可执行多进程数
+	private $multi_process = 4;
 
-	//php exec
-	private $php_exec = "";
+	//默认需要的内存
+	private $memory_available = 2;
 
-	//server pid shmop key
-	private $server_pid_key = "server_pid_key";
+	//server pid file
+	private $server_pid_file = "";
+
+	//server start time key
+	private $server_start_time_key = "Crontab Server Start Time";
 
 	/**
 	 * 开启服务
 	 */
 	public function Start()
 	{
-		//必要的处理
-		$this->Necessary();
+		//基础检测
+		$this->Check();
 		//获取参数
 		$this->Params();
 		//init
 		$this->Init();
-		//neccssary
-		$this->ServerNecc();
+		//是否在运行
+		$this->IsRuning();
+		//系统资源检测
+		$this->SystemCheck();
+		//注册信号处理函数
+		$this->RegisterSignal();
 		//运行
 		$this->Run();
 	}
 
+	/**
+	 * sapi入口
+	 */
 	public function Sapi()
 	{
-		//必要的处理
-		$this->Necessary();
-		//解析
-		$this->SapiParse();
+		//基础检测
+		$this->Check();
 		//init
 		$this->Init();
 		//run
@@ -58,25 +66,15 @@ class CrontabServer
 	}
 
 	/**
-	 * sapi 解析
+	 * 基本检测
 	 */
-	private function SapiParse()
-	{
-		//解析路径
-
-		//解析参数
-	}
-
-	/**
-	 * 必要的处理
-	 */
-	private function Necessary()
+	private function Check()
 	{
 		//模式
 		php_sapi_name() != "cli" && exit("Not allowed mode");
 
 		//扩展
-		foreach (array("pcntl", "posix") as $exten)
+		foreach (array("pcntl", "posix", "sysvmsg", "shmop") as $exten)
 			!extension_loaded($exten) && exit("{$exten} extension is not found");
 
 		//操作系统  目前只支持linux  有很多命令需要处理
@@ -96,20 +94,21 @@ class CrontabServer
 		//时区
 		date_default_timezone_set("PRC");
 
-		//set_include_path
-
 		//多字节设置
 		mb_internal_encoding("UTF-8");
 
 		//错误级别设置
-		error_reporting(E_ALL ^ E_NOTICE);
+		if ($this->is_daemon)
+			error_reporting(0);
+		else
+			error_reporting(-1);
 
 		//定义基本常量
 		!defined("BASE_PATH") && define("BASE_PATH", dirname(__FILE__) . "/");
-		!defined("COMMON_PATH") && define("COMMON_PATH", BASE_PATH . "/Common/");
-		!defined("LIB_PATH") && define("LIB_PATH", BASE_PATH . "/Lib/");
-		!defined("LOG_PATH") && define("LOG_PATH", BASE_PATH . "/Log/");
-		!defined("CORE_PATH") && define("CORE_PATH", BASE_PATH . "/Core/");
+		!defined("COMMON_PATH") && define("COMMON_PATH", BASE_PATH . "Common/");
+		!defined("LIB_PATH") && define("LIB_PATH", BASE_PATH . "Lib/");
+		!defined("LOG_PATH") && define("LOG_PATH", BASE_PATH . "Log/");
+		!defined("CORE_PATH") && define("CORE_PATH", BASE_PATH . "Core/");
 
 		//autoload
 		require_once BASE_PATH . "Lib/Autoload.php";
@@ -124,50 +123,35 @@ class CrontabServer
 		//daemon
 		$this->is_daemon && $this->RestStd();
 
-		//php exec
-		$this->php_exec = Conf::getInstance()->getConfig("PHP_EXEC");
-		//文件是否可执行
-		define("PHP_EXEC", $this->php_exec);
+		//pid file
+		$this->server_pid_file = LOG_PATH . "pid";
 	}
 
 	/**
-	 * 服务必要的处理
+	 * 开启服务所需的资源检查
 	 */
-	private function ServerNecc()
+	private function SystemCheck()
 	{
 		//用户
 		if (posix_getuid() !== 0)
 			Log::Log("Not allowed user,must be root", Log::LOG_EXIT);
 
 		//进程可用内存
-		exec("free|awk -F' ' '{print $7}'", $memory_avaliable);
-		if ($memory_avaliable[1] < Conf::getInstance()->getConfig("MEMORY_AVALIABLE") * 1024 * 1024)
+		exec("free|awk -F' ' '{print $7}'", $sys_memory_available);
+		$memory_available = intval(Conf::getInstance()->getConfig("MEMORY_AVAILABLE"));
+		$memory_available > 0 && $this->memory_available = $memory_available;
+		if ($sys_memory_available[1] < $this->memory_available * 1024 * 1024)
 			Log::Log("There is out of memory", Log::LOG_EXIT);
 
-		//进程可用共享内存 todo 不准确
-//		if (C("DEFAULT_IPC_TYPE") == "shmop") {
-//			exec("cat /proc/sys/kernel/shmmax", $shmmax);
-//			exec("free|awk -F' ' '{print $5}'", $shused);
-//
-//			if (($shmmax[0] - $shused[1] * 1024) < (C("SHMMAX") + 2) * 1024 * 1024 * 1024)
-//				exit("There is out of shmop");
-//		}
+		//todo how to check available shared memory on linux
 
 		//多进程数处理
 		exec("cat /proc/cpuinfo |grep processor|wc -l", $multi_process);
-		$multi_process_value = Conf::getInstance()->getConfig("MULTI_PROCESS");
-		if ($multi_process_value) {
-			if ($multi_process_value > $multi_process[0])
-				Log::Log("Total number of multi-process set beyond the server CPU logic", Log::LOG_WARNING);
-			$this->multi_process = $multi_process_value;
-		} else {
-			$this->multi_process = $multi_process[0];
-		}
+		$multi_process_define = intval(Conf::getInstance()->getConfig("MULTI_PROCESS"));
+		$multi_process_define > 0 && $this->multi_process = $multi_process_define;
+		if ($multi_process[0] < $this->multi_process)
+			Log::Log("Total number of multi-process set beyond the server CPU logic", Log::LOG_WARNING);
 
-		//设置可获取任务列表最大时长
-		$task_exec_total_time = Conf::getInstance()->getConfig("TASK_EXEC_TOTAL_TIME");
-		//Shmop::getInstance()->delete("task_exec_total_time"); todo 两次指定的大小不一样便无法写进去
-		Shmop::getInstance()->write("task_exec_total_time", $task_exec_total_time);
 	}
 
 	/**
@@ -181,7 +165,7 @@ class CrontabServer
 		//控制器
 		$action = substr($_SERVER['argv'][1], strrpos($_SERVER['argv'][1], "/") + 1);
 		$controller = substr($_SERVER['argv'][1], 0, strrpos($_SERVER['argv'][1], "/"));
-		$controller = "Core/{$controller}";
+		$controller = "{$controller}";
 
 		!is_file("{$controller}.php") && Log::Log("Task controller is not found{$info}", Log::LOG_ERROR);
 		define("CONTROLLER", substr($controller, strrpos($controller, "/") + 1));
@@ -215,35 +199,118 @@ class CrontabServer
 	 */
 	private function Run()
 	{
-		//获取任务
-		Task::getInstance()->clean();
+		//记录开始时间
+		Shmop::getInstance()->write($this->server_start_time_key, time());
+
+		//回收内存
+		$this->FreeMemory();
+
+		//第一次获取任务
 		Pcntl::getInstance()->coreFork("taskPush");
 
 		//开启服务 是否后台模式
 		Log::Log("Start crontab server", Log::LOG_INFO);
 		if ($this->is_daemon) {
-			//fork todo 记录PID
 			$pid = Pcntl::getInstance()->coreFork("crontabServer");
-			if ($pid) {
+
+			if ($pid)
 				$this->SaveServerPid($pid);
-			} else {
-				Log::Log("Start crontab server failed", Log::LOG_ERROR);
-			}
+			else
+				Log::Log("Start crontab server failed", Log::LOG_EXIT);
 		} else {
 			//获取终端命令
-			$crontab = new Core\Core\Core();
+			$crontab = new Core\Core();
 			$crontab->crontabServer();
 		}
 	}
 
 	/**
+	 * 是否在运行
+	 */
+	private function IsRuning()
+	{
+		$pid = $this->GetServerPid();
+		if ($pid && posix_kill($pid, 0))
+			Log::Log("Start crontab server failed,server is runing", Log::LOG_EXIT);
+	}
+
+	/**
+	 * 注册信号处理函数
+	 */
+	private function RegisterSignal()
+	{
+		pcntl_signal(SIGHUP, array($this, "SignalHandler"));
+		pcntl_signal(SIGINT, array($this, "SignalHandler"));
+		//pcntl_signal(SIGQUIT, array($this, "SignalHandler"));
+	}
+
+	/**
+	 * 信号处理函数
+	 * @param $signal
+	 */
+	private function SignalHandler($signal)
+	{
+		switch ($signal) {
+			//用户终端正常或非正常结束时发出 退出登陆
+			case SIGHUP:
+				file_put_contents(LOG_PATH . "log.txt", "sighup");
+				echo "sighup";
+				break;
+			//程序终止信号 Ctrl-C INTR字符
+//			case SIGINT:
+//				file_put_contents(LOG_PATH . "log.txt", "sigint");
+//				echo "sigint";
+//				break;
+			//程序终止信号 Ctrl-\ QUIT字符
+			case SIGQUIT:
+				echo "sigquit";
+				break;
+			//程序终止信号  Ctrl-Z SUSP字符
+			case SIGTSTP:
+				break;
+			//留给用户使用的信号
+			case SIGUSR1:
+				break;
+			case SIGUSR2:
+				break;
+			//时钟定时信号
+			case SIGALRM:
+				break;
+			//子进程结束信号  避免僵尸进程
+			case SIGCHLD:
+				break;
+			//当重终端读取数据时
+			case SIGTTIN:
+				break;
+
+			//子进程信号
+			//停止进程
+			case SIGSTOP:
+				break;
+			//开始一个停止的进程
+			case SIGCONT:
+				break;
+		}
+	}
+
+	/**
+	 * 回收内存
+	 */
+	private function FreeMemory()
+	{
+		Task::getInstance()->clean();
+	}
+
+	/**
 	 * 保存服务PID
 	 * @param $pid
+	 * sys_get_temp_dir
 	 */
 	private function SaveServerPid($pid)
 	{
-		if (!Shmop::getInstance()->write($this->server_pid_key, $pid))
-			Log::Log("Save server pid failed,pid:{$pid}", Log::LOG_ERROR);
+		$fp = fopen($this->server_pid_file, "w");
+		fwrite($fp, $pid);
+		fclose($fp);
 	}
 
 	/**
@@ -252,7 +319,15 @@ class CrontabServer
 	 */
 	private function GetServerPid()
 	{
-		return Shmop::getInstance()->read($this->server_pid_key);
+		if (is_file($this->server_pid_file)) {
+			$fp = fopen($this->server_pid_file, "r");
+			$pid = fread($fp, filesize(LOG_PATH . "pid"));
+			fclose($fp);
+
+			return intval($pid);
+		}
+
+		return false;
 	}
 
 	/**
@@ -262,19 +337,21 @@ class CrontabServer
 	 */
 	private function Stop()
 	{
-		//清除任务
-		Task::getInstance()->clean();
-
-		//回收内存 todo
+		$this->Init();
 
 		//关闭服务
 		$pid = $this->GetServerPid();
 		if ($pid) {
-			posix_kill($pid, 9);
-			//todo 是否要关闭子进程
-			Log::Log("Stop crontab server success", Log::LOG_INFO);
+			//关闭主进程
+			posix_kill($pid, SIGKILL);   //todo SIGTERM ？？ 和SIGKILL的区别
+
+			//回收内存
+			$this->FreeMemory();
+
+			//todo 关闭子进程
+			echo "Stop crontab server success";
 		} else {
-			Log::Log("Stop crontab server failed", Log::LOG_INFO);
+			echo "Stop crontab server failed";
 		}
 	}
 
@@ -284,11 +361,15 @@ class CrontabServer
 	private function ReStart()
 	{
 		$this->Stop();
-		$this->Start();
+		//系统资源检测
+		$this->SystemCheck();
+		//运行
+		$this->Run();
 	}
 
 	/**
-	 * 重新载入配置和任务列表
+	 * 重新载入配置
+	 * 重新载入任务列表和事件
 	 */
 	private function ReLoad()
 	{
@@ -297,10 +378,36 @@ class CrontabServer
 
 	/**
 	 *输出状态
+	 * 进程信息 运行时长  内存 任务数
+	 * 后期统计
 	 */
 	private function Status()
 	{
+		//todo 感觉好别扭阿
+		$this->Init();
 
+		//检查进程状态
+		$pid = $this->GetServerPid();
+		if ($pid && posix_kill($pid, 0)) {
+			$status = "Server is runing,pid:{$pid}\n";
+
+			//总运行时间
+			$start_time = Shmop::getInstance()->read($this->server_start_time_key);
+			$start_time = time() - $start_time;
+			//todo 根据时间格式成天，时，分
+			$status .= "Server runing total time:{$start_time}\n";
+
+			//服务器内存
+
+			//待执行的任务数
+			$task_count = \Lib\Ipc\Queue::getInstance()->getCount();
+			$status .= "Waiting to exec task:{$task_count}\n";
+			//正在执行的子进程数
+		} else
+			$status = "Server is not runing\n";
+
+		echo $status;
+		exit;
 	}
 
 	/**
@@ -327,21 +434,26 @@ class CrontabServer
 	}
 
 	/**
-	 * 重定向标准输出 凌晨重定向
+	 * 重定向标准输出
+	 * todo 凌晨重定向到不同文件夹  重置
 	 * $str = fread(STDIN, 100);
 	 * echo $str;
 	 */
 	private function RestStd()
 	{
+		global $STDERR, $STDOUT;//一定要定义成全局变量
+
 		$dir = LOG_PATH . date("Ymd") . "/";
 		!is_dir($dir) && mkdir($dir, 0744, true);
 
-		$file = $dir . Conf::getInstance()->getConfig("LOG_FILE");
-		if (is_file($file) && is_writable($file)) {
+		$file = $dir . "log.txt";
+		$fp = fopen($file, "a");
+		if ($fp) {
+			fclose($fp);
 			fclose(STDOUT);
 			fclose(STDERR);
 
-			$STDOUT = fopen($file, "a");
+			$STDOUT = fopen($file, "a");  //这里必须重新打开
 			$STDERR = fopen($file, "a");
 		}
 	}
@@ -364,15 +476,19 @@ class CrontabServer
 					break;
 				case "stop":
 					$this->Stop();
+					exit;
 					break;
 				case "restart":
 					$this->ReStart();
+					exit;
 					break;
 				case "reload":
 					$this->ReLoad();
+					exit;
 					break;
 				case "status":
 					$this->Status();
+					exit;
 					break;
 				case "-v":
 					exit("Crontab version:" . $this->version . "\n");

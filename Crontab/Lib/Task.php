@@ -39,7 +39,8 @@ class Task
 		"min" => ""
 	);
 
-	private $task_exec_total_time = 0;
+	//每次获取的可执行任务时长
+	private $task_exec_total_time = 3600;
 
 	public static function getInstance()
 	{
@@ -114,11 +115,6 @@ class Task
 					"min" => floor(time() / 60) * 60
 				);
 
-				//最大可执行时长
-				$this->task_exec_total_time = Shmop::getInstance()->read("task_exec_total_time");
-				!$this->task_exec_total_time && $this->task_exec_total_time = Conf::getInstance()->getConfig("TASK_EXEC_TOTAL_TIME");
-				$this->task_exec_total_time = $this->task_exec_total_time * 60;
-
 				//需要入队列的时间=>任务,任务键值对
 				$wait_push = array();
 
@@ -140,7 +136,7 @@ class Task
 					$exec_argvs = array();
 					switch ($task[0]) {
 						case "s":
-							$exec_commond = PHP_EXEC;
+							$exec_commond = PHP_BINARY;
 							$exec_argvs[] = "sapi.php";
 							break;
 						default:
@@ -206,7 +202,7 @@ class Task
 	{
 		//替换英文
 		$filter = "{$type}_en";
-		if ($this->$filter) {
+		if ($this->{$filter}) {
 			$rule = preg_replace(array_map(function ($val) {
 				return "/{$val}/";
 			}, $this->$filter), array_keys($this->$filter), $rule);

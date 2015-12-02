@@ -10,7 +10,7 @@ namespace Lib;
 class Log
 {
 	//日志级别
-	const LOG_EXIT = "Exit";
+	const LOG_EXIT = "EXIT";
 	const LOG_ERROR = "Error";
 	const LOG_WARNING = "Warning";
 	const LOG_INFO = "Info";
@@ -24,11 +24,12 @@ class Log
 	 * Info 信息
 	 * @param $msg
 	 * @param int|string $type
+	 * @param bool $exit
 	 */
 	static function Log($msg, $type = self::LOG_ERROR)
 	{
 		$info = "Time:" . date("Y-m-d H:i:s") . "\n{$type}:{$msg}\n";
-		if ($type != self::LOG_INFO) {
+		if ($type == self::LOG_ERROR) {
 			$debug_info = debug_backtrace();
 
 			$info .= "File:" . substr($debug_info[1]['file'], strrpos($debug_info[1]['file'], "/") + 1, -4);

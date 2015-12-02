@@ -13,9 +13,6 @@ namespace Lib\Ipc;
 use Lib\Conf;
 use Lib\String;
 
-if (!extension_loaded("shmop"))
-	throw new \Exception("Shmop extension is not loaded");
-
 class Shmop
 {
 	static public $instance = null;

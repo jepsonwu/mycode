@@ -1,5 +1,5 @@
 <?php
-namespace Task\Demo;
+namespace Application\Demo;
 /**
  * 普通任务
  * User: jepson <jepson@duomai.com>

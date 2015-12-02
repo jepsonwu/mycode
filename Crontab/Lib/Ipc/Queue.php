@@ -11,9 +11,6 @@ namespace Lib\Ipc;
  */
 use Lib\Conf;
 
-if (!extension_loaded("sysvmsg"))
-	throw new \Exception("Sysvmsg extension is not loaded");
-
 class Queue
 {
 	/**

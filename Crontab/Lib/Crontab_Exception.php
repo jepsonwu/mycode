@@ -19,6 +19,6 @@ class Crontab_Exception
 
 	public function ExceHandler($exception)
 	{
-		Log::Log($exception->getMessage(), Log::LOG_EXIT);
+		Log::Log($exception->getMessage(), Log::LOG_ERROR, true);
 	}
 }
