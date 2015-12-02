@@ -36,7 +36,9 @@ class Pcntl
 			case -1:
 				Log::Log("Fork process field.commond:{$commond},argv:" . json_encode($argv), Log::LOG_ERROR);
 				break;
+			//子进程
 			case 0:
+				//todo 设置用户ID
 				pcntl_exec($commond, $argv);
 				break;
 			default:
