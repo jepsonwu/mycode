@@ -105,8 +105,9 @@ class Queue
 	 * 删除队列
 	 * @return bool
 	 */
-	public function clear()
+	public function clean()
 	{
+		self::$instance = null;
 		return msg_remove_queue($this->seg);
 	}
 

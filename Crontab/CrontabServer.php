@@ -3,6 +3,7 @@ use Lib\Ipc\Shmop;
 use Lib\Log;
 use Lib\Conf;
 use Lib\Pcntl;
+use Lib\Task;
 
 /**
  *crontab server
@@ -16,13 +17,16 @@ class CrontabServer
 	private $version = 1.0;
 
 	//运行模式
-	private $is_deaemon = false;
+	private $is_daemon = false;
 
 	//多进程数
 	private $multi_process = 1;
 
 	//php exec
 	private $php_exec = "";
+
+	//server pid shmop key
+	private $server_pid_key = "server_pid_key";
 
 	/**
 	 * 开启服务
@@ -105,7 +109,7 @@ class CrontabServer
 		!defined("COMMON_PATH") && define("COMMON_PATH", BASE_PATH . "/Common/");
 		!defined("LIB_PATH") && define("LIB_PATH", BASE_PATH . "/Lib/");
 		!defined("LOG_PATH") && define("LOG_PATH", BASE_PATH . "/Log/");
-		!defined("TASK_PATH") && define("TASK_PATH", BASE_PATH . "/Task/");
+		!defined("CORE_PATH") && define("CORE_PATH", BASE_PATH . "/Core/");
 
 		//autoload
 		require_once BASE_PATH . "Lib/Autoload.php";
@@ -118,7 +122,7 @@ class CrontabServer
 		new Crontab_Exception();
 
 		//daemon
-		$this->is_deaemon && $this->RestStd();
+		$this->is_daemon && $this->RestStd();
 
 		//php exec
 		$this->php_exec = Conf::getInstance()->getConfig("PHP_EXEC");
@@ -177,7 +181,7 @@ class CrontabServer
 		//控制器
 		$action = substr($_SERVER['argv'][1], strrpos($_SERVER['argv'][1], "/") + 1);
 		$controller = substr($_SERVER['argv'][1], 0, strrpos($_SERVER['argv'][1], "/"));
-		$controller = "Task/{$controller}";
+		$controller = "Core/{$controller}";
 
 		!is_file("{$controller}.php") && Log::Log("Task controller is not found{$info}", Log::LOG_ERROR);
 		define("CONTROLLER", substr($controller, strrpos($controller, "/") + 1));
@@ -212,15 +216,114 @@ class CrontabServer
 	private function Run()
 	{
 		//获取任务
-		Pcntl::getInstance()->fork($this->php_exec, array("sapi.php", "Core/Core/GetTask", "id/1/name/wu/sds"));
-		exit;
+		Task::getInstance()->clean();
+		Pcntl::getInstance()->coreFork("taskPush");
+
 		//开启服务 是否后台模式
-		if ($this->is_deaemon) {
-			//fork
+		Log::Log("Start crontab server", Log::LOG_INFO);
+		if ($this->is_daemon) {
+			//fork todo 记录PID
+			$pid = Pcntl::getInstance()->coreFork("crontabServer");
+			if ($pid) {
+				$this->SaveServerPid($pid);
+			} else {
+				Log::Log("Start crontab server failed", Log::LOG_ERROR);
+			}
 		} else {
 			//获取终端命令
-			$this->Run();
+			$crontab = new Core\Core\Core();
+			$crontab->crontabServer();
 		}
+	}
+
+	/**
+	 * 保存服务PID
+	 * @param $pid
+	 */
+	private function SaveServerPid($pid)
+	{
+		if (!Shmop::getInstance()->write($this->server_pid_key, $pid))
+			Log::Log("Save server pid failed,pid:{$pid}", Log::LOG_ERROR);
+	}
+
+	/**
+	 * 获取服务PID
+	 * @return bool|string
+	 */
+	private function GetServerPid()
+	{
+		return Shmop::getInstance()->read($this->server_pid_key);
+	}
+
+	/**
+	 * 停止服务
+	 * 清除所有待执行的任务
+	 * 回收内存
+	 */
+	private function Stop()
+	{
+		//清除任务
+		Task::getInstance()->clean();
+
+		//回收内存 todo
+
+		//关闭服务
+		$pid = $this->GetServerPid();
+		if ($pid) {
+			posix_kill($pid, 9);
+			//todo 是否要关闭子进程
+			Log::Log("Stop crontab server success", Log::LOG_INFO);
+		} else {
+			Log::Log("Stop crontab server failed", Log::LOG_INFO);
+		}
+	}
+
+	/**
+	 * 重起
+	 */
+	private function ReStart()
+	{
+		$this->Stop();
+		$this->Start();
+	}
+
+	/**
+	 * 重新载入配置和任务列表
+	 */
+	private function ReLoad()
+	{
+
+	}
+
+	/**
+	 *输出状态
+	 */
+	private function Status()
+	{
+
+	}
+
+	/**
+	 * 子进程事件
+	 */
+	private function TaskEvent($pid, $event)
+	{
+		switch ($event) {
+			case "stop":
+				break;
+			case "restart":
+				break;
+			case "status":
+				break;
+		}
+	}
+
+	/**
+	 * 守护进程
+	 */
+	private function IsDaemon()
+	{
+		$this->is_daemon = true;
 	}
 
 	/**
@@ -255,20 +358,21 @@ class CrontabServer
 		if (isset($_SERVER['argv'][1])) {
 			switch ($_SERVER['argv'][1]) {
 				case "start":
-					//demo
 					isset($_SERVER['argv'][2]) &&
 					$_SERVER['argv'][2] == "-d" &&
-					$this->is_deaemon = true;
+					$this->IsDaemon();
 					break;
 				case "stop":
-					//todo 清除所有待执行的任务
-					//todo 回收内存
+					$this->Stop();
 					break;
 				case "restart":
+					$this->ReStart();
 					break;
 				case "reload":
+					$this->ReLoad();
 					break;
 				case "status":
+					$this->Status();
 					break;
 				case "-v":
 					exit("Crontab version:" . $this->version . "\n");
@@ -280,16 +384,12 @@ class CrontabServer
 					$this->Help();
 					break;
 				case is_numeric($_SERVER['argv'][1]);//子进程事件
-					//判断进程有效性
-
-					//事件
 					if (isset($_SERVER['argv'][2])) {
 						switch ($_SERVER['argv'][2]) {
 							case "stop":
-								break;
 							case "restart":
-								break;
 							case "status":
+								$this->TaskEvent($_SERVER['argv'][1], $_SERVER['argv'][2]);
 								break;
 							default:
 								$this->Help();

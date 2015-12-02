@@ -51,10 +51,37 @@ class Task
 	}
 
 	/**
-	 * 解析任务
+	 * 获取当前任务总数
 	 * @return array
 	 */
-	public function getTask()
+	public function getCount()
+	{
+		return Queue::getInstance()->getCount();
+	}
+
+	/**
+	 * 清空队列
+	 */
+	public function clean()
+	{
+		Queue::getInstance()->clean();
+	}
+
+	/**
+	 * 任务出队列
+	 * @param $type
+	 * @return mixed
+	 */
+	public function pull($type)
+	{
+		return Queue::getInstance()->read($type);
+	}
+
+	/**
+	 * 解析任务 入队列
+	 * @return array
+	 */
+	public function push()
 	{
 		$return = array();
 		//todo 缓存 只有当人为刷新的时候才会更新
@@ -92,6 +119,9 @@ class Task
 				!$this->task_exec_total_time && $this->task_exec_total_time = Conf::getInstance()->getConfig("TASK_EXEC_TOTAL_TIME");
 				$this->task_exec_total_time = $this->task_exec_total_time * 60;
 
+				//需要入队列的时间=>任务,任务键值对
+				$wait_push = array();
+
 				foreach ($task_list as $task) {
 					$task = preg_split("/[\s]+/", $task);
 
@@ -121,11 +151,16 @@ class Task
 					isset($task[7]) && $exec_argvs[] = $task[7];
 
 					//入队列任务执行时间和内存key todo 这里会一直追加 回收机制
-					$task = $this->saveTaskList(array($exec_commond, $exec_argvs));
+					$task = $this->saveTask(array($exec_commond, $exec_argvs));
 					if ($task)
 						foreach ($exec_date as $key)
-							Queue::getInstance()->write($task, strtotime($key));
+							$wait_push[strtotime($key)][] = $task;
+
 				}
+
+				//入队列
+				foreach ($wait_push as $key => $task)
+					Queue::getInstance()->write($task, $key);
 			}
 		}
 
@@ -138,7 +173,7 @@ class Task
 	 * @param $task
 	 * @return int
 	 */
-	private function saveTaskList($task)
+	private function saveTask($task)
 	{
 		$key = String::stringToInt(serialize($task));
 		if (!Shmop::getInstance()->write($key, $task)) {
@@ -146,7 +181,18 @@ class Task
 			return false;
 		}
 
+		Log::Log("task save success,key:{$key},task:" . json_encode($task), Log::LOG_INFO);
 		return $key;
+	}
+
+	/**
+	 * 读取单个任务
+	 * @param $key
+	 * @return bool|string
+	 */
+	public function getTask($key)
+	{
+		return Shmop::getInstance()->read($key);
 	}
 
 	/**
