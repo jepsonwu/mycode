@@ -34,15 +34,19 @@ class Pcntl
 		$pid = pcntl_fork();
 		switch ($pid) {
 			case -1:
-				Log::Log("Fork process field.commond:{$commond},argv:" . json_encode($argv), Log::LOG_ERROR);
+				$errno = pcntl_get_last_error();
+				Log::Log("Fork process failed,commond:{$commond},argv:" . json_encode($argv) .
+					",errno:{$errno},errstr:" . pcntl_strerror($errno), Log::LOG_WARNING);
 				break;
 			//子进程
 			case 0:
 				//todo 设置用户ID
-				pcntl_exec($commond, $argv);
+				if ($commond != "/app/php5/bin/php")
+					call_user_func_array(array($this, "test"), array());
+				else
+					pcntl_exec($commond, $argv);
 				break;
 			default:
-				//pcntl_waitpid($pid, $status);
 				return $pid;
 				break;
 		}
@@ -50,14 +54,26 @@ class Pcntl
 		return "";
 	}
 
-	/**
-	 *
-	 * @param $name
-	 * @return int|string
-	 * @throws \Exception
-	 */
-	public function coreFork($name)
+	function timer($func, $timeouts){
+
+
+		echo "enter timer\n";
+		$base = event_base_new();
+		$event = event_new();
+
+
+		event_set($event, 0, EV_TIMEOUT, $func);
+		event_base_set($event, $base);
+		event_add($event, $timeouts);
+
+
+		event_base_loop($base);
+	}
+
+	public function test()
 	{
-		return $this->fork(PHP_BINARY, array("sapi.php", "Core/Core/{$name}"));
+		while (true) {
+
+		}
 	}
 }

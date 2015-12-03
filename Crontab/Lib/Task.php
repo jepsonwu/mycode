@@ -202,7 +202,7 @@ class Task
 	{
 		//替换英文
 		$filter = "{$type}_en";
-		if ($this->{$filter}) {
+		if (isset($this->{$filter})) {
 			$rule = preg_replace(array_map(function ($val) {
 				return "/{$val}/";
 			}, $this->$filter), array_keys($this->$filter), $rule);

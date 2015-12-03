@@ -1,0 +1,12 @@
+Time:2015-12-03 10:27:15
+NOTICE:Undefined property: Lib\Task::$mday_en
+File:/data/mycode/Crontab/Lib/Task.php,line:205
+
+Time:2015-12-03 10:27:15
+NOTICE:Undefined property: Lib\Task::$hours_en
+File:/data/mycode/Crontab/Lib/Task.php,line:205
+
+Time:2015-12-03 10:27:15
+NOTICE:Undefined property: Lib\Task::$min_en
+File:/data/mycode/Crontab/Lib/Task.php,line:205
+

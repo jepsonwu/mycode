@@ -24,9 +24,8 @@ class Log
 	 * Info 信息
 	 * @param $msg
 	 * @param int|string $type
-	 * @param bool $exit
 	 */
-	static function Log($msg, $type = self::LOG_ERROR)
+	static public function Log($msg, $type = self::LOG_ERROR)
 	{
 		$info = "Time:" . date("Y-m-d H:i:s") . "\n{$type}:{$msg}\n";
 		if ($type == self::LOG_ERROR) {

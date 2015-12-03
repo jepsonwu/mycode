@@ -36,40 +36,31 @@ class CrontabServer
 	 */
 	public function Start()
 	{
-		//基础检测
-		$this->Check();
-		//获取参数
-		$this->Params();
 		//init
 		$this->Init();
+		//获取参数
+		$this->Params();
 		//是否在运行
 		$this->IsRuning();
 		//系统资源检测
 		$this->SystemCheck();
 		//注册信号处理函数
-		$this->RegisterSignal();
+		$this->RegisterServerSignal();
+		//设置闹钟
+		$this->SetAlarm();
 		//运行
 		$this->Run();
 	}
 
 	/**
-	 * sapi入口
+	 * 初始化
 	 */
-	public function Sapi()
+	private function Init()
 	{
-		//基础检测
-		$this->Check();
-		//init
-		$this->Init();
-		//run
-		$this->SapiRun();
-	}
+		//用户
+		if (posix_getuid() !== 0)
+			exit("Not allowed user,must be root");
 
-	/**
-	 * 基本检测
-	 */
-	private function Check()
-	{
 		//模式
 		php_sapi_name() != "cli" && exit("Not allowed mode");
 
@@ -78,19 +69,14 @@ class CrontabServer
 			!extension_loaded($exten) && exit("{$exten} extension is not found");
 
 		//操作系统  目前只支持linux  有很多命令需要处理
+		//todo 内核检测
 		$posix_uname = posix_uname();
 		!in_array($posix_uname['sysname'], array("Linux")) &&
 		exit("{$posix_uname['sysname']} operating system is not supported");
 
 		//php 版本控制
 		version_compare(phpversion(), "5.4.0", "<") && exit("Php version is to low");
-	}
 
-	/**
-	 * 初始化
-	 */
-	private function Init()
-	{
 		//时区
 		date_default_timezone_set("PRC");
 
@@ -98,10 +84,7 @@ class CrontabServer
 		mb_internal_encoding("UTF-8");
 
 		//错误级别设置
-		if ($this->is_daemon)
-			error_reporting(0);
-		else
-			error_reporting(-1);
+		error_reporting(-1);
 
 		//定义基本常量
 		!defined("BASE_PATH") && define("BASE_PATH", dirname(__FILE__) . "/");
@@ -120,9 +103,6 @@ class CrontabServer
 		//异常处理机制
 		new Crontab_Exception();
 
-		//daemon
-		$this->is_daemon && $this->RestStd();
-
 		//pid file
 		$this->server_pid_file = LOG_PATH . "pid";
 	}
@@ -132,10 +112,6 @@ class CrontabServer
 	 */
 	private function SystemCheck()
 	{
-		//用户
-		if (posix_getuid() !== 0)
-			Log::Log("Not allowed user,must be root", Log::LOG_EXIT);
-
 		//进程可用内存
 		exec("free|awk -F' ' '{print $7}'", $sys_memory_available);
 		$memory_available = intval(Conf::getInstance()->getConfig("MEMORY_AVAILABLE"));
@@ -155,43 +131,33 @@ class CrontabServer
 	}
 
 	/**
-	 * 运行单个任务
+	 * 为服务设置闹钟 用libevent实现
+	 * 用于更新任务列表 间隔 50分钟
+	 * 用于更新重定向 每天凌晨
+	 * 用于回收内存 间隔
 	 */
-	private function SapiRun()
+	private function SetAlarm()
 	{
-		$info = ",info:" . implode(" ", $_SERVER['argv']);
-		$_SERVER['argc'] < 2 && Log::Log("Task is not found{$info}", Log::LOG_ERROR);
+	}
 
-		//控制器
-		$action = substr($_SERVER['argv'][1], strrpos($_SERVER['argv'][1], "/") + 1);
-		$controller = substr($_SERVER['argv'][1], 0, strrpos($_SERVER['argv'][1], "/"));
-		$controller = "{$controller}";
+	/**
+	 * 注册信号处理机制
+	 */
+	private function RegisterServerSignal()
+	{
+		\Lib\Signal::getInstance()->registerServerSignal();
+	}
 
-		!is_file("{$controller}.php") && Log::Log("Task controller is not found{$info}", Log::LOG_ERROR);
-		define("CONTROLLER", substr($controller, strrpos($controller, "/") + 1));
+	/**
+	 * 是否在运行
+	 */
+	private function IsRuning()
+	{
+		$pid = $this->GetServerPid();
+		if ($pid && posix_kill($pid, 0))
+			return true;
 
-		//方法
-		$controller = "\\" . str_replace("/", "\\", $controller);
-		$class = new ReflectionClass($controller);
-		$obj = $class->newInstance();
-
-		//定义常量
-		!method_exists($obj, $action) && Log::Log("Task action is not found{$info}", Log::LOG_ERROR);
-		define("ACTION", $action);
-
-		//参数
-		if (isset($_SERVER['argv'][2])) {
-			$param = explode("/", $_SERVER['argv'][2]);
-			if ($param)
-				for ($i = 0; $i < count($param); $i = $i + 2)
-					isset($param[$i]) && isset($param[$i + 1]) && $_REQUEST[$param[$i]] = $param[$i + 1];
-		}
-
-		//todo 额外参数
-
-		//运行
-		$invoke = $class->getMethod($action);
-		$invoke->invoke($obj);
+		return false;
 	}
 
 	/**
@@ -202,16 +168,13 @@ class CrontabServer
 		//记录开始时间
 		Shmop::getInstance()->write($this->server_start_time_key, time());
 
-		//回收内存
-		$this->FreeMemory();
-
 		//第一次获取任务
-		Pcntl::getInstance()->coreFork("taskPush");
+		\Core\Core::getInstance()->coreFork("taskPush");
 
 		//开启服务 是否后台模式
-		Log::Log("Start crontab server", Log::LOG_INFO);
+		Log::Log("Start crontab server,pid:" . posix_getpid(), Log::LOG_INFO);
 		if ($this->is_daemon) {
-			$pid = Pcntl::getInstance()->coreFork("crontabServer");
+			$pid = \Core\Core::getInstance()->coreFork("crontabServer");
 
 			if ($pid)
 				$this->SaveServerPid($pid);
@@ -222,83 +185,6 @@ class CrontabServer
 			$crontab = new Core\Core();
 			$crontab->crontabServer();
 		}
-	}
-
-	/**
-	 * 是否在运行
-	 */
-	private function IsRuning()
-	{
-		$pid = $this->GetServerPid();
-		if ($pid && posix_kill($pid, 0))
-			Log::Log("Start crontab server failed,server is runing", Log::LOG_EXIT);
-	}
-
-	/**
-	 * 注册信号处理函数
-	 */
-	private function RegisterSignal()
-	{
-		pcntl_signal(SIGHUP, array($this, "SignalHandler"));
-		pcntl_signal(SIGINT, array($this, "SignalHandler"));
-		//pcntl_signal(SIGQUIT, array($this, "SignalHandler"));
-	}
-
-	/**
-	 * 信号处理函数
-	 * @param $signal
-	 */
-	private function SignalHandler($signal)
-	{
-		switch ($signal) {
-			//用户终端正常或非正常结束时发出 退出登陆
-			case SIGHUP:
-				file_put_contents(LOG_PATH . "log.txt", "sighup");
-				echo "sighup";
-				break;
-			//程序终止信号 Ctrl-C INTR字符
-//			case SIGINT:
-//				file_put_contents(LOG_PATH . "log.txt", "sigint");
-//				echo "sigint";
-//				break;
-			//程序终止信号 Ctrl-\ QUIT字符
-			case SIGQUIT:
-				echo "sigquit";
-				break;
-			//程序终止信号  Ctrl-Z SUSP字符
-			case SIGTSTP:
-				break;
-			//留给用户使用的信号
-			case SIGUSR1:
-				break;
-			case SIGUSR2:
-				break;
-			//时钟定时信号
-			case SIGALRM:
-				break;
-			//子进程结束信号  避免僵尸进程
-			case SIGCHLD:
-				break;
-			//当重终端读取数据时
-			case SIGTTIN:
-				break;
-
-			//子进程信号
-			//停止进程
-			case SIGSTOP:
-				break;
-			//开始一个停止的进程
-			case SIGCONT:
-				break;
-		}
-	}
-
-	/**
-	 * 回收内存
-	 */
-	private function FreeMemory()
-	{
-		Task::getInstance()->clean();
 	}
 
 	/**
@@ -337,18 +223,9 @@ class CrontabServer
 	 */
 	private function Stop()
 	{
-		$this->Init();
-
-		//关闭服务
 		$pid = $this->GetServerPid();
 		if ($pid) {
-			//关闭主进程
-			posix_kill($pid, SIGKILL);   //todo SIGTERM ？？ 和SIGKILL的区别
-
-			//回收内存
-			$this->FreeMemory();
-
-			//todo 关闭子进程
+			posix_kill($pid, SIGINT);
 			echo "Stop crontab server success";
 		} else {
 			echo "Stop crontab server failed";
@@ -383,9 +260,6 @@ class CrontabServer
 	 */
 	private function Status()
 	{
-		//todo 感觉好别扭阿
-		$this->Init();
-
 		//检查进程状态
 		$pid = $this->GetServerPid();
 		if ($pid && posix_kill($pid, 0)) {
@@ -412,6 +286,7 @@ class CrontabServer
 
 	/**
 	 * 子进程事件
+	 * todo 调整优先级
 	 */
 	private function TaskEvent($pid, $event)
 	{
@@ -431,6 +306,7 @@ class CrontabServer
 	private function IsDaemon()
 	{
 		$this->is_daemon = true;
+		!defined("IS_DAEMON") && define("IS_DAEMON", true);
 	}
 
 	/**
@@ -543,4 +419,43 @@ class CrontabServer
 		status  show status about process\n";
 		exit;
 	}
+
+
+	//	/**
+//	 * 运行单个任务
+//	 */
+//	private function SapiRun()
+//	{
+//		$info = ",info:" . implode(" ", $_SERVER['argv']);
+//		$_SERVER['argc'] < 2 && Log::Log("Task is not found{$info}", Log::LOG_ERROR);
+//
+//		//控制器
+//		$action = substr($_SERVER['argv'][1], strrpos($_SERVER['argv'][1], "/") + 1);
+//		$controller = substr($_SERVER['argv'][1], 0, strrpos($_SERVER['argv'][1], "/"));
+//		$controller = "{$controller}";
+//
+//		!is_file("{$controller}.php") && Log::Log("Task controller is not found{$info}", Log::LOG_ERROR);
+//		define("CONTROLLER", substr($controller, strrpos($controller, "/") + 1));
+//
+//		//方法
+//		$controller = "\\" . str_replace("/", "\\", $controller);
+//		$class = new ReflectionClass($controller);
+//		$obj = $class->newInstance();
+//
+//		//定义常量
+//		!method_exists($obj, $action) && Log::Log("Task action is not found{$info}", Log::LOG_ERROR);
+//		define("ACTION", $action);
+//
+//		//参数
+//		if (isset($_SERVER['argv'][2])) {
+//			$param = explode("/", $_SERVER['argv'][2]);
+//			if ($param)
+//				for ($i = 0; $i < count($param); $i = $i + 2)
+//					isset($param[$i]) && isset($param[$i + 1]) && $_REQUEST[$param[$i]] = $param[$i + 1];
+//		}
+//
+//		//运行
+//		$invoke = $class->getMethod($action);
+//		$invoke->invoke($obj);
+//	}
 }
