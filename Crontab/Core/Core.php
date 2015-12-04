@@ -2,8 +2,7 @@
 namespace Core;
 
 use Lib\Log;
-use Lib\Pcntl;
-use Lib\Task;
+use Lib\Timer;
 
 /**
  * 核心任务
@@ -26,22 +25,60 @@ class Core
 
 	/**
 	 * 获取当前可执行任务
-	 * todo 闹钟实现任务自动入队列
 	 * 设置当前进程的优先级
 	 */
 	public function taskPush()
 	{
 		$start_time = microtime(true);
 		Task::getInstance()->push();
+		//设置任务刷新闹钟 3000000000
+		Core::getInstance()->setTimer("taskTimer", 10000000);
+
 		Log::Log("getTask success,task count:" .
 			Task::getInstance()->getCount() . ",used time:" . sprintf("%0.4f", microtime(true) - $start_time), Log::LOG_INFO);
 	}
 
-	public function test()
+	/**
+	 * 刷新任务闹钟 50分钟刷新一次
+	 */
+	public function taskTimer()
 	{
-		while (true) {
+		$this->coreFork("taskPush");
+	}
 
+	/**
+	 * 重定向标准输出
+	 */
+	public function restStd()
+	{
+		global $STDERR, $STDOUT;//一定要定义成全局变量
+
+		$dir = LOG_PATH . date("Ymd") . "/";
+		!is_dir($dir) && mkdir($dir, 0744, true);
+
+		$file = $dir . "log.txt";
+		$fp = fopen($file, "a");
+		if ($fp) {
+			fclose($fp);
+			fclose(STDOUT);
+			fclose(STDERR);
+
+			$STDOUT = fopen($file, "a");  //这里必须重新打开
+			$STDERR = fopen($file, "a");
 		}
+
+		//设置重定向闹钟 凌晨
+		$this->setTimer("restStd", 86400 - time() % 86400);
+	}
+
+	/**
+	 * 设置闹钟
+	 * @param $name string core 函数名
+	 * @param $timeout int 微妙
+	 */
+	public function setTimer($name, $timeout)
+	{
+		$this->coreFork(array(Timer::getInstance(), "timer"), array(array($this, $name), $timeout));
 	}
 
 	/**
@@ -53,6 +90,7 @@ class Core
 		$start_time = floor(time() / 60) * 60;
 		$this->execTask($start_time);
 
+		//todo 用闹钟实现
 		do {
 			if (time() - $start_time >= 60) {
 				$start_time += 60;
@@ -64,12 +102,31 @@ class Core
 	/**
 	 * 核心进程fork
 	 * @param $name
+	 * @param array $argv
 	 * @return int|string
-	 * @throws \Exception
 	 */
-	public function coreFork($name)
+	public function coreFork($name, $argv = array())
 	{
-		return Pcntl::getInstance()->fork(PHP_BINARY, array("sapi.php", "Core/Core/{$name}"));
+		is_string($name) && $name = array($this, $name);
+		$pid = pcntl_fork();
+		switch ($pid) {
+			case -1:
+				$errno = pcntl_get_last_error();
+				Log::Log("Fork process failed,commond:{$name[1]},argv:" . json_encode($argv) . ",errno:{$errno},errstr:"
+					. pcntl_strerror($errno), Log::LOG_WARNING);
+				break;
+			//子进程
+			case 0:
+				call_user_func_array($name, $argv);
+				exit;//这里需要对每个子进程退出 不然会一直执行下去后面的代码
+				break;
+			default:
+				Log::Log("Fork process successful,commond:{$name[1]},argv:" . json_encode($argv) . ",pid:{$pid}", Log::LOG_INFO);
+				return $pid;
+				break;
+		}
+
+		return "";
 	}
 
 	/**
@@ -85,16 +142,27 @@ class Core
 				$task = Task::getInstance()->getTask($key);
 				if ($task) {
 					//todo 记录PID和key 命令行操作任务
-					$pid = Pcntl::getInstance()->fork($task[0], $task[1]);
-					//log
-					Log::Log("Start exec task,key:{$key},pid:{$pid}", Log::LOG_INFO);
+					$pid = pcntl_fork();
+					switch ($pid) {
+						case -1:
+							$errno = pcntl_get_last_error();
+							Log::Log("Fork process failed,commond:{$task[0]},argv:" . json_encode($task[1]) .
+								",errno:{$errno},errstr:" . pcntl_strerror($errno), Log::LOG_WARNING);
+							break;
+						//子进程
+						case 0:
+							//todo 设置用户ID
+							pcntl_exec($task[0], $task[1]);
+							break;
+						default:
+							Log::Log("Start exec task,key:{$key},pid:{$pid}", Log::LOG_INFO);
+							break;
+					}
 				} else {
-					//错误日志
 					Log::Log("Task get field,key:{$key}", Log::LOG_ERROR);
 				}
 			}
 		}
-
 	}
 
 	/**

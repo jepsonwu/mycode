@@ -1,6 +1,8 @@
 <?php
-namespace Lib;
+namespace Core;
 
+use Lib\Log;
+use Lib\String;
 use Lib\Ipc\Queue;
 use Lib\Ipc\Shmop;
 
@@ -86,7 +88,8 @@ class Task
 	{
 		$return = array();
 		//todo 缓存 只有当人为刷新的时候才会更新
-		$task_list = include_once COMMON_PATH . "TaskList.php";
+		//这里不能用include_once 一直共享task_list 变量
+		$task_list = include COMMON_PATH . "TaskList.php";
 
 		if ($task_list) {
 			//过滤

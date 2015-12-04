@@ -2,8 +2,7 @@
 use Lib\Ipc\Shmop;
 use Lib\Log;
 use Lib\Conf;
-use Lib\Pcntl;
-use Lib\Task;
+use Core\Core;
 
 /**
  *crontab server
@@ -15,9 +14,6 @@ class CrontabServer
 {
 	//版本号
 	private $version = 1.0;
-
-	//运行模式
-	private $is_daemon = false;
 
 	//默认最大可执行多进程数
 	private $multi_process = 4;
@@ -40,14 +36,10 @@ class CrontabServer
 		$this->Init();
 		//获取参数
 		$this->Params();
-		//是否在运行
-		$this->IsRuning();
 		//系统资源检测
 		$this->SystemCheck();
 		//注册信号处理函数
 		$this->RegisterServerSignal();
-		//设置闹钟
-		$this->SetAlarm();
 		//运行
 		$this->Run();
 	}
@@ -65,7 +57,7 @@ class CrontabServer
 		php_sapi_name() != "cli" && exit("Not allowed mode");
 
 		//扩展
-		foreach (array("pcntl", "posix", "sysvmsg", "shmop") as $exten)
+		foreach (array("pcntl", "posix", "sysvmsg", "shmop", "libevent") as $exten)
 			!extension_loaded($exten) && exit("{$exten} extension is not found");
 
 		//操作系统  目前只支持linux  有很多命令需要处理
@@ -101,7 +93,7 @@ class CrontabServer
 		Conf::getInstance()->setConfig(include(COMMON_PATH . "Conf.php"));
 
 		//异常处理机制
-		new Crontab_Exception();
+		new CrontabException();
 
 		//pid file
 		$this->server_pid_file = LOG_PATH . "pid";
@@ -131,21 +123,11 @@ class CrontabServer
 	}
 
 	/**
-	 * 为服务设置闹钟 用libevent实现
-	 * 用于更新任务列表 间隔 50分钟
-	 * 用于更新重定向 每天凌晨
-	 * 用于回收内存 间隔
-	 */
-	private function SetAlarm()
-	{
-	}
-
-	/**
 	 * 注册信号处理机制
 	 */
 	private function RegisterServerSignal()
 	{
-		\Lib\Signal::getInstance()->registerServerSignal();
+		\Core\Signal::getInstance()->registerServerSignal();
 	}
 
 	/**
@@ -155,7 +137,7 @@ class CrontabServer
 	{
 		$pid = $this->GetServerPid();
 		if ($pid && posix_kill($pid, 0))
-			return true;
+			return $pid;
 
 		return false;
 	}
@@ -169,12 +151,12 @@ class CrontabServer
 		Shmop::getInstance()->write($this->server_start_time_key, time());
 
 		//第一次获取任务
-		\Core\Core::getInstance()->coreFork("taskPush");
+		Core::getInstance()->coreFork("taskPush");
 
 		//开启服务 是否后台模式
 		Log::Log("Start crontab server,pid:" . posix_getpid(), Log::LOG_INFO);
-		if ($this->is_daemon) {
-			$pid = \Core\Core::getInstance()->coreFork("crontabServer");
+		if (defined("IS_DAEMON")) {
+			$pid = Core::getInstance()->coreFork("crontabServer");
 
 			if ($pid)
 				$this->SaveServerPid($pid);
@@ -182,7 +164,7 @@ class CrontabServer
 				Log::Log("Start crontab server failed", Log::LOG_EXIT);
 		} else {
 			//获取终端命令
-			$crontab = new Core\Core();
+			$crontab = new Core();
 			$crontab->crontabServer();
 		}
 	}
@@ -190,13 +172,10 @@ class CrontabServer
 	/**
 	 * 保存服务PID
 	 * @param $pid
-	 * sys_get_temp_dir
 	 */
 	private function SaveServerPid($pid)
 	{
-		$fp = fopen($this->server_pid_file, "w");
-		fwrite($fp, $pid);
-		fclose($fp);
+		file_put_contents($this->server_pid_file, $pid);
 	}
 
 	/**
@@ -206,9 +185,7 @@ class CrontabServer
 	private function GetServerPid()
 	{
 		if (is_file($this->server_pid_file)) {
-			$fp = fopen($this->server_pid_file, "r");
-			$pid = fread($fp, filesize(LOG_PATH . "pid"));
-			fclose($fp);
+			$pid = file_get_contents($this->server_pid_file);
 
 			return intval($pid);
 		}
@@ -218,30 +195,39 @@ class CrontabServer
 
 	/**
 	 * 停止服务
-	 * 清除所有待执行的任务
-	 * 回收内存
+	 * @return bool
 	 */
 	private function Stop()
 	{
 		$pid = $this->GetServerPid();
 		if ($pid) {
+			//这里如果没成功是否要发送sigkill信号
 			posix_kill($pid, SIGINT);
 			echo "Stop crontab server success";
+
+			return true;
 		} else {
 			echo "Stop crontab server failed";
 		}
+
+		return false;
 	}
 
 	/**
-	 * 重起
+	 * 重启
 	 */
 	private function ReStart()
 	{
-		$this->Stop();
-		//系统资源检测
-		$this->SystemCheck();
-		//运行
-		$this->Run();
+		if ($this->Stop()) {
+			//系统资源检测
+			$this->SystemCheck();
+			//注册信号处理函数
+			$this->RegisterServerSignal();
+			//设置闹钟
+			$this->SetAlarm();
+			//运行
+			$this->Run();
+		}
 	}
 
 	/**
@@ -254,15 +240,15 @@ class CrontabServer
 	}
 
 	/**
-	 *输出状态
+	 * 输出状态
 	 * 进程信息 运行时长  内存 任务数
 	 * 后期统计
 	 */
 	private function Status()
 	{
 		//检查进程状态
-		$pid = $this->GetServerPid();
-		if ($pid && posix_kill($pid, 0)) {
+		$pid = $this->IsRuning();
+		if ($pid) {
 			$status = "Server is runing,pid:{$pid}\n";
 
 			//总运行时间
@@ -287,9 +273,11 @@ class CrontabServer
 	/**
 	 * 子进程事件
 	 * todo 调整优先级
+	 *
 	 */
 	private function TaskEvent($pid, $event)
 	{
+		//判断是否属于自己的子进程
 		switch ($event) {
 			case "stop":
 				break;
@@ -305,33 +293,8 @@ class CrontabServer
 	 */
 	private function IsDaemon()
 	{
-		$this->is_daemon = true;
 		!defined("IS_DAEMON") && define("IS_DAEMON", true);
-	}
-
-	/**
-	 * 重定向标准输出
-	 * todo 凌晨重定向到不同文件夹  重置
-	 * $str = fread(STDIN, 100);
-	 * echo $str;
-	 */
-	private function RestStd()
-	{
-		global $STDERR, $STDOUT;//一定要定义成全局变量
-
-		$dir = LOG_PATH . date("Ymd") . "/";
-		!is_dir($dir) && mkdir($dir, 0744, true);
-
-		$file = $dir . "log.txt";
-		$fp = fopen($file, "a");
-		if ($fp) {
-			fclose($fp);
-			fclose(STDOUT);
-			fclose(STDERR);
-
-			$STDOUT = fopen($file, "a");  //这里必须重新打开
-			$STDERR = fopen($file, "a");
-		}
+		Core::getInstance()->restStd();
 	}
 
 	/**
@@ -346,9 +309,10 @@ class CrontabServer
 		if (isset($_SERVER['argv'][1])) {
 			switch ($_SERVER['argv'][1]) {
 				case "start":
-					isset($_SERVER['argv'][2]) &&
-					$_SERVER['argv'][2] == "-d" &&
-					$this->IsDaemon();
+					if ($this->IsRuning())
+						exit("Server is runing");
+
+					isset($_SERVER['argv'][2]) && $_SERVER['argv'][2] == "-d" && $this->IsDaemon();
 					break;
 				case "stop":
 					$this->Stop();

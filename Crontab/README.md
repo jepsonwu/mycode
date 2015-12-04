@@ -3,10 +3,6 @@ start.php
 	php start.php -v|-V|-h
 	php start.php pid [stop|restart|status] 子进程事件
 
-sapi.php
-	单个任务执行模式
-	php sapi Core/Core/GetTask par1/1/par2/2
-
 CrontabServer.php
 	crontab 服务
 	1.事件监听，包括服务和进程事件监听

@@ -1,6 +1,5 @@
 <?php
-namespace Lib;
-use Core\Core;
+namespace Core;
 
 /**
  * 信号处理

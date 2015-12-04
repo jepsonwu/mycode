@@ -1,13 +1,12 @@
 <?php
 use Lib\Log;
-
 /**
  *
  * User: jepson <jepson@duomai.com>
  * Date: 15-11-19
  * Time: 下午2:17
  */
-class Crontab_Exception
+class CrontabException
 {
 	public function __construct()
 	{
@@ -20,7 +19,7 @@ class Crontab_Exception
 
 	public function ExceHandler($exception)
 	{
-		Log::Log($exception->getMessage(), Log::LOG_ERROR, true);
+		Log::Log($exception->getMessage(), Log::LOG_ERROR);
 	}
 
 	public function ErrorHandler($errno, $errstr, $errfile, $errline)

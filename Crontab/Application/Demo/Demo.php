@@ -11,6 +11,6 @@ class Demo
 {
 	public function demo()
 	{
-		echo "demo task develop";
+		echo "demo task develop\n";
 	}
 }
