@@ -11,14 +11,14 @@ return array(
 	//[执行命令|sp(框架PHP)|ss(框架shell)] [时间格式] [执行程序] [参数](参数用/分割键值)
 
 	//例如
-	//p3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1
+	"p3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1",
 	//t3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1
 
 	//第三方任务
 //	"p3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1",
 
 	//框架
-	"* www www sp */1 * * * * Demo/Demo/demo name/test",
+	//"* www www sp */1 * * * * Demo/Demo/demo name/test",
 	"* www www ss */1 * * * * Shell/Demo",
 
 	//Crontab 时间格式示例 遵循Linux Crontab规则

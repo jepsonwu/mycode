@@ -6,6 +6,9 @@
  * Time: 下午2:53
  */
 return array(
+	//任务列表配置文件
+	"TASK_LIST" => "TaskList",
+
 	//需要内存 单位G 默认2
 	"MEMORY_AVAILABLE" => 2,
 

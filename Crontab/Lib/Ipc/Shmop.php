@@ -43,7 +43,7 @@ class Shmop
 	public function read($key)
 	{
 		!is_int($key) && $key = String::stringToInt($key);
-		$shmid = shmop_open($key, "a", 0, 0);
+		@$shmid = shmop_open($key, "a", 0, 0);
 
 		if ($shmid) {
 			$return = shmop_read($shmid, 0, shmop_size($shmid));
@@ -79,7 +79,7 @@ class Shmop
 	public function delete($key)
 	{
 		!is_int($key) && $key = String::stringToInt($key);
-		$shmid = shmop_open($key, "a", 0, 0);
+		@$shmid = shmop_open($key, "a", 0, 0);
 		$return = false;
 
 		$shmid && $return = shmop_delete($shmid);

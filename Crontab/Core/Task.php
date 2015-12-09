@@ -1,6 +1,7 @@
 <?php
 namespace Core;
 
+use Lib\Conf;
 use Lib\Log;
 use Lib\String;
 use Lib\Ipc\Queue;
@@ -44,6 +45,9 @@ class Task
 	//每次获取的可执行任务时长
 	private $task_exec_total_time = 3600;
 
+	//任务列表key的key
+	private $task_list_storage_key = "TASK LIST STORAGE KEY";
+
 	public static function getInstance()
 	{
 		if (is_null(self::$instance)) {
@@ -54,7 +58,7 @@ class Task
 	}
 
 	/**
-	 * 获取当前任务总数
+	 * 获取当前待执行任务队列总数
 	 * @return array
 	 */
 	public function getCount()
@@ -63,7 +67,7 @@ class Task
 	}
 
 	/**
-	 * 清空队列
+	 * 清空任务队列
 	 */
 	public function clean()
 	{
@@ -86,84 +90,162 @@ class Task
 	 */
 	public function push()
 	{
-		$return = array();
-		//todo 缓存 只有当人为刷新的时候才会更新
-		//这里不能用include_once 一直共享task_list 变量
-		$task_list = include COMMON_PATH . "TaskList.php";
+		$task_list = $this->getTaskList();
+		if (empty($task_list))
+			$task_list = $this->readTaskList();
 
+		//解析
 		if ($task_list) {
-			//过滤
-			$week_reg = "([0]?[0-6]|" . implode("|", $this->week_en) . ")";
-			$month_reg = "(1[0-2]|[0]?[1-9]|" . implode("|", $this->mon_en) . ")";
-			$task_list = preg_grep(
-				"/^(s|[\/|\w]+)[\s]+" .
-				"(?:\b|\*\/|[0-5]?[0-9]+[-|,])[0-5]?[0-9]+[\s]+" .
-				"(\*|(?:\b|\*\/|(2[0-3]|[0-1]?\d)[-|,])(2[0-3]|[0-1]?\d))[\s]+" .
-				"(\*|(?:\b|\*\/|(3[0-1]|[0-2]?[1-9]|10|20)[-|,])(3[0-1]|[0-2]?[1-9]|10|20))[\s]+" .
-				"(\*|(?:\b|\*\/|{$month_reg}[-|,]){$month_reg})[\s]+" .
-				"(\*|(?:\b|\*\/|{$week_reg}[-|,]){$week_reg})[\s]+" .
-				"[\/|\w|\.]+" .
-				"[\s]*[\/|\w]*$/", $task_list);
+			//获取现在的时间信息
+			$this->today = getdate();
 
-			//解析
+			//每一次计算的起始时间 精确到分
+			$this->task_start_time = array(
+				"mon" => strtotime("{$this->today['year']}-{$this->today['mon']}"),
+				"mday" => strtotime("{$this->today['year']}-{$this->today['mon']}-{$this->today['mday']}"),
+				"hours" => strtotime("{$this->today['year']}-{$this->today['mon']}-{$this->today['mday']} {$this->today['hours']}:00:00"),
+				"min" => floor(time() / 60) * 60
+			);
+
+			//需要入队列的时间=>任务,任务键值对
+			$wait_push = array();
+
+			foreach ($task_list as $key => $task) {
+				//拼接日期值 注意几个临界值 递归
+				$exec_date = $this->getDateString(array($this->today['year']), $task[7], "mon");
+
+				//日 星期
+				!empty($exec_date) && $exec_date_week = $this->getDateStringByWeek($exec_date, $task[8]);
+				!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[6], "mday");
+				!empty($exec_date_week) && $exec_date = array_unique(array_merge($exec_date, $exec_date_week));
+
+				!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[5], "hours");
+				!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[4], "min");
+
+				//入队列任务执行时间和内存key todo 这里会一直追加 回收机制
+				foreach ($exec_date as $time)
+					$wait_push[strtotime($time)][] = $key;
+
+			}
+		
+			//入队列
+			foreach ($wait_push as $key => $task)
+				Queue::getInstance()->write($task, $key);
+		}
+
+		return true;
+	}
+
+	/**
+	 * 从文件读取任务
+	 * todo 存储可执行任务列表,reload刷新
+	 * @return array|mixed
+	 */
+	private function readTaskList()
+	{
+		$task_file = COMMON_PATH . Conf::getInstance()->getConfig("TASK_LIST") . ".php";
+		if (is_file($task_file) && is_readable($task_file)) {
+			//这里不能用include_once 一直共享task_list 变量
+			$task_list = (array)include $task_file;
+
+			$task_list = $this->filterTaskList($task_list);
 			if ($task_list) {
-				//获取现在的时间信息
-				$this->today = getdate();
-
-				//每一次计算的起始时间 精确到分
-				$this->task_start_time = array(
-					"mon" => strtotime("{$this->today['year']}-{$this->today['mon']}"),
-					"mday" => strtotime("{$this->today['year']}-{$this->today['mon']}-{$this->today['mday']}"),
-					"hours" => strtotime("{$this->today['year']}-{$this->today['mon']}-{$this->today['mday']} {$this->today['hours']}:00:00"),
-					"min" => floor(time() / 60) * 60
-				);
-
-				//需要入队列的时间=>任务,任务键值对
-				$wait_push = array();
-
+				$tasks = array();
+				//存储
 				foreach ($task_list as $task) {
 					$task = preg_split("/[\s]+/", $task);
-
-					//拼接日期值 注意几个临界值 递归
-					$exec_date = $this->getDateString(array($this->today['year']), $task[4], "mon");
-
-					//日 星期
-					!empty($exec_date) && $exec_date_week = $this->getDateStringByWeek($exec_date, $task[5]);
-					!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[3], "mday");
-					!empty($exec_date_week) && $exec_date = array_unique(array_merge($exec_date, $exec_date_week));
-
-					!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[2], "hours");
-					!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[1], "min");
-
-					//构建任务
-					$exec_argvs = array();
-					switch ($task[0]) {
-						case "s":
-							$exec_commond = PHP_BINARY;
-							$exec_argvs[] = "sapi.php";
-							break;
-						default:
-							$exec_commond = $task[0];
-					}
-
-					$exec_argvs[] = $task[6];
-					isset($task[7]) && $exec_argvs[] = $task[7];
-
-					//入队列任务执行时间和内存key todo 这里会一直追加 回收机制
-					$task = $this->saveTask(array($exec_commond, $exec_argvs));
-					if ($task)
-						foreach ($exec_date as $key)
-							$wait_push[strtotime($key)][] = $task;
-
+					$key = $this->saveTask($task);
+					$tasks[$key] = $task;
 				}
 
-				//入队列
-				foreach ($wait_push as $key => $task)
-					Queue::getInstance()->write($task, $key);
+				//存储任务列表key
+				Shmop::getInstance()->write($this->task_list_storage_key, array_keys($tasks));
+				return $tasks;
+			}
+		} else {
+			Log::Log("Task list configure file is not found", Log::LOG_ERROR);
+		}
+
+		return array();
+	}
+
+	/**
+	 * 过滤配置文件任务列表
+	 * 任务格式
+	 * [进程数|线程数|*(不填)](进程p表示,线程t表示,如果大于配置最大值,均以最大值为准) [用户组] [用户]
+	 * [执行命令|sp(框架PHP)|ss(框架shell)] [时间格式] [执行程序] [参数](参数用/分割键值)
+	 * @param $task_list
+	 * @return array
+	 */
+	private function filterTaskList($task_list)
+	{
+		//过滤
+		$week_reg = "([0]?[0-6]|" . implode("|", $this->week_en) . ")";
+		$month_reg = "(1[0-2]|[0]?[1-9]|" . implode("|", $this->mon_en) . ")";
+
+		//todo 这里返回不匹配的值记录日志
+		$task_list = preg_grep(
+			"/^(\*|([p|t][\d]+))[\s]+" .
+			"([\w]+)[\s]+" .
+			"([\w]+)[\s]+" .
+			"(ss|sp|[\/|\w]+)[\s]+" .
+			"(?:\b|\*\/|[0-5]?[0-9]+[-|,])[0-5]?[0-9]+[\s]+" .
+			"(\*|(?:\b|\*\/|(2[0-3]|[0-1]?\d)[-|,])(2[0-3]|[0-1]?\d))[\s]+" .
+			"(\*|(?:\b|\*\/|(3[0-1]|[0-2]?[1-9]|10|20)[-|,])(3[0-1]|[0-2]?[1-9]|10|20))[\s]+" .
+			"(\*|(?:\b|\*\/|{$month_reg}[-|,]){$month_reg})[\s]+" .
+			"(\*|(?:\b|\*\/|{$week_reg}[-|,]){$week_reg})[\s]+" .
+			"[\/|\w|\.]+" .
+			"[\s]*[\/|\w]*$/", $task_list);
+
+		return $task_list;
+	}
+
+	/**
+	 * 刷新任务列表
+	 * reload
+	 */
+	private function flushTaskList()
+	{
+		$this->clearTaskList();
+		$this->readTaskList();
+	}
+
+	/**
+	 * 清除任务列表
+	 * stop
+	 * restart
+	 */
+	private function clearTaskList()
+	{
+		$task_list_key = Shmop::getInstance()->read($this->task_list_storage_key);
+		if ($task_list_key && is_array($task_list_key)) {
+			foreach ($task_list_key as $key)
+				Shmop::getInstance()->delete($key);
+
+			Shmop::getInstance()->delete($this->task_list_storage_key);
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * 获取可执行任务列表
+	 * @return array
+	 */
+	private function getTaskList()
+	{
+		$task_list = array();
+
+		$task_list_key = Shmop::getInstance()->read($this->task_list_storage_key);
+		if ($task_list_key && is_array($task_list_key)) {
+			foreach ($task_list_key as $key) {
+				$task = $this->getTask($key);
+				$task && $task_list[$key] = $task;
 			}
 		}
 
-		return $return;
+		return $task_list;
 	}
 
 	/**
@@ -185,7 +267,7 @@ class Task
 	}
 
 	/**
-	 * 读取单个任务
+	 * 根据key读取单个任务
 	 * @param $key
 	 * @return bool|string
 	 */

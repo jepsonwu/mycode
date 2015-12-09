@@ -31,8 +31,8 @@ class Core
 	{
 		$start_time = microtime(true);
 		Task::getInstance()->push();
-		//设置任务刷新闹钟 3000000000
-		Core::getInstance()->setTimer("taskTimer", 10000000);
+		//设置任务刷新闹钟 3000000000 todo 定的不好就且了佛 ctrl-c退出
+		//Core::getInstance()->setTimer("taskTimer", 10000000);
 
 		Log::Log("getTask success,task count:" .
 			Task::getInstance()->getCount() . ",used time:" . sprintf("%0.4f", microtime(true) - $start_time), Log::LOG_INFO);

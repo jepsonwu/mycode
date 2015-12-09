@@ -1,5 +1,6 @@
 <?php
 use Lib\Log;
+
 /**
  *
  * User: jepson <jepson@duomai.com>
@@ -19,7 +20,7 @@ class CrontabException
 
 	public function ExceHandler($exception)
 	{
-		Log::Log($exception->getMessage(), Log::LOG_ERROR);
+		Log::Log($exception->getMessage(), $exception->getCode());
 	}
 
 	public function ErrorHandler($errno, $errstr, $errfile, $errline)

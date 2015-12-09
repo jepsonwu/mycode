@@ -152,7 +152,7 @@ class CrontabServer
 
 		//第一次获取任务
 		Core::getInstance()->coreFork("taskPush");
-
+		exit;
 		//开启服务 是否后台模式
 		Log::Log("Start crontab server,pid:" . posix_getpid(), Log::LOG_INFO);
 		if (defined("IS_DAEMON")) {
