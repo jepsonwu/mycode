@@ -15,11 +15,11 @@ class CrontabServer
 	//版本号
 	private $version = 1.0;
 
-	//默认最大可执行多进程数
-	private $multi_process = 4;
-
 	//默认需要的内存
 	private $memory_available = 2;
+
+	//默认线程数
+	private $multi_thread = 10;
 
 	//server pid file
 	private $server_pid_file = "";
@@ -113,13 +113,22 @@ class CrontabServer
 
 		//todo how to check available shared memory on linux
 
-		//多进程数处理
+		//多进程数处理 默认为cpu最大进程数 包含超线程
 		exec("cat /proc/cpuinfo |grep processor|wc -l", $multi_process);
 		$multi_process_define = intval(Conf::getInstance()->getConfig("MULTI_PROCESS"));
-		$multi_process_define > 0 && $this->multi_process = $multi_process_define;
-		if ($multi_process[0] < $this->multi_process)
-			Log::Log("Total number of multi-process set beyond the server CPU logic", Log::LOG_WARNING);
 
+		if ($multi_process_define > 0) {
+			if ($multi_process[0] < $multi_process_define)
+				Log::Log("Total number of multi-process set beyond the server CPU logic", Log::LOG_WARNING);
+		} else
+			$multi_process_define = $multi_process[0];
+
+		Conf::getInstance()->setConfig('MULTI_PROCESS', $multi_process_define);
+
+		//多线程
+		$multi_thread = intval(Conf::getInstance()->getConfig("MULTI_THREAD"));
+		$multi_thread < 0 && $multi_thread = $this->multi_thread;
+		Conf::getInstance()->setConfig("MULTI_THREAD", $multi_thread);
 	}
 
 	/**
@@ -142,17 +151,30 @@ class CrontabServer
 		return false;
 	}
 
+	private function demo_thread()
+	{
+		return "ccc";
+	}
+
+	private function demo_thread_callback()
+	{
+		echo "";
+	}
+
 	/**
 	 * 运行服务
 	 */
 	private function Run()
 	{
+		Core::getInstance()->execThread(10, "aa");
+
+		exit;
 		//记录开始时间
 		Shmop::getInstance()->write($this->server_start_time_key, time());
 
 		//第一次获取任务
 		Core::getInstance()->coreFork("taskPush");
-		exit;
+
 		//开启服务 是否后台模式
 		Log::Log("Start crontab server,pid:" . posix_getpid(), Log::LOG_INFO);
 		if (defined("IS_DAEMON")) {
@@ -236,7 +258,12 @@ class CrontabServer
 	 */
 	private function ReLoad()
 	{
+		//更新任务列表
+		\Core\Task::getInstance()->flushTaskList();
 
+		//更新配置文件
+
+		//更新事件
 	}
 
 	/**
@@ -271,6 +298,14 @@ class CrontabServer
 	}
 
 	/**
+	 * todo 检查配置文件 例如任务列表
+	 */
+	private function CheckConf()
+	{
+
+	}
+
+	/**
 	 * 子进程事件
 	 * todo 调整优先级
 	 *
@@ -300,7 +335,7 @@ class CrontabServer
 	/**
 	 * 接收参数
 	 * 第一个参数
-	 * start|stop|restart|reload|status -h|-v|-V pid(子进程ID) -e
+	 * start|stop|restart|reload|status|conf -h|-v|-V pid(子进程ID) -e
 	 * 第二个参数
 	 * -d stop|restart|status
 	 */
@@ -330,6 +365,9 @@ class CrontabServer
 					$this->Status();
 					exit;
 					break;
+				case "conf":
+					$this->CheckConf();
+					exit;
 				case "-v":
 					exit("Crontab version:" . $this->version . "\n");
 					break;
@@ -373,7 +411,8 @@ class CrontabServer
 	stop    stop server\n
 	restart restart server\n
 	reload  reload server tasklist\n
-	start   show status about server\n
+	status   show status about server\n
+	conf    check the task list configuration file\n
 	-v  show version\n
 	-V  show more information\n
 	-h  show help\n

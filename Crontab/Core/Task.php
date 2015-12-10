@@ -42,6 +42,12 @@ class Task
 		"min" => ""
 	);
 
+	//标签
+	public static $multi_process = 'p';
+	public static $multi_thread = 't';
+	private $php_task = 'sp';//php 任务
+	private $shell_task = 'ss';//shell 任务
+
 	//每次获取的可执行任务时长
 	private $task_exec_total_time = 3600;
 
@@ -90,6 +96,7 @@ class Task
 	 */
 	public function push()
 	{
+		$this->clearTaskList();
 		$task_list = $this->getTaskList();
 		if (empty($task_list))
 			$task_list = $this->readTaskList();
@@ -122,15 +129,20 @@ class Task
 				!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[5], "hours");
 				!empty($exec_date) && $exec_date = $this->getDateString($exec_date, $task[4], "min");
 
-				//入队列任务执行时间和内存key todo 这里会一直追加 回收机制
+				//入队列任务执行时间和内存key
 				foreach ($exec_date as $time)
-					$wait_push[strtotime($time)][] = $key;
+					$wait_push[$time][] = $key;
 
 			}
-		
+
 			//入队列
-			foreach ($wait_push as $key => $task)
+			ksort($wait_push);
+			$is_clear = true;//这里排序时间戳 采取回收机制保证队列的单一性 只要碰到队列没有数据则以后不再处理
+			foreach ($wait_push as $key => $task) {
+				$is_clear && !Queue::getInstance()->read($key) && $is_clear = false;
+
 				Queue::getInstance()->write($task, $key);
+			}
 		}
 
 		return true;
@@ -138,7 +150,6 @@ class Task
 
 	/**
 	 * 从文件读取任务
-	 * todo 存储可执行任务列表,reload刷新
 	 * @return array|mixed
 	 */
 	private function readTaskList()
@@ -152,8 +163,60 @@ class Task
 			if ($task_list) {
 				$tasks = array();
 				//存储
-				foreach ($task_list as $task) {
-					$task = preg_split("/[\s]+/", $task);
+				$gid_info = array();
+				$max_process = Conf::getInstance()->getConfig("MULTI_PROCESS");
+				$max_thread = Conf::getInstance()->getConfig("MULTI_THREAD");
+				foreach ($task_list as $val) {
+					$task = preg_split("/[\s]+/", $val);
+
+					//处理以下进程数和线程数大于设置值的情况
+					switch ($task[0]{0}) {
+						case self::$multi_process:
+							if (substr($task[0], 1) > $max_process) {
+								$task[0] = self::$multi_process . "{$max_process}";
+								Log::Log("Task multi process is greater than the set value,{$val}", Log::LOG_WARNING);
+							}
+							break;
+						case self::$multi_thread:
+							if (substr($task[0], 1) > $max_thread) {
+								$task[0] = self::$multi_thread . "{$max_thread}";
+								Log::Log("Task multi thread is greater than the set value,{$val}", Log::LOG_WARNING);
+							}
+							break;
+					}
+
+					//处理用户组和用户错误的任务 1 2
+					!isset($gid_info[$task[1]]) && $gid_info[$task[1]] = posix_getgrnam($task[1]);
+					if ($gid_info[$task[1]])
+						$task[1] = $gid_info[$task[1]]['gid'];
+					else {
+						Log::Log("Task group is invalid,{$val}", Log::LOG_ERROR, false);
+						continue;
+					}
+
+					!isset($gid_info[$task[2]]) && $gid_info[$task[2]] = posix_getpwnam($task[2]);
+					if ($gid_info[$task[2]] && $gid_info[$task[2]]['gid'] == $gid_info[$task[1]]['gid'])
+						$task[2] = $gid_info[$task[2]]['uid'];
+					else {
+						Log::Log("Task user is invalid,{$val}", Log::LOG_ERROR, false);
+						continue;
+					}
+
+					//处理执行命令错误的任务 3
+					switch ($task[3]) {
+						case $this->php_task:
+							$task[3] = PHP_BINARY;
+							$task[9] = "sapi.php {$task[9]}";
+							break;
+						case $this->shell_task:
+							$task[3] = '/bin/bash';
+							break;
+						default:
+							Log::Log("Task command is invalid,{$val}", Log::LOG_ERROR, false);
+							continue;
+							break;
+					}
+
 					$key = $this->saveTask($task);
 					$tasks[$key] = $task;
 				}
@@ -163,7 +226,7 @@ class Task
 				return $tasks;
 			}
 		} else {
-			Log::Log("Task list configure file is not found", Log::LOG_ERROR);
+			Log::Log("Task list configure file is not found", Log::LOG_ERROR, false);
 		}
 
 		return array();
@@ -183,12 +246,11 @@ class Task
 		$week_reg = "([0]?[0-6]|" . implode("|", $this->week_en) . ")";
 		$month_reg = "(1[0-2]|[0]?[1-9]|" . implode("|", $this->mon_en) . ")";
 
-		//todo 这里返回不匹配的值记录日志
-		$task_list = preg_grep(
-			"/^(\*|([p|t][\d]+))[\s]+" .
+		$task_list_return = preg_grep(
+			"/^(\*|([" . self::$multi_process . "|" . self::$multi_thread . "][\d]+))[\s]+" .
 			"([\w]+)[\s]+" .
 			"([\w]+)[\s]+" .
-			"(ss|sp|[\/|\w]+)[\s]+" .
+			"(" . $this->php_task . "|" . $this->shell_task . "|[\/|\w]+)[\s]+" .
 			"(?:\b|\*\/|[0-5]?[0-9]+[-|,])[0-5]?[0-9]+[\s]+" .
 			"(\*|(?:\b|\*\/|(2[0-3]|[0-1]?\d)[-|,])(2[0-3]|[0-1]?\d))[\s]+" .
 			"(\*|(?:\b|\*\/|(3[0-1]|[0-2]?[1-9]|10|20)[-|,])(3[0-1]|[0-2]?[1-9]|10|20))[\s]+" .
@@ -197,14 +259,19 @@ class Task
 			"[\/|\w|\.]+" .
 			"[\s]*[\/|\w]*$/", $task_list);
 
-		return $task_list;
+		//这里返回不匹配的值记录日志
+		if (count($task_list_return) < count($task_list))
+			Log::Log("Some tasks is not in conformity with the specification.\n{\n"
+				. implode("\n", array_diff_key($task_list, $task_list_return)) . "\n}", Log::LOG_ERROR, false);
+
+		return $task_list_return;
 	}
 
 	/**
 	 * 刷新任务列表
 	 * reload
 	 */
-	private function flushTaskList()
+	public function flushTaskList()
 	{
 		$this->clearTaskList();
 		$this->readTaskList();
@@ -215,7 +282,7 @@ class Task
 	 * stop
 	 * restart
 	 */
-	private function clearTaskList()
+	public function clearTaskList()
 	{
 		$task_list_key = Shmop::getInstance()->read($this->task_list_storage_key);
 		if ($task_list_key && is_array($task_list_key)) {
@@ -324,12 +391,12 @@ class Task
 					foreach ($exec_date as $val)
 						for ($i = 1; $i <= $total; $i++)
 							if ($date = $this->filterDateString("{$val}{$sep}{$i}", $type))
-								$return[] = $date;
+								$return[] = ($type == 'min') ? strtotime($date) : $date;
 					break;
 				case is_numeric($rule):
 					foreach ($exec_date as $val)
 						if ($date = $this->filterDateString("{$val}{$sep}{$rule}", $type))
-							$return[] = $date;
+							$return[] = ($type == 'min') ? strtotime($date) : $date;
 					break;
 				case strpos($rule, ",") !== false:
 					$rule = array_unique(explode(",", $rule));
@@ -338,7 +405,7 @@ class Task
 					foreach ($exec_date as $val_e)
 						foreach ($rule as $val)
 							if ($date = $this->filterDateString("{$val_e}{$sep}{$val}", $type))
-								$return[] = $date;
+								$return[] = ($type == 'min') ? strtotime($date) : $date;
 					break;
 				case strpos($rule, "-") !== false:
 					$rule = array_unique(explode("-", $rule));
@@ -347,7 +414,7 @@ class Task
 						foreach ($exec_date as $val_e)
 							for ($i = $rule[0]; $i <= $rule[1]; $i++)
 								if ($date = $this->filterDateString("{$val_e}{$sep}{$i}", $type))
-									$return[] = $date;
+									$return[] = ($type == 'min') ? strtotime($date) : $date;
 					}
 					break;
 				case strpos($rule, "/") != false:
@@ -357,7 +424,7 @@ class Task
 					foreach ($exec_date as $val_e)
 						for ($i = 1; $i <= $total; $i = $i + $rule)
 							if ($date = $this->filterDateString("{$val_e}{$sep}{$i}", $type))
-								$return[] = $date;
+								$return[] = ($type == 'min') ? strtotime($date) : $date;
 					break;
 			}
 		} catch (\Exception $e) {

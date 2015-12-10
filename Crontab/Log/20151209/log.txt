@@ -1,0 +1,81 @@
+Time:2015-12-09 14:38:08
+Warning:Total number of multi-process set beyond the server CPU logic
+
+Time:2015-12-09 14:38:08
+Info:Fork process successful,commond:taskPush,argv:[],pid:25308
+
+Time:2015-12-09 14:38:08
+Info:Start crontab server,pid:25299
+
+Time:2015-12-09 14:38:08
+Error:Some tasks is not in conformity whit the specification.
+{
+fsfsdf sdafsadf dsfsd
+1111 dsf p4
+}
+
+Time:2015-12-09 14:38:08
+Info:task save success,key:4000012873,task:["p3","www","www","\/usr\/bin\/php","*\/1","*","*","*","*","\/data\/mycode\/task1.php","id\/1"]
+
+Time:2015-12-09 14:38:08
+Info:task save success,key:4000009660,task:["*","www","www","ss","*\/1","*","*","*","*","Shell\/Demo"]
+
+Time:2015-12-09 14:38:08
+Info:getTask success,task count:60,used time:0.0065
+
+Time:2015-12-09 14:38:08
+Info:Child process execute successful,pid:25308,return code:0
+
+Time:2015-12-09 14:38:16
+Warning:Total number of multi-process set beyond the server CPU logic
+
+Time:2015-12-09 14:38:16
+Info:Fork process successful,commond:taskPush,argv:[],pid:25325
+
+Time:2015-12-09 14:38:16
+Info:Start crontab server,pid:25316
+
+Time:2015-12-09 14:38:16
+Error:Some tasks is not in conformity whit the specification.
+{
+fsfsdf sdafsadf dsfsd
+1111 dsf p4
+}
+
+Time:2015-12-09 14:38:16
+Info:task save success,key:4000012873,task:["p3","www","www","\/usr\/bin\/php","*\/1","*","*","*","*","\/data\/mycode\/task1.php","id\/1"]
+
+Time:2015-12-09 14:38:16
+Info:task save success,key:4000009660,task:["*","www","www","ss","*\/1","*","*","*","*","Shell\/Demo"]
+
+Time:2015-12-09 14:38:16
+Info:getTask success,task count:60,used time:0.0048
+
+Time:2015-12-09 14:38:16
+Info:Child process execute successful,pid:25325,return code:0
+
+Time:2015-12-09 14:38:47
+Warning:Total number of multi-process set beyond the server CPU logic
+
+Time:2015-12-09 14:38:47
+Info:Fork process successful,commond:taskPush,argv:[],pid:25357
+
+Time:2015-12-09 14:38:47
+Error:Some tasks is not in conformity whit the specification.
+{
+fsfsdf sdafsadf dsfsd
+1111 dsf p4
+}
+
+Time:2015-12-09 14:38:47
+Info:task save success,key:4000012873,task:["p3","www","www","\/usr\/bin\/php","*\/1","*","*","*","*","\/data\/mycode\/task1.php","id\/1"]
+
+Time:2015-12-09 14:38:47
+Info:task save success,key:4000009660,task:["*","www","www","ss","*\/1","*","*","*","*","Shell\/Demo"]
+
+Time:2015-12-09 14:38:47
+Info:getTask success,task count:60,used time:0.0044
+
+Time:2015-12-09 14:39:49
+Warning:Total number of multi-process set beyond the server CPU logic
+

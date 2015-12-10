@@ -1,4 +1,5 @@
 <?php
+echo phpinfo();exit;
 $url = "http://hpg.com/v2/teachers/apply";
 $file_name = "aa.png";
 $data = array(

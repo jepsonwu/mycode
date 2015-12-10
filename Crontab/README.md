@@ -1,5 +1,5 @@
 start.php
-	php start.php start|restart|stop|reload|status [-d] 开启服务
+	php start.php start|restart|stop|reload|status|conf [-d] 开启服务
 	php start.php -v|-V|-h
 	php start.php pid [stop|restart|status] 子进程事件
 

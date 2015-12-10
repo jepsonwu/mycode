@@ -26,10 +26,12 @@ class Conf
 	 * 批量设置
 	 * @param $conf
 	 */
-	public function setConfig($conf)
+	public function setConfig($conf, $value = null)
 	{
 		if (is_array($conf))
 			$this->_config = array_merge($conf, array_change_key_case($conf, CASE_UPPER));
+		else
+			$this->_config[$conf] = $value;
 	}
 
 	/**

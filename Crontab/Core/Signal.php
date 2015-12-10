@@ -62,7 +62,9 @@ class Signal
 			case SIGQUIT:
 				//程序终止信号  Ctrl-Z SUSP字符
 			case SIGTSTP:
+				//释放内存
 				Core::getInstance()->freeMemory();
+				//todo 关闭闹钟
 				posix_kill(posix_getpid(), SIGTERM);
 				break;
 			//程序终止信号 可以处理和阻塞  SIGKILL 不可以被处理和阻塞

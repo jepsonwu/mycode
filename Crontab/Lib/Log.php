@@ -25,10 +25,10 @@ class Log
 	 * @param $msg
 	 * @param int|string $type
 	 */
-	static public function Log($msg, $type = self::LOG_ERROR)
+	static public function Log($msg, $type = self::LOG_ERROR, $debug = true)
 	{
 		$info = "Time:" . date("Y-m-d H:i:s") . "\n{$type}:{$msg}\n";
-		if ($type == self::LOG_ERROR) {
+		if ($type == self::LOG_ERROR && $debug) {
 			$debug_info = debug_backtrace();
 
 			$info .= "File:" . substr($debug_info[1]['file'], strrpos($debug_info[1]['file'], "/") + 1, -4);
@@ -36,7 +36,16 @@ class Log
 		}
 		$info .= "\n";
 
-		echo $info;
+		if (defined("IS_DAEMON")) {
+			$dir = LOG_PATH . date("Ymd") . "/";
+			!is_dir($dir) && mkdir($dir, 0744, true);
+
+			$file = $dir . "log.txt";
+			file_put_contents($file, $info, FILE_APPEND);
+		} else {
+			echo $info;
+		}
+
 		$type == self::LOG_EXIT && exit();
 	}
 }

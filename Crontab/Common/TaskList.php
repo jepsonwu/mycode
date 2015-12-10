@@ -13,7 +13,8 @@ return array(
 	//例如
 	"p3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1",
 	//t3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1
-
+	"fsfsdf sdafsadf dsfsd",
+	"1111 dsf p4",
 	//第三方任务
 //	"p3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1",
 

@@ -14,9 +14,11 @@ return array(
 
 	//多进程数量  如果为空默认为当前逻辑cpu数量 算超线程
 	"MULTI_PROCESS" => 5,
+	"MULTI_THREAD" => 4,
 
 	//sysvmsg 队列最大存储字节数
 	"SYSVMSG_MAX_SIZE" => 104857600,
+
 	//单条存储字节数
 	"SYSVMSG_SINGLE_MAX_SIZE" => 10000,
 	"SYSVMSG_MODE" => 0664,

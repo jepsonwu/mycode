@@ -56,7 +56,7 @@ class Core
 		$dir = LOG_PATH . date("Ymd") . "/";
 		!is_dir($dir) && mkdir($dir, 0744, true);
 
-		$file = $dir . "log.txt";
+		$file = $dir . "task_log.txt";
 		$fp = fopen($file, "a");
 		if ($fp) {
 			fclose($fp);
@@ -100,6 +100,35 @@ class Core
 	}
 
 	/**
+	 * 多进程执行
+	 */
+	public function execThread($total, $callback)
+	{
+		$return_data = array();
+
+		//新建线程
+		$thread_arr = array();
+		for ($i = 1; $i <= $total; $i++) {
+			$thread_arr[$i] = new \CrontabThread($i);
+			$thread_arr[$i]->start();
+		}
+
+		//处理结果
+		foreach ($thread_arr as $key => $val) {
+			while ($thread_arr[$key]->isRunning()) {
+				usleep(10);
+			}
+
+			if ($thread_arr[$key]->join()) {
+				$return_data[$key] = $thread_arr[$key]->data;
+			}
+		}
+
+		//交给回调函数处理
+		call_user_func_array(array(), $return_data);
+	}
+
+	/**
 	 * 核心进程fork
 	 * @param $name
 	 * @param array $argv
@@ -131,17 +160,19 @@ class Core
 
 	/**
 	 * 执行任务
-	 * todo 多进程实现 多线程实现
+	 * 支持多进程 只向子进程传递process_id参数  不对结果进行处理
+	 * 支持多线程
 	 * @param $type
 	 */
 	private function execTask($type)
 	{
 		$tasks = Task::getInstance()->pull($type);
+
 		if ($tasks) {
 			foreach ($tasks as $key) {
 				$task = Task::getInstance()->getTask($key);
+
 				if ($task) {
-					//todo 记录PID和key 命令行操作任务
 					$pid = pcntl_fork();
 					switch ($pid) {
 						case -1:
@@ -151,8 +182,23 @@ class Core
 							break;
 						//子进程
 						case 0:
-							//todo 设置用户ID
-							pcntl_exec($task[0], $task[1]);
+							//设置用户组 用户
+							posix_setgid($task[1]);
+							posix_setuid($task[2]);
+
+							//多进程和多线程
+							switch ($task[0]{0}) {
+								case Task::$multi_process:
+									for ($i = 1; $i <= substr($task[0], 1); $i++)
+										pcntl_exec($task[3], array($task[9], isset($task[10]) ? "{$task[10]}/process_id/{$i}" : "process_id/{$i}"));
+									break;
+								case Task::$multi_thread:
+									//只支持框架任务  一个任务  一个回调函数处理结果
+									break;
+								case "*":
+									pcntl_exec($task[3], array($task[9], isset($task[10]) ? $task[10] : ""));
+									break;
+							}
 							break;
 						default:
 							Log::Log("Start exec task,key:{$key},pid:{$pid}", Log::LOG_INFO);
@@ -172,6 +218,8 @@ class Core
 	{
 		//清空任务队列
 		Task::getInstance()->clean();
+		//清空任务列表
+		Task::getInstance()->clearTaskList();
 	}
 
 	/**

@@ -147,12 +147,12 @@ useradd -g www www
 
 cd php-5.4.29
 ./configure --prefix=${prefix}php5 --with-config-file-path=${prefix}php5/etc --with-mysql=${prefix}mysql5 --with-mysqli=mysqlnd \
---with-iconv-dir=/usr/local --with-zlib --with-libxml-dir=/usr --enable-xml  --enable-bcmath --enable-shmop --enable-sysvsem \
+--with-iconv-dir=/usr/local --with-zlib --with-libxml-dir=/usr --enable-xml  --enable-bcmath --enable-shmop --enable-sysvmsg --enable-sysvsem \
 --enable-inline-optimization --with-curl --with-curlwrappers \
 --enable-mbregex --enable-fpm --enable-mbstring --with-mcrypt --enable-gd-native-ttf --with-mhash --enable-pcntl \
 --enable-sockets --with-xmlrpc --enable-zip --enable-soap --with-pdo-mysql=mysqlnd  \
 --enable-mysqlnd --with-gettext \
---with-jpeg-dir --with-png-dir  --with-freetype-dir  --with-gd
+--with-jpeg-dir --with-png-dir  --with-freetype-dir  --with-gd --enable-maintainer-zts
 
 make ZEND_EXTRA_LIBS='-liconv'
 make install
