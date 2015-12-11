@@ -101,6 +101,7 @@ class Core
 
 	/**
 	 * 多进程执行
+	 * todo php 开启zts 无法安装phpredis扩展
 	 */
 	public function execThread($total, $callback)
 	{
@@ -193,7 +194,7 @@ class Core
 										pcntl_exec($task[3], array($task[9], isset($task[10]) ? "{$task[10]}/process_id/{$i}" : "process_id/{$i}"));
 									break;
 								case Task::$multi_thread:
-									//只支持框架任务  一个任务  一个回调函数处理结果
+									//todo 只支持框架任务  一个任务  一个回调函数处理结果
 									break;
 								case "*":
 									pcntl_exec($task[3], array($task[9], isset($task[10]) ? $task[10] : ""));

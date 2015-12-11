@@ -151,24 +151,11 @@ class CrontabServer
 		return false;
 	}
 
-	private function demo_thread()
-	{
-		return "ccc";
-	}
-
-	private function demo_thread_callback()
-	{
-		echo "";
-	}
-
 	/**
 	 * 运行服务
 	 */
 	private function Run()
 	{
-		Core::getInstance()->execThread(10, "aa");
-
-		exit;
 		//记录开始时间
 		Shmop::getInstance()->write($this->server_start_time_key, time());
 
