@@ -197,7 +197,9 @@ class Core
 									//todo 只支持框架任务  一个任务  一个回调函数处理结果
 									break;
 								case "*":
-									pcntl_exec($task[3], array($task[9], isset($task[10]) ? $task[10] : ""));
+									$exec_argv = explode(" ", $task[9]);
+									isset($task[10]) && $exec_argv[] = $task[10];
+									pcntl_exec($task[3], $exec_argv);
 									break;
 							}
 							break;

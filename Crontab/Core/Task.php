@@ -19,6 +19,8 @@ class Task
 {
 	public static $instance = null;
 
+	private $_conf;
+
 	/**
 	 * 当前的日期信息
 	 * @var array
@@ -61,6 +63,11 @@ class Task
 		}
 
 		return self::$instance;
+	}
+
+	protected function __construct()
+	{
+		$this->_conf = Conf::getInstance(array());
 	}
 
 	/**
@@ -154,7 +161,7 @@ class Task
 	 */
 	private function readTaskList()
 	{
-		$task_file = COMMON_PATH . Conf::getInstance()->getConfig("TASK_LIST") . ".php";
+		$task_file = COMMON_PATH . $this->_conf["TASK_LIST"] . ".php";
 		if (is_file($task_file) && is_readable($task_file)) {
 			//这里不能用include_once 一直共享task_list 变量
 			$task_list = (array)include $task_file;
@@ -163,23 +170,21 @@ class Task
 			if ($task_list) {
 				$tasks = array();
 				//存储
-				$gid_info = array();
-				$max_process = Conf::getInstance()->getConfig("MULTI_PROCESS");
-				$max_thread = Conf::getInstance()->getConfig("MULTI_THREAD");
+				$gid_info = $uid_info = array();
 				foreach ($task_list as $val) {
 					$task = preg_split("/[\s]+/", $val);
 
 					//处理以下进程数和线程数大于设置值的情况
 					switch ($task[0]{0}) {
 						case self::$multi_process:
-							if (substr($task[0], 1) > $max_process) {
-								$task[0] = self::$multi_process . "{$max_process}";
+							if (substr($task[0], 1) > $this->_conf["MULTI_PROCESS"]) {
+								$task[0] = self::$multi_process . $this->_conf["MULTI_PROCESS"];
 								Log::Log("Task multi process is greater than the set value,{$val}", Log::LOG_WARNING);
 							}
 							break;
 						case self::$multi_thread:
-							if (substr($task[0], 1) > $max_thread) {
-								$task[0] = self::$multi_thread . "{$max_thread}";
+							if (substr($task[0], 1) > $this->_conf["MULTI_THREAD"]) {
+								$task[0] = self::$multi_thread . $this->_conf["MULTI_THREAD"];
 								Log::Log("Task multi thread is greater than the set value,{$val}", Log::LOG_WARNING);
 							}
 							break;
@@ -187,17 +192,16 @@ class Task
 
 					//处理用户组和用户错误的任务 1 2
 					!isset($gid_info[$task[1]]) && $gid_info[$task[1]] = posix_getgrnam($task[1]);
-					if ($gid_info[$task[1]])
-						$task[1] = $gid_info[$task[1]]['gid'];
-					else {
+					if (!$gid_info[$task[1]]) {
 						Log::Log("Task group is invalid,{$val}", Log::LOG_ERROR, false);
 						continue;
 					}
 
-					!isset($gid_info[$task[2]]) && $gid_info[$task[2]] = posix_getpwnam($task[2]);
-					if ($gid_info[$task[2]] && $gid_info[$task[2]]['gid'] == $gid_info[$task[1]]['gid'])
-						$task[2] = $gid_info[$task[2]]['uid'];
-					else {
+					!isset($uid_info[$task[2]]) && $uid_info[$task[2]] = posix_getpwnam($task[2]);
+					if ($uid_info[$task[2]] && $uid_info[$task[2]]['gid'] == $gid_info[$task[1]]['gid']) {
+						$task[1] = $gid_info[$task[1]]['gid'];
+						$task[2] = $uid_info[$task[2]]['uid'];
+					} else {
 						Log::Log("Task user is invalid,{$val}", Log::LOG_ERROR, false);
 						continue;
 					}
@@ -206,14 +210,13 @@ class Task
 					switch ($task[3]) {
 						case $this->php_task:
 							$task[3] = PHP_BINARY;
-							$task[9] = "sapi.php {$task[9]}";
+							$task[9] = BASE_PATH . "cli.php {$task[9]}";
 							break;
 						case $this->shell_task:
 							$task[3] = '/bin/bash';
+							$task[9] = $this->_conf['APPLICATION'] . "/{$task[9]}";
 							break;
 						default:
-							Log::Log("Task command is invalid,{$val}", Log::LOG_ERROR, false);
-							continue;
 							break;
 					}
 

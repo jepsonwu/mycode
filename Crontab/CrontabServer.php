@@ -13,19 +13,22 @@ use Core\Core;
 class CrontabServer
 {
 	//版本号
-	private $version = 1.0;
+	private $_version = 1.0;
 
 	//默认需要的内存
-	private $memory_available = 2;
+	private $_memory_available = 2;
 
 	//默认线程数
-	private $multi_thread = 10;
+	private $_multi_thread = 10;
 
 	//server pid file
-	private $server_pid_file = "";
+	private $_server_pid_file;
 
 	//server start time key
-	private $server_start_time_key = "Crontab Server Start Time";
+	private $_server_start_time_key = "Crontab Server Start Time";
+
+	//conf
+	private $_conf;
 
 	/**
 	 * 开启服务
@@ -90,13 +93,17 @@ class CrontabServer
 		new Autoload();
 
 		//配置文件
-		Conf::getInstance()->setConfig(include(COMMON_PATH . "Conf.php"));
+		$conf_file = COMMON_PATH . "Conf.php";
+		if (is_file($conf_file) && is_readable($conf_file))
+			$this->_conf = Conf::getInstance(include($conf_file));
+		else
+			exit("Configure file is not found");
 
 		//异常处理机制
 		new CrontabException();
 
 		//pid file
-		$this->server_pid_file = LOG_PATH . "pid";
+		$this->_server_pid_file = LOG_PATH . "pid";
 	}
 
 	/**
@@ -106,16 +113,16 @@ class CrontabServer
 	{
 		//进程可用内存
 		exec("free|awk -F' ' '{print $7}'", $sys_memory_available);
-		$memory_available = intval(Conf::getInstance()->getConfig("MEMORY_AVAILABLE"));
-		$memory_available > 0 && $this->memory_available = $memory_available;
-		if ($sys_memory_available[1] < $this->memory_available * 1024 * 1024)
+		$memory_available = intval($this->_conf["MEMORY_AVAILABLE"]);
+		$memory_available > 0 && $this->_memory_available = $memory_available;
+		if ($sys_memory_available[1] < $this->_memory_available * 1024 * 1024)
 			Log::Log("There is out of memory", Log::LOG_EXIT);
 
 		//todo how to check available shared memory on linux
 
 		//多进程数处理 默认为cpu最大进程数 包含超线程
 		exec("cat /proc/cpuinfo |grep processor|wc -l", $multi_process);
-		$multi_process_define = intval(Conf::getInstance()->getConfig("MULTI_PROCESS"));
+		$multi_process_define = intval($this->_conf["MULTI_PROCESS"]);
 
 		if ($multi_process_define > 0) {
 			if ($multi_process[0] < $multi_process_define)
@@ -123,12 +130,12 @@ class CrontabServer
 		} else
 			$multi_process_define = $multi_process[0];
 
-		Conf::getInstance()->setConfig('MULTI_PROCESS', $multi_process_define);
+		$this->_conf['MULTI_PROCESS'] = $multi_process_define;
 
 		//多线程
-		$multi_thread = intval(Conf::getInstance()->getConfig("MULTI_THREAD"));
-		$multi_thread < 0 && $multi_thread = $this->multi_thread;
-		Conf::getInstance()->setConfig("MULTI_THREAD", $multi_thread);
+		$multi_thread = intval($this->_conf["MULTI_THREAD"]);
+		$multi_thread < 0 && $multi_thread = $this->_multi_thread;
+		$this->_conf["MULTI_THREAD"] = $multi_thread;
 	}
 
 	/**
@@ -157,7 +164,7 @@ class CrontabServer
 	private function Run()
 	{
 		//记录开始时间
-		Shmop::getInstance()->write($this->server_start_time_key, time());
+		Shmop::getInstance()->write($this->_server_start_time_key, time());
 
 		//第一次获取任务
 		Core::getInstance()->coreFork("taskPush");
@@ -184,7 +191,7 @@ class CrontabServer
 	 */
 	private function SaveServerPid($pid)
 	{
-		file_put_contents($this->server_pid_file, $pid);
+		file_put_contents($this->_server_pid_file, $pid);
 	}
 
 	/**
@@ -193,8 +200,8 @@ class CrontabServer
 	 */
 	private function GetServerPid()
 	{
-		if (is_file($this->server_pid_file)) {
-			$pid = file_get_contents($this->server_pid_file);
+		if (is_file($this->_server_pid_file)) {
+			$pid = file_get_contents($this->_server_pid_file);
 
 			return intval($pid);
 		}
@@ -217,9 +224,8 @@ class CrontabServer
 			return true;
 		} else {
 			echo "Stop crontab server failed";
+			return false;
 		}
-
-		return false;
 	}
 
 	/**
@@ -228,14 +234,19 @@ class CrontabServer
 	private function ReStart()
 	{
 		if ($this->Stop()) {
-			//系统资源检测
-			$this->SystemCheck();
-			//注册信号处理函数
-			$this->RegisterServerSignal();
-			//设置闹钟
-			$this->SetAlarm();
-			//运行
-			$this->Run();
+			$pid = pcntl_fork();
+			switch ($pid) {
+				case -1:
+					echo "Start crontab server failed";
+					break;
+				//子进程
+				case 0:
+					pcntl_exec(PHP_BINARY, array(BASE_PATH . "start.php start -d"));
+					break;
+				default:
+					echo "Start crontab server true";
+					break;
+			}
 		}
 	}
 
@@ -266,7 +277,7 @@ class CrontabServer
 			$status = "Server is runing,pid:{$pid}\n";
 
 			//总运行时间
-			$start_time = Shmop::getInstance()->read($this->server_start_time_key);
+			$start_time = Shmop::getInstance()->read($this->_server_start_time_key);
 			$start_time = time() - $start_time;
 			//todo 根据时间格式成天，时，分
 			$status .= "Server runing total time:{$start_time}\n";
@@ -356,7 +367,7 @@ class CrontabServer
 					$this->CheckConf();
 					exit;
 				case "-v":
-					exit("Crontab version:" . $this->version . "\n");
+					exit("Crontab version:" . $this->_version . "\n");
 					break;
 				case "-V":
 					exit(file_get_contents("README.md"));
@@ -409,43 +420,4 @@ class CrontabServer
 		status  show status about process\n";
 		exit;
 	}
-
-
-	//	/**
-//	 * 运行单个任务
-//	 */
-//	private function SapiRun()
-//	{
-//		$info = ",info:" . implode(" ", $_SERVER['argv']);
-//		$_SERVER['argc'] < 2 && Log::Log("Task is not found{$info}", Log::LOG_ERROR);
-//
-//		//控制器
-//		$action = substr($_SERVER['argv'][1], strrpos($_SERVER['argv'][1], "/") + 1);
-//		$controller = substr($_SERVER['argv'][1], 0, strrpos($_SERVER['argv'][1], "/"));
-//		$controller = "{$controller}";
-//
-//		!is_file("{$controller}.php") && Log::Log("Task controller is not found{$info}", Log::LOG_ERROR);
-//		define("CONTROLLER", substr($controller, strrpos($controller, "/") + 1));
-//
-//		//方法
-//		$controller = "\\" . str_replace("/", "\\", $controller);
-//		$class = new ReflectionClass($controller);
-//		$obj = $class->newInstance();
-//
-//		//定义常量
-//		!method_exists($obj, $action) && Log::Log("Task action is not found{$info}", Log::LOG_ERROR);
-//		define("ACTION", $action);
-//
-//		//参数
-//		if (isset($_SERVER['argv'][2])) {
-//			$param = explode("/", $_SERVER['argv'][2]);
-//			if ($param)
-//				for ($i = 0; $i < count($param); $i = $i + 2)
-//					isset($param[$i]) && isset($param[$i + 1]) && $_REQUEST[$param[$i]] = $param[$i + 1];
-//		}
-//
-//		//运行
-//		$invoke = $class->getMethod($action);
-//		$invoke->invoke($obj);
-//	}
 }

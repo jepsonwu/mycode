@@ -11,6 +11,7 @@ class Demo
 {
 	public function demo()
 	{
+//		print_r($_REQUEST);
 		echo "demo task develop\n";
 	}
 }

@@ -18,6 +18,7 @@ class Shmop
 	static public $instance = null;
 
 	private $option = array();
+	private $conf;
 
 	static public function getInstance($option = array())
 	{
@@ -31,9 +32,10 @@ class Shmop
 	public function __construct($option)
 	{
 		$this->option = array_merge($this->option, $option);
+		$this->conf = Conf::getInstance(array());
 
 		if (!isset($this->option['mode']))
-			$this->option['mode'] = Conf::getInstance()->getConfig("SYSHM_MODE");
+			$this->option['mode'] = $this->conf["SYSHM_MODE"];
 	}
 
 	/**
@@ -64,7 +66,7 @@ class Shmop
 		!is_int($key) && $key = String::stringToInt($key);
 		$value = serialize($value);
 
-		$shmid = shmop_open($key, "c", $this->option['mode'], strlen($value));
+		@$shmid = shmop_open($key, "c", $this->option['mode'], strlen($value));
 
 		if ($shmid)
 			return shmop_write($shmid, $value, 0);

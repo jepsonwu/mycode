@@ -31,6 +31,8 @@ class Queue
 
 	private $seg = null;
 
+	private $conf;
+
 	static public $instance = null;
 
 	static public function getInstance($option = array())
@@ -45,15 +47,16 @@ class Queue
 	public function __construct($option)
 	{
 		$this->option = array_merge($this->option, $option);
+		$this->conf = Conf::getInstance(array());
 
 		if (!isset($this->option['max']))
-			$this->option['max'] = Conf::getInstance()->getConfig("SYSVMSG_MAX_SIZE");
+			$this->option['max'] = $this->conf["SYSVMSG_MAX_SIZE"];
 
 		if (!isset($this->option['mode']))
-			$this->option['mode'] = Conf::getInstance()->getConfig("SYSVMSG_MODE");
+			$this->option['mode'] = $this->conf["SYSVMSG_MODE"];
 
 		if (!isset($this->option['single_max']))
-			$this->option['single_max'] = Conf::getInstance()->getConfig("SYSVMSG_SINGLE_MAX_SIZE");
+			$this->option['single_max'] = $this->conf["SYSVMSG_SINGLE_MAX_SIZE"];
 
 		//生成seg
 		$this->seg = msg_get_queue($this->option['key'], $this->option['mode']);

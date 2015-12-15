@@ -20,7 +20,7 @@ class CrontabException
 
 	public function ExceHandler($exception)
 	{
-		Log::Log($exception->getMessage(), $exception->getCode());
+		Log::Log($exception->getMessage(), Log::LOG_EXIT);
 	}
 
 	public function ErrorHandler($errno, $errstr, $errfile, $errline)

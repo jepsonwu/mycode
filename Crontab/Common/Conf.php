@@ -25,4 +25,6 @@ return array(
 
 	//syshm
 	"SYSHM_MODE" => 0666,
+
+	"APPLICATION" => 'Application',
 );

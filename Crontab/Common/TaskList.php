@@ -19,7 +19,7 @@ return array(
 //	"p3 www www /usr/bin/php */1 * * * * /data/mycode/task1.php id/1",
 
 	//框架
-	//"* www www sp */1 * * * * Demo/Demo/demo name/test",
+	"* www www sp */1 * * * * Demo/Demo/demo name/test",
 	"* www www ss */1 * * * * Shell/Demo",
 
 	//Crontab 时间格式示例 遵循Linux Crontab规则
