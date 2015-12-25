@@ -1,19 +1,75 @@
 <?php
-echo phpinfo();exit;
-$url = "http://hpg.com/v2/teachers/apply";
-$file_name = "aa.png";
-$data = array(
-	"user_id"=>133,
-	"real_name"=>"wu",
-	"email"=>"wjp@163.com",
-	"certificate_photo"=>base64_encode(file_get_contents($file_name)),
-	"skype"=>"sdffas",
-	"job"=>"老师"
+include_once 'Authorize/Rsa.php';
+include_once 'Authorize/Mcrypt.php';
+
+$private_key = '-----BEGIN PRIVATE KEY-----
+MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAM85HJf8a/XqFfPl
+R4LjJPeNGT4V2wc47Bee0LYlrAfUu0FLIz7sbdzf+3WCrtC9hZ7SDzSM3GgtG7bv
+i+SuZxQPh/XbrJ5fOfPjdV+ZAfSNviHecGs2Oe/e2WZ18xEAJhPYDtSfajt4gZV+
+w+76J7QOFCaRySDmM4rZsEjgN8r3AgMBAAECgYAaKJp8cSfrviYRSMMzOZtECLLE
+DJw+mCftf2XXaIAD6Q3OWz7SxaPEux2SIvIQdaw1dUzoFFQKbo9OE4U0U/O88WHl
+qS15nnIauzZh6opiM4cEdEL620LYViHCURUPVaDZNzwOMNfL9fSRPbZ5Y0hG4QC7
+b5t8k6wb8eeLzDiRcQJBAOwcxFKXYWx7XPVodiRSTuGKWkKQOnH256WFkOOLgizz
+Nvo6wpL2MoWoAQNi4R5L0NC32q7j+7YrOu3NOweh+L8CQQDgrWmSo/VQsvrmdzNi
+LByvqUZY1miVDOxn7R38YE3aJ8okjt3ReWzf5VUpasxjhyhsAVadBp76emI9aMXA
+7sPJAkBflnXUifyjEn5by+KoaboNjRllgUZoBPFbDWvO8xfMYtqLC2biYFGr0ow2
+dr10qnTrSsN5skqhQXcl9sRDHsu5AkEAzpjHFk9r2Vvq+JctiZ10d1aZWEE4A67R
+h7LzOsm3bN3ftAQnFmKoaa0wxRfuf6qd0crdQSEAeOSmhz9bcFBdeQJBALP1LIgg
+WOoid6rtRHsJLqchqXc90C3+t8p+BSyJ6yFEVeFBmS49+2sK1FjU8YtWGhBSRQyg
+5/JeVRallyPhwM8=
+-----END PRIVATE KEY-----';
+$public_key = '-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDPORyX/Gv16hXz5UeC4yT3jRk+
+FdsHOOwXntC2JawH1LtBSyM+7G3c3/t1gq7QvYWe0g80jNxoLRu274vkrmcUD4f1
+26yeXznz43VfmQH0jb4h3nBrNjnv3tlmdfMRACYT2A7Un2o7eIGVfsPu+ie0DhQm
+kckg5jOK2bBI4DfK9wIDAQAB
+-----END PUBLIC KEY-----';
+
+//回调
+//$return = array(
+//	"bindid" => 2,
+//	"orderid" => "12345611380869017521022",
+//	"status" => 1,
+//	"yborderid" => "411305315766812955",
+//	"bindvalidthru" => 1370203269,
+//	"identityid" => '745',
+//	"amount" => 1
+//);
+
+//储蓄卡充值
+$recharage_url = "http://test.caizhu.com/api/wallet-recharge/debit-card-recharge";
+$param = array(
+	"cardno" => '6222081202004444038',
+	"idcard" => "41130219861118341X",
+	"owner" => "蒋纪托",
+	"phone" => '18806711513',
+	"amount" => "1",
+	"terminalid" => "00-EO-4C-6C-08-75"
 );
 
-$result = curl($url, "POST", $data,array("version:2"));
-var_dump($result);
+//绑卡充值
+//$recharage_url = "http://test.caizhu.com/api/wallet-recharge/bind-card-recharge";
+//$param = array(
+//	"bcid" => "1",
+//	"amount" => "1",
+//	"terminalid" => "00-EO-4C-6C-08-75"
+//);
 
+$param['encrypt_key'] = 'abcs';
+$data = array(
+	"data" => DM_Authorize_Rsa::getInstance()->encrypt(json_encode($param), $public_key)
+);
+
+$result = curl($recharage_url, "POST", $data);
+//var_dump($result);exit;
+$result = json_decode($result, true);
+
+if ($result['flag'] > 0) {
+	$result = DM_Authorize_Mcrypt::getInstance($param['encrypt_key'])->decrypt($result['data']['data']);
+	$result = json_decode($result, true);
+}
+var_dump($result);
+exit;
 //$fp=fopen('data://text/plain;base64,','r');
 //$meta=stream_get_meta_data($fp);
 //print_r($meta);
@@ -108,8 +164,8 @@ function curl($url, $type = "GET", $data = null, $header = null, $option = null)
 			break;
 	}
 
-	if(!is_null($header)&&is_array($header)){
-		curl_setopt($ch, CURLOPT_HTTPHEADER , $header);
+	if (!is_null($header) && is_array($header)) {
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 	}
 
 	// if(is_null($header))
