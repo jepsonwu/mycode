@@ -1,3 +1,0 @@
-def laugh():
-	print "aaaa"
-
