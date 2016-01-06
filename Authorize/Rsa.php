@@ -66,7 +66,8 @@ class DM_Authorize_Rsa extends DM_Authorize_AuthorizeAbstract
 		$res = openssl_pkey_get_private($private_key);
 		//用base64将内容还原成二进制
 		$content = base64_decode($content);
-
+//		$result='';
+//		openssl_private_decrypt($content, $result, $res, $padd);
 		//把需要解密的内容，按128位拆开解密
 		$result = '';
 		for ($i = 0; $i < strlen($content) / 128; $i++) {

@@ -1,6 +1,9 @@
 <?php
+
 include_once 'Authorize/Rsa.php';
 include_once 'Authorize/Mcrypt.php';
+include_once 'Authorize/CryptAES.php';
+include_once 'Yee/yeepayMPay.php';
 
 $private_key = '-----BEGIN PRIVATE KEY-----
 MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAM85HJf8a/XqFfPl
@@ -25,16 +28,40 @@ FdsHOOwXntC2JawH1LtBSyM+7G3c3/t1gq7QvYWe0g80jNxoLRu274vkrmcUD4f1
 kckg5jOK2bBI4DfK9wIDAQAB
 -----END PUBLIC KEY-----';
 
-//回调
-//$return = array(
-//	"bindid" => 2,
-//	"orderid" => "12345611380869017521022",
-//	"status" => 1,
-//	"yborderid" => "411305315766812955",
-//	"bindvalidthru" => 1370203269,
-//	"identityid" => '745',
-//	"amount" => 1
+//$string="YWtkdY8riDosyo701ExD4N2cFK/8DzhEw7qpbC/8g0BlPBjilc77JZPMPikP6Bk7wFLx3cDatwt8YWf0pSr0B3BRBQEnBQXOM4Y0ZQXpz79/ypjsQs0wT6pxK+GAFtk/SCgIC/4o0m20jF6Rs8llzX/khoBTQelYe7evllmLPOM=";
+$string="UnvC4sRbNJ8Hryg9h+4fMHSCPmvqAPXEF3767JAc470SNgSYVkr0iIg0mtGeBudogo4GmZe0BrHrBOteQU2aRxN5q+qT87IHix3twMUQnjGArZCrwiY6HwinbzVSn3vxVITP16JfyjJpeOA+pd/DYxdG1/w4FecBdoJfwvbcsG8=";
+//$yee=new yeepayMPay($private_key);
+//$result=$yee->encrypt_data($string);
+
+//$data=DM_Authorize_Rsa::getInstance()->encrypt("hank",$public_key);
+//$url = "http://test.caizhu.com/api/wallet/rsa-demo";
+//$result = curl($url, "POST", array("data"=>$string));
+//var_dump($result);
+//exit;
+
+$result=DM_Authorize_Rsa::getInstance()->decrypt($string,$private_key);
+var_dump($result);exit;
+/*------------rsa-demo-------------------------*/
+//$url = "http://test.caizhu.com/api/wallet/rsa-demo";
+//$param['encrypt_key'] = 'abcs';
+//$data = array(
+//	"data" => DM_Authorize_Rsa::getInstance()->encrypt(json_encode($param), $public_key)
 //);
+
+//$result = curl($url, "POST", $data);
+//var_dump($result);
+//exit;
+//$result = json_decode($result, true);
+//
+//if ($result['flag'] > 0) {
+//	$result = DM_Authorize_Mcrypt::getInstance($param['encrypt_key'])->decrypt($result['data']['data']);
+//	$result = json_decode($result, true);
+//}
+//var_dump($result);
+//exit;
+/*------------rsa-demo-------------------------*/
+
+
 
 //储蓄卡充值
 $recharage_url = "http://test.caizhu.com/api/wallet-recharge/debit-card-recharge";
@@ -50,9 +77,20 @@ $param = array(
 //绑卡充值
 //$recharage_url = "http://test.caizhu.com/api/wallet-recharge/bind-card-recharge";
 //$param = array(
-//	"bcid" => "1",
+//	"bcid" => "6",
 //	"amount" => "1",
 //	"terminalid" => "00-EO-4C-6C-08-75"
+//);
+
+//回调
+//$return = array(
+//	"bindid" => 2,
+//	"orderid" => "12345611380869017521022",
+//	"status" => 1,
+//	"yborderid" => "411305315766812955",
+//	"bindvalidthru" => 1370203269,
+//	"identityid" => '745',
+//	"amount" => 1
 //);
 
 $param['encrypt_key'] = 'abcs';
@@ -61,11 +99,11 @@ $data = array(
 );
 
 $result = curl($recharage_url, "POST", $data);
-//var_dump($result);exit;
 $result = json_decode($result, true);
-
+//var_dump($result);exit;
 if ($result['flag'] > 0) {
-	$result = DM_Authorize_Mcrypt::getInstance($param['encrypt_key'])->decrypt($result['data']['data']);
+	$aes=new Model_CryptAES($param['encrypt_key']);
+	$result = $aes->decrypt($result['data']['data']);
 	$result = json_decode($result, true);
 }
 var_dump($result);
