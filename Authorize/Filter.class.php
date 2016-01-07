@@ -97,7 +97,7 @@ class Filter
 			if ($tmp) {
 				//判断允许为空
 				if (!isset($val[6]) || (isset($val[6]) && !$val[6])) {
-					if ($data[$val[0]] == '')
+					if ($data[$val[0]] === '')
 						return $val[2];
 				}
 

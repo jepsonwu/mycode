@@ -3,7 +3,7 @@
 include_once 'Authorize/Rsa.php';
 include_once 'Authorize/Mcrypt.php';
 include_once 'Authorize/CryptAES.php';
-include_once 'Yee/yeepayMPay.php';
+//include_once 'Yee/yeepayMPay.php';
 
 $private_key = '-----BEGIN PRIVATE KEY-----
 MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAM85HJf8a/XqFfPl
@@ -28,8 +28,13 @@ FdsHOOwXntC2JawH1LtBSyM+7G3c3/t1gq7QvYWe0g80jNxoLRu274vkrmcUD4f1
 kckg5jOK2bBI4DfK9wIDAQAB
 -----END PUBLIC KEY-----';
 
+//$pwd="caizhuwjp13671142513";
+//$aes=new Model_CryptAES();
+//var_dump($aes->encrypt($pwd));exit;
+
+
 //$string="YWtkdY8riDosyo701ExD4N2cFK/8DzhEw7qpbC/8g0BlPBjilc77JZPMPikP6Bk7wFLx3cDatwt8YWf0pSr0B3BRBQEnBQXOM4Y0ZQXpz79/ypjsQs0wT6pxK+GAFtk/SCgIC/4o0m20jF6Rs8llzX/khoBTQelYe7evllmLPOM=";
-$string="UnvC4sRbNJ8Hryg9h+4fMHSCPmvqAPXEF3767JAc470SNgSYVkr0iIg0mtGeBudogo4GmZe0BrHrBOteQU2aRxN5q+qT87IHix3twMUQnjGArZCrwiY6HwinbzVSn3vxVITP16JfyjJpeOA+pd/DYxdG1/w4FecBdoJfwvbcsG8=";
+//$string="UnvC4sRbNJ8Hryg9h+4fMHSCPmvqAPXEF3767JAc470SNgSYVkr0iIg0mtGeBudogo4GmZe0BrHrBOteQU2aRxN5q+qT87IHix3twMUQnjGArZCrwiY6HwinbzVSn3vxVITP16JfyjJpeOA+pd/DYxdG1/w4FecBdoJfwvbcsG8=";
 //$yee=new yeepayMPay($private_key);
 //$result=$yee->encrypt_data($string);
 
@@ -39,8 +44,8 @@ $string="UnvC4sRbNJ8Hryg9h+4fMHSCPmvqAPXEF3767JAc470SNgSYVkr0iIg0mtGeBudogo4GmZe
 //var_dump($result);
 //exit;
 
-$result=DM_Authorize_Rsa::getInstance()->decrypt($string,$private_key);
-var_dump($result);exit;
+//$result=DM_Authorize_Rsa::getInstance()->decrypt($string,$private_key);
+//var_dump($result);exit;
 /*------------rsa-demo-------------------------*/
 //$url = "http://test.caizhu.com/api/wallet/rsa-demo";
 //$param['encrypt_key'] = 'abcs';
@@ -60,7 +65,6 @@ var_dump($result);exit;
 //var_dump($result);
 //exit;
 /*------------rsa-demo-------------------------*/
-
 
 
 //储蓄卡充值
@@ -83,26 +87,42 @@ $param = array(
 //);
 
 //回调
+//$recharage_url="http://test.caizhu.com/api/wallet-recharge/pay-async-notify";
 //$return = array(
 //	"bindid" => 2,
-//	"orderid" => "12345611380869017521022",
+//	"orderid" => "16010713410387342659-0157-0",
 //	"status" => 1,
 //	"yborderid" => "411305315766812955",
-//	"bindvalidthru" => 1370203269,
+//	"bindvalidthru" => 1452169621,
 //	"identityid" => '745',
-//	"amount" => 1
+//	"amount" => 1,
+//"bank" => "ICBC",
+//"lastno" => "6548"
 //);
 
 $param['encrypt_key'] = 'abcs';
+
+$param = array(
+	'amount' => 1,
+	'cardno' => '6227002746050809184',
+	'owner' => '成鹏飞',
+	'idcard' => '420222199310035996',
+	'phone' => '17702726720',
+	'terminalid' => '6001a4193ace4c3e238dfb03f55f25336b888f26',
+	'set_passwd' => 0,
+	'encrypt_key' => 'MQANJZZSWKNZPHDFXSRWXOKRMNPLVLHP',
+);
 $data = array(
 	"data" => DM_Authorize_Rsa::getInstance()->encrypt(json_encode($param), $public_key)
 );
 
+
 $result = curl($recharage_url, "POST", $data);
+var_dump($result);exit;
 $result = json_decode($result, true);
 //var_dump($result);exit;
 if ($result['flag'] > 0) {
-	$aes=new Model_CryptAES($param['encrypt_key']);
+	$aes = new Model_CryptAES($param['encrypt_key']);
 	$result = $aes->decrypt($result['data']['data']);
 	$result = json_decode($result, true);
 }
