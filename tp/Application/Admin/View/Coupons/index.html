@@ -1,0 +1,177 @@
+<!doctype html>
+<head>
+    <include file="Public/meta"/>
+</head>
+
+<body>
+
+<div class="content">
+    <!-- 标题 -->
+    <div class="title">
+        <span class="title_arrow"></span>
+        <a href="{:U('Coupons/index')}">优惠券管理></a>
+        [ <a href="{:U('Coupons/index')}">返回列表</a> ]
+    </div>
+
+    <div id="div_act_zoom">
+        <!-- 功能按钮 -->
+        <div id="div_operater" style="width:20%">
+            <a class="btn btn-green" href="__CONTROLLER__/add">新 增</a>
+        </div>
+
+        <!-- 查询 -->
+        <form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+            <div id="div_search" style="text-align:left;width:78%">
+                <dl>
+                    <input type="submit" class="btn btn-green" id="btn_search" value="查 询"/>
+                    <input type="hidden" name="order" value=""/>
+                    <input type="hidden" name="sort" value=""/>
+                </dl>
+                <dl>
+                    <dt>类型：</dt>
+                    <select name="type">
+                        <option
+                        <empty name="type">selected</empty>
+                        value="">所有类型</option>
+                        <volist name="types" id="item">
+                            <option
+                            <eq name="type" value="$key">selected</eq>
+                            value="{$key}">{$item}</option>
+                        </volist>
+                    </select>
+                </dl>
+                <dl>
+                    <dt>状态：</dt>
+                    <select name="status">
+                        <option
+                        <empty name="status">selected</empty>
+                        value="">所有状态</option>
+                        <volist name="coupons_status" id="item">
+                            <option
+                            <eq name="status" value="$key">selected</eq>
+                            value="{$key}">{$item}</option>
+                        </volist>
+                    </select>
+                </dl>
+                <dl>
+                    <dt>优惠码：</dt>
+                    <input type="text" name="discount_code" value="{$discount_code}">
+                </dl>
+                <dl>
+                    <dt>名称：</dt>
+                    <input type="text" name="name" value="{$name}">
+                </dl>
+                <dl>
+                    <dt>创建时间：</dt>
+                    <input type="text" name="create_start_time" value="{$create_start_time}" class="form-control"
+                           id="datepicker1">-
+                    <input type="text" name="create_end_time" value="{$create_end_time}" class="form-control"
+                           id="datepicker2">
+                </dl>
+            </div>
+        </form>
+    </div>
+
+    <!-- 列表 -->
+    <table class="list">
+        <thead>
+        <tr>
+            <th colspan="18" class="graybar"></th>
+        </tr>
+        <tr>
+            <td class="title chkbox">
+                <div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value=''/>
+							</span>
+                </div>
+            </td>
+            <td class="title">优惠码</td>
+            <td class="title">名称</td>
+            <td class="title">金额</td>
+            <td class="title">类型</td>
+            <td class="title">描述</td>
+            <td class="title">备注</td>
+            <td class="title"><a name="start_time">生效时间</a></td>
+            <td class="title">有效期</td>
+            <td class="title">总数</td>
+            <td class="title">每人限领</td>
+            <td class="title">优先</td>
+            <td class="title">时间上限</td>
+            <td class="title">额外规则</td>
+            <td class="title">固定</td>
+            <td class="title">状态</td>
+            <td class="title"><a name="create_time">创建时间</a></td>
+            <td class="title"><a name="update_time">修改时间</a></td>
+            <td class="title">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="list" id="vo">
+            <tr>
+                <td class="chkbox">
+                    <div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}"/>
+							</span>
+                    </div>
+                </td>
+                <td style="width: 20px;">{$vo.discount_code}</td>
+                <td style="width: 30px;">{$vo.name}</td>
+                <td>{$vo.amount}</td>
+                <td>
+                    <!--{$vo.type_show}-->
+                    <if condition="$vo['type'] neq 1 AND $vo['status'] eq 1">
+                        <a href="__CONTROLLER__/give/id/{$vo.id}">{$vo.type_show}</a>
+                        <else/>
+                        {$vo.type_show}
+                    </if>
+                </td>
+                <td><textarea readonly style="width: 150px;height: 60px;">{$vo.intro}</textarea></td>
+                <td>{$vo.remark}</td>
+                <td style="width: 50px;">{$vo.start_time}</td>
+                <td>{$vo.validity}</td>
+                <td style="width: 10px;">{$vo.total}</td>
+                <td>{$vo.everyone_limit}</td>
+                <td>{$vo.priority}</td>
+                <td>{$vo.second_limit}</td>
+                <td>{$vo.rule}</td>
+                <td>{$vo.fixed_period}</td>
+                <td>{$vo.status_show}</td>
+                <td style="width: 50px;">{$vo.create_time}</td>
+                <td style="width: 50px;">{$vo.update_time}</td>
+                <td>
+                    <a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
+                    <if condition="$vo.multi_code eq 1">
+                        <a href="__CONTROLLER__/down_multi_code/coupon_id/{$vo.id}">下载优惠券码</a>
+                        <elseif condition="($vo.multi_code eq 3) and ($vo.total gt 0)"/>
+                        <a class="a_confirm" url="__CONTROLLER__/create_multi_code/coupon_id/{$vo.id}"
+                           msg="确定要生成优惠码么？">生成优惠券码</a>
+                        <elseif condition="$vo.multi_code eq 2"/>
+                        优惠码生成中
+                    </if>
+                    <!--<a class="a_confirm" url="__CONTROLLER__/edit_status/id/{$vo.id}/" msg="确定要删除该记录么？">删除</a>　-->
+                </td>
+            </tr>
+        </volist>
+        </tbody>
+        <tr>
+            <th colspan="18" class="graybar"></th>
+        </tr>
+    </table>
+
+    <div id="page">{$page}</div>
+
+</div>
+
+<input type="text" id="quick_edit"/>
+
+<include file="Public:js_basic"/>
+<load href="__PUBLIC__/Admin/js/main.js"/>
+<load href="__PUBLIC__/Admin/js/main_list.js"/>
+<script>
+    var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+</script>
+
+</body>
+</html>

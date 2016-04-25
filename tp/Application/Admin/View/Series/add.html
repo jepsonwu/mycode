@@ -1,0 +1,125 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+	<style type="text/css" media="screen">
+
+		.tLeft input[type="checkbox"]{
+			opacity: 1;
+		}
+		.tagLabel {
+			font-size: 15px;
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			新增Series [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/insert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+
+				<!-- <tr>
+					<td class="tRight">topicId：</td>
+					<td class="tLeft"><input type="hidden" name="topicId" value="{$topicId}" />{$topicId}</td>
+					<td></td>
+				</tr> -->
+				<tr>
+					<td class="tRight">categoryId：</td>
+					<td class="tLeft">
+						<!-- <select name="categoryId"> -->
+						<volist name="tag_types" id="item">
+							<!-- <option value="{$key}">{$key}. {$item}</option> -->
+							<input type="checkbox" name="categoryIds[]" value='{$key}' id="" />{$key}. {$item}
+						</volist>
+						<!-- </select> -->
+					</td>
+				</tr>
+				<!-- <tr>
+					<td class="tRight">dirname：</td>
+					<td class="tLeft"><input type="text" class="large" name="dirname" required='1' /></td>
+					<td></td>
+				</tr> -->
+
+				<tr>
+					<td class="tRight">英文名：</td>
+					<td class="tLeft"><input type="text" class="large" name="enName" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">中文名：</td>
+					<td class="tLeft"><input type="text" class="large" name="chName" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">标签：</td>
+					<td class="tLeft"><input type="text" class="large" name="tag" required='1' />
+						<span class="tagLabel">※注：多个标签用半角逗号分隔</span>
+					</td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">简介：</td>
+					<td class="tLeft"><textarea name="intro" class="area_60" required='1'></textarea></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">大图片：</td>
+					<td class="tLeft">
+						<!-- <img id="img_pic" src="#" class="frm_img none"> -->
+						<input type="file" class="medium middle" id="pic1" name="pic1" />&nbsp;
+						<!-- <a><span class="C00">上传图片</span></a> -->
+					</td>
+				</tr>
+				<tr>
+					<td class="tRight">小图片：</td>
+					<td class="tLeft">
+						<!-- <img id="img_pic" src="#" class="frm_img none"> -->
+						<input type="file" class="medium middle" id="pic2" name="pic2" />&nbsp;
+						<!-- <a><span class="C00">上传图片</span></a> -->
+					</td>
+				</tr>
+				
+				<tr>
+					<td></td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+		<form method='post' id="frm_pic" class="file_frm" action="__MODULE__/Public/uploadPic/">
+			<input name="image" id="file_pic" type="file" class="ipt_file" />
+			<input type="hidden" id="folder" name="folder" value="{$_SESSION['bkgd']['menuNow']}" />
+			<input type="hidden" name="width" value="240" />
+			<input type="hidden" name="height" value="109" />
+			<input type="hidden" name="id" value="pic" />
+			<input type="hidden" name="imgRedraw" value="-1" />
+		</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/chosen.jquery.js" />
+	<load href="__PUBLIC__/Admin/css/chosen.css" />
+	
+	<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+	<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+	
+</body>
+</html>

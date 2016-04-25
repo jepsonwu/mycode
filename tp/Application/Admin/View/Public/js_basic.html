@@ -1,0 +1,33 @@
+<div id="dialog" title="系统消息"></div>
+<div id="dialog_confirm" title="系统消息"></div>
+<div id="dialog_note" title="Note"></div>
+<div id="dialog_img" title="img"></div>
+<div id="dialog_prograssbar" title="系统进度框">
+    <div class="progress-label">请稍候...</div>
+    <div id="progressbar"></div>
+</div>
+
+<!--[if lte IE 6]>
+<script>
+    window.location.href = "__CONTROLLER__/ie6/";
+</script>
+<![endif]-->
+
+<load href="__PUBLIC__/Admin/js/jquery-1.10.2.min.js" />
+
+<load href="__PLUGIN__/JqueryUI/ui/jquery-ui.min.js" />
+
+<load href="__PLUGIN__/JqueryUI/themes/base/jquery-ui-timepicker-addon.css" />
+<load href="__PLUGIN__/JqueryUI/ui/jquery-ui-timepicker-addon.js" />
+
+<load href="__PLUGIN__/Chosen/chosen.jquery.js" />
+
+<load href="__PUBLIC__/Common/js/common.js" />
+<load href="__PUBLIC__/Admin/js/common.js" />
+
+<script>
+	var MODULE = "__MODULE__";
+    var CONTROLLER = "__CONTROLLER__";
+    var PUBLIC = "__PUBLIC__";
+    var UPLOAD = "__UPLOAD__";
+</script>

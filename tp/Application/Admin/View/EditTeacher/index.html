@@ -1,0 +1,132 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<a href="{:U('EditTeacher/index')}">外教资料修改管理></a>
+			[ <a href="{:U('EditTeacher/index')}">返回列表</a> ]
+		</div>
+		
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater" style="width:20%">
+				<!-- <a class="btn btn-green" href="__CONTROLLER__/add">新 增</a>
+				<input type="button" class="btn btn-green" id="btn_del" value="删 除" url="__CONTROLLER__/foreverDelete" /> -->
+			</div>
+			
+			<!-- 查询 -->
+			<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+				<div id="div_search" style="text-align:left;width:78%">
+					<dl>
+						<input type="submit" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+					</dl>
+					<dl>
+						<dt>审核状态：</dt>
+						<select name="status">
+							<option <empty name="status">selected</empty> value="">所有状态</option>
+							<volist name="apply_status" id="item">
+							<option <eq name="status" value="$key">selected</eq> value="{$key}">{$item}</option>
+							</volist>
+						</select>
+					</dl>
+					<dl>
+						<dt>创建时间：</dt>
+						<input type="text" name="start_time" value="{$start_time}" class="form-control" id="datepicker1" >-
+						<input type="text" name="end_time" value="{$end_time}" class="form-control" id="datepicker2" >
+					</dl>
+				</div>
+			</form>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title chkbox">
+						<div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value='' />
+							</span>
+						</div>
+					</td>
+					<td class="title">老师ID</td>
+					<td class="title">国际代码</td>
+					<td class="title">手机号</td>
+                    <td class="title">用户昵称</td>
+					<td class="title">头像</td>
+					<td class="title">音频</td>
+					<td class="title">自我介绍</td>
+                    <td class="title">Skype</td>
+					<td class="title">审核失败原因</td>
+					<td class="title"><a name="update_time">修改时间</a></td>
+					<td class="title">状态</td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td class="chkbox">
+						<div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.user_id}" />
+							</span>
+						</div>
+					</td>
+					<td>{$vo.tid}</td>
+					<td>{$vo.international_code}</td>
+					<td>{$vo.mobile}</td>
+					<td>{$vo.name}</td>
+					<td><a url="{$vo.avatar}" class="a_img_show">点击查看</a></td>
+					<td>
+                        <audio src="{$vo.introduce_audio}" controls="controls">
+                    </audio>
+                    </td>
+
+                    <td>{$vo.introduce}</td>
+                    <td>{$vo.skype}</td>
+                    <td>{$vo.reason}</td>
+					<td>{$vo.update_time}</td>
+					<td>{$vo.status_show}</td>
+					<td>
+					<eq name="vo.status" value="1">
+						<a class="a_confirm" url="__CONTROLLER__/approve/tid/{$vo.tid}/status/2" msg="确定审核通过？">通过</a>
+						<a class="a_note" name="reason" url="__CONTROLLER__/approve/tid/{$vo.tid}/status/3" msg="确定审核失败？">失败</a>
+					</eq>
+					</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+		
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+
+		// $(document).ready(function($) {
+		// 	$(".check_field").click(function(){
+		// 		$(this).next(".reason").show();
+		// 	});
+		// });
+	</script>
+
+    </body>
+</html>

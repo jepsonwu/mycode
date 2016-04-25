@@ -1,0 +1,83 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			新增用户 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/insert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+				<tr>
+					<td class="tRight">用户名：</td>
+					<td class="tLeft">
+						<input type="text" class="medium" name="account" required='1' />
+						<input type="button" class="btn btn-green" id="btn_check_account" value="用户名检测" func="__CONTROLLER__/checkAccount/" />
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">密码：</td>
+					<td class="tLeft"><input type="text" class="medium" name="password" required='1' /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">头像：</td>
+					<td class="tLeft">
+						<img id="img_face" src="#" class="frm_img none">
+						<input type="text" class="medium middle" id="face" name="face" readonly />&nbsp;
+						<a>上传头像</a>　<span style="color:#C00">（尺寸：75×75）</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="tRight">昵称：</td>
+					<td class="tLeft"><input type="text" class="medium" name="nickname" required='1' /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">Email：</td>
+					<td class="tLeft"><input type="text" class="medium" name="email" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">备注：</td>
+					<td class="tLeft" colspan="2"><textarea name="remark" class="area_60"></textarea></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="提交" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+		<form method='post' id="frm_face" class="file_frm" action="__MODULE__/Public/uploadPic/">
+			<input name="image" id="file_face" type="file" class="ipt_file" />
+			<input type="hidden" id="folder" name="folder" value="{$_SESSION['bkgd']['menuNow']}" />
+			<input type="hidden" name="width" value="75" />
+			<input type="hidden" name="height" value="75" />
+			<input type="hidden" name="id" value="face" />
+			<input type="hidden" name="imgRedraw" value="1" />
+		</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/user.js" />
+	
+</body>
+</html>
+
+
+

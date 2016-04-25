@@ -1,0 +1,72 @@
+<!doctype html>
+<head>
+    <include file="Public/meta"/>
+    <style type="text/css" media="screen">
+        .tagLabel {
+            font-size: 15px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="content">
+
+    <!-- 标题 -->
+    <div class="title">
+        <span class="title_arrow"></span>
+        发放优惠券 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+    </div>
+
+    <form id="frm1" method="post" action="__CONTROLLER__/give_out/">
+        <table cellpadding="3" cellspacing="3" class="tbl_form">
+            <tr>
+                <td class="tRight">名称：</td>
+                <td class="tLeft"><input readonly type="text" value="{$coupon_info.name}"/></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="tRight">描述：</td>
+                <td class="tLeft"><textarea readonly>{$coupon_info.intro}</textarea></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="tRight">请输入手机号：</td>
+                <td class="tLeft"><textarea name="mobiles" required="1" class="large"></textarea>
+                    <span class="tagLabel">待发放用户手机号，多个用英文逗号分割</span></td>
+                <td></td>
+            </tr>
+            <!--<tr>-->
+                <!--<td class="tRight">选择文件：</td>-->
+                <!--<td class="tLeft">-->
+                    <!--<input type="file" class="medium middle" name="mobiles_file" />&nbsp;-->
+                    <!--<span class="tagLabel">包含手机号的txt文件，规格同上</span>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <input type="hidden" name="discount_code" value="{$coupon_info.discount_code}"/>
+                    <input type="button" class="btn btn-green" id="btn_submit" value="保 存"/>
+                    <input type="reset" class="btn btn-green" id="btn_reset" value="重 置"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <!--<form method='post' id="frm_pic" class="file_frm">-->
+        <!--<input name="mobiles_file" id="file_pic" type="file" class="ipt_file" />-->
+    <!--</form>-->
+</div>
+
+<include file="Public:js_basic"/>
+<include file="Public:js_form"/>
+<load href="__PUBLIC__/Admin/js/main.js"/>
+<load href="__PUBLIC__/Admin/js/chosen.jquery.js"/>
+<load href="__PUBLIC__/Admin/css/chosen.css"/>
+
+<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+
+</body>
+</html>

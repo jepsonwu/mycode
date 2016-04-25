@@ -1,0 +1,78 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<a href="{:U('Recharge/index')}">充值记录列表</a>
+		</div>
+		
+		<div id="div_act_zoom">
+			
+			<!-- 查询 -->
+			<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+				<div id="div_search" style="text-align:left;width:88%">
+					<dl>
+						<input type="submit" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+					</dl>
+					<dl>
+						<dt>充值ID：</dt>
+						<input type="text" name="recharge_id" value="{$recharge_id}">
+					</dl>
+					<dl>
+						<dt>手机号码：</dt>
+						<input type="text" name="mobile" value="{$mobile}">
+					</dl>
+				</div>
+			</form>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title">充值ID</td>
+					<td class="title">手机号码</td>
+					<td class="title">充值金额</td>
+					<td class="title">赠送金额</td>
+					<td class="title">充值时间</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td>{$vo.recharge_id}</td>
+					<td>{$vo.mobile}</td>
+					<td>{$vo.amount}</td>
+					<td>{$vo.receive_amount}</td>
+					<td>{$vo.create_time}</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+		
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+    </body>
+
+</html>

@@ -1,5 +1,4 @@
 <?php
-
 include_once 'Authorize/Rsa.php';
 include_once 'Authorize/Mcrypt.php';
 include_once 'Authorize/CryptAES.php';
@@ -100,25 +99,26 @@ $param = array(
 //"lastno" => "6548"
 //);
 
-$param['encrypt_key'] = 'abcs';
-
-$param = array(
-	'amount' => 1,
-	'cardno' => '6227002746050809184',
-	'owner' => '成鹏飞',
-	'idcard' => '420222199310035996',
-	'phone' => '17702726720',
-	'terminalid' => '6001a4193ace4c3e238dfb03f55f25336b888f26',
-	'set_passwd' => 0,
-	'encrypt_key' => 'MQANJZZSWKNZPHDFXSRWXOKRMNPLVLHP',
-);
-$data = array(
-	"data" => DM_Authorize_Rsa::getInstance()->encrypt(json_encode($param), $public_key)
-);
-
-
-$result = curl($recharage_url, "POST", $data);
-var_dump($result);exit;
+//$param['encrypt_key'] = 'abcs';
+//
+//$param = array(
+//	'amount' => 1,
+//	'cardno' => '6227002746050809184',
+//	'owner' => '成鹏飞',
+//	'idcard' => '420222199310035996',
+//	'phone' => '17702726720',
+//	'terminalid' => '6001a4193ace4c3e238dfb03f55f25336b888f26',
+//	'set_passwd' => 0,
+//	'encrypt_key' => 'MQANJZZSWKNZPHDFXSRWXOKRMNPLVLHP',
+//);
+//$data = array(
+//	"data" => DM_Authorize_Rsa::getInstance()->encrypt(json_encode($param), $public_key)
+//);
+//
+//
+//$result = curl($recharage_url, "POST", $data);
+//var_dump($result);
+//exit;
 $result = json_decode($result, true);
 //var_dump($result);exit;
 if ($result['flag'] > 0) {

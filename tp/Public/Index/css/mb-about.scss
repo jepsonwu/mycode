@@ -1,0 +1,131 @@
+$cont-width:870/960*100%;
+$fontSize:40px;
+$headerHeight:3.8rem;
+@mixin trans-left-center() {
+	position: absolute;
+	top: 50%;
+	transform:translateY(-50%);
+	-webkit-transform:translateY(-50%);
+	-moz-transform:translateY(-50%);
+	-o-transform:translateY(-50%);
+}
+@mixin mix-opacity($opa) {
+	opacity:$opa;
+	-moz-opacity:$opa;
+	-khtml-opacity:$opa;
+	filter:alpha(opacity=$opa*100);
+}
+@mixin mix-main() {
+	width: $cont-width;
+	height: 100%;
+	margin: 0 auto;
+	position: relative;
+}
+@mixin trans-top-center($top:0px) {
+	position: absolute;
+	top: $top;
+	left: 50%;
+	transform:translateX(-50%);
+	-webkit-transform:translateX(-50%);
+	-moz-transform:translateX(-50%);
+	-o-transform:translateX(-50%);
+}
+
+// header
+.header{
+	position: absolute;
+	width: 100%;
+	height: $headerHeight;
+	background-color: white;
+	@include mix-opacity(0.5);
+}
+.header-content{
+	position: absolute;
+	width: 100%;
+	height: $headerHeight;
+	.main{
+		@include mix-main();
+		img{
+			height: 1.2rem;
+			@include trans-left-center();
+		}
+	}
+	box-shadow: 0px 0px 0.125rem 0px gray;
+}
+
+// main content
+.content{
+	background:{
+		image:url(../img/mb-content-back.jpg);
+		repeat:no-repeat;
+		position: 50% 0%;
+		size:cover;
+		z-index: -1;
+	}
+	.main{
+		@include mix-main();
+		.about,.cherish,.meaning,.value,.mission,.vision{
+			margin-top: 2.275rem;
+			height: 0.775rem;
+		}
+		.about-text,.cherish-text,.value-text,.meaning-text,.mission-text,.vision-text{
+			margin-top: 1.35rem;
+			width: 100%;
+		}
+		.about{
+			margin-top: 5.7rem;
+		}
+		.vision-text{
+			margin-bottom: 5rem;
+		}
+	}
+}
+
+// footer div
+.footer{
+	position: relative;
+	height: 10.25rem;
+	.logo{
+		position: absolute;
+		top: -3px;
+		left: 0;
+		height: 2.85rem;
+	}
+	.main{
+		@include mix-main();
+		text-align: center;
+		.about-us{
+			position: absolute;
+			right: 0;
+			top: 2.1rem;
+			height: 0.775rem;
+		}
+		.contact{
+			padding-top: 4.3rem;
+			padding-bottom: 1.875rem;
+			a{
+				display: inline-block;
+				overflow: hidden;
+				width: 1.9rem;
+				height: 1.9rem;
+			}
+			img{
+				width: 1.9rem;
+				height: 1.9rem;
+			}
+			.facebook{
+				margin-left: 1.125rem;
+				margin-right: 1.125rem;
+			}
+		}
+		.copyright{
+			width: 82%;
+		}
+	}
+}
+// bar on the bottom
+.footer-bar{
+	width: 100%;
+	height: 0.5rem;
+	background-color: rgb(176,166,148);
+}

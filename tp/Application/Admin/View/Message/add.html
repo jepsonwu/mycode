@@ -1,0 +1,62 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			新增通知 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/insert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+				<tr>
+					<td class="tRight">通知：</td>
+					<td class="tLeft"><textarea name="message" require="1">{$info.message}</textarea></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">详情连接：</td>
+					<td class="tLeft"><input type="text" class="large" name="url" value="{$info.url}" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">类型：</td>
+					<td class="tLeft">
+						<select name="type">
+							<volist name="types" id="item">
+							<option <eq name="$info.type" value="$key">selected</eq> value="key">{$item}</option>
+							</volist>
+						</select>
+					</td>
+					<td></td>
+				</tr>
+			
+				<tr>
+					<td></td>
+					<td colspan="2">
+						<input type="hidden" name="id" value="{$info.id}" />
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/chosen.jquery.js" />
+	<load href="__PUBLIC__/Admin/css/chosen.css" />
+	
+	<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+	<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+	
+</body>
+</html>

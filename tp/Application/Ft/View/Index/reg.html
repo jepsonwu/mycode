@@ -1,0 +1,21 @@
+<h2>注册</h2>
+<form id="" method="post" action="register">
+		<table class="free_table blue_link">
+			<tr><td class="th"><span class="note_orange">*</span><label for="f_1">mobile</label></td>
+			<td><input type="text" name="mobile" class="free_text" id="f_1" value="{$Think.session.param.mobile}" /><span class="note_gray"></span></td></tr>
+			<tr><td class="th"><span class="note_orange">*</span><label for="f_2">password</label></td>
+			<td><input type="password" name="password" class="free_text" id="f_2" name="f_2" /><span class="note_gray"></span></td></tr>
+			<tr><td class="th"><span class="note_orange">*</span><label for="f_4">昵称</label></td>
+			<td><input type="text" name="nickname" class="free_text" id="f_4" value="{$Think.session.param.nickname}" /><span class="note_gray"></span></td></tr>
+			<tr><td class="th"><span class="note_orange">*</span><label for="f_4">验证码</label></td>
+			<td><input type="text" name="verifyCode" class="free_text" id="f_4" /><span class="note_gray"></span></td></tr>
+			<tfoot>
+				<tr>
+					<td></td>
+					<td>
+						<input type="submit" class="i_free_btn th go_check_info" value="submit" />
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>

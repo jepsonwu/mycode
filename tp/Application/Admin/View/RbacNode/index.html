@@ -1,0 +1,127 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<present name="_SESSION['bkgd']['currentNode']">[{$_SESSION['bkgd']['currentNode']['title']}] </present>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">模块列表</eq>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="2">操作列表　<span>[<a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_PREV_STR')]}">返回模块列表</a>]</span></eq>
+		</div>
+		
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater">
+				<a href="__CONTROLLER__/add" class="btn btn-green">新 增</a>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="2">
+				<a href="__CONTROLLER__/grpAdd" class="btn btn-green">批新增</a>
+			</eq>
+				<input type="button" class="btn btn-green" id="btn_del" value="删除" url="__CONTROLLER__/foreverDelete" />
+				<a href="__CONTROLLER__/sort" class="btn btn-green">排 序</a>
+			</div>
+			
+			<!-- 查询 -->
+			<div id="div_search" class="positionable">
+				<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+					<dl>
+						<dt>显示名查询：</dt>
+						<input type="text" name="title" value="{$title}" class="medium" />
+						<input type="submit" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+						<input type="hidden" name="pid" value="{$pid}" />
+					</dl>
+				<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">
+					<dl>
+						<dt>类别：</dt>
+						<select name="type">
+							<option value="">所有类别</option>
+						<volist name="menu_types" id="tp" key="k">
+							<option <eq name="type" value="$k">selected</eq> value="{$k}">{$tp}</option>
+						</volist>
+						</select>
+					</dl>
+				</eq>
+				</form>
+			</div>
+			
+			<div class="claer"></div>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="9" class="graybar"></th></tr>
+				<tr>
+					<td class="title chkbox">
+						<div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value='' />
+							</span>
+						</div>
+					</td>
+					<td class="title"><a name="id">编号 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="name">名称 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="title">显示名 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+				<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">
+					<td class="title"><a name="type">类别 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+				</eq>
+					<td class="title"><a name="sort">序号 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="status">状态 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td class="chkbox">
+						<div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}" />
+							</span>
+						</div>
+					</td>
+					<td>{$vo.id}</td>
+				<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">
+					<td><a href="__CONTROLLER__/index/pid/{$vo.id}">{$vo.name}</a></td>
+				<else />
+					<td>{$vo.name}</td>
+				</eq>
+					<td aqe="1" idnow="{$vo.id}" colm="title"><a href="__CONTROLLER__/edit/id/{$vo.id}">{$vo.title}</a></td>
+				<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">
+					<td>{$vo.type_name}</td>
+				</eq>
+					<td>{$vo.sort}</td>
+					<td>{$vo.status_show}</td>
+					<td class="td_act">
+						<a class="a_sub" url="__CONTROLLER__/chgStt/id/{$vo.id}/stt/{$vo.stt_val}/act/{$vo.stt_act}">{$vo.stt_act}</a>
+						<a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
+						<a class="a_confirm" url="__CONTROLLER__/foreverDelete" param="/id/{$vo.id}" msg="确定要删除该记录么？">删除</a>
+					</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="9" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+</body>
+</html>
+		

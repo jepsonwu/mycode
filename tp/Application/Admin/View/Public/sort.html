@@ -1,0 +1,57 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			拖动排序 [ <a href="__MODULE__/{$Think.CONTROLLER_NAME}/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<ul id="sortable" width="50%">
+		<voList name="sortList" id="vo" key="k">
+			<li class="ui-state-default" myid="{$vo.id}"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>{$k}. {$vo.txt_show}</li>
+		</voList>
+		</ul>
+		
+		<div style="margin-bottom:50px; text-align:right; width:50%;">
+			<input type="hidden" id="topSort" value="{$topSort}" />
+			<input type="hidden" id="mdl_name" value="{$mdl_name}" />
+			<input type="button" class="btn btn-green" style="margin-right:5px;" id="btn_submit" value="保 存" />
+		</div>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<script>
+		$(function() {
+			//
+			$( "#sortable" ).sortable();
+			$( "#sortable" ).disableSelection();
+			//
+			$("#btn_submit").click(function(){
+				var seqNoList = '';
+				$("#sortable .ui-state-default").each(function(idx,domEle){
+					seqNoList += $(domEle).attr('myid') + ':' + (idx+1) + "|";
+				});
+				seqNoList = seqNoList.substr(0, seqNoList.length-1);
+				// 置顶排序
+				var topSort = $("#topSort").val();
+				//
+				var url = "__MODULE__/{$Think.CONTROLLER_NAME}/saveSort/";
+				var param = { 'seqNoList':seqNoList,'topSort':topSort };
+				//
+				my_ajax_sub(url, param);
+			});
+			
+		});
+	</script>
+	
+</body>
+</html>

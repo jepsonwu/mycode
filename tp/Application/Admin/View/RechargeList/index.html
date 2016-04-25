@@ -1,0 +1,65 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<a href="{:U('RechargeList/index')}">充值金额列表</a>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title">编号</td>
+					<td class="title">充值金额</td>
+					<td class="title">赠送金额</td>
+					<td class="title">描述</td>
+				</tr>
+			</thead>
+			<tbody>
+				<form id="frm1" method="post" action="__CONTROLLER__/save/">
+					<for start="0" end="$recharge_list_count">
+						<tr>
+							<td>{$i+1}</td>
+							<td>
+								<input type="text" name="amount{$i}" value='{$recharge_list[$i]['amount']}' />
+							</td>
+							<td>
+								<input type="text" name="receive_amount{$i}" value='{$recharge_list[$i]['receive_amount']}' />
+							</td>
+							<td>
+								<input type="text" name="description{$i}" value='{$recharge_list[$i]['description']}' />
+							</td>
+						</tr>
+					</for>
+					<tr>
+						<td colspan="2"><span>保存充值金额列表：</span>
+							<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						</td>
+					</tr>
+				</form>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+	</div>
+	
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<!-- <load href="__PUBLIC__/Admin/js/jquery-dialog.js" /> -->
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+    </body>
+
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+	<style type="text/css" media="screen">
+
+		.tLeft input[type="checkbox"]{
+			opacity: 1;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			编辑Series信息 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/update/" enctype="multipart/form-data">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+				<tr>
+					<td class="tRight">id：</td>
+					<td class="tLeft">{$vo.id}</td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">topicId：</td>
+					<td class="tLeft">{$vo.topicId}</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">categoryId</td>
+					<td class="tLeft">
+						<volist name="tag_types" id="item">
+							<input <php>echo in_array($key,$categoryIds)?'checked':''</php>
+							 type="checkbox" name="categoryIds[]" value='{$key}' id="" />{$key}. {$item}
+						</volist>
+					</td>
+				</tr>	
+				<tr>
+					<td class="tRight">dirname：</td>
+					<td class="tLeft">{$vo.topicId}</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">level：</td>
+					<td class="tLeft"><input type="text" class="large" name="level" value="{$vo.level}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">英文名：</td>
+					<td class="tLeft"><input type="text" class="large" name="enName" value="{$vo.enName}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">中文名：</td>
+					<td class="tLeft"><input type="text" class="large" name="chName" value="{$vo.chName}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">标签：</td>
+					<td class="tLeft"><input type="text" class="large" name="tag" value="{$vo.tag}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">简介：</td>
+					<td class="tLeft"><textarea name="intro" class="area_60" required='1'>{$vo.intro}</textarea></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">大图片：</td>
+					<td class="tLeft">
+						<img  src="/Uploads/{$vo.dirname}/{$imgs[0]}" width='200' height="150">
+						<input type="file" class="medium middle" id="pic1" name="pic1" />&nbsp;
+                        <input type="hidden" name="pic1_default" value="{$imgs[0]}"/>
+						<!-- <a><span class="C00">上传图片</span></a> -->
+					</td>
+				</tr>
+					<tr>
+					<td class="tRight">小图片：</td>
+					<td class="tLeft">
+						<!-- <img id="img_pic" src="#" class="frm_img none"> -->
+						<img  src="/Uploads/{$vo.dirname}/{$imgs[1]}" width='200' height="150">
+						<input type="file" class="medium middle" id="pic2" name="pic2" />&nbsp;
+                        <input type="hidden" name="pic2_default" value="{$imgs[1]}"/>
+						<!-- <a><span class="C00">上传图片</span></a> -->
+					</td>
+				</tr>
+				
+				<tr>
+					<td><input type="hidden" value="{$vo.id}" name="id" /></td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+						<input type="hidden" name="dirname" value="{$vo.dirname}" />
+					</td>
+				</tr>
+				
+			</table>
+		</form>
+		
+		<form method='post' id="frm_pic" class="file_frm" action="__MODULE__/Public/uploadPic/">
+			<input name="image" id="file_pic" type="file" class="ipt_file" />
+			<input type="hidden" id="folder" name="folder" value="{$_SESSION['bkgd']['menuNow']}" />
+			<input type="hidden" name="width" value="240" />
+			<input type="hidden" name="height" value="109" />
+			<input type="hidden" name="id" value="pic" />
+			<input type="hidden" name="imgRedraw" value="-1" />
+		</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+	<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+	<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+	
+</body>
+</html>

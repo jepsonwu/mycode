@@ -1,0 +1,262 @@
+$cont-width:870/960*100%;
+$fontSize:40px;
+$headerHeight:3.8rem;
+@mixin trans-left-center() {
+	position: absolute;
+	top: 50%;
+	transform:translateY(-50%);
+	-webkit-transform:translateY(-50%);
+	-moz-transform:translateY(-50%);
+	-o-transform:translateY(-50%);
+}
+@mixin mix-opacity($opa) {
+	opacity:$opa;
+	-moz-opacity:$opa;
+	-khtml-opacity:$opa;
+	filter:alpha(opacity=$opa*100);
+}
+@mixin mix-main() {
+	width: $cont-width;
+	height: 100%;
+	margin: 0 auto;
+	position: relative;
+}
+@mixin trans-top-center($top:0px) {
+	position: absolute;
+	top: $top;
+	left: 50%;
+	transform:translateX(-50%);
+	-webkit-transform:translateX(-50%);
+	-moz-transform:translateX(-50%);
+	-o-transform:translateX(-50%);
+}
+
+// header
+.header{
+	position: absolute;
+	width: 100%;
+	height: $headerHeight;
+	background-color: white;
+	@include mix-opacity(0.5);
+}
+.header-content{
+	z-index: 100;
+	position: absolute;
+	width: 100%;
+	height: $headerHeight;
+	.main{
+		@include mix-main();
+		img{
+			height: 1.2rem;
+			@include trans-left-center();
+		}
+	}
+	box-shadow: 0px 0px 0.225rem 0px gray;
+}
+
+// introduce
+.introduce{
+	position: relative;
+	height: 25.5rem;
+	background:{
+		image:url(../img/mb-intro-back.jpg);
+		repeat:no-repeat;
+		position: 50% 0%;
+		size:cover;
+	}
+	.main{
+		overflow: hidden;
+		@include mix-main();
+		.title{
+			display: block;
+			margin:7.35rem auto auto;
+			height: 4.65rem;
+		}
+		.content{
+			display: block;
+			margin: 1.075rem auto auto;
+			height: 3.275rem;
+		}
+		.store{
+			display: block;
+			height: 2.325rem;
+			margin: 2.475rem auto auto;
+		}
+	}
+}
+
+// why you should join tollk
+.why{
+	position: relative;
+	.main{
+		@include mix-main();
+		overflow: hidden;
+		.title{
+			display: block;
+			height: 0.95rem;
+			margin: 1.825rem auto auto;
+		}
+		.content{
+			display: block;
+			height: 0.8rem;
+			margin: 0.725rem auto auto;
+		}
+		#reason1,#reason2,#reason3{
+			height: 7.5rem;
+			width: 7.5rem;
+			border-radius: 50%;
+			margin: 1.95rem auto 1.25rem auto;
+			img{
+				width: 100%;
+				height: 100%;
+			}
+		}
+		#reason1-word,#reason2-word,#reason3-word{
+			display: block;
+			height: 3.025rem;
+			margin:1.25rem auto auto;
+		}
+		#reason3-word{
+			margin-bottom: 2.5rem;
+		}
+	}
+}
+// they have joined us
+.they{
+	position: relative;
+	background-color: rgb(246,246,246);
+	height: 43.225rem;
+	.main{
+		@include mix-main();
+		overflow: hidden;
+		#triangle{
+			display: block;
+			margin: 0 auto;
+			height: 0.6rem;
+		}
+		.title{
+			display: block;
+			margin: 1.275rem auto auto;
+			height: 0.95rem;
+		}
+		.content{
+			margin: 0.75rem auto auto;
+			height: 0.775rem;
+			display: block;
+		}
+		.person1,.person2,.person3,.person4{
+			width: 7.45rem;
+			height: 9.4rem;
+			img{
+				height: 100%;
+				width: 100%;
+			}
+			position: absolute;
+		}
+		.person1{
+			top: 6.25rem;
+			left: 2rem;
+		}
+		.person2{
+			top: 6.25rem;
+			right: 2rem;
+		}
+		.person3{
+			top: 23.85rem;
+			left: 2rem;
+		}
+		.person4{
+			top: 23.85rem;
+			right: 2rem;
+		}
+		.person1-word,.person2-word,.person3-word,.person4-word{
+			position: absolute;
+			width: 7.45rem;
+		}
+		.person1-word{
+			top: 16.5rem;
+			left: 2rem;
+		}
+		.person2-word{
+			top: 16.5rem;
+			right: 2rem;
+		}
+		.person3-word{
+			top: 34.075rem;
+			left: 2rem;
+		}
+		.person4-word{
+			top: 34.075rem;
+			right: 2rem;
+		}
+		.person-name{
+			position: absolute;
+			@include mix-opacity(0.2);
+			background-color: black;
+			width:100%;
+			height: 1.375rem;
+			bottom: 0;
+		}
+		.name{
+			display: block;
+			width: 100%;
+			height: 1.375rem;
+			position: absolute;
+			bottom: 0;
+			line-height: 1.375rem;
+			font-weight: bold;
+			font-size: 0.75rem;
+			text-align: center;
+			color: white;
+		}
+	}
+}
+// footer
+.footer{
+	position: relative;
+	height: 10.25rem;
+	.logo{
+		position: absolute;
+		top: -3px;
+		left: 0;
+		height: 2.85rem;
+	}
+	.main{
+		@include mix-main();
+		text-align: center;
+		.about-us{
+			position: absolute;
+			right: 0;
+			top: 2.1rem;
+			height: 0.775rem;
+		}
+		.contact{
+			padding-top: 4.3rem;
+			padding-bottom: 1.875rem;
+			a{
+				display: inline-block;
+				overflow: hidden;
+				width: 1.9rem;
+				height: 1.9rem;
+			}
+			img{
+				width: 1.9rem;
+				height: 1.9rem;
+			}
+			.facebook{
+				margin-left: 1.125rem;
+				margin-right: 1.125rem;
+			}
+		}
+		.copyright{
+			width: 82%;
+		}
+	}
+}
+
+// bar on the bottom
+.footer-bar{
+	width: 100%;
+	height: 0.5rem;
+	background-color: rgb(176,166,148);
+}

@@ -1,0 +1,11 @@
+<div class="header">
+	<div class="headTitle">{$Think.config.BACKGROUND_TITLE}</div>
+	<div class="nav">
+		<dl class="welcome">Welcome！{$Think.session.bkgd.nickname}</dl>
+		<dl class="edit_info"><a href="{:U('Admin/RbacUser/edit/','id='.$_SESSION [C('USER_AUTH_KEY')])}" target="ifrm_main">Edit</a></dl>
+	<eq name="_SESSION[C('USER_AUTH_KEY')]" value="1">
+		<dl class="clear_cache"><a href="__MODULE__/Public/clearCache" target="_blank">清缓存</a></dl>
+	</eq>
+		<dl class="exit"><a id="btn_logout">Exit</a></dl>
+	</div>
+</div>

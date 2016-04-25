@@ -1,0 +1,98 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			用户变量列表　<!-- <i>（双击单元格可快速编辑）</i> -->
+		</div>
+		
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater">
+			<eq name="_SESSION [C ( 'ADMIN_AUTH_KEY' )]" value="1">
+				<a href="__CONTROLLER__/add" class="btn btn-green">新 增</a>
+				<input type="button" class="btn btn-green" id="btn_del" value="删除" url="__CONTROLLER__/foreverDelete" />
+			</eq>
+			</div>
+			
+			<!-- 查询 -->
+			<div id="div_search">
+				<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+					<dl>
+						<dt>变量名查询：</dt>
+						<input type="text" name="mykey" value="{$mykey}" class="medium" />
+						<input type="button" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+					</dl>
+				</form>
+			</div>
+		</div>
+
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="9" class="graybar"></th></tr>
+				<tr>
+					<td class="title chkbox">
+						<div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value='' />
+							</span>
+						</div>
+					</td>
+					<td class="title"><a name="id">编号 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="mykey">变量名 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="myvalue">变量值 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title">备注</td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td class="chkbox">
+						<div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}" />
+							</span>
+						</div>
+					</td>
+					<td>{$vo.id}</td>
+					<td aqe="1" idnow="{$vo.id}" colm="mykey"><a href="__CONTROLLER__/edit/id/{$vo.id}">{$vo.mykey}</a></td>
+					<td aqe="1" idnow="{$vo.id}" colm="myvalue" width="60%">{$vo.myvalue}</td>
+					<td aqe="1" idnow="{$vo.id}" colm="remark">{$vo.remark}</td>
+					<td class="td_act">
+						<a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
+					<eq name="_SESSION ['bkgd'] ['role']" value="1">
+						<a class="a_confirm" url="__CONTROLLER__/foreverDelete" param="/id/{$vo.id}" msg="确定要删除该记录么？">删除</a>
+					</eq>
+					</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="9" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+	
+		
+	</div>
+	
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+</body>
+</html>

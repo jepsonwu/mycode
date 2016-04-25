@@ -1,0 +1,77 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<a href="{:U('TeacherOnlineTimes/index')}">教师在线时长列表</a>
+		</div>
+		
+		<div id="div_act_zoom">
+			
+			<!-- 查询 -->
+			<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+				<div id="div_search" style="text-align:left;width:88%">
+					<dl>
+						<input type="submit" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+					</dl>
+					<dl>
+						<dt>日期：</dt>
+						<input type="text" name="start_date" value="{$start_date}" class="form-control" id="datepicker1" >-
+						<input type="text" name="end_date" value="{$end_date}" class="form-control" id="datepicker2" >
+					</dl>
+					<dl>
+						<dt>手机号码：</dt>
+						<input type="text" name="mobile" value="{$mobile}">
+					</dl>
+				</div>
+			</form>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title">昵称</td>
+					<td class="title">手机号码</td>
+					<td class="title">在线时长(分)</td>
+					<td class="title">日期</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td>{$vo.name}</td>
+					<td>{$vo.mobile}</td>
+					<td>{$vo.total_times}</td>
+					<td>{$vo.date}</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+		
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+    </body>
+
+</html>

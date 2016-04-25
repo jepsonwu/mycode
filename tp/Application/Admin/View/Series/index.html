@@ -1,0 +1,101 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+   
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			Series列表
+		</div>
+		
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater" style="width:20%">
+				<a class="btn btn-green" href="__CONTROLLER__/add">新 增</a>
+				<input type="button" class="btn btn-green" id="btn_del" value="删 除" url="__CONTROLLER__/foreverDelete" />
+			</div>
+			
+			<!-- 查询 -->
+			<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+				<div id="div_search" style="text-align:left;width:78%">
+					<dl>
+						<dt>chName</dt>
+						<input type="text" name="chName" value="{$chName}" class="medium" >
+						<input type="submit" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+					</dl>
+					<dl>
+						<dt>id：</dt>
+						<input type="text" name="id" value="{$id}" class="small">
+					</dl>
+				</div>
+			</form>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title chkbox">
+						<div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value='' />
+							</span>
+						</div>
+					</td>
+					<td class="title"><a name="id">id</a></td>
+					<td class="title"><a name="name">chName</a></td>
+					<td class="title"><a name="topicId">topicId</a></td>
+					<td class="title"><a name="tag">tag</a></td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td class="chkbox">
+						<div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}" />
+							</span>
+						</div>
+					</td>
+					<td>{$vo.id}</td>
+					<td><a href="{:U('Demos/index')}?series_id={$vo.id}">{$vo.chName}</a></td>
+					<td>{$vo.topicId}</td>
+					<td>{$vo.tag}</td>
+					<td nowrap>
+						<a class="a_sub" url="__CONTROLLER__/chgStt/id/{$vo.id}/stt/{$vo.stt_val}/act/{$vo.stt_act}/time/publish_time/">{$vo.stt_act}</a>　
+						<a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>　
+						<a class="a_confirm" url="__CONTROLLER__/foreverdelete/id/{$vo.id}/" msg="确定要删除该记录么？">删除</a>　
+						<a class="a_sub" url="__CONTROLLER__/makeJson/id/{$vo.id}/">生成json</a>
+						<a class="a_sub" url="__CONTROLLER__/statu/id/{$vo.id}/status/{$vo['status']?0:1}">{$vo['status']?'下线':'上线'}</a>
+						<a class="a_sub" url="__CONTROLLER__/recommend/id/{$vo.id}/recommend/{$vo['recommend']?0:1}">{$vo['recommend']?'取消推荐':'推荐'}</a>
+					</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+		
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+    </body>
+</html>

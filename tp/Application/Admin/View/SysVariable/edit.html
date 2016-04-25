@@ -1,0 +1,49 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			编辑用户变量 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+
+	<form id="frm1" method="post" action="__CONTROLLER__/update/">
+		<table cellpadding="3" cellspacing="3" class="tbl_form" >
+			<tr>
+				<td class="tRight">变量名：</td>
+				<td class="tLeft"><input type="text" class="medium" name="mykey" value="{$vo.mykey}" required='1' /></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tRight">变量值：</td>
+				<td class="tLeft"><textarea name="myvalue" class="area_60" required='1'>{$vo.myvalue}</textarea></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tRight">描　述：</td>
+				<td class="tLeft" colspan="2"><textarea name="remark" class="area_60">{$vo.remark}</textarea></td>
+			</tr>
+			<tr>
+				<td><input type="hidden" name="id" value="{$vo.id}" /></td>
+				<td colspan="2">
+					<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+					<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+</body>
+</html>

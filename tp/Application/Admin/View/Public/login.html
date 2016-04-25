@@ -1,0 +1,47 @@
+<!doctype html>
+<head>
+	<include file="Public:meta" />
+</head>
+
+<body>
+
+	<div class="login_top"><img src="__PUBLIC__/Admin/images/login.jpg" /></div>
+	
+	<div class="login_main">
+	
+		<h2 class="login_title">{$Think.config.BACKGROUND_TITLE} -- 后台管理系统</h2>
+		
+		<form id="frm_login" method="post" action="{:U('Admin/Public/checkLogin')}">
+			<table id="tbl_login">
+				<tr>
+					<td>用户名：</td>
+					<td><input type="text" name="account" class="login_ipt_1" required='1' /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>密　码：</td>
+					<td><input type="password" name="password" class="login_ipt_1" required='1' /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>验证码：</td>
+					<td>
+						<input type="text" name="verify" class="login_ipt_2" required='1' />
+						<img id="verifyImg" src="{:U('Admin/Public/verify')}" title="点击刷新验证码" alt="验证码" />
+					</td>
+					<td></td>
+				</tr>
+			</table>
+		</form>
+		
+		<div class="btn_sub_login"></div>
+	</div>
+	
+	<include file="Public:footer" />
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/login.js" />
+
+</body>
+</html>

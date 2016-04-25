@@ -1,0 +1,74 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title"> 新增
+			<span class="title_arrow"></span>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">模块</eq>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="2">操作</eq>
+			[ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">模块</eq>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="2">操作</eq>
+			列表</a> ]
+		</div>
+		
+		<form id="frm1" method='post' action="__CONTROLLER__/grpInsert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+				<tr>
+					<td class="tRight" nowrap>操作名：</td>
+					<td class="tLeft">
+					<volist name="com_nodes" id="vo" mod="8">
+						<label style="display:block;float:left;width:160px;">
+							<div class="checker">
+								<span>
+									<input type="checkbox" name="names[]" value="{$key}" />
+								</span>
+							</div>
+							{$vo}　
+						</label>
+						<eq name="mod" value="7"><br /></eq>
+					</volist>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">状　态：</td>
+					<td class="tLeft" colspan="2">
+						<select class="chzn-select" name="status">
+							<option value="1">启用</option>
+							<option value="0">禁用</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="tRight tTop">描　述：</td>
+					<td class="tLeft" colspan="2"><textarea name="remark" class="area_60"></textarea></td>
+				</tr>
+				<tr>
+					<td>
+						<input type="hidden" name="level" value="3" />
+						<input type="hidden" name="pid" value="{$_SESSION['bkgd']['currentNode']['id']}" />
+					</td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+</body>
+</html>
+

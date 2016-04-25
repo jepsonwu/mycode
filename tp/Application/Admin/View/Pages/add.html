@@ -1,0 +1,89 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			新增单页 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/insert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+
+				<tr>
+					<td class="tRight">标　题：</td>
+					<td class="tLeft"><input type="text" class="large" name="title" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">缩略图：</td>
+					<td class="tLeft">
+						<img id="img_pic" src="#" class="frm_img none">
+						<input type="text" class="medium middle" id="pic" name="pic" readonly />&nbsp;
+						<a>上传图片</a>　<span class="C00">（尺寸：240×109）</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">摘要\副标题：</td>
+					<td class="tLeft"><textarea name="excerpt" class="area_60"></textarea></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">正　文：</td>
+					<td class="tLeft">
+						<textarea name="content" class="edt" style="width:710px;height:260px;"></textarea>
+						<span class="C00">（若列表页无需 learn more 按钮，请留空）</span>
+					</td>
+				</tr>
+
+<!-- 				<tr title="在URL中使用的别称，它可以令 URL 更美观。通常使用小写，只能包含字母，数字和连字符（-）。留空将自动生成。">
+					<td class="tRight">别　名：</td>
+					<td class="tLeft"><input type="text" class="large" name="slug" /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">meta关键词：</td>
+					<td class="tLeft" ><textarea name="meta_keywords" class="area_60">{$vo.meta_keywords}</textarea></td>
+				</tr>
+				<tr>
+					<td class="tRight">meta描述：</td>
+					<td class="tLeft" ><textarea name="meta_description" class="area_60">{$vo.meta_description}</textarea></td>
+				</tr> -->
+				<tr>
+					<td></td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		<form method='post' id="frm_pic" class="file_frm" action="__MODULE__/Public/uploadPic/">
+			<input name="image" id="file_pic" type="file" class="ipt_file" />
+			<input type="hidden" id="folder" name="folder" value="{$_SESSION['bkgd']['menuNow']}" />
+			<input type="hidden" name="width" value="240" />
+			<input type="hidden" name="height" value="109" />
+			<input type="hidden" name="id" value="pic" />
+			<input type="hidden" name="imgRedraw" value="-1" />
+		</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+	<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+	<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+	
+</body>
+</html>

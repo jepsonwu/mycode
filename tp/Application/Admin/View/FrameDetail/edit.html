@@ -1,0 +1,325 @@
+<!doctype html>
+<head>
+    <include file="Public/meta" />
+    <style type="text/css" media="screen">
+
+        .tLeft input[type="checkbox"]{
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="content">
+
+    <!-- 标题 -->
+    <div class="title">
+        <span class="title_arrow"></span>
+        编辑Frame信息 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+    </div>
+
+    <form id="frm1" class="frame_edit_form" method="post" action="__CONTROLLER__/update/">
+        <table cellpadding="3" cellspacing="3" class="tbl_form" >
+            <tr>
+                <td class="tRight">id：</td>
+                <td class="tLeft">{$vo.id}</td>
+            </tr>
+
+            <tr>
+                <td class="tRight">demo_id：</td>
+                <td class="tLeft">
+                    <select name="demo_id">
+                        <volist name="demos" id="item">
+                            <option value="{$key}" <if condition="$vo.demo_id eq $key">selected</if>>{$key}. {$item}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tRight">类型：</td>
+                <td class="tLeft">{$vo.type}<input type="hidden" name="type" id="now_type" value="{$vo.type}" /></td>
+            </tr>
+
+            <tr>
+                <td class="tRight">时间点：</td>
+                <td class="tLeft"><input type="text" class="large" name="time" value="{$vo.time}" required='1' /></td>
+            </tr>
+            <neq name="vo.type" value="2" >
+                <tr id="title">
+                    <td class="tRight">title：</td>
+                    <td class="tLeft"><input type="text" class="large" name="title" value="{$vo.title}" required='1' /></td>
+                </tr>
+
+                <tr id="intro">
+                    <td class="tRight">intro：</td>
+                    <td class="tLeft"><textarea name="intro" class="area_60">{$vo.intro}</textarea></td>
+                    <td></td>
+                </tr>
+                <tr id="picture">
+                    <td class="tRight">picture：</td>
+                    <td class="tLeft">
+
+                        <input type="file" class="large" id="pic" name="picture" />
+                        <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$vo.picture}"/>
+                        <input type="hidden" name="picture_default" value="{$vo.picture}" />
+                    </td>
+                </tr>
+            </neq>
+
+            <eq name="vo.type" value="2" >
+
+                <tr id="etype">
+                    <td class="tRight">题目类型：</td>
+                    <td class="tLeft">{$exercise.label}
+                        <input type="hidden" name="now_etype" id="now_etype" value="{$exercise.type}" /></td>
+
+                </tr>
+
+                <tr id="guide">
+                    <td class="tRight">引导音：</td>
+                    <td class="tLeft">
+                        <input id="is_need_guide" name="is_need_guide" type="checkbox" value="1" <if condition="$exercise['guide'] neq ''">checked="true"</if>>
+                        <input type="file" id="_guide"  class="large" name="guide" />{$exercise['guide']}
+                        <input type="hidden" name="guide_default" value="{$exercise['guide']}" /></td>
+                </tr>
+
+                <if condition="($exercise.type eq 1)">
+                    <tr id="audio">
+                        <td class="tRight">题目音频：</td>
+                        <td class="tLeft"><input type="file" class="large" id="_audio" name="audio" />{$exercise['audio']}<input type="hidden" name="audio_default" value="{$exercise['audio']}" /></td>
+                    </tr>
+                    <tr id="contents">
+                        <td class="tRight">选项图片：</td>
+                        <td class="tLeft">
+                            选项A：<input type="file"  class="large" name="content_a" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['contents'][0]}"/>
+                            <input type="hidden" name="content_a_default" value="{$exercise['contents'][0]}" /><br/>
+                            选项B：<input type="file"  class="large" name="content_b" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['contents'][1]}"/>
+                            <input type="hidden" name="content_b_default" value="{$exercise['contents'][1]}" /><br/>
+                            选项C：<input type="file"  class="large" name="content_c" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['contents'][2]}"/>
+                            <input type="hidden" name="content_c_default" value="{$exercise['contents'][2]}" /><br/>
+                            选项D：<input type="file"  class="large" name="content_d" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['contents'][3]}"/>
+                            <input type="hidden" name="content_d_default" value="{$exercise['contents'][3]}" /><br/>
+                        </td>
+                    </tr>
+                    <tr id="feedbacks">
+                        <td class="tRight">feedbacks：</td>
+                        <td class="tLeft">
+                            反馈A：<input type="file"  class="large" name="feedback_a" />
+                            {$exercise['feedbacks'][0]}
+                            <input type="hidden" name="feedback_a_default" value="{$exercise['feedbacks'][0]}" /><br/>
+                            反馈B：<input type="file"  class="large" name="feedback_b" />
+                            {$exercise['feedbacks'][1]}
+                            <input type="hidden" name="feedback_b_default" value="{$exercise['feedbacks'][1]}" /><br/>
+                            反馈C：<input type="file"  class="large" name="feedback_c" />
+                            {$exercise['feedbacks'][2]}
+                            <input type="hidden" name="feedback_c_default" value="{$exercise['feedbacks'][2]}" /><br/>
+                            反馈D：<input type="file"  class="large" name="feedback_d" />
+                            {$exercise['feedbacks'][3]}
+                            <input type="hidden" name="feedback_d_default" value="{$exercise['feedbacks'][3]}" /><br/>
+                        </td>
+                    </tr>
+                    <tr id="answer">
+                        <td class="tRight">正确答案：</td>
+                        <td class="tLeft">
+                            <select  name="answer">' +
+                                <option value="A" <if condition="$exercise.answer eq 'A'">selected</if>>A&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                                <option value="B" <if condition="$exercise.answer eq 'B'">selected</if>>B&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                                <option value="C" <if condition="$exercise.answer eq 'C'">selected</if>>C&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                                <option value="D" <if condition="$exercise.answer eq 'D'">selected</if>>D&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            </select>
+
+                    </tr>
+                    <elseif condition="$exercise.type eq 2"/>
+                    <tr id="classifications">
+                        <td class="tRight">内容1：</td>
+                        <td class="tLeft"><textarea name="classifications" id="_classifications" class="area_60">{$exercise.classifications}</textarea></td>
+                    </tr>
+                    <tr id="contents">
+                        <td class="tRight">内容2：</td>
+                        <td class="tLeft"><textarea name="contents" id="_contents" class="area_60">{$exercise.contents}</textarea></td>
+                    </tr>
+                    <elseif condition="$exercise.type eq 3"/>
+                    <tr id="contents">
+                        <td class="tRight">词组：</td>
+                        <td class="tLeft">
+                            <for start="0" end="4">
+                                组{$i+1}&nbsp&nbsp：
+                                <input type="text" required='1'  class="small" value="{$exercise['contents'][$i][0]}" name="content_{$i*4+0}" />
+                                <input type="text" required='1'  class="small" value="{$exercise['contents'][$i][1]}" name="content_{$i*4+1}" />
+                                <input type="text" required='1'  class="small" value="{$exercise['contents'][$i][2]}" name="content_{$i*4+2}" />
+                                <input type="text" required='1'  class="small" value="{$exercise['contents'][$i][3]}" name="content_{$i*4+3}" />
+                                <br/><br/>
+                            </for>
+                        </td>
+                    </tr>
+                    <tr id="answer">
+                        <td class="tRight">答案：</td>
+                        <td class="tLeft">
+                            <for start="0" end="4">
+                                组{$i+1}&nbsp&nbsp：<input type="text" required="1" class="small" value="{$exercise['answer'][$i]}" name="answer_{$i}" />
+                            </for>
+                        </td>
+                    </tr>
+                    <tr id="picture">
+                        <td class="tRight">picture：</td>
+                        <td class="tLeft">
+                            <input type="file" class="large" id="pic" name="picture" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['pic']}"/>
+                            <input type="hidden" name="picture_default" value="{$exercise['pic']}" />
+                        </td>
+                    </tr>
+                    <elseif condition="$exercise.type eq 4"/>
+                    <tr id="audios">
+                        <td class="tRight">音频：</td>
+                        <td class="tLeft">
+                            <div id="audios_area">
+                                <input type="file"  class="large"  name="audio1" />{$exercise['audios'][0]}<input type="hidden" name="audio1_default" value="{$exercise['audios'][0]}" /><br/>
+                                <input type="file"  class="large"  name="audio2" />{$exercise['audios'][1]}<input type="hidden" name="audio2_default" value="{$exercise['audios'][1]}" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="contents">
+                        <td class="tRight">内容：</td>
+                        <td class="tLeft">对话1：<input type="text" required="1" class="large" name="content_1" value="{$exercise['contents'][0]}"/><br/>
+                            对话2：<input type="text" required="1" class="large" name="content_2"  value="{$exercise['contents'][1]}"/></td>
+                    </tr>
+                    <tr id="picture">
+                        <td class="tRight">头像：</td>
+                        <td class="tLeft">
+                            老师1：<input type="file" class="large" name="pic1" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['pic'][0]}"/>
+                            <input type="hidden" name="pic1_default" value="{$exercise['pic'][0]}" /><br/>
+                            老师2：<input type="file" class="large" name="pic2" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['pic'][1]}"/>
+                            <input type="hidden" name="pic2_default" value="{$exercise['pic'][1]}" /><br/>
+                        </td>
+                    </tr>
+                    <elseif condition="$exercise.type eq 5"/>
+                    <tr id="audio">
+                        <td class="tRight">题目音频：</td>
+                        <td class="tLeft"><input type="file" class="large" id="_audio" name="audio" />{$exercise['audio']}<input type="hidden" name="audio_default" value="{$exercise['audio']}" /></td>
+                    </tr>
+                    <tr id="contents">
+                        <td class="tRight">断句内容：</td>
+                        <td class="tLeft"><textarea name="contents" id="_contents" class="area_60">{$exercise.contents}</textarea></td>
+                    </tr>
+                    <tr id="enContent" >
+                        <td class="tRight">英文句子：</td>
+                        <td class="tLeft"><textarea name="enContent" id="_enContent" class="area_60">{$exercise.enContent}</textarea></td>
+                    </tr>
+                    <tr id="chContent" >
+                        <td class="tRight">中文句子：</td>
+                        <td class="tLeft"><textarea name="chContent" id="_chContent" class="area_60">{$exercise.chContent}</textarea></td>
+                    </tr>
+                    <elseif condition="$exercise.type eq 6"/>
+                    <tr id="audio">
+                        <td class="tRight">题目音频：</td>
+                        <td class="tLeft"><input type="file" class="large" id="_audio" name="audio" />{$exercise['audio']}<input type="hidden" name="audio_default" value="{$exercise['audio']}" /></td>
+                    </tr>
+                    <tr id="type6">
+                        <td class="tRight"></td>
+                        <td class="tLeft">
+                            <input type="button" class="btn" id="type6_add" value="添加" />
+                            <input type="button" class="btn" id="type6_clear" value="清除" /><br/>
+                        </td>
+                    </tr>
+                    <tr id="explanation" >
+                        <td class="tRight">单词/反馈：</td>
+                        <td class="tLeft">
+                            <volist name="exercise.explanation" id="vol">
+                                单词{$key+1}：<input type="text" class="large" name="answer_{$key}" value="{$exercise[answer][$key]}" />
+                                反馈{$key+1}：<input type="text" class="large" name="explanation_{$key}" value="{$vol}" />
+                                <br/>
+                            </volist>
+                        </td>
+                    </tr>
+                    <tr id="enContent" >
+                        <td class="tRight">英文句子：</td>
+                        <td class="tLeft"><textarea name="enContent" id="_enContent" class="area_60">{$exercise.enContent}</textarea></td>
+                    </tr>
+                    <tr id="chContent" >
+                        <td class="tRight">中文句子：</td>
+                        <td class="tLeft"><textarea name="chContent" id="_chContent" class="area_60">{$exercise.chContent}</textarea></td>
+                    </tr>
+                    <elseif condition="$exercise.type eq 7"/>
+                    <tr id="type7">
+                        <td class="tRight"></td>
+                        <td class="tLeft">
+                            <input type="button" class="btn" id="audios_add" value="添加" />
+                            <input type="button" class="btn" id="audios_clear" value="清除" /><br/>
+                        </td>
+                    </tr>
+                    <tr id="contents">
+                        <td class="tRight">词组：</td>
+                        <td class="tLeft">
+                            <div id="audios_default_area">
+                                <volist name="exercise.audios" id="vol">
+                                    <input type="hidden" name="audios{$key}_default" value="{$vol}" />
+                                </volist>
+                            </div>
+                            <div id="contents_area">
+                                <volist name="exercise.contents" id="vol">
+                                    对话{$key+1}：<input type="text" class="large" name="contents{$key}" value="{$vol}" />
+                                    <input type="file"  class="large"  name="audios{$key}" />{$exercise[audios][$key]}<br/>
+                                </volist>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="picture">
+                        <td class="tRight">picture：</td>
+                        <td class="tLeft">
+                            老师1：<input type="file" class="large" name="pic1" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['pic'][0]}"/>
+                            <input type="hidden" name="pic1_default" value="{$exercise['pic'][0]}" /><br/>
+                            老师2：<input type="file" class="large" name="pic2" />
+                            <img height="100" src="/Uploads/{$demoInfo.sdirname}/{$demoInfo.ddirname}/{$exercise['pic'][1]}"/>
+                            <input type="hidden" name="pic2_default" value="{$exercise['pic'][1]}" /><br/>
+                        </td>
+                    </tr>
+                    <elseif condition="$exercise.type eq 8"/>
+                    <tr id="audio">
+                        <td class="tRight">题目音频：</td>
+                        <td class="tLeft"><input type="file" class="large" id="_audio" name="audio" />{$exercise['audio']}<input type="hidden" name="audio_default" value="{$exercise['audio']}" /></td>
+                    </tr>
+                    <tr id="content" >
+                        <td class="tRight">句子：</td>
+                        <td class="tLeft"><textarea name="content" id="_content" class="area_60">{$exercise.content}</textarea></td>
+                    </tr>
+                    <tr id="explanation" >
+                        <td class="tRight">句子解释：</td>
+                        <td class="tLeft"><textarea name="explanation" id="_explanation" class="area_60">{$exercise.explanation}</textarea></td>
+                    </tr>
+                    <else />
+                </if>
+
+            </eq>
+            <tr>
+                <td><input type="hidden" name="id" value="{$vo.id}" /></td>
+                <td colspan="2">
+                    <input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+                    <input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+</div>
+
+<include file="Public:js_basic" />
+<include file="Public:js_form" />
+<load href="__PUBLIC__/Admin/js/main.js" />
+<load href="__PUBLIC__/Admin/js/ft.js" />
+
+
+<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+
+</body>
+</html>

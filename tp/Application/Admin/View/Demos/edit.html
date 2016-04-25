@@ -1,0 +1,114 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			编辑Demo信息 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/update/" enctype="multipart/form-data">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+			<!-- 	<tr>
+					<td class="tRight">id：</td>
+					<td class="tLeft">{$vo.id}</td>
+				</tr> -->
+				
+				<tr>
+					<td class="tRight">所属课程：</td>
+					<td class="tLeft">
+						<select name="series_id">
+						<volist name="series" id="item">
+							<option <eq name='key' value='$vo.series_id'>selected</eq> value="{$key}">{$key}. {$item}</option>
+						</volist>
+						</select>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">中文名：</td>
+					<td class="tLeft"><input type="text" class="large" name="chName" value="{$vo.chName}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">英文名：</td>
+					<td class="tLeft"><input type="text" class="large" name="enName" value="{$vo.enName}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">dirname：</td>
+					<td class="tLeft">{$vo.dirname}</td>
+					<td></td>
+				</tr>
+				
+				<!-- <tr>
+					<td class="tRight">topic：</td>
+					<td class="tLeft"><input type="text" class="large" name="topic" value="{$vo.topic}" required='1' /></td>
+					<td></td>
+				</tr> -->
+				
+				<!-- <tr>
+					<td class="tRight">audio：</td>
+					<td class="tLeft"><input type="text" class="large" name="audio" value="{$vo.audio}" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">teacher：</td>
+					<td class="tLeft"><input type="text" class="large" value="{$vo.teacher}" name="teacher" /></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">intro：</td>
+					<td class="tLeft"><textarea name="intro" class="area_60">{$vo.intro}</textarea></td>
+					<td></td>
+				</tr> -->
+				
+				<tr>
+					<td class="tRight">主音频：</td>
+					<td class="tLeft"><input type="file" class="large" name="audio"  />
+                        {$vo.audio}</td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td><input type="hidden" value="{$vo.id}" name="id" /></td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+						<input type="hidden" name="audio" value="{$vo.audio}" />
+						<input type="hidden" name="dirname" value="{$vo.dirname}" />
+					</td>
+				</tr>
+				
+			</table>
+		</form>
+		
+		<form method='post' id="frm_pic" class="file_frm" action="__MODULE__/Public/uploadPic/">
+			<input name="image" id="file_pic" type="file" class="ipt_file" />
+			<input type="hidden" id="folder" name="folder" value="{$_SESSION['bkgd']['menuNow']}" />
+			<input type="hidden" name="width" value="240" />
+			<input type="hidden" name="height" value="109" />
+			<input type="hidden" name="id" value="pic" />
+			<input type="hidden" name="imgRedraw" value="-1" />
+		</form>
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+	<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+	<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+	
+</body>
+</html>

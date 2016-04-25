@@ -1,0 +1,24 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<table class="list">
+			<tr><th colspan="2" class="graybar"></th></tr>
+			<tr ><td colspan="2" class="title">系统信息</td></tr>
+		<volist name="info" id="v">
+			<tr><td width="15%">{$key}</td><td width="85%">{$v}</td></tr>
+		</volist>
+			<tr><th colspan="2" class="graybar"></th></tr>
+		</table>
+	</div>
+	
+	<include file="Public:js_basic" />
+
+</body>
+</html> 
+
+

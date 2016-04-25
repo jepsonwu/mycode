@@ -1,0 +1,93 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			权限用户 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+
+		<div id="div_sele">
+			当前权限组：
+			<select id="sele_role" class="chzn-select">
+			<volist name="list_role" id="vo">
+				<option <eq name="role_id" value="$key">selected="true"</eq> value="{$key}">{$vo.name}</option>
+			</volist>
+			</select>
+		</div>
+	
+		<div id="div_user_list">
+			<volist name="list_user" id="vo">
+				<label>
+				<div class="checker">
+					<span <eq name="vo.inlist" value="1">class="checked"</eq> >
+						<input type="checkbox" <eq name="vo.inlist" value="1">checked="true"</eq> value="{$vo.id}" />
+					</span>
+				</div>
+				{$vo.account}&nbsp;{$vo.nickname}
+				</label>
+			</volist>
+		</div>
+		
+		<div id="div_btns">
+			<input type="button" class="btn btn-green" id="btn_select_all" value="全选" />
+			<input type="button" class="btn btn-green" id="btn_cancel_all" value="全部取消" />
+			<input type="button" class="btn btn-green" id="btn_save" value="保存" />
+		</div>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	
+	<script>
+		$(function() {
+			
+			// 角色选择
+			$("#sele_role").change(function(){
+				window.location.href = CONTROLLER + "/userList/id/" + $(this).val();
+			});
+			
+			// 全选
+			$("#btn_select_all").click(function(){
+				$(".checker:visible").children("span").addClass("checked");
+				$(".checker:visible").children("span").children("input").attr('checked', true);
+			});
+
+			// 全否
+			$("#btn_cancel_all").click(function(){
+				$(".checker:visible").children("span").removeClass("checked");
+				$(".checker:visible").children("span").children("input").attr('checked', false);
+			});
+			
+			// 保存
+			$("#btn_save").click(function(){
+				var role_id = $("#sele_role").val();
+				var user_ids = '';
+				var cbxNow = '';
+				$(".checker:visible").each(function(idx,domEle){
+					cbxNow = $(domEle).find('input');
+					if ( cbxNow.is(":checked") ) {
+						user_ids += cbxNow.val() + "|";
+					}
+				});
+				if ( user_ids != '' ) {
+					user_ids = user_ids.substr(0, user_ids.length-1);
+				}
+				//
+				var url = CONTROLLER + "/saveUserList/";
+				var param = {'role_id':role_id,'user_ids':user_ids};
+				my_ajax_sub(url, param);
+			});
+	
+		});
+	</script>
+
+</body>
+</html>

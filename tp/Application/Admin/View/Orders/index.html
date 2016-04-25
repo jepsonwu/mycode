@@ -1,0 +1,161 @@
+<!doctype html>
+<head>
+    <include file="Public/meta"/>
+</head>
+
+<body>
+
+<div class="content">
+    <!-- 标题 -->
+    <div class="title">
+        <span class="title_arrow"></span>
+        <a href="{:U('Complain/index')}">订单管理></a>
+        [ <a href="{:U('Complain/index')}">返回列表</a> ]
+    </div>
+
+    <div id="div_act_zoom">
+        <!-- 功能按钮 -->
+        <!-- <div id="div_operater" style="width:20%"> -->
+        <!-- <a class="btn btn-green" href="__CONTROLLER__/add">新 增</a>
+        <input type="button" class="btn btn-green" id="btn_del" value="删 除" url="__CONTROLLER__/foreverDelete" /> -->
+        <!-- </div> -->
+
+        <!-- 查询 -->
+        <form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+            <div id="div_search" style="text-align:left;width:78%">
+                <dl>
+                    <input type="submit" class="btn btn-green" id="btn_search" value="查 询"/>
+                    <input type="hidden" name="order" value=""/>
+                    <input type="hidden" name="sort" value=""/>
+                </dl>
+                <dl>
+                    <dt>订单状态：</dt>
+                    <select name="status">
+                        <option
+                        <empty name="status">selected</empty>
+                        value="">所有状态</option>
+                        <volist name="order_status" id="item">
+                            <option
+                            <php>if($status!=""&&$status==$key) echo "selected"</php>
+                            value="{$key}">{$item}</option>
+                        </volist>
+                    </select>
+                </dl>
+                <dl>
+                    <dt>订单号：</dt>
+                    <input type="text" name="order_id" value="{$order_id}">
+                </dl>
+                <dl>
+                    <dt>手机号：</dt>
+                    <input type="text" name="mobile" value="{$mobile}">
+                </dl>
+                <dl>
+                    <dt>创建时间：</dt>
+                    <input type="text" name="create_start_time" value="{$create_start_time}" class="form-control"
+                           id="datepicker1">-
+                    <input type="text" name="create_end_time" value="{$create_end_time}" class="form-control"
+                           id="datepicker2">
+                </dl>
+                <dl>
+                    <dt>支付时间：</dt>
+                    <input type="text" name="paid_start_time" value="{$paid_start_time}" class="form-control"
+                           id="datepicker3">-
+                    <input type="text" name="paid_end_time" value="{$paid_end_time}" class="form-control"
+                           id="datepicker4">
+                </dl>
+                <dl>
+                    <dt>通话时长：</dt>
+                    <input type="text" name="called_start_time" value="{$called_start_time}">-
+                    <input type="text" name="called_end_time" value="{$called_end_time}">
+                </dl>
+                <dl>
+                    <dt>总金额：</dt>
+                    <input type="text" name="total_start_amount" value="{$total_start_amount}">-
+                    <input type="text" name="total_end_amount" value="{$total_end_amount}">
+                </dl>
+            </div>
+        </form>
+    </div>
+
+    <!-- 列表 -->
+    <table class="list">
+        <thead>
+        <tr>
+            <th colspan="18" class="graybar"></th>
+        </tr>
+        <tr>
+            <td class="title chkbox">
+                <div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value=''/>
+							</span>
+                </div>
+            </td>
+            <!-- <td class="title"><a name="id">id</a></td> -->
+            <td class="title">订单号</td>
+            <td class="title">总金额</td>
+            <td class="title">实际支付金额</td>
+            <td class="title">优惠金额</td>
+            <td class="title">通话时间(秒)</td>
+            <td class="title">计费时长(分)</td>
+            <td class="title">学生帐号</td>
+            <td class="title">老师帐号</td>
+            <td class="title">通话录音</td>
+            <td class="title"><a name="create_time">创建时间</a></td>
+            <td class="title">状态</td>
+            <td class="title">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="list" id="vo">
+            <tr>
+                <td class="chkbox">
+                    <div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}"/>
+							</span>
+                    </div>
+                </td>
+                <!-- <td>{$vo.id}</td> -->
+                <td><a href="/Admin/Complain/index/order_id/{$vo['order_id']}">{$vo.order_id}</a></td>
+                <td>{$vo.total_amount}</td>
+                <td>{$vo.paid_amount}</td>
+                <td>{$vo.coupon_amount}</td>
+                <td>{$vo.called_time}</td>
+                <td>{$vo.billing_time}</td>
+                <td>{$vo.sname}</td>
+                <td>{$vo.tname}</td>
+                <td>
+                    <audio src="{$vo.recording_url}" controls="controls" preload="metadata"></audio>
+                </td>
+                <td>{$vo.create_time}</td>
+                <td>{$vo.status_show}</td>
+                <td>
+                    <in name="vo.status" value="1,2,3">
+                        <a class="a_confirm" url="__CONTROLLER__/close/order_id/{$vo.order_id}" msg="确定关闭？">关闭</a>
+                    </in>
+                    　
+                </td>
+            </tr>
+        </volist>
+        </tbody>
+        <tr>
+            <th colspan="18" class="graybar"></th>
+        </tr>
+    </table>
+
+    <div id="page">{$page}</div>
+
+</div>
+
+<input type="text" id="quick_edit"/>
+
+<include file="Public:js_basic"/>
+<load href="__PUBLIC__/Admin/js/main.js"/>
+<load href="__PUBLIC__/Admin/js/main_list.js"/>
+<script>
+    var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+</script>
+
+</body>
+</html>

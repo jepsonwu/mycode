@@ -1,0 +1,92 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			编辑用户 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+
+		<table cellpadding="3" cellspacing="3" class="tbl_form" >
+			<tr>
+				<td class="tRight">更改密码：</td>
+				<td class="tLeft">
+					<input type="text" class="medium" name="resetPwd" />
+					<input type="button" class="btn btn-green" id="btn_reset_pwd" value="提交" func="__CONTROLLER__/resetPwd/" />
+				</td>
+				<td></td>
+			</tr>
+			
+			<tr>
+				<td colspan="2">
+					<hr style="border:1px dashed #999" />
+				</td>
+			</tr>	
+			
+	<form id="frm1" method="post" action="__CONTROLLER__/update/">
+			<tr>
+				<td class="tRight">用户名：</td>
+				<td class="tLeft">
+					<input type="text" class="medium" name="account" value="{$vo.account}" required='1' />
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tRight">头像：</td>
+				<td class="tLeft">
+					<img id="img_face" src="__APP__/Uploads/{$_SESSION['bkgd']['menuNow']}/{$vo.face}" class="frm_img <empty name='vo.face'>none</empty>">
+					<input type="text" class="medium middle" id="face" name="face" value="{$vo.face}" readonly required='1' />&nbsp;
+					<a>上传</a>　<span style="color:#C00">（尺寸：75×75）</span>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tRight">昵称：</td>
+				<td class="tLeft"><input type="text" class="medium" name="nickname" value="{$vo.nickname}" required='1' /></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tRight">Email：</td>
+				<td class="tLeft"><input type="text" class="medium" name="email" value="{$vo.email}" /></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="tRight">备注：</td>
+				<td class="tLeft" colspan="2"><textarea name="remark" class="area_60">{$vo.remark}</textarea></td>
+			</tr>
+			<tr>
+				<td><input type="hidden" name="id" value="{$vo.id}" /></td>
+				<td colspan="2">
+					<input type="button" class="btn btn-green" id="btn_submit" value="提交" />
+					<input type="reset" class="btn btn-green" id="btn_reset" value="重置" />
+				</td>
+			</tr>
+	</form>
+		</table>
+	
+	
+	<form method='post' id="frm_face" class="file_frm" action="__MODULE__/Public/uploadPic/">
+		<input name="image" id="file_face" type="file" class="ipt_file" />
+		<input type="hidden" id="folder" name="folder" value="{$_SESSION['bkgd']['menuNow']}" />
+		<input type="hidden" name="width" value="75" />
+		<input type="hidden" name="height" value="75" />
+		<input type="hidden" name="id" value="face" />
+		<input type="hidden" name="imgRedraw" value="1" />
+	</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/user.js" />
+	
+</body>
+</html>

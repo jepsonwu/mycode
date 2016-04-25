@@ -1,0 +1,40 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			新增用户变量 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+
+	<form id="frm1" method="post" action="__CONTROLLER__/insert/">
+		<table class="tbl_form" >
+			<tr>
+				<td>热门标签：</td>
+				<td><textarea name="popular_tag" class="area_60">{$popular_tag}</textarea>
+					<br><span style="color:red">※注：多个标签需用半角逗号分隔</span>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			权限列表
+		</div>
+
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater">
+				<a href="__CONTROLLER__/add" class="btn btn-green">新增</a>
+				<input type="button" class="btn btn-green" id="btn_del" value="删除" url="__CONTROLLER__/foreverDelete" />
+			</div>
+			
+			<!-- 查询 -->
+			<div id="div_search">
+				<form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+					<dl>
+						<dt>状态：</dt>
+						<select name="status">
+							<option value="">所有状态</option>
+						<volist name="stt_jyqy" id="item">
+							<option <eq name="status" value="$key">selected</eq> value="{$key}">已{$item}</option>
+						</volist>
+						</select>
+						<input type="submit" class="btn btn-green" id="btn_search" value="查 询" />
+						<input type="hidden" name="order" value="" />
+						<input type="hidden" name="sort" value="" />
+					</dl>
+					<dl>
+						<dt>描述：</dt>
+						<input type="text" name="remark" value="{$remark}" class="medium" />
+					</dl>
+					<dl>
+						<dt>组名：</dt>
+						<input type="text" name="name" value="{$name}" class="medium" />
+					</dl>
+				</form>
+			</div>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="9" class="graybar"></th></tr>
+				<tr>
+					<td class="title chkbox">
+						<div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value='' />
+							</span>
+						</div>
+					</td>
+					<td class="title"><a name="id">编号 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="name">组名 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title"><a name="prt_name">上级组 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title">描述</td>
+					<td class="title"><a name="status">状态 <img src="__PUBLIC__/Admin/images/blank.gif" class="img_sort" /></a></td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td class="chkbox">
+						<div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}" />
+							</span>
+						</div>
+					</td>
+					<td>{$vo.id}</td>
+					<td aqe="1" idnow="{$vo.id}" colm="name"><a href="__CONTROLLER__/edit/id/{$vo.id}">{$vo.name}</a></td>
+					<td>{$vo.prt_name}</td>
+					<td aqe="1" idnow="{$vo.id}" colm="remark">{$vo.remark}</td>
+					<td>{$vo.status_show}</td>
+					<td class="td_act">
+						<a class="a_sub" url="__CONTROLLER__/chgStt/id/{$vo.id}/stt/{$vo.stt_val}/act/{$vo.stt_act}">{$vo.stt_act}</a>
+						<a href="__CONTROLLER__/accredit/id/{$vo.id}">权限设置</a>
+						<a href="__CONTROLLER__/userList/id/{$vo.id}">用户列表</a>
+					</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="9" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+		
+	</div>
+	
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+</body>
+</html>

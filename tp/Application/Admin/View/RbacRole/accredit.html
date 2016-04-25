@@ -1,0 +1,93 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			授权 [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">应用授权</a></li>
+				<li><a href="#tabs-2">模块授权</a></li>
+				<li><a href="#tabs-3">操作授权</a></li>
+			</ul>
+			
+			<div id="div_sele">
+				<dl>
+					当前组：
+					<select id="sele_role">
+					<volist name="groupList" id="vo">
+						<option <eq name="role_id" value="$vo.id">selected="true"</eq> value="{$vo.id}">{$vo.name}</option>
+					</volist>
+					</select>
+					<span id="qxdty">
+						　===>　权限等同于　
+						<select id="from_role">
+						<volist name="groupList" id="vo">
+							<option <eq name="role_id" value="$vo.id">selected="true"</eq> value="{$vo.id}">{$vo.name}</option>
+						</volist>
+						</select>
+						　<input type="button" class="btn btn-green" id="btn_the_same_as" value="确 定" />
+					</span>
+				</dl>
+				<dl>
+					当前应用：
+					<select id="sele_yy">
+						<option value=''>请选择应用</option>
+					<volist name="appList" id="vo">
+					<eq name="vo.access" value="1">
+						<option <eq name="yy_id" value="$vo['id']">selected="true"</eq> value="{$vo.id}">{$vo.title}</option>
+					</eq>
+					</volist>
+					</select>
+				</dl>
+				<dl>
+					当前模块：
+					<select id="sele_mk">
+						<option value=''>请选择模块</option>
+					</select>
+				</dl>
+			</div>
+			
+			<div class="clear"></div>
+			
+			<div id="tabs-1" class="tab_con">
+				<volist name="appList" id="vo">
+					<label>
+					<div class="checker">
+						<span <eq name="vo.access" value="1">class="checked"</eq> >
+							<input type="checkbox" <eq name="vo.access" value="1">checked="true"</eq> value="{$vo.id}" />
+						</span>
+					</div>
+					{$vo.title}
+					</label>
+				</volist>
+			</div>
+			
+			<div id="tabs-2" class="tab_con"></div>
+		
+			<div id="tabs-3" class="tab_con"></div>
+			
+			<div id="div_btns">
+				<input type="button" class="btn btn-green" id="btn_select_all" value="全 选" />
+				<input type="button" class="btn btn-green" id="btn_cancel_all" value="全 否" />
+				<input type="button" class="btn btn-green" id="btn_save" value="保 存" />
+			</div>
+		</div>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/accredit.js" />
+	
+</body>
+</html>

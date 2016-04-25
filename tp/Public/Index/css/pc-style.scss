@@ -1,0 +1,457 @@
+$cont-size:30px;
+
+html,body{
+	height: 100%;
+	width: 100%;
+	position: relative;
+	min-width: 1000px;
+
+	font-weight: lighter;
+	color: rgb(93,93,93);
+}
+@mixin mix-main() {
+	width: 1000px;
+	height: 100%;
+	margin: 0 auto;
+}
+@mixin mix-opacity($opa) {
+	opacity:$opa;
+	-moz-opacity:$opa;
+	-khtml-opacity:$opa;
+	filter:alpha(opacity=$opa*100);
+
+}
+// make things center,horizontal and vertical
+@mixin trans-center($trans-top:-50%) {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform:translate(-50%,$trans-top);
+	-webkit-transform:translate(-50%,$trans-top);
+	-moz-transform:translate(-50%,$trans-top);
+	-o-transform:translate(-50%,$trans-top);
+}
+// make things center horizontal,but vertical controllable
+@mixin trans-top-center($top:0px) {
+	position: absolute;
+	left: 50%;
+	top: $top;
+	transform:translateX(-50%);
+	-webkit-transform:translateX(-50%);
+	-moz-transform:translateX(-50%);
+	-o-transform:translateX(-50%);
+}
+@mixin trans-bottom-center($bottom:0px) {
+	position: absolute;
+	left: 50%;
+	bottom: $bottom;
+	transform:translateX(-50%);
+	-webkit-transform:translateX(-50%);
+	-moz-transform:translateX(-50%);
+	-o-transform:translateX(-50%);
+}
+// make things center vertical,but borizontal controllable
+@mixin trans-left-center($left:0px) {
+	position: absolute;
+	left: $left;
+	top: 50%;
+	transform:translateY(-50%);
+	-webkit-transform:translateY(-50%);
+	-moz-transform:translateY(-50%);
+	-o-transform:translateY(-50%);
+}
+@mixin trans-right-center($right:0px) {
+	position: absolute;
+	right: $right;
+	top: 50%;
+	transform:translateY(-50%);
+	-webkit-transform:translateY(-50%);
+	-moz-transform:translateY(-50%);
+	-o-transform:translateY(-50%);
+}
+// make things position,left and top controllable
+@mixin trans-left-top($left:0px,$top:0px) {
+	position: absolute;
+	left: $left;
+	top:$top;
+}
+@mixin trans-right-top($right:0px,$top:0px) {
+	position: absolute;
+	right: $right;
+	top:$top;
+}
+// header nav part
+.header{
+	position: absolute;
+	top: 0;
+	height: 76px;
+	width: 100%;
+	background-color: white;
+	box-shadow: 0px 0px 0px 6px;
+	-webkit-box-shadow: 0px 0px 6px;
+	-moz-box-shadow: 0px 0px 6px;
+	@include mix-opacity(0.5);
+}
+.header-content{
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	height: 76px;
+	width: 100%;
+	.main{
+		@include mix-main();
+		position: relative;
+		.name{
+			display: block;
+			float: left;
+			height:76px;
+			img{
+				margin: 23px auto 23px 0;
+			}
+		}
+		.contact{
+			float: right;
+			height: 100%;
+			a{
+				display: inline-block;
+				overflow: hidden;
+				margin: 23px 0 auto 28px;
+			}
+		}
+	}
+}
+
+
+// introduce part
+.intro{
+	// background
+	height: 915px;
+	width: 100%;
+	background-image: url(../img/intro-back.jpg);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+	.main{
+		position: relative;
+		@include mix-main();
+		.title{
+			position: absolute;
+			top: 253px;
+			left: 0;
+		}
+		.content{
+			position: absolute;
+			top: 386px;
+			left: 0;
+			// width: 540px;
+			// line-height: 45px;
+			// font-size:30px;
+		}
+		#apply-now{
+			position: absolute;
+			top: 590px;
+			left: 0;
+			width: 253px;
+			height: 57px;
+			background:{
+				image : url(../img/apply-now.png);
+				repeat:no-repeat;
+				position: center;
+			}
+		}
+		#apply-now:hover{
+			background: {
+				image:url(../img/apply-now-active.png);
+				repeat:no-repeat;
+				position: center;
+			}
+		}
+		.google-play{
+			position: absolute;
+			bottom: 66px;
+			left: 0;
+		}
+		.apple-store{
+			position: absolute;
+			bottom: 66px;
+			left: 163px;
+		}
+		.phone{
+			display: block;
+			position: absolute;
+			right: -61px;
+			bottom: 0;
+		}
+	}
+}
+
+
+// why you should join tollk ?
+// Because 3riccc wrote this page!
+.why{
+	height: 730px;
+	width: 100%;
+	.main{
+		position: relative;
+		@include mix-main();
+		overflow: hidden;
+		.title{
+			display: block;
+			margin: 105px auto 0px;
+			// @include trans-top-center(105px);
+		}
+		.content{
+			display: block;
+			margin: 31px auto 0px;
+			// @include trans-top-center(179px);
+		}
+		#reason1,#reason2,#reason3{
+			width: 198px;
+			height: 198px;
+			border-radius: 50%;
+			overflow: hidden;
+		}
+		#reason1{
+			margin: 71px auto 0px 22px;
+			position: absolute;
+			// @include trans-left-top(22px,277px);
+		}
+		#reason2{
+			margin: 71px auto 0px 403px;
+			position: absolute;
+			// @include trans-left-top(401px,277px);
+		}
+		#reason3{
+			margin: 71px auto 0px 778px;
+			position: absolute;
+			// @include trans-left-top(778px,277px);
+		}
+		#reason1-word,#reason2-word,#reason3-word{
+			position: absolute;
+			margin-top: 305px;
+		}
+		#reason1-word{
+			margin-left: 0px;
+		}
+		#reason2-word{
+			margin-left: 359px;
+		}
+		#reason3-word{
+			margin-left: 766px;
+		}
+	}
+}
+
+// they have joined us!
+.they{
+	background-color:rgb(244,244,244);
+	height: 837px;
+	width: 100%;
+	.main{
+		position: relative;
+		@include mix-main();
+		overflow: hidden;
+		#triangle{
+			display: block;
+			margin: 0 auto;
+		}
+		.title{
+			display: block;
+			margin: 92px auto 31px;
+			// @include trans-top-center(110px);
+		}
+		.content{
+			display: block;
+			margin: 0 auto;
+			// @include trans-top-center(183px);
+		}
+		.person1,.person2,.person3,.person4{
+			position: absolute;
+			height: 272px;
+			width: 215px;
+			img{
+				position: absolute;
+			}
+		}
+		.person1{
+			margin: 81px 0px 33px;
+			// @include trans-left-top(0px,291px);
+		}
+		.person2{
+			margin: 81px 0 33px 261px;
+			// @include trans-left-top(262px,291px);
+		}
+		.person3{
+			margin: 81px 0 33px 46px+215px+46px+215px;
+			// @include trans-left-top(523px,291px);
+		}
+		.person4{
+			margin: 81px 0 33px (46px+215px)*3;
+			// right: 0;
+			// top: 291px;
+		}
+		.person-name{
+			position: absolute;
+			@include mix-opacity(0.2);
+			background-color: black;
+			width:100%;
+			margin-top: 237px;
+			height: 35px;
+		}
+		.name{
+			display: block;
+			width: 100%;
+			height: 35px;
+			position: absolute;
+			line-height: 35px;
+			font-weight: bold;
+			text-align: center;
+			color: white;
+			margin-top:237px;
+		}
+		// what they say
+		.person1-word,.person2-word,.person3-word,.person4-word{
+			position: absolute;
+			margin: (81px+272px+29px) auto auto 0px;
+			width: 205px;
+			font-size: 18px;
+			line-height: 26px;
+			color: #636363;
+		}
+		.person2-word{
+			position: absolute;
+			margin: (81px+272px+33px) auto auto 261px;
+		}
+		.person3-word{
+			position: absolute;
+			margin: (81px+272px+33px) auto auto 46px+215px+46px+215px;
+		}
+		.person4-word{
+			position: absolute;
+			margin: (81px+272px+33px) auto auto (46px+215px)*3;
+		}
+	}
+}
+// footer
+.footer{
+	height: 210px;
+	width: 100%;
+	.main{
+		position: relative;
+ 		@include mix-main();
+ 		.logo{
+ 			display: block;
+ 			position: absolute;
+ 			margin: 75px auto 74px 0;
+ 		}
+ 		.contact{
+			@include trans-right-top(0px,63px);
+ 			a{
+ 				margin-left: 20px;
+ 			}
+ 		}
+ 		.about-us{
+ 			@include trans-right-top(0px,127px);
+ 			font-size: 14px;
+ 			color: rgb(131,131,131);
+ 			#about-us{
+ 				text-decoration: underline;
+ 				// @include trans-right-top(420px,127px);
+ 			}
+ 			#about-us:hover{
+ 				cursor: pointer;
+ 			}
+ 			.copyright{
+ 			}
+ 		}
+	}
+}
+// footer-bar
+.footer-bar{
+	width: 100%;
+	height: 8px;
+	background-color: rgb(160,150,129);
+}
+// lead user
+#lead1,#lead2,#lead3,#lead4{
+	display: none;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	.lead-content{
+		width: 1000px;
+		height: 653px;
+		margin: auto auto;
+		background-color: white;
+		position: relative;
+		background-color: #fafafa;
+		.step-logo{
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			height: 112px;
+		}
+		.step-content{
+			position: absolute;
+			left: 247px;
+			top: 47px;
+		}
+		.step-main{
+			position: absolute;
+			bottom: 105px;
+			left: 244px;
+		}
+		.step-progress{
+			position: absolute;
+			right: 466px;
+			bottom: 47px;
+		}
+		.step-left{
+			position: absolute;
+			top: 276px;
+			left: 60px;
+		}
+		.step-right{
+			position: absolute;
+			top: 276px;
+			right: 60px;
+		}
+	}
+}
+#lead1{
+	z-index: 900;
+
+}
+#lead2{
+	z-index:901;
+	.lead-content{
+		.step-content{
+			left: 320px;
+			top: 47px;
+		}
+	}
+}
+#lead3{
+	z-index: 902;
+	.lead-content{
+		.step-main{
+			left: 284px;
+		}
+	}
+}
+#lead4{
+	z-index: 903;
+}
+#lead-canvas{
+	display: none;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	@include mix-opacity(0.6);
+	z-index: 899;
+}

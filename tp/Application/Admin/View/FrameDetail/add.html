@@ -1,0 +1,208 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+    <style type="text/css" media="screen">
+
+        .tLeft input[type="checkbox"]{
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			新增Frame [ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回列表</a> ]
+		</div>
+		
+		<form id="frm1" class="frame_add_form" method="post" action="__CONTROLLER__/insert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+
+				<tr>
+					<td class="tRight">demo_id：</td>
+					<td class="tLeft">
+						<select name="demo_id">
+						<volist name="demos" id="item">
+							<option <eq name='key' value='$did'>selected</eq> value="{$key}">{$key}. {$item}</option>
+						</volist>
+						</select>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">类型：</td>
+					<td class="tLeft">
+						<select name="type" id="type">
+							<option value="1">知识点&nbsp&nbsp&nbsp</option>
+							<option value="2">题目&nbsp&nbsp&nbsp</option>
+							<option value="3">封面&nbsp&nbsp&nbsp</option>
+						</select>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="tRight">时间点：</td>
+					<td class="tLeft"><input type="text" class="large" name="time" /></td>
+					<td></td>
+				</tr>
+				
+				<tr id="title">
+					<td class="tRight">title：</td>
+					<td class="tLeft"><input type="text" class="large" id="_title" name="title" required='1' /></td>
+					<td></td>
+				</tr>
+				
+				
+				<tr id="intro">
+					<td class="tRight">intro：</td>
+					<td class="tLeft"><textarea name="intro" id="_intro" class="area_60"></textarea></td>
+					<td></td>
+				</tr>
+				
+
+
+
+                <!--<tr id="folder_name">
+                    <td class="tRight">题目文件夹：</td>
+                    <td class="tLeft"><input type="text" class="medium" name="folder_name" required='1' /></td>
+                </tr>-->
+
+                <tr id="etype">
+                    <td class="tRight">题目类型：</td>
+                    <td class="tLeft">
+                        <select  name="etype">
+                            <option value="1">选图&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="2">连线&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="3">分类&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="4">短对话&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="5">造句&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="6">填空&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="7">长对话&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                            <option value="8">跟读&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
+                        </select>
+                    </td>
+                    <input type="hidden" name="label" id="label_val" value="选图" required='1' /></td>
+                </tr>
+
+
+
+
+
+                <tr id="guide">
+                    <td class="tRight">引导音：</td>
+                    <td class="tLeft">
+                        <input id="is_need_guide" name="is_need_guide" type="checkbox" value="1" checked="true">
+                        <input type="file" id="_guide" required='1' class="large" name="guide" />
+                    </td>
+                </tr>
+
+                <tr id="audio">
+                    <td class="tRight">audio：</td>
+                    <td class="tLeft"><input type="file" required='1' class="large" id="_audio" name="audio" /></td>
+                </tr>
+                <tr id="audios" style="display:none">
+                    <td class="tRight">audios：</td>
+                    <td class="tLeft">
+                        <div id="audios_area">
+                            <input type="file" required='1' class="large"  name="audio1" /><br/>
+                            <input type="file" required='1' class="large"  name="audio2" />
+                        </div>
+                    </td>
+                </tr>
+                <tr id="content" style="display:none">
+                    <td class="tRight">content：</td>
+                    <td class="tLeft"><textarea name="content" id="_content" class="area_60"></textarea></td>
+                </tr>
+                <tr id="classifications" style="display:none">
+                    <td class="tRight">classifications：</td>
+                    <td class="tLeft"><textarea name="classifications" id="_classifications" class="area_60"></textarea></td>
+                </tr>
+                <tr id="type7" style="display: none;">
+                    <td class="tRight"></td>
+                    <td class="tLeft">
+                        <input type="button" class="btn" id="audios_add" value="添加" />
+                        <input type="button" class="btn" id="audios_clear" value="清除" /><br/>
+                    </td>
+                </tr>
+                <tr id="contents">
+                    <td class="tRight">contents：</td>
+                    <td class="tLeft"><textarea name="contents" id="_contents" class="area_60"></textarea></td>
+                </tr>
+                <tr id="type6" style="display: none;">
+                    <td class="tRight"></td>
+                    <td class="tLeft">
+                        <input type="button" class="btn" id="type6_add" value="添加" />
+                        <input type="button" class="btn" id="type6_clear" value="清除" /><br/>
+                    </td>
+                </tr>
+                <tr id="explanation" style="display:none">
+                    <td class="tRight">explanation：</td>
+                    <td class="tLeft"><textarea name="explanation" id="_explanation" class="area_60"></textarea></td>
+                </tr>
+                <tr id="feedbacks">
+                    <td class="tRight">feedbacks：</td>
+                    <td class="tLeft">
+                         反馈A：<input type="file" required="1" class="large" name="feedback_a" /><br/>
+                         反馈B：<input type="file" required="1" class="large" name="feedback_b" /><br/>
+                         反馈C：<input type="file" required="1" class="large" name="feedback_c" /><br/>
+                         反馈D：<input type="file" required="1" class="large" name="feedback_d" /><br/>
+                    </td>
+                </tr>
+                <tr id="answer">
+                    <td class="tRight">answer：</td>
+                    <td class="tLeft"><textarea name="answer" id="_answer" class="area_60"></textarea></td>
+                </tr>
+                <tr id="enContent" style="display:none">
+                    <td class="tRight">enContent：</td>
+                    <td class="tLeft"><textarea name="enContent" id="_enContent" class="area_60"></textarea></td>
+                </tr>
+                <tr id="chContent" style="display:none">
+                    <td class="tRight">chContent：</td>
+                    <td class="tLeft"><textarea name="chContent" id="_chContent" class="area_60"></textarea></td>
+                </tr>
+
+                <!--<tr>
+                    <td class="tRight">picture：</td>
+                    <td class="tLeft">
+                        <img id="img_pic" src="#" class="frm_img none">
+                        <input type="text" class="medium middle" id="pic" name="pic" />&nbsp;
+                        <a><span class="C00">上传图片</span></a>
+                    </td>
+                    <td></td>
+                </tr>-->
+
+                <tr id="picture_tmp">
+                    <td class="tRight">picture：</td>
+                    <td class="tLeft">
+                        <input type="file" class="large" id="pic" name="picture" />
+                    </td>
+                </tr>
+				<tr>
+					<td></td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/ft.js" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+    </script>
+</body>
+</html>

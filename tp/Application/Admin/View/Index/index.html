@@ -1,0 +1,26 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body style="overflow:hidden;">
+
+	<include file="Public/header" />
+
+	<div class="main" >
+	
+		<include file="Public/lefter" />
+
+		<div class="content" style="margin:0; padding:2px; overflow:hidden;">
+			<iframe id="ifrm_main" name="ifrm_main" style="width:100%;height:100%;" frameborder="0" src="{:U('Admin/'.$menuNow.'/index')}"></iframe>
+		</div>
+		
+	</div>
+
+	<include file="Public:footer" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/lefter.js" />
+
+</body>
+</html> 

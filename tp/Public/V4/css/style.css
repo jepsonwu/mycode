@@ -1,0 +1,42 @@
+html{
+	font-family: Microsoft YaHei,SimHei,STHeiti,Helvetica;
+}
+body{
+	background-color: #fdfdfd;
+	color: #727272;
+	padding-left: 8pt;
+	padding-right: 8pt;
+}
+
+.logo{
+	background-color: #ffffff;
+	padding-top: 16pt;
+	padding-bottom: 16pt;
+}
+.png{
+	height: 24pt;
+}
+.line{
+	height: 1pt;
+	border: none;
+	border-top:1pt solid #e6e6e6;
+}
+.stage{
+	font-size: 2.2em;
+}
+.stage1{
+	font-size: 1.7em;
+}
+.stage2{
+	font-size: 1.3em;
+	/*line-height: 58px;*/
+}
+.content{
+	text-align:justify;
+	font-size: 1em;
+	line-height: 1.6em;
+}
+.stage3{
+	font-size: 1em;
+	line-height: 1.1em;
+}

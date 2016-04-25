@@ -1,0 +1,154 @@
+<!doctype html>
+<head>
+    <include file="Public/meta"/>
+</head>
+
+<body>
+
+<div class="content">
+    <!-- 标题 -->
+    <div class="title">
+        <span class="title_arrow"></span>
+        <a href="{:U('Users/index')}">用户管理></a>
+        [ <a href="{:U('Users/index')}">返回列表</a> ]
+    </div>
+
+    <div id="div_act_zoom">
+
+        <!-- 查询 -->
+        <form id="frm_sch" method="post" action="__CONTROLLER__/index/">
+            <div id="div_search" style="text-align:left;width:100%">
+                <dl>
+                    <input type="submit" class="btn btn-green" id="btn_search" value="查 询"/>
+                    <input type="hidden" name="order" value=""/>
+                    <input type="hidden" name="sort" value=""/>
+                </dl>
+                <dl>
+                    <dt>创建时间：</dt>
+                    <input type="text" name="create_start_time" value="{$create_start_time}" class="form-control"
+                           id="datepicker1">-
+                    <input type="text" name="create_end_time" value="{$create_end_time}" class="form-control"
+                           id="datepicker2">
+                </dl>
+                <dl>
+                    <dt>状态：</dt>
+                    <select name="status">
+                        <option
+                        <empty name="status">selected</empty>
+                        value="">所有状态</option>
+                        <volist name="user_status" id="item">
+                            <option
+                            <php>if($status!=""&&$status==$key) echo "selected"</php>
+                            value="{$key}">{$item}</option>
+                        </volist>
+                    </select>
+                </dl>
+                <dl>
+                    <dt>类型：</dt>
+                    <select name="type">
+                        <option
+                        <empty name="type">selected</empty>
+                        value="">所有类型</option>
+                        <volist name="types" id="item">
+                            <option
+                            <php>if($type!=""&&$type==$key) echo "selected"</php>
+                            value="{$key}">{$item}</option>
+                        </volist>
+                    </select>
+                </dl>
+                <dl>
+                    <dt>昵称：</dt>
+                    <input type="text" name="name" value="{$name}">
+                </dl>
+                <dl>
+                    <dt>手机号：</dt>
+                    <input type="text" name="mobile" value="{$mobile}">
+                </dl>
+            </div>
+        </form>
+    </div>
+
+    <!-- 列表 -->
+    <table class="list">
+        <thead>
+        <tr>
+            <th colspan="18" class="graybar"></th>
+        </tr>
+        <tr>
+            <td class="title chkbox">
+                <div class="checker btn_all">
+							<span>
+								<input type="checkbox" name="cbx" value=''/>
+							</span>
+                </div>
+            </td>
+            <td class="title">用户ID</td>
+            <td class="title">国际代码</td>
+            <td class="title">手机号</td>
+            <td class="title">用户昵称</td>
+            <td class="title">性别</td>
+            <td class="title">类型</td>
+            <td class="title">状态</td>
+            <td class="title">国籍</td>
+            <td class="title">头像</td>
+            <td class="title">自我介绍</td>
+            <td class="title">余额(元)</td>
+            <td class="title"><a name="create_time">创建时间</a></td>
+            <td class="title">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="list" id="vo">
+            <tr>
+                <td class="chkbox">
+                    <div class="checker">
+							<span>
+								<input type="checkbox" name="ids" value="{$vo.id}"/>
+							</span>
+                    </div>
+                </td>
+                <td>{$vo.id}</td>
+                <td>{$vo.international_code}</td>
+                <td>{$vo.mobile}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.gender}</td>
+                <td>{$vo.type}</td>
+                <td>{$vo.status_show}</td>
+                <td>{$vo.nationality}</td>
+                <td><a url="{$vo.avatar}" class="a_img_show">点击查看</a></td>
+                <td style="width: 150px">{$vo.introduce}</td>
+                <td>{$vo.balance}</td>
+                <td>{$vo.create_time}</td>
+                <td>
+                    <eq name="vo.status" value="1">
+                        <a class="a_confirm" url="__CONTROLLER__/close/id/{$vo.id}/status/0" msg="确定关闭？">关闭</a>
+                    </eq>
+                    <eq name="vo.status" value="0">
+                        <a class="a_confirm" url="__CONTROLLER__/close/id/{$vo.id}/status/1" msg="确定启用？">启用</a>
+                    </eq>
+
+                    <a href="__CONTROLLER__/recharge/id/{$vo.id}">充值</a>
+                </td>
+            </tr>
+        </volist>
+        </tbody>
+        <tr>
+            <th colspan="18" class="graybar"></th>
+        </tr>
+    </table>
+
+    <div id="page">{$page}</div>
+
+</div>
+
+<input type="text" id="quick_edit"/>
+
+<include file="Public:js_basic"/>
+<load href="__PUBLIC__/Admin/js/main.js"/>
+<load href="__PUBLIC__/Admin/js/main_list.js"/>
+<script>
+    var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<a href="{:U('TeacherCategory/index')}">外教类型列表</a>
+		</div>
+		
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater" style="width:20%">
+            	<a class="btn btn-green" href="__CONTROLLER__/add" style="margin-bottom: 5px;">添 加</a>
+        	</div>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title">类型名称</td>
+					<td class="title">客户价格（元/分钟）</td>
+					<td class="title">外教价格（元/分钟）</td>
+					<td class="title">数量</td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<tr>
+					<td>{$vo.category_name}</td>
+					<td>{$vo.customer_price}</td>
+					<td>{$vo.teacher_price}</td>
+					<td>{$vo.total}</td>
+					<td>
+						<a href="__CONTROLLER__/edit/type/{$vo.type}">编辑</a>
+					</td>
+				</tr>
+			</volist>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+		
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<!-- <load href="__PUBLIC__/Admin/js/jquery-dialog.js" /> -->
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+    </body>
+
+</html>

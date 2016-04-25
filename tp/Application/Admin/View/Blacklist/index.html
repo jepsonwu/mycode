@@ -1,0 +1,70 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+   	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			<a href="{:U('Blacklist/index')}">教师黑名单</a>
+			[ <a href="{:U('Blacklist/index')}">返回列表</a> ]
+		</div>
+
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater" style="width:20%">
+				<a class="btn btn-green" href="__CONTROLLER__/add" style="margin-bottom: 5px;">新 增</a>
+			</div>
+		</div>
+		
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="18" class="graybar"></th></tr>
+				<tr>
+					<td class="title">教师ID</td>
+					<td class="title">操作</td>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="teacher_blacklist" id="vo">
+				<tr>
+					<td>{$vo}</td>
+					<td>
+					<a class="a_confirm" url="__CONTROLLER__/foreverdelete/id/{$vo}/" msg="确定要删除该记录么？">删除</a>
+					</td>
+				</tr>
+			</volist>
+			<tr>
+				<td colspan="2"><span>教师列表显示黑名单：</span>
+					<eq name='display_flg' value='1'>
+						<a class="a_confirm btn btn-green" url="__CONTROLLER__/change/status/0" 
+							msg="确定要关闭显示黑名单吗？" style="color: #FFFFFF">关 闭</a>
+					<else />
+						<a class="a_confirm btn btn-green" url="__CONTROLLER__/change/status/1" 
+							msg="确定要开启显示黑名单吗？" style="color: #FFFFFF">开 启</a>
+					</eq>
+				</td>
+			</tr>
+			</tbody>
+			<tr><th colspan="18" class="graybar"></th></tr>
+		</table>
+		
+	</div>
+
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+	<!-- <load href="__PUBLIC__/Admin/js/jquery-dialog.js" /> -->
+	<script>
+		var sch_prams = eval({$_SESSION[C('SEARCH_PARAMS')]});
+	</script>
+
+    </body>
+
+</html>

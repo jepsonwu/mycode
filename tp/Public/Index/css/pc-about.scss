@@ -1,0 +1,175 @@
+$cont-size:30px;
+
+html,body{
+	height: 100%;
+	width: 100%;
+	position: relative;
+	min-width: 1000px;
+
+	color: rgb(93,93,93);
+}
+@mixin mix-main() {
+	width: 1000px;
+	height: 100%;
+	margin: 0 auto;
+}
+@mixin mix-opacity($opa) {
+	opacity:$opa;
+	-moz-opacity:$opa;
+	-khtml-opacity:$opa;
+	filter:alpha(opacity=$opa*100);
+}
+// make things position,left and top controllable
+@mixin trans-left-top($left:0px,$top:0px) {
+	position: absolute;
+	left: $left;
+	top:$top;
+}
+@mixin trans-right-top($right:0px,$top:0px) {
+	position: absolute;
+	right: $right;
+	top:$top;
+}
+
+
+// header nav part
+.header{
+	position: absolute;
+	top: 0;
+	height: 76px;
+	width: 100%;
+	background-color: white;
+	box-shadow: 0px 0px 0px 6px;
+	-webkit-box-shadow: 0px 0px 6px;
+	-moz-box-shadow: 0px 0px 6px;
+	@include mix-opacity(0.5);
+}
+.header-content{
+	position: absolute;
+	top: 0;
+	height: 76px;
+	width: 100%;
+	.main{
+		@include mix-main();
+		position: relative;
+		.name{
+			display: block;
+			float: left;
+			height:76px;
+			img{
+				margin: 23px auto 23px 0;
+			}
+		}
+		.contact{
+			float: right;
+			height: 100%;
+			a{
+				display: inline-block;
+				overflow: hidden;
+				margin: 23px 0 auto 28px;
+			}
+		}
+	}
+}
+
+// main content
+.content{
+	// height: 1101px;
+	background-image: url(../img/content-back.jpg);
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-size: cover;
+	.main{
+		overflow: hidden;
+		@include mix-main();
+		.cont-about-us,.cont-meaning,.cont-value,.cont-mission,.cont-vision{
+			display: block;
+			margin:161px auto 0px 0px;
+			font-size: 30px;
+			color:#565656;
+			font-weight: bolder;
+		}
+		.cont-about-us-text,.cont-meaning-text,.cont-value-text,.cont-mission-text,.cont-vision-text{
+			display: block;
+			font:{
+				size:18px;
+				weight: lighter;
+			}
+			color: #828181;
+			margin-top: 23px;
+			width: 967px;
+			line-height: 30px;
+		}
+		.bold{
+			font-weight: bold;
+			color: #646363;
+		}
+		.cont-meaning{
+			margin-top: 36px;
+		}
+		.cont-meaning-text{
+			margin-top:18px;
+		}
+		.cont-value{
+			margin-top:35px;
+		}
+		.cont-value-text{
+			margin-top:23px;
+		}
+		.cont-mission{
+			margin-top:36px;
+		}
+		.cont-mission-text{
+			margin-top:23px;
+		}
+		.cont-vision{
+			margin-top:39px;
+		}
+		.cont-vision-text{
+			margin-top:23px;
+			margin-bottom: 97px;
+		}
+
+	}
+}
+
+// footer
+.footer{
+	height: 210px;
+	width: 100%;
+	.main{
+		position: relative;
+ 		@include mix-main();
+ 		.logo{
+ 			display: block;
+ 			position: absolute;
+ 			margin: 75px auto 74px 0;
+ 		}
+ 		.contact{
+			@include trans-right-top(0px,63px);
+ 			a{
+ 				margin-left: 20px;
+ 			}
+ 		}
+ 		.about-us{
+ 			@include trans-right-top(0px,127px);
+ 			font-size: 14px;
+ 			color: rgb(131,131,131);
+ 			#about-us{
+ 				text-decoration: underline;
+ 				// @include trans-right-top(420px,127px);
+ 			}
+ 			#about-us:hover{
+ 				cursor: pointer;
+ 			}
+ 			.copyright{
+ 			}
+ 		}
+	}
+}
+// footer-bar
+.footer-bar{
+	width: 100%;
+	height: 8px;
+	background-color: rgb(160,150,129);
+}

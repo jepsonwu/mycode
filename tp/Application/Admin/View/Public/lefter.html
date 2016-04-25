@@ -1,0 +1,30 @@
+<div id="accordion-resizer" class="lefter">
+
+	<div  id="accordion">
+	
+	<volist name="menu" id="vo" >
+		<div class="group">
+			<h3>{$vo.title}</h3>
+			<div>
+	
+			<volist name="vo.list" id="item" >
+                <if condition="($item['title'] neq 'Demos') AND ($item['title'] neq 'FrameDetail') ">
+				<dl <eq name="menuNow" value="$item['name']">class="menu_item cur"<else />class="menu_item"</eq><eq name="item.remark" value="hide"> style="display:none;"</eq> >
+					<a href="{:U('Admin/'.$item['name'].'/index')}" target="ifrm_main">{$item['title']}</a>
+				</dl>
+                </if>
+			</volist>
+	
+			</div>
+		</div>
+	</volist>
+	
+	</div>
+
+</div>
+
+<input type="hidden" id="spk" value="{$_SESSION[C('SEARCH_PARAMS')]}" />
+
+<div class="lefter_area"></div>
+
+<!-- <div class="handle_bar" title="收起左栏菜单"></div> -->

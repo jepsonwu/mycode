@@ -1,0 +1,78 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+	
+		<!-- 标题 -->
+		<div class="title"> 新增
+			<span class="title_arrow"></span>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">模块</eq>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="2">操作</eq>
+			[ <a href="__CONTROLLER__/index{$_SESSION[C('SEARCH_PARAMS_STR')]}">返回
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">模块</eq>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="2">操作</eq>
+			列表</a> ]
+		</div>
+		
+		<form id="frm1" method="post" action="__CONTROLLER__/insert/">
+			<table cellpadding="3" cellspacing="3" class="tbl_form" >
+				<tr>
+					<td class="tRight"><eq name="_SESSION['bkgd']['currentNode']['level']" value="1">模块</eq><eq name="_SESSION['bkgd']['currentNode']['level']" value="2">操作</eq>名：</td>
+					<td class="tLeft"><input type="text" class="medium" name="name" required='1' /></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="tRight">显示名：</td>
+					<td class="tLeft"><input type="text" class="medium" name="title" required='1' /></td>
+					<td></td>
+				</tr>
+			<eq name="_SESSION['bkgd']['currentNode']['level']" value="1">	
+				<tr>
+					<td class="tRight">类　别：</td>
+					<td class="tLeft" colspan="2">
+						<select name="type" class="chzn-select-width1">
+						<volist name="menu_types" id="tp" key="k">
+							<option value="{$k}">{$tp}</option>
+						</volist>
+						</select>
+					</td>
+				</tr>		
+			</eq>
+				<tr>
+					<td class="tRight">状　态：</td>
+					<td class="tLeft" colspan="2">
+						<select class="chzn-select" name="status">
+							<option value="1">启用</option>
+							<option value="0">禁用</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="tRight">描　述：</td>
+					<td class="tLeft" colspan="2"><textarea name="remark" class="area_60"></textarea></td>
+				</tr>
+				<tr>
+					<td>
+						<input type="hidden" name="level" value="{$_SESSION['bkgd']['currentNode']['level']+1}" />
+						<input type="hidden" name="pid" value="{$_SESSION['bkgd']['currentNode']['id']}" />
+					</td>
+					<td colspan="2">
+						<input type="button" class="btn btn-green" id="btn_submit" value="保 存" />
+						<input type="reset" class="btn btn-green" id="btn_reset" value="重 置" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+	</div>
+
+	<include file="Public:js_basic" />
+	<include file="Public:js_form" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	
+</body>
+</html>

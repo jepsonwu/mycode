@@ -1,0 +1,56 @@
+<!doctype html>
+<head>
+	<include file="Public/meta" />
+</head>
+
+<body>
+
+	<div class="content">
+		<!-- 标题 -->
+		<div class="title">
+			<span class="title_arrow"></span>
+			用户变量列表
+		</div>
+		
+		<div id="div_act_zoom">
+			<!-- 功能按钮 -->
+			<div id="div_operater">
+			<eq name="_SESSION [C ( 'ADMIN_AUTH_KEY' )]" value="1">
+				<a href="__CONTROLLER__/edit" class="btn btn-green">编辑热门标签</a>
+			</eq>
+			</div>
+		</div>
+
+		<!-- 列表 -->
+		<table class="list">
+			<thead>
+				<tr><th colspan="9" class="graybar"></th></tr>
+				<tr>
+					<td class="title">编号</td>
+					<td class="title" width="90%">热门标签</td>
+				</tr>
+			</thead>
+			<tbody>
+			<foreach name="popular_tag" item='tag' key='key'>
+				<tr>
+					<td>{$key + 1}</td>
+					<td>{$tag}</td>
+				</tr>
+			</foreach>
+			</tbody>
+			<tr><th colspan="9" class="graybar"></th></tr>
+		</table>
+		
+		<div id="page">{$page}</div>
+	
+		
+	</div>
+	
+	<input type="text" id="quick_edit" />
+	
+	<include file="Public:js_basic" />
+	<load href="__PUBLIC__/Admin/js/main.js" />
+	<load href="__PUBLIC__/Admin/js/main_list.js" />
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<head>
+    <include file="Public/meta"/>
+</head>
+
+<body>
+
+<div class="content">
+
+    <!-- 标题 -->
+    <div class="title">
+        <span class="title_arrow"></span>
+        编辑外教类型 [ <a href="__CONTROLLER__/index">返回列表</a> ]
+    </div>
+
+    <form id="frm1" method="post" action="__CONTROLLER__/save/">
+        <table cellpadding="3" cellspacing="3" class="tbl_form">
+            <tr>
+                <td class="tRight">类型名称：</td>
+                <td class="tLeft"><input type="text" class="large" name="category_name" value="{$info.category_name}" required="1"/></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td class="tRight">客户价格：</td>
+                <td class="tLeft"><input type="text" class="large" name="customer_price" value="{$info.customer_price}" required="1"/></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td class="tRight">外教价格：</td>
+                <td class="tLeft"><input type="text" class="large" name="teacher_price" value="{$info.teacher_price}" required="1"/></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <input type="hidden" name="type" value="{$info.type}"/>
+                    <input type="button" class="btn btn-green" id="btn_submit" value="保 存"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<include file="Public:js_basic"/>
+<include file="Public:js_form"/>
+<load href="__PUBLIC__/Admin/js/main.js"/>
+<load href="__PUBLIC__/Admin/js/chosen.jquery.js"/>
+<load href="__PUBLIC__/Admin/css/chosen.css"/>
+
+<script charset="utf-8" src="__PLUGIN__/Editor/kindeditor.js"></script>
+<script charset="utf-8" src="__PLUGIN__/Editor/lang/zh_CN.js"></script>
+
+</body>
+</html>
