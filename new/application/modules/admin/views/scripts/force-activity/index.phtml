@@ -1,0 +1,205 @@
+<table id="force_activity_list"></table>
+<div id="force_activity_list_toolbar"></div>
+<div id="force_activity_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="force_activityObj.addHandler();">添加</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="force_activityObj.containerObj.edatagrid('reload');">刷新</a> 
+
+    活动名称：
+    <input type="text" name = "ActivityName"  size="30"  value="" />&nbsp;&nbsp;
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchforce_activityList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="force_activity_view_window"></div>
+
+<script type="text/javascript">
+    $("#force_activity_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchforce_activityList();
+        }    
+    });
+    
+    $("#force_activity_list_searcher_container select[name]").change(function(){
+        toSearchforce_activityList();
+    });
+    
+    function toSearchforce_activityList(flag)
+    {
+        var ActivityName       = $("#force_activity_list_searcher_container input[name='ActivityName']").val();
+        var start_date     = $("#force_activity_list_searcher_container input[name='start_date']").val();
+        var end_date       = $("#force_activity_list_searcher_container input[name='end_date']").val();
+        
+        force_activityObj.containerObj.datagrid('load', {
+            ActivityName:ActivityName,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var force_activityObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'force-activity','action'=>'list'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'force-activity','action'=>'add'));?>',
+        'editUrl':'<?php echo $this->url(array('controller'=>'force-activity','action'=>'edit'));?>',
+        'delUrl':'<?php echo $this->url(array('controller'=>'force-activity','action'=>'del'));?>',
+
+        'containerObj':$("#force_activity_list"),
+        'viewWindowObj':$("#force_activity_view_window"),
+        
+        'selfName':'force_activityObj',
+
+        'init':function(){
+            this.showData();
+        },
+       
+        //添加强推活动
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':450,
+                'height':250,
+                'modal':true,
+                'resizable':false,
+                'title':'添加强推活动',
+                'onClose':function(){
+                    _THIS_.viewWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#force_activity_add_form_save").off().on('click',function(){
+                         $("#force_activity_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#force_activity_add_form_close").off().on('click',function(){
+                        _THIS_.viewWindowObj.window('destroy');
+                    });
+                    $("#force_activity_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.viewWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //编辑强推活动
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.viewWindowObj.window({
+                        'href':_THIS_.editUrl+'?force_activity_id='+id,
+                        'width':450,
+                        'height':300,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑强推活动',
+                        'onLoad':function(){
+                            $("#edit_force_activity_form_save").off().on('click',function(){
+                                $("#edit_force_activity_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $("#edit_force_activity_form_close").off().on('click',function(){
+                                _THIS_.viewWindowObj.window('close');
+                            });
+                            
+                            $("#edit_force_activity_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.viewWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+
+            //删除强推活动
+            'deleteHandler':function(id){
+                            var _THIS_ = this;
+                            $.messager.confirm('删除','确认要删除吗？', function(d){
+                                if(d) {
+                                    $.ajax({
+                                            url:_THIS_.delUrl,
+                                            type: "POST",
+                                            data: {id:id},
+                                            dataType: 'json',
+                                            success: function(ret){
+                                                if(ret.flag > 0) {
+                                                    $.messager.alert("提示信息",'删除成功！','info');
+                                                    _THIS_.containerObj.datagrid('reload');
+                                                } else{
+                                                    $.messager.alert("提示信息",ret.msg,'error');
+                                                }
+                                            }
+                                    });
+                                }
+                            });
+                        },
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'FID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#force_activity_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'ActivityID',title:'强推活动ID',width:70}, 
+                        {field:'ActivityName',title:'活动名称',width:70},
+                        {field:'ActivityLink',title:'链接地址',width:150}, 
+                        {field:'ActivityPic',title:'活动图片',width:100,formatter:function(value,rec,index){
+                                if(value){
+                                    return '<img src="'+value+'?imageView2/0/w/200/h/200"/>';
+                                }
+                            }
+                        },
+                        {field:'CountPerDay',title:'用户每天出现的强推次数'},
+                        {field:'StartTime',title:'开始时间',width:150},
+                        {field:'EndTime',title:'结束时间',width:150},
+                        {field:'AddTime',title:'添加时间',width:100},  
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.ActivityID+'\')">';
+                                    e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                var d = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.deleteHandler(\''+rec.ActivityID+'\')">';
+                                    d += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">删除</span></span></a>';
+                                return e + d;          
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#force_activity_list_toolbar").append($("#force_activity_list_searcher_container"));
+            },    
+};
+force_activityObj.init();
+</script>

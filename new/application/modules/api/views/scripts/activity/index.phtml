@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>猜涨停，全民抢话费啦！</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/hd/m-main.css" >
+<style>
+
+    html, body{height: 100%;}
+    body{min-width: 320px; max-width: 640px; margin: 0 auto; background: #00ABEC; color: #666666;}
+    figure img{width: 100%;}
+
+    .mt20{margin-top: 20px;}
+    .numtit{color: #fff; background: #00ABEC; padding: 2px 6px; margin: 0 6px;}
+    .desother{color: #E75553;}
+    .cvs{color: #F93; font-weight: 100; font-size: 12px; font-weight: bold;}
+    .mbox{margin: 20px 10px 0; padding: 6px 8px; border-radius: 5px; background: #F5F5F5;}
+
+    .do-show img{width: 100%;}
+    .do-tit span{float: left;}
+    .do-tit span:nth-child(1){font-size: 18px;height: 30px;line-height: 30px;}
+    .do-tit span:nth-child(2){margin: 0 0 0 10px; line-height: 34px; height: 30px;}
+    .coin li{float: left; width: 50%; height: 66px; overflow: hidden; padding: 30px 0 20px; text-align: center;}
+    .coin li img{ max-width: 100%; height: 100%;}
+	.coin-less img{
+	        position: relative;
+	        -webkit-animation: coin-less 5s infinite;
+	        animation: coin-less 5s infinite;
+	    }
+	    .coin-more img{
+	        position: relative;
+	        -webkit-animation: coin-less 5s 1.1s infinite;
+	        animation: coin-less 5s 1.1s infinite;
+	    }
+	    @-webkit-keyframes coin-less{
+	
+	        0%{-webkit-transform: translate(0, 0);}
+	        5%{-webkit-transform: translate(0, -10px);}
+	        15%{-webkit-transform: translate(0, 10px);}
+	        20%{-webkit-transform: translate(0, 0);}
+	
+	    }
+	    @keyframes coin-less{
+	
+	        0%{transform: translate(0, 0);}
+	        5%{transform: translate(0, -10px);}
+	        15%{transform: translate(0, 10px);}
+	        20%{transform: translate(0, 0);}
+	
+	    }
+
+    .do-action{padding: 0 0 6px}
+    .do-action li{float: left;width: 50%;}
+    .do-fall{text-align: right;}
+    .do-action img{width: 96%;}
+    .do-action li img:nth-child(2){display: none;}
+    .do-action .touch img:nth-child(1){display: none;}
+    .do-action .touch img:nth-child(2){display: inline-block;}
+
+    .rules{margin-bottom: 20px;}
+    .rules img{width: 100%;}
+    .rules p{margin: 6px 0 12px; line-height: 22px;}
+
+    .promptbox{position: absolute; top: 0; width: 100%; background: rgba(10, 10, 10, .5); }
+    .prompt{position: absolute; width: 250px; height: 340px; left: 50%; top: 50%; margin-left: -125px; margin-top: -170px; background: #fff; border-radius: 6px;}
+    .close{position: absolute; top: -12px; right: -12px; width: 25px; height: 25px;}
+    .close img{width: 100%; }
+    .prompt-info{padding: 20px;}
+    .prompt-info img{width: 100%; margin: 10px 0 0;}
+    .prompt-info a{display: block; height: 44px; line-height: 44px; background: #E75553; color: #fff; text-align: center; border-radius: 20px; margin: 28px 0 0;
+        transition: all .4s ;
+    }
+    .prompt-info a.touch{background: #FF6F08;}
+
+    .vpromptbox{position: fixed; width: 80%; height: 30px; line-height: 30px; left: 50%; top: 50%; margin-left: -40%; margin-top: -15px; padding: 15px 0; background: rgba(10, 10, 10, .7); color: #fff; border-radius: 6px; text-align: center;}
+
+</style>
+<script>
+var loginFlag = <?php echo $this->memberID ;?>;
+</script>
+</head>
+<body>
+<h1></h1>
+
+<script src="/static/js/web/zepto.min.js"></script>
+
+<figure>
+    <img src="/static/imgs/hd/banner.png" alt="猜涨停送话费" >
+</figure>
+
+<section id="do" class="mbox do">
+    <p class="do-tit clearfix">
+        <span id="do-date" class="fc-000"></span>
+        <span>猜明日上证指数涨<b class="cvs">VS</b>跌？</span>
+    </p>
+    <ul class="coin clearfix">
+        <li class="coin-less">
+            <img src="/static/imgs/hd/coin-less.png" alt="less">
+        </li>
+        <li class="coin-more">
+            <img src="/static/imgs/hd/coin-more.png" alt="more">
+        </li>
+    </ul>
+
+    <div class="do-show">
+        <img src="/static/imgs/hd/pk.png" alt="PK" >
+    </div>
+
+    <ul class="do-action mt clearfix">
+        <li id="do-up" class="do-up active" data-guess="up" data-url="register?guess=up">
+            <img id="img-do-up" src="/static/imgs/hd/up.png" alt="涨">
+            <img id="img-do-up-focus" src="/static/imgs/hd/up-focus.png" alt="涨了">
+        </li>
+        <li id="do-fall" class="do-fall active" data-guess="down" data-url="register?guess=down">
+            <img id="img-do-down" src="/static/imgs/hd/fall.png" alt="跌">
+            <img id="img-do-down-focus" src="/static/imgs/hd/fall-focus.png" alt="跌了">
+        </li>
+    </ul>
+</section>
+
+<section id="rules" class="mbox rules mt">
+    <img src="/static/imgs/hd/rules.png" alt="活动规则" >
+
+    <p><span class="numtit">1</span><span class="desother">9月13日至9月17日</span>期间，每天<span class="desother">00:00-23:59</span>猜<span class="desother">次日</span>上证指数收盘涨跌情况，点击“涨”或“跌”，即可参与“猜大盘赢话费”活动。</p>
+    <p><span class="numtit">2</span>每个开盘日从猜中用户中随机选取设5名奖励20元话费奖项。<span class="desother">中奖名单</span>将于<span class="desother">收盘当日18:00</span>在<span class="desother">财猪app首页公布</span>。</p>
+    <p><span class="numtit">3</span>请您实时关注中奖名单，奖品将于<span class="desother">整个活动结束后3个工作日内发放</span>。</p>
+    <p><span class="numtit">4</span>如有疑问请联系财猪客服热线：400-681-2858。</p>
+    <p><span class="numtit">5</span>本活动的最终解释权归杭州小麦金融信息服务有限公司所有。</p>
+
+</section>
+
+<section id="promptbox" class="promptbox hide">
+    <div class="prompt">
+        <span id="close" class="close"><img src="/static/imgs/hd/close.png" alt="关闭" ></span>
+        <div class="prompt-info">
+            <img src="/static/imgs/hd/duang.png" alt="查看中奖信息" >
+            <a class="active" data-url="http://m.caizhu.com/down/down-caizhu">下载财猪客户端</a>
+        </div>
+    </div>
+</section>
+
+<section id="vpromptbox" class="vpromptbox hide">
+    <span id="vclose" class="close"><img src="/static/imgs/hd/close.png" alt="关闭" ></span>
+    <span id="vprompt"></span>
+</section>
+
+<script>
+
+    initToday();
+
+    $(function(){
+        var acTime;
+
+        var hide = 'hide', promptId, vPromptId,
+            h = window.innerHeight,
+            $promptBox = $('#promptbox'),
+            $close = $('#close'),
+            $vPromptBox = $('#vpromptbox'),
+            $vPrompt = $('#vprompt'),
+            $vClose = $('#vclose');
+
+        $promptBox.css('height', h);
+
+        window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function(){
+            $promptBox.css('height', window.innerHeight);
+        }, false)
+
+        $close.click(function(){
+            $promptBox.addClass(hide);
+        });
+
+        $vClose.click(function(){
+            $vPromptBox.addClass(hide);
+        });
+
+        $('.active').on('touchstart', function(){
+
+            acTime = new Date();
+            $(this).addClass('touch');
+
+        }).on('touchend', function(){
+
+            var $this = $(this), url;
+            $this.removeClass('touch');
+            if((new Date()) - acTime > 500){   // 触摸的时间超过500ms，不触发触摸效果 。。。
+                return ;
+            }
+
+             if(loginFlag > 0){
+                $.ajax({
+                    url: '/api/activity/save',
+                    dataType:'json',
+                    data: {
+                        guess: $this.data('guess'),
+                        memberID: loginFlag
+                    },
+                    success: function(d){
+                        if(d.flag == 1){
+                            $promptBox.removeClass(hide);
+                        }else{
+                            $vPrompt.empty().html(d.msg);
+                            $vPromptBox.removeClass(hide);
+                        }
+                    },
+                    error: function(err){
+                        $this.data('get', '');
+                        $vPrompt.empty().html('网络错误！');
+                        $vPromptBox.removeClass(hide);
+                    }
+                })
+            }else{
+                url = $this.data('url');
+                if(url) location.href = url;
+            }
+
+        });
+    });
+
+    function initToday(){
+        var date, day, month, dateStr;
+        date = new Date();
+        day = (date.getDate() + '').length == 2 ? date.getDate() : '0' + date.getDate();
+        month = date.getMonth() + 1;
+        month = (month + '').length == 2 ? month : '0' + month;
+        dateStr = month + '月' + day + '日';
+        document.getElementById('do-date').innerHTML = dateStr;
+    }
+
+    /*
+    $.ajax({
+        url: '',
+        data: '',
+        success: function(d){
+        },
+        error: function(e){
+            console.log(e);
+        }
+    });
+     */
+</script>
+
+<script>
+
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 监听 id: do-up
+    /*document.getElementById('do-up').addEventListener('click', function(){
+        _hmt.push(['_trackEvent', 'up', '涨', '涨'])
+    }, false);*/
+
+
+</script>
+</body>
+</html>

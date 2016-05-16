@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <?php echo $this->headTitle();?>
+    <?php echo $this->headMeta()?>
+    <link rel="shortcut icon" href="/static/images/web/column/favicon.ico"/>
+    <link rel="stylesheet" href="/static/css/web/column/main.css" />
+    <link rel="stylesheet" href="/static/css/web/column/zhuanlan.css?data=0505">
+    <link rel="stylesheet" href="/static/css/web/column/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/web/column/jquery-ui-timepicker-addon.css">
+
+	<script src="/static/js/jquery-1.10.2.min.js"></script>
+
+</head>
+<body>
+
+<div id="prompt-box" class="prompt-box hide">
+    <div class="prompt-bg"></div>
+
+    <ul id="prompt-type" class="prompt-type">
+
+        <li id="ppt-00" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div id="ppt-p" class="ppt-des03">
+            </div>
+            <div id="ppt-ok" class="ppt-do">
+                <span>确定</span>
+            </div>
+        </li>
+        <li id="ppt-000" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div id="ppt-p000" class="ppt-des01" align="center">
+            </div>
+            <div class="ppt-do ppt-do2">
+                <span id="ppt-ok000" >确定</span>
+                <span id="ppt-cancel000" class="ppt-cancel">取消</span>
+            </div>
+        </li>
+        <li id="ppt-111" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div id="ppt-p111" class="ppt-des01" align="center">
+            </div>
+            <div class="ppt-do ppt-do2">
+                <span id="ppt-ok111" >确定</span>
+                <span id="ppt-cancel111" class="ppt-cancel">离开</span>
+            </div>
+        </li>
+        <li id="ppt-01" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-ok"></span>
+            </div>
+            <div class="ppt-des02">帐号主题认证成功</div>
+            <div class="ppt-do">
+                <a class="ppt-btn">创建专栏</a>
+            </div>
+
+        </li>
+
+        <li id="ppt-02" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-wait"></span>
+            </div>
+            <div class="ppt-des02">您提交的帐号主题信息正在审核中，请耐心等待</div>
+
+        </li>
+
+        <li id="ppt-03" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-wait"></span>
+            </div>
+            <div class="ppt-des02">您创建的专栏正在审核中，请耐心等待</div>
+            <div class="ppt-do">
+                <a class="ppt-btn">创建专栏</a>
+            </div>
+
+        </li>
+
+        <li id="ppt-04" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-warning"></span>
+            </div>
+            <div class="ppt-des02">您提交的认证信息不符合要求，请修改后重新提交</div>
+            <div class="ppt-do">
+                <a class="ppt-btn">修改</a>
+            </div>
+
+        </li>
+
+        <li id="ppt-05" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-warning"></span>
+            </div>
+            <div class="ppt-des02">您创建的专栏不符合要求，请修改后重新提交</div>
+            <div class="ppt-do">
+                <a class="ppt-btn">创建专栏</a>
+            </div>
+
+        </li>
+
+        <li id="ppt-06" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提交成功</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                我们将在3个工作日内完成帐号主体认证的信息审核工作。若有疑问请邮件联系我们：kf@duomai.com。我们将及时为您解答。
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-07" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                <p>专栏资料将进入后台审核阶段，审核期间不能再次提交</p>
+                <p>财猪专栏是一个开放的自媒体平台，我们将按照标准进行审核：谢绝营销、低俗、低劣、色情内容的帐号申请。请认真填写相关资料，遵守我们的用户协议、申请内容需符合财猪专栏的审核要求。</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-08" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <!--<span class="ppt-close"></span>-->
+            </div>
+            <div class="ppt-des03">
+                专栏创建成功，请自觉遵守<a href="/api/user/topic-issue" target="_new">《财猪内容发布规范》</a>,如有违规，立即封号。
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-09" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                删除的文章将不可恢复，确定删除吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-10" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                你上次有未完成的文章，需要继续编辑吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-11" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                删除的活动将不可恢复，确定删除吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-12" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                你上次有未完成的活动，需要继续编辑吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-13" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                请先在财猪手机端退出，后刷新网页或关闭网页
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-14" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                你已退出财猪！
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-15" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                <div class="ppt-other00">
+                    <p class="ml">您提交的从业资质因以下原因审核未通过，请重新提交</p>
+                    <div><span>● 资格证扫描件不清晰</span><span class="ml20">● 资格证扫描件与资格证种类不匹配</span></div>
+                </div>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-16" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                <p>我们将在3个工作日内完成理财师从业资质的信息审核工作。审核通过后，将在您的资料页显示。若有疑问请邮件联系我们：tf@caizhu.com，我们将及时为您解答。</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-17" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01 ppt-des04">
+                <p>您编辑的文章尚未保存，离开会使内容丢失</p>
+                <p>您可以选择保存草稿后，再离开此页面。</p>
+            </div>
+            <div class="ppt-do ppt-do2">
+                <span>确定</span>
+                <span class="ppt-cancel" data-flag="no">取消</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-18" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01 ppt-des04">
+                <p>您编辑的活动尚未保存，离开会使内容丢失</p>
+                <p>您可以选择保存草稿后，再离开此页面。</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+
+        <li id="ppt-add00" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+            </div>
+            <div class="ppt-des01 ppt-des04">
+                <p style="text-indent: 0;" align="center">在这里，你可以发挥自己在金融相关领域的专长，利用自己专业的理论知识，丰富的实践经验来为咨询者答疑解惑。这里是你实现自我价值的地方；这里是你展翅飞翔的地方；这里是你扬名立万的地方！</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+    </ul>
+
+</div>
+
+<div id="sigle-01" class="sigle-box hide">
+    发表中，请稍等...
+</div>
+
+<div id="sigle-02" class="sigle-box hide">
+    发表成功！
+</div>
+
+<div id="sigle-03" class="sigle-box hide">
+    删除成功！
+</div>
+
+<div id="sigle-04" class="sigle-box hide">
+    保存成功！
+</div>
+
+<script>
+
+
+    var hide = 'hide',
+        $promptBox = $('#prompt-box'),
+        $promptType = $('#prompt-type'),
+
+        $sigle01 = $('#sigle-01');
+
+    $('body').delegate('.ppt-close', 'click', function(){
+        closePrompt();
+    });
+
+    var $pptP = $('#ppt-p'),
+        $pptOk = $('#ppt-ok'),
+        $ppt00 = $('#ppt-00'),
+
+        $ppt000 = $('#ppt-000'),
+        $pptP000 = $('#ppt-p000'),
+        $pptOk000 = $('#ppt-ok000'),
+        $pptCancel000 = $('#ppt-cancel000'),
+
+        $ppt111 = $('#ppt-111'),
+        $pptP111 = $('#ppt-p111'),
+        $pptOk111 = $('#ppt-ok111'),
+        $pptCancel111 = $('#ppt-cancel111');
+
+    $pptOk.click(function(){
+        closePrompt();
+    })
+    var promptCallback = false;
+    function definedPrompt(str, fn){
+        if(!str) return ;
+        if(fn){
+            promptCallback = fn;
+        }else{
+            promptCallback = false;
+        }
+        $pptP.html(str);
+        $ppt00.removeClass(hide);
+        $promptBox.removeClass(hide);
+
+    }
+
+    var fnFlag000;
+    function definedPrompt000(str, fn){
+        if(!str) return ;
+        if(fn){
+            fnFlag000 = fn;
+        }else{
+            fnFlag000 = false;
+        }
+        $pptP000.empty().html(str);
+        $ppt000.removeClass(hide);
+        $promptBox.removeClass(hide);
+    }
+    $pptOk000.click(function(){
+        closePrompt000(1);
+    })
+    $pptCancel000.click(function(){
+        closePrompt000(0);
+    });
+
+    function closePrompt000(type){
+        $promptBox.addClass(hide);
+        $promptType.children().addClass(hide);
+        if(fnFlag000 && type == 1){
+            fnFlag000();
+        }
+        fnFlag000 = '';
+    }
+
+    // 保存草稿
+    var fnFlag111;
+    function definedPrompt111(str, fn){
+        if(!str) return ;
+        if(fn){
+            fnFlag111 = fn;
+        }else{
+            fnFlag111 = false;
+        }
+        $pptP111.empty().html(str);
+        $ppt111.removeClass(hide);
+        $promptBox.removeClass(hide);
+    }
+    $pptOk111.click(function(){
+        closePrompt111(0);
+    })
+    $pptCancel111.click(function(){
+        closePrompt111(1);
+    });
+
+    function closePrompt111(type){
+        $promptBox.addClass(hide);
+        $promptType.children().addClass(hide);
+        if(fnFlag111 && type == 1){
+            fnFlag111();
+        }
+        fnFlag000 = '';
+    }
+
+    function closePrompt(){
+        $promptBox.addClass(hide);
+        $promptType.children().addClass(hide);
+        if(promptCallback){
+            promptCallback();
+        }
+        promptCallback = false;
+    }
+
+</script>
+
+<div class="header-box">
+    <div class="header">
+        <h1 class="fl"><img src="/static/images/web/column/logo.png" alt="logo" /></h1>
+        <div class="header-member fr">
+            <a href=""><?php echo $this->memberInfo->UserName;?></a><span>|</span><a id="login-out">退出</a>
+        </div>
+    </div>
+</div>
+<div class="header-info-box">
+    <ul class="hi-list clearfix">
+        <li class="hi-one hi-one01 fl">
+            <img src="<?php echo $this->headColumnInfo['Avatar'].'?imageView2/0/w/90/h/90';?>" alt="头像" />
+        </li>
+        <li class="hi-one hi-one02 fl">
+            <h2 class="hi-tit"><?php echo $this->headColumnInfo['Title'];?></h2>
+            <p class="hi-des"><?php echo $this->headColumnInfo['Description'];?></p>
+            <p class="hi-info">
+                <span>创建者：<?php echo $this->memberInfo->UserName;?></span>
+                <span>帐号主体：<?php echo $this->subject;?><img src="/static/images/web/column/icon-v.png" alt="等级" /></span>
+               <?php if(!empty($this->qualification)):?>
+                <span>资质：
+                <?php foreach($this->qualification as &$val):?>
+                <?php echo $val['FinancialQualificationType'];?>
+                <?php endforeach;?><img src="/static/images/web/column/icon-zheng.png" alt="证书" /></span>
+                <?php endif;?>
+            </p>
+        </li>
+        <li class="hi-one hi-one03 fr">
+            <p class="hi-view clearfix">
+                总阅读量：<span><?php echo $this->headColumnInfo['ReadNum'];?></span>
+            </p>
+            <p class="hi-dingyue clearfix">
+                <span class="hi-vote">新增订阅：<i><?php echo $this->headColumnInfo['newSubscribeNum'];?></i></span>
+                <span class="hi-all-vote">总订阅量：<i><?php echo $this->headColumnInfo['SubscribeNum'];?></i></span>
+            </p>
+        </li>
+    </ul>
+</div>
+
+<div class="main-box clearfix maa-zx-10">
+
+    <div class="main-left fl">
+        <ul class="type-list">
+            <li class="type-one <?php if($this->controller_name == 'column' && $this->action_name !='user-manage'):?>selected <?php endif;?>">
+                <a href="/column/index">
+                    <span class="type-icon icon-page"></span>
+                    <span class="type-des">主页</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+            <li class="type-one <?php if(($this->controller_name == 'article' && $this->action_name !='comment-list') || $this->controller_name == 'activity' || $this->controller_name == 'counsel'):?>selected <?php endif;?>">
+                <a href="/article/index">
+                    <span class="type-icon icon-article"></span>
+                    <span class="type-des">内容管理</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+            <!--<?php if($this->authenticateType>1):?>
+            <li class="type-one <?php if($this->controller_name == 'activity'):?>selected <?php endif;?>">
+                <a href="/activity/index">
+                    <span class="type-icon icon-activity"></span>
+                    <span class="type-des">线下活动</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+            <?php endif;?>-->
+ 			<li class="type-one <?php if($this->controller_name == 'draft'):?>selected <?php endif;?>">
+                <a href="/draft/article">
+                    <span class="type-icon icon-draft"></span>
+                    <span class="type-des">草稿箱</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+            <li class="type-one <?php if($this->action_name == 'user-manage'):?>selected <?php endif;?>">
+                <a href="/column/user-manage">
+                    <span class="type-icon icon-manage"></span>
+                    <span class="type-des">用户管理</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+            <li class="type-one  <?php if($this->controller_name == 'article' && $this->action_name =='comment-list'):?>selected <?php endif;?>">
+                <a href="/article/comment-list">
+                    <span class="type-icon icon-comment"></span>
+                    <span class="type-des">评论管理</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+            <li class="type-one <?php if($this->controller_name == 'user'):?>selected <?php endif;?>">
+                <a href="/user/set">
+                    <span class="type-icon icon-set"></span>
+                    <span class="type-des">设置</span>
+                    <span class="type-arrow fr"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+	<?php echo $this->layout()->content;?>  
+</div>
+<!-- 底部 -->
+<div class="footer">
+    <p><a href="http://caizhu.com">www.caizhu.com</a> &copy; 2014-2015 All Rights Reserved.</p>
+    <p><a href="http://caizhu.com">财猪</a> 版权所有 浙ICP备15011363号-1</p>
+</div>
+
+<script>
+var hide = 'hide',
+    $loginOut = $('#login-out');
+
+    $loginOut.click(function(){
+        $promptBox.find('#ppt-13').removeClass(hide);
+        $promptBox.removeClass(hide);
+
+        $('body').delegate('#ppt-13 .ppt-do span', 'click', function(){
+            $promptBox.find('#ppt-13').addClass(hide);
+            $promptBox.addClass(hide);
+        });
+
+    });
+
+    var $sigleBox = $('.sigle-box');
+    $('body').click(function(){
+        //$sigleBox.addClass(hide);
+    });
+
+
+    // 为，离开保存活动，文章草稿不得不变结构
+    /*
+    var leaveFlag;
+    $boxlinkOne = $('.type-one a');
+    $boxlinkOne.click(function(){             // leaveFlag;  true:需要保存提示, false
+        var $this = $(this),
+            url = $this.data('href');
+
+        if(leaveFlag){
+
+        }else{
+            location.href = url;
+        }
+    });
+    */
+</script>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</body>
+</html>

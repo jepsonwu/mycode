@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="css/m-main.css" >
+<script src="js/zepto.min.js"></script>
+<style>
+    body{
+        min-width: 320px;
+        max-width: 640px;
+        padding: 0 0 60px;
+        margin: 0 auto;
+        font-size: 14px;
+        background: #f2f2f2;
+    }
+    .mt-main{
+        margin-top: 15px;
+    }
+    header{
+        height: 220px;
+        overflow: hidden;
+        background: url('imgs/header-bg.jpg') no-repeat;
+        background-size: 100% 100%;
+
+    }
+    .avatar{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80px;
+        height: 80px;
+        margin-left: -43px;
+        margin-top: -43px;
+        font-size: 20px;
+        border: #9ba3ab solid 3px;
+        border-radius: 80px;
+        overflow:hidden;
+    }
+    .avatar img{
+        width: 100%;
+        border-radius: 80%;
+    }
+    .preson{
+        padding: 6px 10px;
+        background: #fff;
+    }
+    .person-one{
+        display: -webkit-flex;
+
+        display: -webkit-box;
+
+        line-height: 36px;
+    }
+    .po-name{
+        width: 66px;
+        padding: 0 12px 0 0;
+        text-align: right;
+        color: #999;
+    }
+    .po-name-2{
+        text-align: center;
+        font-size: 22px;
+        border-bottom: #ececec solid 1px;
+    }
+    .po-des{
+        -webkit-flex: 1;
+
+        -webkit-box-flex: 1;
+
+        color: #333;
+        border-bottom: #dcdcdc solid 1px;
+    }
+    .po-des a{
+        color: #333;
+    }
+    .person-one:last-child .po-des{
+        border-bottom: 0;
+    }
+
+    footer{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        line-height:50px;
+        background: #3d3d3d;
+        color: #fff;
+        text-align: center;
+    }
+    .po-name, .po-des{
+        display: block;
+    }
+    .icon-add{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background: url('imgs/icon-add.png') no-repeat;
+        background-size: 100% 100%;
+        vertical-align: middle;
+        margin: 0 2px;
+    }
+    .po-des img{
+        width: 25px;
+        height: 25px;
+        border-radius: 3px;
+        vertical-align: middle;
+        margin: 0 3px 0 0;
+    }
+
+    #os-android{
+        background: url('imgs/android.png') no-repeat center 20px;
+    }
+    #os-ios{
+        background: url('imgs/ios.png') no-repeat center 20px;
+    }
+    #os-android, #os-ios{
+        position: fixed;
+        top: -2px;
+        left: 0;
+        background-size: 80% auto;
+        background-color: rgba(10, 10, 10, .6);
+        padding: 0 0 3px;
+    }
+
+    .os-close{
+        position: absolute;
+        right: -18px;
+        top: -16px;
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
+        color: #fff;
+        background: rgba(255, 255, 255, .2);
+        border-radius: 30px;
+        line-height: 68px;
+        text-indent: 12px;
+    }
+
+</style>
+
+<header class="p-rela">
+    <figure class="avatar">
+        <img src="images/avatar.png" alt="头像" >
+    </figure>
+</header>
+
+<ul class="preson mt-main">
+    <li class="person-one">
+        <span class="po-name">个人姓名</span>
+        <span class="po-des">你不是一只羊</span>
+    </li>
+    <li class="person-one">
+        <span class="po-name">地区</span>
+        <span class="po-des">你不是一只羊</span>
+    </li>
+    <li class="person-one">
+        <span class="po-name">关注</span>
+        <div class="po-des">
+            <a>理财</a>
+            <a>金融</a>
+        </div>
+    </li>
+
+</ul>
+
+<ul class="preson mt-main">
+    <li class="person-one">
+        <span class="po-name">个人姓名</span>
+        <div class="po-des">
+            <img src="images/avatar.png" alt="群组-logo" />
+            <span>证券服务客服中心</span>
+        </div>
+    </li>
+    <li class="person-one">
+        <span class="po-name po-name-2">3</span>
+        <div class="po-des">
+            <img src="images/avatar.png" alt="群组-logo" />
+            <span>证券服务客服中心</span>
+        </div>
+    </li>
+    <li class="person-one">
+        <span class="po-name">自定义</span>
+        <div class="po-des">
+            <img src="images/avatar.png" alt="群组-logo" />
+            <span>自定义XXX</span>
+        </div>
+    </li>
+
+</ul>
+
+<footer data-param="a=1&b=2&c=3">
+    <span class="icon-add"></span>
+    <span>加好友</span>
+</footer>
+
+<div id="os-android" class="hide"><span class="os-close">X</span></div>
+<div id="os-ios" class="hide"><span class="os-close">X</span></div>
+
+<script>
+
+    $(function(){
+
+    function detect(ua, platform) {
+        var os = {}, browser = {},
+                webkit = ua.match(/Web[kK]it[\/]{0,1}([\d.]+)/),
+                android = ua.match(/(Android);?[\s\/]+([\d.]+)?/),
+                osx = !!ua.match(/\(Macintosh\; Intel /),
+                ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+                ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/),
+                iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+                webos = ua.match(/(webOS|hpwOS)[\s\/]([\d.]+)/),
+                win = /Win\d{2}|Windows/.test(platform),
+                wp = ua.match(/Windows Phone ([\d.]+)/),
+                touchpad = webos && ua.match(/TouchPad/),
+                kindle = ua.match(/Kindle\/([\d.]+)/),
+                silk = ua.match(/Silk\/([\d._]+)/),
+                blackberry = ua.match(/(BlackBerry).*Version\/([\d.]+)/),
+                bb10 = ua.match(/(BB10).*Version\/([\d.]+)/),
+                rimtabletos = ua.match(/(RIM\sTablet\sOS)\s([\d.]+)/),
+                playbook = ua.match(/PlayBook/),
+                chrome = ua.match(/Chrome\/([\d.]+)/) || ua.match(/CriOS\/([\d.]+)/),
+                firefox = ua.match(/Firefox\/([\d.]+)/),
+                firefoxos = ua.match(/\((?:Mobile|Tablet); rv:([\d.]+)\).*Firefox\/[\d.]+/),
+                ie = ua.match(/MSIE\s([\d.]+)/) || ua.match(/Trident\/[\d](?=[^\?]+).*rv:([0-9.].)/),
+                webview = !chrome && ua.match(/(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/),
+                safari = webview || ua.match(/Version\/([\d.]+)([^S](Safari)|[^M]*(Mobile)[^S]*(Safari))/);
+
+
+        if (browser.webkit = !!webkit) browser.version = webkit[1]
+
+        if (android) os.android = true, os.version = android[2]
+        if (iphone && !ipod) os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.')
+        if (ipad) os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.')
+        if (ipod) os.ios = os.ipod = true, os.version = ipod[3] ? ipod[3].replace(/_/g, '.') : null
+        if (wp) os.wp = true, os.version = wp[1]
+        if (webos) os.webos = true, os.version = webos[2]
+        if (touchpad) os.touchpad = true
+        if (blackberry) os.blackberry = true, os.version = blackberry[2]
+        if (bb10) os.bb10 = true, os.version = bb10[2]
+        if (rimtabletos) os.rimtabletos = true, os.version = rimtabletos[2]
+        if (playbook) browser.playbook = true
+        if (kindle) os.kindle = true, os.version = kindle[1]
+        if (silk) browser.silk = true, browser.version = silk[1]
+        if (!silk && os.android && ua.match(/Kindle Fire/)) browser.silk = true
+        if (chrome) browser.chrome = true, browser.version = chrome[1]
+        if (firefox) browser.firefox = true, browser.version = firefox[1]
+        if (firefoxos) os.firefoxos = true, os.version = firefoxos[1]
+        if (ie) browser.ie = true, browser.version = ie[1]
+        if (safari && (osx || os.ios || win)) {
+            browser.safari = true
+            if (!os.ios) browser.version = safari[1]
+        }
+        if (webview) browser.webview = true
+
+        os.tablet = !!(ipad || playbook || (android && !ua.match(/Mobile/)) ||
+        (firefox && ua.match(/Tablet/)) || (ie && !ua.match(/Phone/) && ua.match(/Touch/)))
+        os.phone = !!(!os.tablet && !os.ipod && (android || iphone || webos || blackberry || bb10 ||
+        (chrome && ua.match(/Android/)) || (chrome && ua.match(/CriOS\/([\d.]+)/)) ||
+        (firefox && ua.match(/Mobile/)) || (ie && ua.match(/Touch/))));
+        return {
+            os: os,
+            browser: browser
+        }
+    }
+
+    var wxFlag=function(){
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i)=="micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }();
+
+    var info=detect(navigator.userAgent, navigator.platform);
+
+
+    var hide = 'hide';
+    var $osAnd = $('#os-android'), $osIos = $('#os-ios');
+    var winW = window.innerWidth, winH = window.innerHeight;
+    $osAnd.css({'width': winW, 'height': winH});
+    $osIos.css({'width': winW, 'height': winH});
+    $('.os-close').click(function(){
+        $(this).parent().addClass(hide);
+    });
+
+    if(wxFlag){
+        $('footer').click(function(){
+            if(info.os.android){
+                $osAnd.removeClass(hide)
+            }else if(info.os.ios){
+                $osIos.removeClass(hide);
+               // $('.po-des').eq(0).append(document.createTextNode(' + '));
+            }
+        });
+    }else{
+
+        var $this = $(this), param = $this.data('param');
+
+        var loadIframe = null;
+        function createIframe(){
+            var iframe = document.createElement("iframe");
+            iframe.style.cssText = "display:none;width:0px;height:0px;";
+            document.body.appendChild(iframe);
+            loadIframe = iframe;
+        }
+
+        function redirect(){
+            var rUa = navigator.userAgent;
+            isChrome =rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+            if(isChrome){
+                if(info.os.android){
+                    window.location.href = 'intent://scan/#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                }else{
+                    window.location.href = 'caizhu://caizhu/userInfo?id=123';
+                }
+            }else{
+                loadIframe.src="caizhu://caizhu/userInfo?id=123";
+            }
+            var t = Date.now();
+            setTimeout(function(){
+                if(Date.now()-t < 600){
+                    location.href="caizhu-app-down.html";
+                }
+            },500)
+        }
+
+        $('footer').click(function(){
+
+            createIframe();
+            redirect();
+
+        })
+    }
+
+    });
+
+</script>
+
+</html>

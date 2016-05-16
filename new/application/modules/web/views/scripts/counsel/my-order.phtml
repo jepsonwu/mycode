@@ -1,0 +1,189 @@
+<div class="main-right fr">
+	<h2 class="content-tit clearfix p-rela nobd">
+		内容
+            <span class="article-tit-do">
+                <a href="/article/add">头条文章</a>
+                <span class="at-separate">|</span>
+                <a href="/activity/index">线下活动</a>
+                <span class="at-separate">|</span>
+                <a class="selected" href="/counsel/index">询财服务</a>
+
+                <a class="article-todo" href="/counsel/add">创建询财</a>
+            </span>
+	</h2>
+
+	<div class="nav-list">
+		<a href="/counsel/index">首页</a>
+		<span>|</span>
+		<a href="/counsel/my-order" class="selected">我的订单</a>
+		<span>|</span>
+		<a href="/counsel/my-comment">我的评价</a>
+	</div>
+
+
+	<div class="counsel-order mt20 clearfix">
+		<a class="selected all_orders">全部订单</a>
+		<a class="payed_orders">新订单</a>
+		<a class="received_orders">待赴约</a>
+		<a class="settlement_orders">待结算</a>
+		<a class="last clear_orders">已结算</a>
+	</div>
+
+	<ul class="corder-list mt20">
+		<li class="counsel-empty" style='display:none;'>
+			<p>在这里，你可以发挥自己在金融相关领域的专长，利用自己专业的理论知识，丰富的实践经验来为咨询者答疑解惑，这里是你实现自我价值的地方；这里是你展翅飞翔的地方；这里是你扬名立万的地方！</p>
+			<a href="/user/information?flag=go">GO</a>
+		</li>
+	</ul>
+
+	<ul class="pagination" id="pagination"></ul>
+</div> <!-- main-right -->
+<script src="/static/js/web/column/counsel.js"></script>
+<script src="/static/js/web/pagination.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	$(function () {
+		var paging = {
+			'url': '/api/counsel-order/seller-orders',
+			'parse': '',
+			'pagesize': 10,
+			'view_class': 'corder-list',
+			view_func: function (data) {
+				html = "";
+				if (data.length > 0) {
+					for (i = 0; i < data.length; i++) {
+						status = "";
+
+						if (data[i].LastEvent > 0) {
+							switch (data[i].LastEvent) {
+								case '1':
+									status = '买家取消订单';
+									break;
+								case '3':
+									status = '未在1个小时支付，已过期';
+									break;
+								case '4':
+									status = '未在24小时接单，已过期';
+									break;
+								case '5':
+									status = '订单延期结算';
+									break;
+								case '6':
+									status = '未在指定时间赴约，已过期';
+									break;
+								case '7':
+									status = '订单拒绝结算，费用已退还咨询者';
+									break;
+							}
+						} else if (data[i].SellerStatus != '1') {
+							switch (data[i].SellerStatus) {
+								case '2':
+									status = "待结算" + data[i].Price + "元";
+									break;
+								case '3':
+									status = "已结算" + data[i].SettlementAmount + "元";
+									break;
+							}
+						} else {
+							switch (data[i].OrderStatus) {
+								case '1':
+									status = '待付款';
+									break;
+								case '2':
+									status = '新订单';
+									break;
+								case '3':
+									status = '待赴约';
+									break;
+								case '4':
+									status = '咨询中';
+									break;
+								case '5':
+									status = '待评价';
+									break;
+								case '6':
+									status = '已完成';
+									break;
+							}
+						}
+
+						html += '<li class="corder-one">' +
+							'<div class="corder-minor"><span>' + data[i].CreateTime + '</span><span>订单号：<i>' + data[i].OrderNo + '</i></span></div>' +
+							'<div class="corder-info clearfix"><div class="corder-text"><div class="clearfix">' +
+							'<img src="' + (data[i].Avatar || 'http://fe.caizhu.com/public/imgs/avatar-user.png') + '">' +
+							'<div class="corder-itext"><strong><span>' + data[i].UserName + '</span><span>手机号：' + data[i].MobileNumber + '</span></strong>' +
+							'<p>咨询主题：' + data[i].Title + '</p><div class="corder-itext-minor"><span>￥' + data[i].Price + '/1次(约' + data[i].Duration + '小时)</span><span>' + data[i].SupportCity + '</span>' +
+							'</div></div></div></div><div class="corder-status"><span>' + status + '</span></div>' +
+							'</div><div class="corder-det">问题描述：' + data[i].ConsultDesc + '</div></li>';
+					}
+				} else {
+					html = '<li class="counsel-empty"><p>暂无数据</p></li>';
+				}
+
+				return html;
+			}
+		};
+		var isComplete = '<?php echo $this->isComplete;?>';//理财师扩展信息是否已完善，0未完善，1已完善
+		if (isComplete == 0) {
+			$promptBox.find('#ppt-add00').removeClass(hide);
+            $promptBox.removeClass(hide);
+
+            $('body').delegate('#ppt-add00 .ppt-do span', 'click', function(){
+				//$promptBox.addClass(hide);
+				location.href = '/user/information';
+			});
+
+		} else {
+			pagingData(0);
+		}
+
+		$('.counsel-order a').click(function(){
+			var $this = $(this),
+				index;
+
+			index = $this.index();
+			$this.addClass(selected).siblings().removeClass(selected);
+			if(index == 0){
+				paging.parse = '';
+			}else{
+				paging.parse = 'status=' + index;
+			}
+			pagingData(0);
+		});
+
+		//分页操作方法
+		function pagingData(page) {
+			$.ajax({
+				url: paging.url + "?" + paging.parse,
+				type: 'get',
+				dataType: 'json',
+				data: {pagesize: paging.pagesize, page: page + 1},
+				success: function (d) {
+					if (d.flag === 1) {
+						var total = d.data.Total;
+						var list = d.data.Rows;
+						html = paging.view_func(list);
+						if (total <= 0) {
+							$('#pagination').hide();
+						} else {
+							$("#pagination").show().pagination(total, {
+								callback: pagingCallback,
+								items_per_page: paging.pagesize,
+								current_page: page
+							});
+						}
+						$('.' + paging.view_class).html(html);
+					} else {
+						definedPrompt(d.msg);
+					}
+				},
+				error: function () {
+					definedPrompt('网络错误');
+				}
+			});
+		}
+
+		function pagingCallback(page) {
+			pagingData(page)
+		}
+	});
+</script>

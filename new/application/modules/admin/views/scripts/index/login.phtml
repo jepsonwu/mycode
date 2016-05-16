@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>财猪管理后台</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="/static/css/admin/admin.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?=$this->staticUrl?>/jquery-1.10.2.min.js"></script>
+</head>
+<body class="IE">
+<div id="wrapper">
+
+	<div id="divbody" class="clearfix">
+		<table width="100%" height="400" border="0" align="center" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="bottom" align="center">
+				<table width="400" height="200" border="0" cellpadding="5" cellspacing="1" bgcolor="#cccccc">
+				<tr>
+					<td bgcolor="#ffffff">
+						<?php
+						echo $this->error();
+						echo $this->notice();
+						?>
+						<form id="frmLogin" name="frmLogin" enctype="application/x-www-form-urlencoded" method="post" action="/admin/index/login" class="divform"><dl class="zend_form">
+							<dt id="Username-label"><label for="Username" class="required">用户名:</label></dt>
+							<dd id="Username-element">
+							<input type="text" name="Username" id="Username" value="" class="username"></dd>
+							<dt id="Password-label"><label for="Password" class="required">密　码:</label></dt>
+							<dd id="Password-element">
+							<input type="password" name="Password" id="Password" value="" class="password"></dd>
+							<?php if(APPLICATION_ENV =="production"):?>
+								<dt id="authcode-input-label"><label for="authcode-input" class="required">验证码:</label></dt>
+    							<dd id="authcode-element">
+    							<img width="180" height="50" alt="" src="" id="imgcode" style="cursor:pointer;">
+    							<input type="text" name="authcode" id="authcode-input" value="" class="textbox" maxlength="6" style="width:180px">
+    							<p class="description">请输入验证码</p></dd>
+							<?php endif;?>
+							<dt id="Login-label">&nbsp;</dt><dd id="Login-element">
+							<button name="Login" id="Login" type="submit" title="登录"><span><img src="/static/images/admin/btn_icon_signin.gif" alt=""> 会员登录</span></button></dd></dl>
+						</form>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+	</div>
+	<div id="divfoot">
+		Copyright &copy; 2014 <b>财猪管理后台</b> All Rights Reserved
+	</div>
+</div>
+</body>
+<script type="text/javascript">
+$(document).ready(function(){
+	  $("#imgcode").click(function(){	
+		  $.getJSON("/admin/index/yzm", function(result){
+			  $("#imgcode").attr("src",result.data.url)
+		  });		    		  
+	  });
+  $("#imgcode").click();
+});
+</script>
+</html>

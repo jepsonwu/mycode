@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<title>个人主页</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="财猪-个人主页" >
+<meta name="description" content="财猪-个人主页" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=160117" >
+<title>财猪个人资料页-<?php echo $this->minfo['UserName'];?></title>
+
+<style>
+
+.bg-person{background: #F6F6F6; color: #333; padding-bottom: 60px;}
+
+.ps-header{height: 160px; background: url('/static/imgs/api/icon-topic-bg.png') no-repeat; background-size: 100% 100%; color: #fff; padding: 0 15px; overflow: hidden;}
+.ps-person{margin: 80px 0 0; display: -webkit-box; display: box;}
+.ps-avatar{width: 56px; height: 56px; border-radius: 4px; border: 2px solid; border-color: rgba(255, 255, 255, .8); margin: 0 15px 0 0;}
+.ps-avatar img{width: 100%; height: 100%;}
+.ps-info > div{line-height: 24px; height: 30px; font-size: 16px;}
+.ps-info > p{height: 30px; line-height: 32px; margin: 15px 0 0;}
+.ps-info img{width: 20px; height: 20px;}
+.ps-title img{width: 20px; height: 20px; vertical-align: -4px;}
+
+.ps-box{padding: 5px 15px; background:#fff;}
+.ps-one{height: 20px; line-height: 20px; padding: 12px 0; font-size: 16px; display: -webkit-box; display: box;}
+.ps-one > div:nth-child(1){width: 100px; }
+.ps-one > div:nth-child(2){-webkit-box-flex: 1; box-flex: 1; padding: 0 14px 0 10px; text-align: right; color: #999;}
+.ps-one .more{background: url('/static/imgs/api/activity-arrow-right.png') no-repeat right center; background-size: 6px 12px;}
+
+.ps-one div:nth-child(1) img{width: 16px; height: 16px; margin: 0 0 0 6px; vertical-align: -3px;}
+.ps-one div:nth-child(2) img{width: 6px; height: 12px; margin: 0 0 0 8px; vertical-align: -1px;}
+
+.ps-footer{position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; line-height:50px; background: #fff; color: #FE8F30; text-align: center; border-top: #e6e6e6 solid 1px; font-size: 16px; font-weight: bold;}
+
+.to{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.bd{border-bottom: #e6e6e6 solid 1px;}
+
+
+</style>
+
+<body class="bg-person">
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<section id="app01">
+
+    <div class="ps-header">
+        <div class="ps-person">
+            <figure class="ps-avatar">
+                <img :src="avatar | filterAvatar" alt="avatar">
+            </figure>
+            <div class="ps-info">
+                <p>{{*name}} <img :src="sexPic"></p>
+            </div>
+        </div>
+    </div>
+
+    <ul class="ps-box">
+        <li class="ps-one clearfix bd boxapp" data-type="userinfo" data-id="{{memberId}}">
+            <div>帐号主体<img src="/static/imgs/api/icon-v.png" alt="V"></div>
+            <div class="more"><div class="to">{{*subject}}</div></div>
+        </li>
+        <li class="ps-one clearfix boxapp" data-type="userinfo" data-id="{{memberId}}">
+            <div>资质<img src="/static/imgs/api/icon-zheng.png" alt="证书"></div>
+            <div class="more"><div class="to">{{*qualification}}</div></div>
+        </li>
+    </ul>
+
+    <ul class="ps-box mt">
+        <li class="ps-one clearfix bd">
+            <div>地区</div>
+            <div><div class="to">{{*area}}</div></div>
+        </li>
+        <li class="ps-one clearfix boxapp" data-type="userinfo" data-id="{{memberId}}">
+            <div>兴趣</div>
+            <div class="more"><div class="to">理财号/话题/群组</div></div>
+        </li>
+    </ul>
+
+    <ul class="ps-box mt">
+        <li class="ps-one clearfix bd boxapp" data-type="userinfo" data-id="{{memberId}}">
+            <div>相册</div>
+            <div class="more"><div class="to"></div></div>
+        </li>
+        <li class="ps-one clearfix boxapp" data-type="userinfo" data-id="{{memberId}}">
+            <div>观点</div>
+            <div class="more"><div class="to">{{*viewName}}</div></div>
+        </li>
+    </ul>
+
+    <div class="ps-footer boxapp" data-type="userinfo" data-id="{{memberId}}">
+        <span>加好友</span>
+    </div>
+
+</section>
+
+<div id="define-prompt"><app-defineprompt :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160314"></script>
+
+<script>
+
+var memberId = "<?php echo $this->minfo->MemberID;?>";
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('.ps-avatar img');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = $('.ps-title').text();
+        opts.shareDes = '<?php echo $this->minfo['Signature'];?>';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){}
+
+    function otherRun(){}
+
+    function commonRun(){
+
+        var vm01 = new Vue({
+            el: '#app01',
+            data: {
+                memberId: memberId,
+                avatar: '<?php echo $this->minfo['Avatar'].'?imageView2/0/w/200/h/200';?>',
+                sex: '<?php echo $this->minfo['Gender'];?>' == 1 ? 'male' : 'female',
+                name: '<?php echo $this->minfo['UserName'];?>',
+                area: '<?php echo $this->minfo['Province'];?>',
+                focus: '<?php foreach($this->focusInfo as $item):?><span><?php echo $item['FocusName'];?></span><?php endforeach;?>',
+                subject:'<?php echo $this->subject;?>',
+                qualification:'<?php echo $this->qualification;?>',
+                viewName:'<?php echo $this->discussingTopicName;?>'
+
+            },
+            computed: {
+                sexPic : function(){
+                    return '/static/imgs/web/'+ this.sex + '.png';
+                }
+            },
+            compiled: function(){
+            }
+        })
+
+    }
+
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

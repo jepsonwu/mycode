@@ -1,0 +1,61 @@
+<?php $list = $this->list; ?>
+<!-- 表格头部 -->
+<div class="datagrid-header" style="width: 470px; height: 24px;">
+    <div class="datagrid-header-inner" style="display: block;">
+        <table class="datagrid-htable" border="0" cellspacing="0" cellpadding="0" style="height: 25px;">
+            <tbody>
+                <tr class="datagrid-header-row">
+                    <td field="MemberID" style='width: 70px;'>
+                        <div class="datagrid-cell datagrid-cell-c11-MemberID" style=""><span>会员编号</span><span class="datagrid-sort-icon">&nbsp;</span></div>
+                    </td>
+                    <td field="Amount" style='width: 85px;'>
+                        <div class="datagrid-cell datagrid-cell-c11-Amount" style=""><span>红包金额</span><span class="datagrid-sort-icon">&nbsp;</span></div>
+                    </td>
+                    <td field="Time" style='width: 128px;'>
+                        <div class="datagrid-cell datagrid-cell-c11-Time" style=""><span>领取时间</span><span class="datagrid-sort-icon">&nbsp;</span></div>
+                    </td>
+                    <td field="Group" style='width: 110px;'>
+                        <div class="datagrid-cell datagrid-cell-c11-Group" style=""><span>所在群组</span><span class="datagrid-sort-icon">&nbsp;</span></div>
+                    </td>
+                    <td field="IsBest" style='width: 70px;'>
+                        <div class="datagrid-cell datagrid-cell-c11-IsBest" style=""><span>是否最佳</span><span class="datagrid-sort-icon">&nbsp;</span></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--列表详情-->
+<div class="datagrid-body" style="width: 470px; margin-top: 0px; height: 332px;">
+    <table class="datagrid-btable" cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;">
+        <tbody>
+            <?php if(empty($list)) { ?>
+            <tr id="" datagrid-row-index="0" class="datagrid-row1">
+                <td colspan="5" style='width: 470px; text-align: center;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-MemberID">暂无领取记录</div>
+                </td>
+            </tr>
+            <?php }else{ ?>
+            <?php foreach($list as $row) { ?>
+            <tr id="" datagrid-row-index="0" class="datagrid-row1">
+                <td field="MemberID" style='width: 70px;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-MemberID"><?php echo $row['MemberID']; ?></div>
+                </td>
+                <td field="Amount" style='width: 85px;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-Amount"><?php echo "￥".$row['Amount']; ?></div>
+                </td>
+                <td field="Time" style='width: 128px;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-Time"><?php echo $row['Time']; ?></div>
+                </td>
+                <td field="Group" style='width: 110px;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-Group"><?php if($row['GroupType']==1) echo "--";else echo $row['GroupID']; ?></div>
+                </td>
+                <td field="IsBest" style='width: 70px;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-IsBest"><?php if($row['IsBest']==0) echo "--";else echo "手气最佳"; ?></div>
+                </td>
+            <?php }} ?>
+            </tr>
+        </tbody>
+    </table>
+</div>

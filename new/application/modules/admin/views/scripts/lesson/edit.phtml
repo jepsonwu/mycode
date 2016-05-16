@@ -1,0 +1,57 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+    
+        <form id="lesson_edit_form" method="post" enctype="multipart/form-data">
+           <table class='form_table' cellspacing="15">
+               <tr>
+                    <th width="20%">课堂模块：</th>
+                    <td width="80%">
+                        <select name="ModuleID">
+                            <option value="0">请选择课堂模块</option>
+                            <?php foreach ($this->moduleList as $item):?>
+                                <option value="<?php echo $item['ModuleID']?>" <?php echo $item['ModuleID']==$this->lessonInfo['ModuleID']?"selected":'';?>><?php echo $item['ModuleName'];?></option>
+                            <?php endforeach;?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">课程标题：</th>
+                    <td width="80%"><input class="easyui-validatebox" type="text" name="LessonTitle" value = "<?php echo $this->lessonInfo['LessonTitle'];?>" data-options="required:true" size="50" /></td>
+                </tr>
+                <tr>
+                    <th>课程图片：</th>
+                    <td>
+                        <image width="80" height="100" src="<?php echo $this->lessonInfo['LessonPic'].'?imageView2/0/w/200/h/200' ?>" />
+                        <input name = "image"  type="file"/>
+                    </td>
+                </tr> 
+                 <tr>
+                    <th>状态：</th>
+                    <td>
+                        <input name="CheckStatus" <?php if($this->lessonInfo['Status']==0):?> checked="checked" <?php endif;?> type="radio" value="0" />隐藏
+                        <input name="CheckStatus" <?php if($this->lessonInfo['Status']==1):?> checked="checked" <?php endif;?> type="radio" value="1" />显示
+                    </td>
+                </tr>
+                <tr>
+                    <th>课程简介：</th>
+                    <td>
+                        <textarea rows="5" cols="50" name="LessonDes"><?php echo $this->lessonInfo['LessonDes']?></textarea>          
+                    </td>    
+                </tr>
+              
+                <tr>
+                    <td colspan='2' class='footbar'>
+                        <input type="hidden" name="LessonID" value="<?php echo $this->lessonInfo['LessonID']?>" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_edit_form_close">关闭</a>
+    </div>
+     
+</div>

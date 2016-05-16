@@ -1,0 +1,110 @@
+<table id="counsel_list"></table>
+<div id="counsel_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a> 
+    创建者用户ID：
+	<input type="text" name="MemberID" />&nbsp;&nbsp;
+    服务状态：
+    <select name="Status">
+        <option value="">所有</option>
+        <option value="0">删除</option>
+        <option value="1">正常</option>
+        <option value="2">隐藏</option>
+    </select>&nbsp;&nbsp;
+  
+    价格区间：
+    <input type="text" name="Start_Price" ></input>
+    至&nbsp;<input  type="text" name="End_Price"></input>&nbsp;&nbsp;
+    创建时间：
+    <input class="easyui-datebox" type="text" name="start_date" value="" data-options="" size="25"></input>
+    至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options="" size="25" id="endDate"></input>   
+    <a class="easyui-linkbutton" iconCls="icon-search"  id="search">搜索</a>
+
+</div>
+
+<script type="text/javascript">
+	var counselObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'counsel','action'=>'list'));?>',
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.container.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'CID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#counsel_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'CID',title:'咨询服务ID',width:70}, 
+                        {field:'MemberID',title:'创建者ID',width:70},
+                        {field:'Title',title:'主题',width:300}, 
+                        {field:'Duration',title:'时长（单位：小时）',width:120},
+                        {field:'Price',title:'价格',width:70},                       
+                        {field:'Desc',title:'详情',width:300},
+                        {field:'ConsultTotal',title:'咨询人数',width:70},
+                        {field:'CommentTotal',title:'评价人数',width:70},
+                        {field:'Score',title:'评分',width:70},
+                        {field:'CreateTime',title:'创建时间',width:130},
+                        {field:'UpdateTime',title:'更新时间',width:130,formatter:function(value,rec,index){
+                                return value=='0000-00-00 00:00:00'?'--':value;
+                        }},
+                        {field:'Status',title:'服务状态',width:70,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '删除';
+                                        break;
+                                    case '1':
+                                        status = '正常';
+                                        break;
+                                    case '2':
+                                        status = '隐藏';
+                                        break;
+                                }
+                                return status;
+                            }
+                        },               
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+            },    
+	};
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	counselObj = contentCommon(counselObj, __CONTROLLER__);
+</script>
+<script type="text/javascript">
+    $('#endDate').datebox({
+        onSelect: function(date){
+            // var y = date.getFullYear();
+            // var m = date.getMonth()+1;
+            // var d = date.getDate();
+            // return y+'-'+m+'-'+d+' 23:59:59';
+        }
+    });
+</script>

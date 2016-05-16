@@ -1,0 +1,112 @@
+<table id="counsel_order_log_list"></table>
+<div id="counsel_order_log_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	日志ID：
+	<input type="text" name="LID"/>&nbsp;&nbsp;
+	订单ID：
+	<input type="text" name="OID"/>&nbsp;&nbsp;
+	<a class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+
+<script type="text/javascript">
+	var counsel_order_logObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'counsel-order-log','action'=>'list'));?>',
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'LID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#counsel_order_log_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'LID', title: '日志ID', width: 70},
+					{field: 'OID', title: '订单ID', width: 70},
+					{
+						field: 'Event', title: '操作事件', width: 70, formatter: function (value, rec, index) {
+						var event = '';
+						switch (value) {
+							case '1':
+								event = "订单已支付";
+								break;
+							case '2':
+								event = "订单已接单";
+								break;
+							case '3':
+								event = "订单开始咨询";
+								break;
+							case '4':
+								event = "订单结束咨询";
+								break;
+							case '5':
+								event = "订单已评论";
+								break;
+							case '6':
+								event = "买家取消订单";
+								break;
+							case '7':
+								event = "订单已关闭";
+								break;
+							case '8':
+								event = "订单已结算";
+								break;
+							case '9':
+								event = "客服结算";
+								break;
+							case '10':
+								event = "订单拒绝结算";
+								break;
+							case '11':
+								event = "订单延期结算";
+								break;
+							case '12':
+								event = "支付过期";
+								break;
+							case '13':
+								event = "接单过期";
+								break;
+							case '14':
+								event = "赴约过期";
+								break;
+						}
+						return event;
+					}
+					},
+					{field: 'EventRemark', title: '操作备注', width: 300},
+					{field: 'EventOperator', title: '操作人ID', width: 70},
+					{field: 'CreateTime', title: '创建时间', width: 130},
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+		}
+	};
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	counsel_order_logObj = contentCommon(counsel_order_logObj, __CONTROLLER__);
+</script>

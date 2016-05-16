@@ -1,0 +1,69 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="pediting:10px 0 10px 30px;align:center;">
+
+		<form id="feature_edit_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<tr>
+					<th width="20%">组名：</th>
+					<td width="80%">
+						<select name="GID">
+							<?php foreach ($this->groups as $id => $name) { ?>
+								<option
+									value="<?php echo $id; ?>" <?php echo $this->feature_info['GID'] == $id ? "selected" : ""; ?>>
+									<?php echo $name; ?>
+								</option>
+							<?php } ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">名称：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Name"
+					                       value="<?php echo $this->feature_info['Name'] ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">控制器：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Controller"
+					                       value="<?php echo $this->feature_info['Controller'] ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">方法：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Action"
+					                       value="<?php echo $this->feature_info['Action'] ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th>状态：</th>
+					<td>
+						<select name="Status">
+							<option <?php echo $this->feature_info['Status'] == 0 ? "selected" : ""; ?>
+								value="0">
+								无效
+							</option>
+							<option <?php echo $this->feature_info['Status'] == 1 ? "selected" : ""; ?>
+								value="1">
+								有效
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+						<input type="hidden" name="FID" value="<?php echo $this->feature_info['FID'] ?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;pediting:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="feature_edit_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="feature_edit_form_close">关闭</a>
+	</div>
+
+</div>

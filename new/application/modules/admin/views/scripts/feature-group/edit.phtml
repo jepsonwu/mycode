@@ -1,0 +1,42 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="pediting:10px 0 10px 30px;align:center;">
+
+		<form id="feature_group_edit_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<tr>
+					<th width="20%">组名：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Name"
+					                       value="<?php echo $this->group_info['Name'] ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th>状态：</th>
+					<td>
+						<select name="Status">
+							<option <?php echo $this->group_info['Status'] == 0 ? "selected" : ""; ?>
+								value="0">
+								无效
+							</option>
+							<option <?php echo $this->group_info['Status'] == 1 ? "selected" : ""; ?>
+								value="1">
+								有效
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+						<input type="hidden" name="GID" value="<?php echo $this->group_info['GID'] ?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;pediting:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="feature_group_edit_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="feature_group_edit_form_close">关闭</a>
+	</div>
+
+</div>

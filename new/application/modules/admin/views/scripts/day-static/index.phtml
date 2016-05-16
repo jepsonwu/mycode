@@ -1,0 +1,112 @@
+<table id="day_static_list"></table>
+<div id="day_static_list_toolbar"></div>
+<div id="day_static_view_window"></div>
+<div id="day_static_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="dayObj.containerObj.edatagrid('reload');">刷新</a>
+    时间：
+    <input class="easyui-datebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options=""></input> 
+    &nbsp;&nbsp;<input  type="radio" name="searchType" value="2" ></input> 累计数据  
+    &nbsp;&nbsp;<input  type="radio" name="searchType" value="1" checked="checked" ></input> 分时数据 
+    &nbsp;&nbsp;<a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchDayList(1)" iconCls="icon-search">搜索</a>
+    &nbsp;&nbsp;<a href="javascript:void(0);"  class="easyui-linkbutton" onclick="javascript:toSearchDayList(2)">导出csv</a>
+    &nbsp;&nbsp;<a href="javascript:void(0);"  class="easyui-linkbutton" onclick="javascript:toSearchDayList(3)">导出excel</a>
+    
+</div>
+<div id="day_static_window"></div>
+<!--<div id="view_edit_window"></div>-->
+
+<script type="text/javascript">
+    $("#day_static_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchDayList(1);
+        }    
+    });
+    
+    function toSearchDayList(flag)
+    {
+        var searchType       = $("#day_static_list_searcher_container input[name='searchType']:checked").val();
+        var start_date       = $("#day_static_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#day_static_list_searcher_container input[name='end_date']").val();
+        if(searchType == 2){
+            if(!start_date || !end_date){
+                alert('请选择开始和结束时间！');return;
+            }
+        }
+        if(flag == 1){
+	        dayObj.containerObj.datagrid('load', {
+	            flag:flag,
+	            searchType:searchType,
+	            start_date:start_date,
+	            end_date:end_date
+	        });
+        }else{
+       	 window.location.href = '/admin/day-static/list?flag='+flag+'&searchType='+searchType+
+         '&start_date='+start_date+'&end_date='+end_date;
+         return ;
+        }
+	   
+    }
+
+var dayObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'day-static','action'=>'list'));?>',
+        'containerObj':$("#day_static_list"),
+        'dayWindowObj':$("#day_static_window"),
+        //'editWindowObj':$("#view_edit_window"),
+        
+        'selfName':'dayObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'SID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#day_static_list_toolbar',
+                    //设置列   
+                    columns:[[
+                        {field:'SID',title:'ID',width:60}, 
+
+	                    {field:'CreateDate',title:'时间',width:200},
+	                       
+                        {field:'ActivatNum',title:'激活量',width:150},                       
+                        {field:'RegisterNum',title:'注册量',width:150},
+                        {field:'StartMemberNum',title:'启动人数',width:150},                       
+                        {field:'StartNum',title:'启动次数',width:150}
+                      
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#day_static_list_toolbar").append($("#day_static_list_searcher_container"));
+            },    
+};
+dayObj.init();
+</script>
+
+

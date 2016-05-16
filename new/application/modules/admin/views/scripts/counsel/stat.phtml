@@ -1,0 +1,129 @@
+<table id="counsel_stat"></table>
+<div id="counsel_stat_toolbar"></div>
+<div id="counsel_stat_searcher_container">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a> 
+    理财师用户ID：
+	<input type="text" name="MemberID" />&nbsp;&nbsp;
+    询财总收入：
+    <input type="text" name="Start_Settlement" ></input>
+    至&nbsp;<input  type="text" name="End_Settlement"></input>&nbsp;&nbsp;
+    接单次数：
+    <input type="text" name="Start_ReceiveNum" ></input>
+    至&nbsp;<input  type="text" name="End_ReceiveNum"></input>&nbsp;&nbsp;
+    <a class="easyui-linkbutton" iconCls="icon-search" onclick="javascript:toSearchCounselStat()"  id="search">搜索</a>
+
+</div>
+
+<script type="text/javascript">
+    //回车查询
+    $("#counsel_stat_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchCounselStat();
+        }
+    });
+
+    //执行查询
+    function toSearchCounselStat()
+    {
+        var MemberID = $("#counsel_stat_searcher_container input[name='MemberID']").val();
+        var Start_ReceiveNum = $("#counsel_stat_searcher_container input[name='Start_ReceiveNum']").val();
+        var End_ReceiveNum = $("#counsel_stat_searcher_container input[name='End_ReceiveNum']").val();
+        var Start_Settlement = $("#counsel_stat_searcher_container input[name='Start_Settlement']").val();
+        var End_Settlement = $("#counsel_stat_searcher_container input[name='End_Settlement']").val();
+
+        counselStatObj.containerObj.datagrid('load', {
+                                                        MemberID: MemberID,
+                                                        Start_ReceiveNum: Start_ReceiveNum,
+                                                        End_ReceiveNum:End_ReceiveNum,
+                                                        Start_Settlement:Start_Settlement,
+                                                        End_Settlement: End_Settlement
+            });
+    }
+	var counselStatObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'counsel','action'=>'stat-data'));?>',
+        
+        'containerObj':$("#counsel_stat"),
+        'selfName':'counselStatObj',
+        
+        'init':function(){
+			this.showData();
+		},
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'MemberID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#counsel_stat_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'MemberID',title:'创建者ID',width:100},
+                        {field:'Settlement',title:'已结算金额',width:140,formatter:function(value,rowData,rowIndex){
+                                return "￥"+rowData.Settlement;
+                        }},
+                        {field:'WaitSettlement',title:'待结算金额',width:140,formatter:function(value,rowData,rowIndex){
+                                return "￥"+rowData.WaitSettlement;
+                        }}, 
+                        {field:'ReceiveNum',title:'接单总次数',width:100},
+                        {field:'ConsultNum',title:'咨询人数',width:150}, 
+                        {field:'CommentNum',title:'评价数',width:150},
+                        {field:'ReceiveAverageTime',title:'平均接单时间',width:150,formatter:function(value,rowData,rowIndex){
+                                var timeVal = '';
+                                if(parseInt(rowData.ReceiveAverageTime/3600)>0){
+                                    timeVal += (parseInt(rowData.ReceiveAverageTime/3600))+'小时';
+                                }
+                                if(parseInt(rowData.ReceiveAverageTime%3600/60)>0){
+                                    timeVal += (parseInt(rowData.ReceiveAverageTime%3600/60))+'分钟';
+                                }
+                                if(rowData.ReceiveAverageTime%60>0){
+                                    timeVal += rowData.ReceiveAverageTime%60+'秒';
+                                }
+                                
+                                return timeVal==''?'---':timeVal;
+                        }},                       
+                        {field:'ReceiveTotalTime',title:'接单总时长(单位：分钟)',width:150,formatter:function(value,rowData,rowIndex){
+                                var timeVal = '';
+                                if(parseInt(rowData.ReceiveTotalTime/3600)>0){
+                                    timeVal += (parseInt(rowData.ReceiveTotalTime/3600))+'小时';
+                                }
+                                if(parseInt(rowData.ReceiveTotalTime%3600/60)>0){
+                                    timeVal += (parseInt(rowData.ReceiveTotalTime%3600/60))+'分钟';
+                                }
+                                if(rowData.ReceiveTotalTime%60>0){
+                                    timeVal += rowData.ReceiveTotalTime%60+'秒';
+                                }
+                                
+                                return timeVal==''?'---':timeVal;
+                        }},                       
+                    ]]
+                });
+                var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+                $("#counsel_stat_toolbar").append($("#counsel_stat_searcher_container"));
+            },    
+	};
+    counselStatObj.init();
+</script>

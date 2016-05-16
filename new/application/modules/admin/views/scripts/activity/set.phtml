@@ -1,0 +1,33 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="activity_check_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table'>
+                <tr> 
+                    <th>模板系列：</th>
+                    <td>    
+                       &nbsp;&nbsp;<select name="templateType">
+                                        <option value="0">模板系列</option>
+                                        <option value="1" <?php echo $this->templateType==1?"selected":""; ?>>谁是主讲人系列</option>
+                                        <option value="2" <?php echo $this->templateType==2?"selected":""; ?>>今日明星系列</option>
+                                    </select>
+                    </td>
+                </tr>
+                <tr> 
+                    <th>模板名称：</th>
+                    <td>    
+                       &nbsp;&nbsp;<input name="TemplateName" type='text' size='40'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    <input type="hidden" name="id" value="<?php echo $this->activity_id;?>"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px ">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="activity_set_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="activity_set_form_close">关闭</a>
+        </div>
+    </div>
+</div>

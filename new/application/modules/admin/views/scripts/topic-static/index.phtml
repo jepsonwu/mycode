@@ -1,0 +1,109 @@
+<table id="topic_static_list"></table>
+<div id="topic_static_list_toolbar"></div>
+<div id="topic_static_view_window"></div>
+<div id="topic_static_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="topicStatic.containerObj.edatagrid('reload');">刷新</a>
+    时间：
+    <input class="easyui-datebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options=""></input> 
+    &nbsp;&nbsp;<input  type="radio" name="dataType" value="2" ></input> 累计数据  
+    &nbsp;&nbsp;<input  type="radio" name="dataType" value="1" checked="checked" ></input> 分时数据 
+    &nbsp;&nbsp;<a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toTopicStaticViewList(1)" iconCls="icon-search">搜索</a>
+    
+&nbsp;&nbsp;<a href="javascript:void(0);"  class="easyui-linkbutton" onclick="javascript:toTopicStaticViewList(2)">导出csv</a>
+    &nbsp;&nbsp;<a href="javascript:void(0);"  class="easyui-linkbutton" onclick="javascript:toTopicStaticViewList(3)">导出excel</a>
+</div>
+<div id="topic_static_window"></div>
+<!--<div id="view_edit_window"></div>-->
+
+<script type="text/javascript">
+    $("#topic_static_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+        	toTopicStaticViewList(1);
+        }    
+    });
+    
+    function toTopicStaticViewList(flag)
+    {
+        var dataType       = $("#topic_static_list_searcher_container input[name='dataType']:checked").val();
+        var start_date       = $("#topic_static_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#topic_static_list_searcher_container input[name='end_date']").val();
+        if(dataType == 2){
+            if(!start_date || !end_date){
+                alert('请选择开始和结束时间！');return;
+            }
+        }
+        if(flag == 1){
+	        topicStatic.containerObj.datagrid('load', {
+	        	dataType:dataType,
+	            start_date:start_date,
+	            end_date:end_date
+	        });
+        }else{
+       	 window.location.href = '/admin/topic-static/list?flag='+flag+'&dataType='+dataType+
+         '&start_date='+start_date+'&end_date='+end_date;
+         return ;
+        }
+    }
+
+var topicStatic = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'topic-static','action'=>'list'));?>',
+        'containerObj':$("#topic_static_list"),
+        'viewWindowObj':$("#topic_static_window"),
+        //'editWindowObj':$("#view_edit_window"),
+        
+        'selfName':'topicStatic',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'SID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#topic_static_list_toolbar',
+                    //设置列   
+                    columns:[[
+                        {field:'SID',title:'ID',width:60}, 
+
+	                    {field:'CreateDate',title:'时间',width:200},
+	                    {field:'NewFollowNum',title:'新增关注数',width:150},  
+                        {field:'NewTopicNum',title:'新增话题数',width:150},                       
+                        {field:'NewViewNum',title:'新增观点数',width:150},
+                        {field:'NewReplyNum',title:'评论数',width:150},                       
+                        {field:'NewShareNum',title:'分享数',width:150}
+                      
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#topic_static_list_toolbar").append($("#topic_static_list_searcher_container"));
+            },    
+};
+topicStatic.init();
+</script>
+

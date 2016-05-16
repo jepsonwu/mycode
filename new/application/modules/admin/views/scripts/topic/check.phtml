@@ -1,0 +1,51 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="topic_check_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table'>                
+                 <tr>
+                    <td width="50%" >    
+                        <select name="checkStatus" id="status">
+                            <?php if($this->status==0):?>
+                                <option value="1">通过</option>
+                                <option value="2">隐藏</option>
+                            <?php elseif($this->status==1):?>
+                                <option value="2">隐藏</option>
+                            <?php elseif($this->status==2):?>
+                                <option value="1">通过</option>
+                            <?php endif;?>
+                        </select>
+                    </td>
+                    <td width="50%">
+                        <input name="remind" type="checkbox" checked="checked" value="1" />通知创建人
+                    </td>
+                </tr>
+                <tr id="reason" <?php if($this->status != 1):?> style="display:none" <?php endif;?>>
+                    <td colspan="2" valign="center"><br/>理由：&nbsp;&nbsp;<textarea name = "remark"　cols="20" rows="3"></textarea></td>
+                </tr>
+               
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    <input type="hidden" name="topicID" value="<?php echo $this->topicID;?>"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px ">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="topic_check_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="topic_check_form_close">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $("select[name='checkStatus']").change(function(){
+        var status = $(this).val();
+        if(status == 2){
+            document.getElementById("reason").style.display = '';
+        }else{
+            document.getElementById("reason").style.display = 'none';
+        }
+    });
+
+</script>

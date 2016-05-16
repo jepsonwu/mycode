@@ -1,0 +1,123 @@
+body{background: #EA3F3F;}
+.top-show{}
+.top-show img{width: 100%;}
+.app00{padding: 20px 0 30px;}
+.index-info{margin: 20px 20px 0;}
+.index-info > span{height: 30px; line-height: 30px; padding: 0 12px; border-radius: 4px; text-align: center; background: #FF5E38; color: #fff; box-shadow: #D72E16 1px 2px 2px;}
+
+.index-inner{margin: 20px 20px 0; padding: 0 0 20px; background: url('/static/imgs/api/activity/wish160126/inner-m.jpg') repeat-y; border-radius: 5px 5px 0 0; background-size: 100% auto;}
+.index-preface{background: url('/static/imgs/api/activity/wish160126/inner-t.jpg') no-repeat; line-height: 20px; padding: 20px 30px 70px; color: #5A342F; border-radius: 4px 4px 0 0; background-size: 100% 100%;}
+.index-preface > span{position: absolute; top: -11px; left: 50%; margin-left: -38px; background: url('/static/imgs/api/activity/wish160126/bg-preface.png') no-repeat; text-align: center; width: 76px; height: 25px; background-size: 76px 25px;}
+
+.make-wish{position: absolute; left: 50%; bottom: -20px; width: 80px; height: 80px; margin-left: -40px; border-radius: 40px; background: #F1C12D; box-shadow: 2px 2px 2px #D4861B; text-align: center; color: #fff; cursor: pointer;}
+.make-wish > span{display: inline-block; line-height: 20px; margin: 20px 0 0;}
+
+.list-box{background: #FF5361; margin: 40px 20px 0;}
+.list{margin: 40px 20px 0; min-height: 180px; max-height: 310px; overflow: hidden;}
+.cbg-01 h2{font-size: 16px; color: #fff; line-height: 60px; width: 110px; height: 42px; background: url('/static/imgs/api/activity/wish160126/tit-bg.png') no-repeat; text-indent: 15px; background-size: 100% auto;}
+.cbg-01 span{width: 37px; height: 22px; background: url('/static/imgs/api/activity/wish160126/fly.png') no-repeat; background-size: 100% auto; margin: 6px 0 0;}
+.list-onebox{height: 62px; overflow: hidden;}
+.list-onebox.selected{
+    -webkit-animation: one-scroll 1s linear 1;
+}
+@-webkit-keyframes one-scroll{
+    0%{height: 0;}
+    100%{height: 73px;}
+}
+.list-one{ padding: 10px 0 0;  color: #fff;
+    display: -webkit-box;
+    display: box;
+}
+.list-one > img{ width: 40px; height: 40px; margin: 0 8px; border-radius: 20px;}
+.list-info{
+    -webkit-box-flex: 1;
+    box-flex: 1;
+}
+.list-info > div{width: 50%; float: left; overflow: hidden; line-height: 22px; height: 22px; text-overflow: ellipsis; white-space: nowrap;}
+.list-info > div{width: 100%;}
+.inner-prompt{position: fixed; top: 0; z-index: 10; width: 100%; height: 100%; background: rgba(10, 10, 10, .6); }
+.ip-close{position: absolute; width: 20px; height: 20px; right: 0; top: -22px; background: url('/static/imgs/api/activity/wish160126/inner-prompt-close.png') no-repeat; background-size: 100% 100%; cursor: pointer;}
+.ip-close02{display: inline-block; width: 105px; height: 30px; background: url('/static/imgs/api/activity/wish160126/icon-btn.png') no-repeat; background-size: 100% auto; text-align: center; line-height: 30px; color: #EAD232; margin: 10px 2px 0}
+.ip-t, .ip-b{display: block; width: 100%; height: 17px; background: no-repeat; background-size: 100% 100%;}
+.ip-t{background-image: url('/static/imgs/api/activity/wish160126/inner-prompt-t.png');}
+.ip-b{background-image: url('/static/imgs/api/activity/wish160126/inner-prompt-b.png');}
+.ip-m{background: url('/static/imgs/api/activity/wish160126/inner-prompt-m.png') repeat-y; background-size: 100% auto; padding: 2px 20px; text-align: center;}
+.ip-m>p{margin: 8px 0 0;}
+.ip-box{position: absolute; width: 80%; top: 40%; left: 50%; margin-left: -40%;}
+.ip-ruletit{display: block; height: 36px; background: url('/static/imgs/api/activity/wish160126/inner-prompt-tit.png') no-repeat center top; background-size: 86% 100%; line-height: 30px; color: #E03827;}
+.ip-box02{top: 20%; height: 80%; margin-top: -40px;}
+.ip-box03{top: 25%;}
+.ip-box04{top: 25%;}
+.ip-box05{width: 86%; margin-left: -43%;}
+.ip-faq{height: 280px; overflow-x: hidden; overflow-y: auto; padding: 20px 20px 10px; color: #3e3e3e;}
+.ip-faq li{margin: 6px 0 0; border-bottom: #E1323D dashed 1px; line-height: 20px;}
+.ip-faq li > strong{line-height: 26px; text-align: center;}
+.ip-faq p{text-align: left;}
+.git-itme{width: 100%;margin: 0 auto;background: url('/static/imgs/api/activity/wish160126/inner-prompt-m.png') repeat-y;background-size: 100% auto;text-align: center;}
+.git-itme-log{width:auto ;line-height: 59px;}
+.git-itme .git-itme-log img {width: 60px;height: 60px;display: inline-block;margin: 22px 20px;}
+
+/* product */
+.body-bg01{background:url('/static/imgs/api/activity/wish160126/body-bg.png'); background-size: 50px 50px; padding: 0 0 50px;}
+.pd-tit{height: 50px; line-height: 50px; font-size: 16px; text-align: center; margin: 20px 0 0; background: url('/static/imgs/api/activity/wish160126/product-tit.png') no-repeat center center; background-size: 188px 50px; font-weight: bold;}
+
+.pd-alotbox{margin: 10px 0 0; text-align: center;}
+.pd-alotbox span{display: inline-block; width: 58px; height: 24px; background: url('/static/imgs/api/activity/wish160126/a-lot.png') no-repeat; background-size: 100% 100%;}
+
+.pd-box{display: -webkit-box; display: box; }
+.pd-box img{width: 60px; height: 80px;}
+.pd-info{-webkit-box-flex: 1; box-flex: 1; margin: 0 0 0 12px; text-align: left;}
+.pd-info h3{color: #DB1423; line-height: 22px; padding: 0 0 2px;}
+.pd-info p{line-height: 16px; color: #D8B0A7; max-height: 50px; overflow: hidden; margin: 0; font-size: 12px;}
+.pd-price{color: #DB1423;}
+.pd-select{float: right; width: 80px; height: 24px; background: url('/static/imgs/api/activity/wish160126/icon-btn.png') no-repeat; background-size: 100% 100%; text-align: center; line-height: 24px; color: #EAD232;}
+.pd-select.selected{background-image: url('/static/imgs/api/activity/wish160126/icon-btn-on.png');}
+.pd-select.nosock{background-image: url('/static/imgs/api/activity/wish160126/icon-btn-off.png');}
+.pd-select span:nth-child(1){color: #EDDA34;}
+.pd-select span:nth-child(2){color: #DB3A27; display: none;}
+.pd-select.selected span:nth-child(1){display: none;}
+.pd-select.selected span:nth-child(2){display: inline;}
+
+.pd-count{position: fixed; bottom: 0; width: 100%; height: 40px; line-height: 40px; background: #FDF9D6 url('/static/imgs/api/activity/wish160126/product-line.png') repeat-x top; display: -webkit-box; display: box; background-size: auto 3px; padding: 3px 0 0; text-align: center;}
+.pd-count > div{-webkit-box-flex: 1; box-flex: 1;}
+.pd-count > span{display: block; width: 100px; height: 40px; background: #D91225 url('/static/imgs/api/activity/wish160126/icon-btn02.png') no-repeat center center; background-size: 88px 36px;  color: #ECD833;}
+
+.pd-count i{font-style: normal; color: #DB1423; margin: 0 2px;}
+.pd-more01{text-align: center;}
+.pd-more01 span{display: inline-block;}
+
+/* wish */
+
+.wish-top img{width: 100%;}
+.wish-tit{margin: 20px 0 0; text-align: center;}
+.wish-tit img{height: 30px;}
+
+.wish-progressbox{margin: 20px 0 0;}
+.wish-tip{font-size: 12px; color: #F1C12D; white-space: nowrap; -webkit-transform: scale(.8); position: absolute; top: -7px; left: 18px;  width: 100%; text-align: center;}
+.wish-show{display: -webkit-box; display: box; margin: 20px 12px 0;}
+.wish-stit{display: block; width: 45px; height: 45px; border-radius: 30px; background: #F1C12D url('/static/imgs/api/activity/wish160126/icon-pig.png') no-repeat 4px; background-size: 38px 38px;}
+.wish-sdet{-webkit-box-flex: 1; box-flex: 1; height: 26px; background: #F1C12D; position: relative; margin: 10px 0 0; border-radius: 0 20px 20px 0; left: -4px;}
+.wish-sdetshow{width: 0%;height: 20px;  background: #EA3F3F; border-radius: 0 10px 10px 0; position: relative; left: -3px;top: 3px;}
+.wish-stext{position: absolute; top: 3px; right: 20px; width: 80px; line-height: 20px;}
+
+.wish-do{margin: 10px 0 0; color: #E3211F;}
+.wish-one{display: -webkit-box; display: box; border-bottom: #AF3639 dashed 1px; padding: 10px 0;}
+.wish-one:last-child{border-bottom: none;}
+.wish-one > div{-webkit-box-flex: 1; box-flex: 1; margin: 0 12px 0 0; line-height: 18px; color: #AF3639; text-align: left;}
+.wish-one > span{display: block; width: 100px; height: 40px; line-height: 40px; background: url('/static/imgs/api/activity/wish160126/icon-btn-03.png') no-repeat; background-size: 100% 100%; color: #EDE034;}
+.wish-one .bggray{background-image: url(/static/imgs/api/activity/wish160126/icon-btn-03-gray.png); color: #999;}
+
+/* coupon */
+.coup-tit{display: block; height: 36px; background: url('/static/imgs/api/activity/wish160126/inner-prompt-tit.png') no-repeat center top; background-size: 80% 100%; line-height: 30px; color: #E03827; text-align: center; margin: 20px 0 0;}
+.coup-tit i{font-style: normal; color: #DD1D23;}
+.coup-fone{margin: 10px 0 0;}
+.coup-fone input{display: inline-block; border: #AF3639 solid 1px; outline: none; padding: 2px 8px; line-height: 26px;}
+.coup-btn{font-simida: normal; }
+.tel-box input{display: inline-block; border: #AF3639 solid 1px; outline: none; padding: 2px 8px; line-height: 26px;}
+
+
+/* share-wish */
+.share-btnbox{margin: 20px 0 0; }
+.share-btnbox > span{display: inline-block; width: 105px; height: 30px; background: url('/static/imgs/api/activity/wish160126/icon-btn.png') no-repeat; background-size: 100% auto; text-align: center; line-height: 30px; color: #EAD232;}
+.dilog{cursor:pointer; position: fixed;width: 100%;height: 100%;left: 0;top: 0;background-size: 100%;background-image: url('/static/imgs/api/activity/wish160126/share.png?2');}
+

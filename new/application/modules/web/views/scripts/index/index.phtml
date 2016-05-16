@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>财猪应用中心</title>
+    <meta charset="utf-8">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="shortcut icon" href="/static/images/column/favicon.ico"/>
+    <link rel="stylesheet" href="/static/css/web/column/main.css" />
+
+    <link rel="stylesheet" href="/static/css/web/column/renzheng.css">
+
+
+</head>
+<body>
+
+<style>
+    body{background: #fff;}
+</style>
+
+<div class="header-box">
+    <div class="header">
+        <h1><img src="/static/imgs/web/column/logo.png" alt="logo" /></h1>
+    </div>
+</div>
+
+<div class="app-box">
+    <h1 class="app-tit">财猪应用</h1>
+    <ul class="app-list clearfix">
+        <li class="app-one" data-url="?simida">
+            <div class="app-innerone clearfix">
+                <div class="app-bg app-bg00"></div>
+                <div class="app-p">
+                    <strong>理财号，阅读最轻松</strong>
+                    <p>功能权限：<?php echo ($this->status==-1 || $this->columnStatus==-1)?"需要认证":""; ?></p>
+                    <p>
+                        <?php if($this->status==0):?>
+                            帐号主体审核中，请耐心等候！
+                        <?php elseif ($this->status==1):?>
+                            帐号主体审核已通过！
+                        <?php elseif ($this->status==2):?>
+                            帐号主体认证失败，点击修改！
+                        <?php endif;?>
+                    </p>
+                    <p>
+                        <?php if($this->columnStatus==0):?>
+                            理财号审核中，请耐心等候！
+                        <?php elseif ($this->columnStatus==1):?>
+                            理财号已通过！
+                        <?php elseif ($this->columnStatus==2):?>
+                            理财号信息被拒，请重新提交！
+                        <?php endif;?>             
+                    </p>
+                </div>
+            </div>
+        </li>
+        <!--<li class="app-one selected" data-url="?simida222">
+            <div class="app-innerone clearfix">
+                <div class="app-bg app-bg01"></div>
+                <div class="app-p">
+                    <strong>讲堂，听课最方便</strong>
+                    <p>功能权限</p>
+                    <p>新消息：条</p>
+                </div>
+            </div>
+        </li>
+        <li class="app-one selected" data-url="?simida333">
+            <div class="app-innerone clearfix">
+                <div class="app-bg app-bg02 selected"></div>
+                <div class="app-p">
+                    <strong>卡券，优惠最及时</strong>
+                    <p>功能权限:敬请期待</p>
+                    <p>新消息：2条</p>
+                </div>
+            </div>
+        </li>-->
+        <li class="app-one" data-url="?simida333">
+            <div class="app-innerone clearfix">
+                <div class="app-bg app-bg03 selected"></div>
+                <div class="app-p">
+                    <strong>聊天，沟通最有趣</strong>
+                    <p>功能权限：敬请期待</p>
+                    <p>新消息：0条</p>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div id="kuang-box" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <ul class="kuang-type-box">
+        <li class="kt-one kt-one00">
+            <div class="kt-tit">自媒体</div>
+            <p class="kt-p">
+                面向金融财经行业从业者，提供以文字图片创作为主的内容管理平台、打造自己专属媒体
+            </p>
+            <a href="/member/authenticate/person" class="kt-open"></a>
+        </li>
+        <li class="kt-one kt-one01">
+            <div class="kt-tit">理财师</div>
+            <p class="kt-p">
+                面向拥有金融类从业资格证或高端国际证书的理财师，提供强大的业务服务与内容管理能力，帮助理财师打造自己强力个人品牌
+            </p>
+            <a href="/member/authenticate/financial" class="kt-open"></a>
+        </li>
+        <li class="kt-one kt-one02">
+            <div class="kt-tit">企业</div>
+            <p class="kt-p">
+                面向金融财经行业类的企业，为企业与用户提供一种新的咨询传播方式，同时帮助企业实现的营销目标，增加企业对外竞争力
+            </p>
+            <a href="/member/authenticate/enterprise" class="kt-open"></a>
+        </li>
+        <li class="kt-one kt-one03">
+            <div class="kt-tit">机构</div>
+            <p class="kt-p">
+                面向金融财经行业类具有官方资质的独立机构及团体。提供多种信息服务搭建机构与用户之间的桥梁，同时也逐步提升自身影响力
+            </p>
+            <a href="/member/authenticate/organization" class="kt-open"></a>
+        </li>
+        <li id="kt-close" class="kt-close"></li>
+    </ul>
+</div>
+
+
+<div class="footer">
+    <p><a href="http://caizhu.com">www.caizhu.com</a> © 2014-2015 All Rights Reserved.</p>
+    <p><a href="http://caizhu.com">财猪</a> 版权所有 浙ICP备15011363号-1</p>
+</div>
+
+<div id="prompt-box" class="prompt-box hide">
+    <div class="prompt-bg"></div>
+
+    <ul id="prompt-type" class="prompt-type">
+
+        <li id="ppt-00" class="ppt-box hid">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div id="ppt-p" class="ppt-des03">
+            </div>
+            <div id="ppt-ok" class="ppt-do">
+                <span>确定</span>
+            </div>
+        </li>
+
+        <li id="ppt-01" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-wait"></span>
+            </div>
+            <div class="ppt-des02">
+                <p>您的帐号主体信息正在审核中，请耐心等待！</p>
+            </div>
+            <div class="ppt-do">
+                <a class="ppt-btn" href = "/column/add">创建理财号</a>
+            </div>
+
+        </li>
+        <li id="ppt-02" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-wait"></span>
+            </div>
+            <div class="ppt-des02">
+                <p>您的信息正在审核中，请耐心等待！</p>
+            </div>
+            <div class="ppt-do">
+                <a class="ppt-btn">确定</a>
+            </div>
+        </li>
+
+        <li id="ppt-03" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-wait"></span>
+            </div>
+            <!--<div class="ppt-des02">您的帐号主体认证通过</div>
+            <div class="ppt-do">
+                <a class="ppt-btn" href = "/column/add">创建理财号</a>
+            </div>-->
+            <div class="ppt-des02">理财号信息被拒，请重新提交！</div>
+            <div class="ppt-do">
+                <a class="ppt-btn" href = "/column/add">确定</a>
+            </div>
+        </li>
+
+        <li id="ppt-04" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-wait"></span>
+            </div>
+            <div class="ppt-des02">您的帐号主体认证通过</div>
+            <div class="ppt-do">
+                <a class="ppt-btn">理财号审核中</a>
+            </div>
+
+        </li>
+
+        <li id="ppt-05" class="ppt-box hide">
+            <div class="ppt-tit">
+                <span class="ppt-close"></span>
+                <span class="ppt-tit-warning"></span>
+            </div>
+            <div class="ppt-des02">您提交的帐号主体信息不符合要求，请修改后重新提交！</div>
+            <div class="ppt-do">
+                <a class="ppt-btn">修改</a>
+            </div>
+
+        </li>
+        <li id="ppt-06" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提交成功</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                我们将在3个工作日内完成账号主体认证的信息审核工作。若有疑问请邮件联系我们：kf@duomai.com。我们将及时为您解答。
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-07" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                <p>理财号资料将进入后台审核阶段，审核期间不能再次提交</p>
+                <p>财猪理财号是一个开放的自媒体平台，我们将按照标准进行审核：谢绝营销、低俗、低劣、色情内容的帐号申请。请认真填写相关资料，遵守我们的用户协议、申请内容需符合财猪理财号的审核要求。</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-08" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                理财号创建成功，请自觉遵守<a href="">《财猪理财号公约》</a>,如有违规，立即封号。
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-09" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                删除的文章将不可恢复，确定删除吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-10" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                你上次有未完成的文章，需要继续编辑吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-11" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                删除的活动将不可删除，确定删除吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-12" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                你上次有未完成的活动，需要继续编辑吗？
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-13" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                请在财猪手机端退出
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-14" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                你已退出财猪！
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-15" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                <div class="ppt-other00">
+                    <p class="ml">您提交的从业资质因以下原因审核未通过，请重新提交</p>
+                    <div><span>● 资格证扫描件不清晰</span><span class="ml20">● 资格证扫描件与资格证种类不匹配</span></div>
+                </div>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-16" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01">
+                <p>我们将在3个工作日内完成理财师从业资质的信息审核工作。审核通过后，将在您的资料页显示。若有疑问请邮件联系我们：tf@caizhu.com，我们将及时为您解答。</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-17" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01 ppt-des04">
+                <p>您编辑的文章尚未保存，离开会使内容丢失</p>
+                <p>您可以选择保存草稿后，再离开此页面。</p>
+            </div>
+            <div class="ppt-do ppt-do2">
+                <span>确定</span>
+                <span class="ppt-cancel" data-flag="no">取消</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-18" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des01 ppt-des04">
+                <p>您编辑的活动尚未保存，离开会使内容丢失</p>
+                <p>您可以选择保存草稿后，再离开此页面。</p>
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+    </ul>
+
+</div>
+
+<script src="/static/js/web/column/jquery-1.10.2.min.js"></script>
+
+<script>
+
+$(function(){
+
+    var $ktClose = $('#kt-close'),
+        $kuangBox = $('#kuang-box');
+
+    $ktClose.click(function(){
+        $kuangBox.addClass(hide);
+    });
+
+
+    var hide = 'hide',
+        $kuangBox = $('#kuang-box'),
+        $promptBox = $('#prompt-box'),
+        $promptType = $('#prompt-type');
+
+    $('body').delegate('.ppt-close', 'click', function(){
+    closePrompt();
+    });
+
+    $('body').delegate('.ppt-close', 'click', function(){
+        $promptBox.addClass(hide);
+        $promptType.children().addClass(hide);
+    });
+
+    var $pptP = $('#ppt-p'),
+        $pptOk = $('#ppt-ok'),
+        $ppt00 = $('#ppt-00');
+    $pptOk.click(function(){
+        closePrompt();
+    })
+
+    function definedPrompt(str){
+        if(!str) return ;
+        $pptP.text(str);
+        $ppt00.removeClass(hide);
+        $promptBox.removeClass(hide);
+    }
+    function closePrompt(){
+        $promptBox.addClass(hide);
+        $promptType.children().addClass(hide);
+    }
+
+
+
+
+    var status = '<?php echo $this->status;?>';    //status 0 待审核 1认证通过 2是被拒绝  -1 是未认证
+    var authenticateType = '<?php echo $this->authenticateType?>';  //认证类型  0：不存在 1：个人 2：理财师 3：企业 4：机构
+                                                                   //1：/member/authenticate/person
+                                                                   //2：/member/authenticate/financial
+                                                                   //3：/member/authenticate/enterprise
+                                                                   //4：/member/authenticate/organization
+    
+    var columnStatus = '<?php echo $this->columnStatus;?>';    //status 0 待审核 1认证通过 2是被拒绝  -1 是未创建
+    var bestCount = '<?php echo $this->bestCount; ?>'; //bestCount>0时跳到自媒体认证
+    
+    var hide = 'hide',
+            selected = 'selected';
+
+    if(status == '-1'){
+
+        $('.app-one').click(function(){
+            var $this = $(this), url, flag, selected = 'selected';
+
+            flag = $this.hasClass(selected);
+            if(flag) return false;
+
+            $kuangBox.removeClass(hide);
+
+        });
+
+        if(bestCount > 0){
+            var index;
+            $('.kt-one a').click(function(){
+                var $this = $(this),
+                    parent = $this.parent();
+                index = parent.index();
+                
+                if(index > 0){
+                    definedPrompt('请联系客服撤销达人头衔，然后进行处理理财师、企业、或者机构认证！客服电话：400-681-2858');
+                    return false;
+                }
+            });
+
+        }
+
+    }else if(status == 0){
+        $('.app-one').click(function() {
+            if(columnStatus == -1 || columnStatus == 2){
+                $promptBox.find('#ppt-01').removeClass(hide);
+                $promptBox.removeClass(hide);
+            }else if(columnStatus == 0 || columnStatus == 1){
+                $promptBox.find('#ppt-02').removeClass(hide);
+                $promptBox.removeClass(hide);
+
+                $('body').delegate('#ppt-02 .ppt-do a', 'click', function(){
+                    $promptBox.addClass(hide);
+                });
+
+            }
+        });
+    }else if(status == 1){
+
+         $('.app-one').click(function(){
+             if(columnStatus == -1 ||  columnStatus == 2){
+	        	 $promptBox.find('#ppt-03').removeClass(hide);
+	             $promptBox.removeClass(hide);
+             }else if(columnStatus == 0){
+                 $promptBox.find('#ppt-04').removeClass(hide);
+                 $promptBox.removeClass(hide);
+
+            	 // $promptBox.find('#ppt-07').removeClass(hide);
+	             // $promptBox.removeClass(hide);
+              //    $('body').delegate('#ppt-07 .ppt-do span', 'click', function(){
+              //   	 $promptBox.addClass(hide);
+              //    });
+	            
+             }else if(columnStatus == 1){
+                 location.href = '/column/index';
+             }
+//              var $this = $(this), url;
+//              url = $(this).data('url');
+//              if(url) location.href = url;
+         });
+
+    }else if(status == 2){
+        $('.app-one').click(function(){
+            $promptBox.find('#ppt-05').removeClass(hide);
+            $promptBox.removeClass(hide);
+
+            $('body').delegate('#ppt-05 .ppt-do a', 'click', function(){
+                if(bestCount >0){
+                    location.href = '/member/authenticate/person';
+                }else{
+                    if(authenticateType==1){
+                        location.href = '/member/authenticate/person';
+                    }else if(authenticateType==2){
+                        location.href = '/member/authenticate/financial';
+                    }else if(authenticateType==3){
+                        location.href = '/member/authenticate/enterprise';
+                    }else if(authenticateType==4){
+                        location.href = '/member/authenticate/organization';
+                    }
+                }
+         
+            });
+
+        });
+    }else{
+
+    }
+
+});
+</script>
+
+
+</body>
+</html>

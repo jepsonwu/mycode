@@ -1,0 +1,323 @@
+<table id="refund_list_all" style="width:800px;height:600px"></table>
+<div id="refund_status_window"></div>
+<div id="refund_check_window"></div>
+
+<div id="refund_list_toolbar"></div>
+<div id="refund_list_toolbar_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="financeRefundManageObj.containerObj.edatagrid('reload');">刷新</a>
+    会员编号:<input type="text" value="" name="member_id" size="10" />
+    金额:<input type="text" name="start_amount" size="8"/> - <input type="text" name="end_amount" size="8"/>
+    时间:<input class="easyui-datebox" type="text" name="start_date" value="2016-01-01" data-options="onSelect:toSearchRefundList" size="10"/> -
+    	 <input class="easyui-datebox" type="text" name="end_date" value="<?php echo date('Y-m-d');?>" data-options="onSelect:toSearchRefundList" size="10"/>
+    状态:<select name="refundStatusName">
+    	    <option value="">所有</option>
+    		<option value="1">等待审核</option>
+    		<option value="3">付款中</option>
+    		<option value="4">提现完成</option>
+    		<option value="2">已拒绝</option>
+    		<option value="5">已取消</option>
+            <option value="6">已退款</option>
+    	 </select>
+         <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchRefundList()" iconCls="icon-search">搜索</a>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总完成提现金额：&nbsp;&nbsp;&nbsp;￥<font style="color:red"><?php echo $this->refundAmount; ?></font>
+</div>
+<script type="text/javascript">
+    $("#refund_list_toolbar_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchRefundList();
+        }
+    });
+
+    $("#refund_list_toolbar_container select[name]").change(function(){
+        toSearchRefundList();
+    });
+    
+    function toSearchRefundList()
+    {
+        var member_id = $("#refund_list_toolbar_container input[name='member_id']").val();
+        var start_amount = $("#refund_list_toolbar_container input[name='start_amount']").val();
+        var end_amount = $("#refund_list_toolbar_container input[name='end_amount']").val();
+        var start_date = $("#refund_list_toolbar_container input[name='start_date']").val();
+        var end_date = $("#refund_list_toolbar_container input[name='end_date']").val();
+        var status = $("#refund_list_toolbar_container select[name='refundStatusName']").val();
+
+        financeRefundManageObj.containerObj.datagrid('load', {
+                                                member_id:member_id,
+                                                start_amount:start_amount,
+                                                end_amount:end_amount,
+                                                start_date:start_date,
+                                                end_date:end_date,
+                                                status:status
+        });
+    }
+    
+    var financeRefundManageObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'refund-list'));?>',
+        'statusUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'refund-status'));?>',
+  		'viewUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'refund-check'));?>',
+        'errorUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'refund-error'));?>',
+        'setCityUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'set-city'));?>',
+		
+		'containerObj':$("#refund_list_all"),
+        'checkWindowObj':$("#refund_check_window"),
+        'statusWindowObj':$("#refund_status_window"),
+
+		'selfName':'financeRefundManageObj',
+
+		'init':function(){
+			this.showData();
+		},
+
+        //修改状态
+        confirmHandler:function(application_id,member_id,status){
+            var _THIS_ = this;
+
+            if(status == 3){
+                _THIS_.checkWindowObj.window({
+                    'href':_THIS_.viewUrl+'?member_id='+member_id+'&application_id='+application_id+'&status='+status,
+                    'width':300,
+                    'height':180,
+                    'modal':true,
+                    'resizable':false,
+                    'cache':false,
+                    'title':'审核提现',
+                    'onLoad':function(){
+                        $("#check_refund_form_save").off().click(function(){
+                            $("#check_refund_form").attr('action',_THIS_.statusUrl).submit();
+                        });
+
+                        $("#check_refund_form_close").off().click(function(){
+                            _THIS_.checkWindowObj.window('close');
+                        });
+
+                        $("#check_refund_form").myForm(function(data){
+                            if(data.flag == 1){
+                                _THIS_.checkWindowObj.window('close');
+                                _THIS_.containerObj.datagrid('reload');
+                            }else{
+                                $.messager.alert("提示信息",data.msg,'error');
+                            }
+                        });
+                    }
+                });
+            }else if(status == 4){
+                if(application_id && member_id){
+                    var tip = '完成提现';
+                    $.messager.confirm('完成提现','确认要'+tip+'吗？',function(d){
+                        if(d){
+                            $.ajax({
+                                    url:_THIS_.statusUrl,
+                                    type:"POST",
+                                    data:{application_id:application_id,member_id:member_id,status:status},
+                                    dataType:'json',
+                                    success:function(ret){
+                                        if(ret.flag == 1){
+                                            _THIS_.containerObj.datagrid('reload');
+                                        }else{
+                                            $.messager.alert("提示信息",ret.msg,'error');
+                                        }
+                                    }
+                            });
+                        }
+                    });
+                }
+            }else if(status == 2){
+                _THIS_.statusWindowObj.window({
+                    'href':_THIS_.statusUrl+'?member_id='+member_id+'&application_id='+application_id+'&status='+status,
+                    'width':350,
+                    'height':200,
+                    'modal':true,
+                    'resizable':false,
+                    'cache':false,
+                    'title':'拒绝提现记录',
+                    'onLoad':function(){
+                        $("#reject_refund_form_save").off().click(function(){
+                            $("#reject_refund_form").attr('action',_THIS_.statusUrl).submit();
+                        });
+
+                        $("#reject_refund_form_close").off().click(function(){
+                            _THIS_.statusWindowObj.window('close');
+                        });
+
+                        $("#reject_refund_form").myForm(function(data){
+                            if(data.flag == 1){
+                                _THIS_.statusWindowObj.window('close');
+                                _THIS_.containerObj.datagrid('reload');
+                            }else{
+                                $.messager.alert("提示信息",data.msg,'error');
+                            }
+                        });
+                    }
+                });
+            }else if(status == 6){
+                if(application_id && member_id){
+                    var tip = '退款';
+                    $.messager.confirm('退款','确认要'+tip+'吗？退款之后会将申请的提现金额返回给用户，请慎重操作！',function(d){
+                        if(d){
+                            $.ajax({
+                                    url:_THIS_.statusUrl,
+                                    type:"POST",
+                                    data:{application_id:application_id,member_id:member_id,status:status},
+                                    dataType:'json',
+                                    success:function(ret){
+                                        if(ret.flag == 1){
+                                            _THIS_.containerObj.datagrid('reload');
+                                        }else{
+                                            $.messager.alert("提示信息",ret.msg,'error');
+                                        }
+                                    }
+                            });
+                        }
+                    });
+                }
+            }
+        },
+        
+        viewError:function(application_id){
+            var _THIS_ = this;
+            _THIS_.statusWindowObj.window({
+                'href':_THIS_.errorUrl+'?&application_id='+application_id,
+                'width':400,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'提现错误信息',
+                'onLoad':function(){
+                    $("#refund_error_close").off().click(function(){
+                        _THIS_.statusWindowObj.window('close');
+                    });
+                }
+            });
+        },
+                
+        setCity:function(bank_id){
+            var _THIS_ = this;
+            _THIS_.statusWindowObj.window({
+                'href':_THIS_.setCityUrl+'?bid='+bank_id,
+                'width':300,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'设置卡的归属地',
+                'onLoad':function(){
+                    $("#set_city_form_save").off().click(function(){
+                        $("#set_city_form").attr('action',_THIS_.setCityUrl).submit();
+                    });
+
+                    $("#set_city_close").off().click(function(){
+                        _THIS_.statusWindowObj.window('close');
+                    });
+
+                    $("#set_city_form").myForm(function(data){
+                        if(data.flag == 1){
+                            _THIS_.statusWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                }
+            });
+        },        
+                
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+                //是否分页
+                pagination:true,
+                
+                pageSize: 50,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                //fitColumns:true,
+                fit:true, 
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'RefundApplicationID',
+
+                url:_THIS_.loadUrl,
+                toolbar:"#refund_list_toolbar",
+                //设置列   
+                columns:[[   
+                    {field:'RefundApplicationID',title:'编号',sortable:true,width:50},   
+                    {field:'ApplicationDate',title:'时间',width:130},
+                    {field:'MemberID',title:'会员',width:80,align:'center'},
+                    {field:'Email',title:'邮箱',width:150},
+                    {field:'BankName',title:'银行',width:120},
+                    {field:'Username',title:'账户名',width:80},
+                    {field:'CardCode',title:'卡号',width:130},
+                    {field:'City',title:'卡归属地',width:150,formatter:function(value,rowData,rowIndex){
+                            return '<a style="color:blue" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.setCity('+rowData.BankInfoID+')">设置</a>&nbsp;&nbsp;'+value;
+                        }
+                    },
+                    {field:'ApplicationAmount',title:'金额',align:'right',width:80,formatter:addCurrencyUnit},
+                    {field:'FeeAmount',title:'手续费',align:'right',width:80,formatter:addCurrencyUnit},
+                    {field:'RealityAmount',title:'实际支付',width:80,align:'right',formatter:addCurrencyUnit},
+                    {field:'ConfirmDate',title:'操作时间',width:150},
+                    {field:'BatchNo',title:'批次号',width:130},
+                    {field:'Status',title:'状态',width:130,formatter:function(value,rowData,rowIndex){
+                            var status_str = '';
+                            switch(value){
+                                case '1':
+                                    status_str = '<p style="color:red">待审核</p>';break;
+                                case '2':
+                                    status_str = '<p style="color:orange">已拒绝</p>';break;
+                                case '3':
+                                    if(rowData['Error']==1 || rowData['Error']=='1'){
+                                        status_str = '<font style="color:blue">待付款</font>&nbsp;&nbsp;'+'<font style="color:red" onclick="'+_THIS_.selfName+'.viewError('+rowData.RefundApplicationID+')">打款出错</font>';
+                                    }else{
+                                        status_str = '<p style="color:blue">待付款</p>';
+                                    }
+                                    break;
+                                case '4':
+                                    status_str = '<p style="color:green">已完成</p>';break;
+                                case '5':
+                                    status_str = '<p style="color:black">已取消</p>';break;
+                                case '6':
+                                    status_str = '<p style="color:black">已退款</p>';break;
+                            }
+                            return status_str;
+                        }
+                    },
+                    {field:'opt',title:'操作',width:380,formatter:function(value,rowData,rowIndex){//状态,1待审核,2拒绝,3正在付款,4已付款,5已取消，6已退款
+                            var confirm = '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.confirmHandler(\''+rowData.RefundApplicationID+'\',\''+rowData.MemberID+'\',3)">审核提现</a>';
+                            var deny = '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.confirmHandler(\''+rowData.RefundApplicationID+'\',\''+rowData.MemberID+'\',2)">拒绝提现</a>';
+                            var payoff = '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.confirmHandler(\''+rowData.RefundApplicationID+'\',\''+rowData.MemberID+'\',4)">完成提现</a>';
+                            var refund = '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.confirmHandler(\''+rowData.RefundApplicationID+'\',\''+rowData.MemberID+'\',6)">退款</a>';
+                            var html = "";
+                            switch(rowData.Status){
+                                case '1':
+                                    html = confirm + '&nbsp;&nbsp;'+ deny;break;
+                                case '3':
+                                    html = payoff + '&nbsp;&nbsp;'+ deny;break;
+                                case '4':
+                                    html = refund;break;
+                            }
+                            return html;
+                        }
+                    }
+                ]]
+            });
+
+            //设置分页
+            var pager = _THIS_.containerObj.datagrid('getPager');
+            pager.pagination({
+                pageList:[10,50,100,150,200],
+                pageSize:50,
+                beforePageText:'第',
+                afterPageText:'页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+            $("#refund_list_toolbar").append($("#refund_list_toolbar_container"));
+		}
+    };
+    financeRefundManageObj.init();
+</script>

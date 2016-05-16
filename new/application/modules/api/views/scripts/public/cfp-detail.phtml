@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>理财师详情</title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪-理财师详情" >
+<meta name="description" content="财猪-理财师详情" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="format-detection"content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=151225" >
+<link rel="stylesheet" href="/static/css/api/topman.css" >
+</head>
+<body class="bg-topman">
+
+<img id="user-cover" style="display: none;" alt="财猪" src="<?php echo $this->detailInfo['Cover'];?>">
+
+<section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="/static/imgs/web/wechat-arrow.png" alt="指示图">
+        </li>
+    </ul>
+</section>
+
+<!-- content - start -->
+
+<section class="topman-box">
+    <ul class="avatar-list clearfix">
+        <li class="avatar-info">
+            <div class="avatar-det">
+                <h1>互联网金融</h1>
+                <ul class="avatar-label">
+                    <li>理财</li>
+                    <li>股票</li>
+                    <li>思密达</li>
+                </ul>
+            </div>
+        </li>
+        <li class="avatar-pic">
+            <img src="/static/imgs/api/app-share.png">
+        </li>
+    </ul>
+    <h2 class="avatar-tit">账号简介</h2>
+    <div class="avatar-des">
+        思密达思密达思密达思密思密达思密达思密达思密达思密达思密达思密达思密达达思达思密达思密达思密达思密达达思密达思密达思密达思密达思密达思密达思密达思密达思密达思密达思密达。。。
+    </div>
+</section>
+
+<section class="topman-box mt20">
+    <ul class="label-list topman-bb clearfix">
+        <li class="fl">账号主体<img src="/static/imgs/api/icon-v.png" alt="v"></li>
+        <li class="fr">思密达<img src="/static/imgs/api/activity-arrow-right.png" alt="more"></li>
+    </ul>
+    <ul class="label-list clearfix">
+        <li class="fl">达人<img src="/static/imgs/api/icon-zheng.png" alt="证书"></li>
+        <li class="fr">股票达人<img src="/static/imgs/api/activity-arrow-right.png" alt="more"></li>
+    </ul>
+</section>
+
+<section class="topman-subscribe" class="hid">
+    <span id="subcribe" class="boxlink callcaizhu" >订阅</span>
+</section>
+
+<!-- content - end -->
+
+<section id="prompt-box" class="m-prompt-box hide">
+    <div id="prompt" class="m-prompt">
+        <p>您的操作有错误</p>
+        <span>确定</span>
+    </div>
+</section>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ、百度浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、UC、360浏览器等</p>
+</section>
+
+<section id="caizhu-open-down" class="caizhu-open hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="/static/imgs/web/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+            </p></li>
+        <li class="czo-three">
+            <a href="https://m.caizhu.com/down/down-caizhu" id="czo-open-down" >下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close-open" class="open-close">X</span>
+</section>
+
+
+<script src="/static/js/api/zepto.min.js"></script>
+<script src="/static/js/api/image-show.js?date=15120216"></script>
+
+<script>
+
+var currentId = '<?php echo $this->detailInfo['AID'];?>';
+
+var sharePic = $('#user-cover');
+if(sharePic.length>0){
+    sharePic = sharePic[0].src
+}else{
+    sharePic = '';
+}
+var shareTitle = $('.article-tit').text(),
+    shareDes = ($('.avatar-des').text()).replace(/\s*/gi, ''),
+    shareLink = location.href;
+
+var UAgent = navigator.userAgent.toLowerCase();
+var caizhuAPP = function(){                                   //财猪app
+    var reg = /caizhuapp/i;
+    if(reg.test(UAgent)) {
+        return true;
+    } else {
+        return false;
+    }
+}();
+
+if(caizhuAPP){    // 财猪里执行动作
+    var basicJs = document.createElement('script');
+    basicJs.type = 'text/javascript';
+    basicJs.src = '/static/js/api/basic.js?date=151228';
+    basicJs.onload = function(){
+        caizhuAppRun();
+
+        var caizhukeyjsShare = new caizhuShare({
+            pic: sharePic,
+            title: replaceBlank(shareTitle),
+            description: replaceBlank(shareDes),
+            link: shareLink
+        });
+        caizhukeyjsShare.createUrlMeta();
+
+    }
+    document.body.appendChild(basicJs);
+
+}else{
+
+    var commonFunc = {};
+
+    var otherJs = document.createElement('script');
+    otherJs.type = 'text/javascript';
+
+    otherJs.src = '/static/js/api/app-running.js?date=151223';
+
+    otherJs.onload = function(){
+
+        var loadIframe = null;
+        commonFunc.createIframe = function(){
+            var iframe = document.createElement("iframe");
+            iframe.style.cssText = "display:none;width:0px;height:0px;";
+            document.body.appendChild(iframe);
+            loadIframe = iframe;
+        }
+        commonFunc.redirect = function(){
+            var rUa = navigator.userAgent;
+            isChrome =rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+            if(isChrome){
+                if(info.os.android){
+                    if(rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)){
+                        loadIframe.src="caizhu://caizhu/article?id="+currentId;
+                    }else{
+                        window.location.href = 'intent://caizhu/article?id=' + currentId + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                    }
+
+                }else{
+                    window.location.href = 'caizhu://caizhu/article?id=' + currentId;
+                }
+            }else{
+                if(safariBrowser){                  // ios6-plus, 只能用location跳转
+                    window.location.href = "caizhu://caizhu/article?id=" + currentId;
+                }else{
+                    loadIframe.src = "caizhu://caizhu/article?id=" + currentId;
+                }
+            }
+            var t = Date.now();
+            setTimeout(function(){
+                if(Date.now()-t < 600){
+                    //location.href="http://m.caizhu.com/down/down-caizhu";
+
+                    $('#caizhu-open-down').removeClass(hide);
+                }
+            },500)
+        };
+
+        // wechat share - start
+        $.ajax({
+            url: '/api/wechat/get-signature',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                url: location.href
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    var d = d.data;
+
+                    var wechatJs = document.createElement('script');
+                    wechatJs.type = 'text/javascript';
+                    wechatJs.src = 'https://fe.caizhu.com/public/js/callcaizhu/jweixin-1.0.0.js';
+                    wechatJs.onload = function(){
+                        wechatShare(d, {title: replaceBlank(shareTitle), des: replaceBlank(shareDes), pic: sharePic, link: shareLink});
+                    };
+                    document.body.appendChild(wechatJs);
+
+                }
+            }
+        });
+        // wechat share - end
+
+    }
+
+    document.body.appendChild(otherJs);
+
+}
+
+function caizhuAppRun(){
+
+    var hide = 'hide',
+            show = 'show',
+            selected = 'selected',
+            $promptBox = $('#prompt-box'),
+            $prompt = $('#prompt'),
+            $promptP = $prompt.children('p'),
+            $promptOk = $prompt.children('span');
+
+        var $vote = $('#vote-btn');
+
+        $promptOk.tap(function(){
+            $promptBox.addClass(hide);
+        });
+
+        function promptDo(a, str){              //a, show | hide ;
+            if(!a) return ;
+
+            if(a == show){
+                $promptP.text(str);
+                $promptBox.removeClass(hide);
+            }else{
+                $promptBox.addClass(hide);
+            }
+
+        }
+
+
+
+    var dingyueO = document.getElementById('vs-dingyue');
+
+    if(dingyueO){
+        $(dingyueO).children().click(function(e){
+            var $this = $(this),
+                    id = $this.parent().data('id'),
+                    flag = $this.data('flag'),
+                    selected = 'selected';
+
+            if(flag) return false;
+
+            $this.data('flag', true);
+            setTimeout(function(){
+                $this.data('flag', '');
+            }, 800);
+
+
+            var url,
+                selectedFlag = $this.hasClass(selected);
+
+            if(selectedFlag) return ;
+
+            if(selectedFlag){
+                url = '/api/column/un-subscribe'
+            }else{
+                url = '/api/column/subscribe';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {columnID: id},
+                success: function(d){
+
+                    if(d.flag == 1){
+
+                        if(selectedFlag){
+                            $this.removeClass(selected);
+                            promptDo('show', d.msg);
+                        }else{
+                            $this.addClass(selected);
+                        }
+
+                    }else{
+                        promptDo('show', d.msg);
+                    }
+
+                },
+                error: function(err){
+                    promptDo('show', '网络错误,请过一会再试一试');
+                }
+            });
+
+            e.stopPropagation();
+            return false;
+
+        });
+        dingyueO.addEventListener('touchstart', function(e){
+            e.stopPropagation();
+        }, false);
+        dingyueO.addEventListener('touchend', function(e){
+            e.stopPropagation();
+        }, false);
+
+    }
+
+}
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

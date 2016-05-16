@@ -1,0 +1,362 @@
+﻿
+<!DOCTYPE html >
+<html>
+<head>
+    <title>观点详情</title>
+    <meta charset="utf-8" >
+    <meta name="keywords" content="观点详情" >
+    <meta name="description" content="观点详情" >
+    <meta content="telephone=no, address=no" name="format-detection" />
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0415" >
+    <link rel="stylesheet" href="http://fe.caizhu.com/160303/api/0310/skin0/css/common.css?data=0407" >
+<style>
+
+body{max-width: 640px;}
+
+/* 适配 */
+
+.view-btn{position: absolute; bottom: 1%; width: 100%; text-align: center;}
+
+@media (max-height: 750px){
+
+    .boxtop{margin-top: 27%;}
+
+    .view-btn{bottom: 14%;}
+    .boxm-list{padding: 50px 0;}
+    .user-name{padding: 2px 0 6px;}
+    .ibox p{padding: 10px 0 0;}
+    .view-des{padding: 40px 10px 50px;}
+}
+
+@media (max-height: 670px){
+
+    .view-btn{bottom: 12%;}
+    .boxm-list{padding: 40px 0;}
+    .user-name{padding: 2px 0 6px;}
+    .ibox p{padding: 10px 0 0;}
+    .view-des{padding: 40px 10px 50px;}
+}
+
+@media (max-height: 570px){
+
+    .view-btn{bottom: 5%;}
+    .boxm-list{padding: 30px 0;}
+    .user-name{padding: 1px 0 4px;}
+    .ibox p{padding: 4px 0 0;}
+    .view-des{padding: 30px 10px 40px;}
+
+}
+
+@media (max-height: 480px){
+    .view-btn{bottom: 1%;}
+    .boxm-list{padding: 20px 0 ;}
+    .ibox p{padding: 2px 0 0;}
+    .view-des{padding: 20px 10px 25px;}
+    .boxtop{margin-top: 20%;}
+    #appopen{display: none;}
+}
+@media (max-height: 470px){
+    .box00{height: 134px;}
+    #app01{margin-top: 2px;}
+}
+
+
+
+.view-box{margin: 10px 0 0;}
+.ibox02 .demo-text00{height: 20px; width: auto; margin: 0 8px 0 0;}
+.half-one{float: left; width: 50%; text-align: right;}
+.half-one img{height: 16px; width: auto;}
+.half-two{float: left; text-align: left; font-size: 16px; width: 50%; text-indent: 10px;}
+.view-des img{width: 60%;}
+
+</style>
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+<div id="view-content" class="hide"><?php echo $this->viewInfo['ViewContent'];?></div>
+<div class="full">
+    <div class="fullbox">
+
+        <div class="section page1">
+            <ul id="app00" class="box boxtop">
+                <li class="box-t"></li>
+                <li class="box-m box00" :class="{selected: pullflag}">
+                    <div class="ibox">
+                        <div class="user-name to clearfix">
+                            <div class="half-one"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-reply.png" alt="pic"></div>
+                            <div class="half-two">{{*userName | filterAnonymousName}}</div>
+                        </div>
+                        <figure class="user-avatar"><img :src="userAvatar | filterAvatar"></figure>
+                        <div class="clearfix">
+                            <div class="half-one"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-reply-num.png" alt="pic"></div>
+                            <div class="half-two">{{*replyNum | filterNum}}条</div>
+                        </div>
+                        <div class="clearfix">
+                            <div class="half-one"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-praise-num.png" alt="pic"></div>
+                            <div class="half-two">{{*praiseNum | filterNum}}条</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="box-b"></li>
+            </ul>
+            <ul id="app01" class="box mt20">
+                <li class="box-t"></li>
+                <li class="box-m p-rela">
+                    <span id="ibox-pull" class="ibox-pull" @click="dopull" :class="{selected: pullflag}"></span>
+                    <div class="ibox ibox02">
+
+                        <div class="view-do clearfix">
+                            <a class="boxapp" data-type="standpoint" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-00.png"></a>
+                            <a class="boxapp" data-type="standpoint" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-01.png"></a>
+                        </div>
+                        <p><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-type00.png" alt="pic"><b>{{viewType}}</b></p>
+                        <p><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-det.png" alt="pic"></p>
+                        <div id="view-box" class="view-box p-rela" :class="{selected: pullflag}">
+                            <div>{{{*viewDet | filterEmoji}}}</div>
+                            <span></span>
+                        </div>
+                        <span></span>
+                    </div>
+                </li>
+                <li class="box-b"></li>
+            </ul>
+            <div id="appopen" class="view-btn">
+                <span class="boxapp" data-type="standpoint" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-03.png" alt="open"></span>
+            </div>
+            <span class="full-pointer"></span>
+        </div>
+
+        <div class="section page2">
+            <ul id="app02" class="box boxtop">
+                <li class="box-t"></li>
+                <li class="box-m boxm-list">
+                    <p class="view-des">
+                        <img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-join-det.png" alt="pic">
+                    </p>
+                    <div class="view-btn02">
+                        <span class="boxlink" data-url="http://a.app.qq.com/o/simple.jsp?pkgname=com.caizhu.caizhu"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-02.png" alt="open"></span>
+                    </div>
+                </li>
+                <li class="box-b"></li>
+            </ul>
+            <span class="full-pointer"></span>
+        </div>
+
+    </div>
+</div>
+
+<div id="define-prompt"><app-defineprompt :pmodeflag.sync="pmodeflag" :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+
+<script src="https://fe.caizhu.com/public/js/zepto.fullpage.js"></script>
+
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js"></script>
+
+<script src="https://fe.caizhu.com/public/js/callcaizhu-160310/h5-action-v2.js?date=160428"></script>
+
+<script>
+    $('.fullbox').fullpage({
+        drag: true,
+        start: 0,
+        duration: 100,
+        page: '.section',
+        der: 0.3
+    });
+</script>
+
+<script>
+
+var currentId = "<?php echo $this->viewInfo['ViewID'];?>",
+    userAvatar = '<?php echo $this->viewInfo['Avatar'];?>',
+    userName = '<?php echo $this->viewInfo['UserName'];?>',
+    replyNum = '<?php echo $this->viewInfo['ReplyNum'];?>',
+    praiseNum = '<?php echo $this->viewInfo['PraiseNum'];?>',
+    viewType = '<?php echo $this->viewInfo['TopicName'];?>',
+    viewDet = $('#view-content').text();
+
+var anonymousFlag = '<?php echo $this->viewInfo["IsAnonymous"];?>' == 1 ? true : false;
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('.user-avatar img');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = $('#view-box').text();
+        opts.shareDes = '观点详情';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){
+        createPullMeta();
+    }
+
+    function otherRun(){}
+
+    function commonRun() {
+
+        var $pull = $('#ibox-pull'),
+            viewBoxO = document.getElementById('view-box');
+
+        filterAnonymousName(anonymousFlag);
+        filterAnonymousAvatar(anonymousFlag);
+
+        Vue.filter('filterNum', function(a){
+            a = parseInt(a);
+            if(a < 20){
+                return randomNum();
+            }
+            return a;
+        });
+
+        var app00 = new Vue({
+            el: '#app00',
+            data: {
+                currentId: currentId,
+                userAvatar: userAvatar,
+                userName: userName,
+                replyNum: replyNum,
+                praiseNum: praiseNum,
+                pullflag: false
+            }
+        });
+
+        var app01 = new Vue({
+            el: '#app01',
+            data: {
+                currentId: currentId,
+                viewType: viewType,
+                viewDet: viewDet,
+                pullflag: false
+
+            },
+            methods: {
+                dopull: function(){
+                    var flag;
+                    flag = $pull.hasClass(selected);
+
+                    if(flag){
+                        viewBoxRE();
+                        app00.pullflag = false;
+                        app01.pullflag = false;
+                    }else{
+                        viewBoxAE();
+                        app00.pullflag = true;
+                        app01.pullflag = true;
+                    };
+                }
+            }
+        });
+
+        var appOpen = new Vue({
+            el: '#appopen',
+            data: {
+                currentId: currentId
+            }
+        });
+
+        var app02 = new Vue({
+            el: '#app02',
+            data: {
+                currentId: currentId
+            }
+        });
+
+        var MD = {x: 0, y: 0, deltaX: 0, initY: 0, flag: false};
+
+        function viewBoxAE(){
+            viewBoxO.addEventListener('touchstart', viewE, false)
+            viewBoxO.addEventListener('touchmove', viewE, false)
+            viewBoxO.addEventListener('touchend', viewE, false)
+        }
+        function viewBoxRE(){
+            viewBoxO.removeEventListener('touchstart', viewE, false);
+            viewBoxO.removeEventListener('touchmove', viewE, false);
+            viewBoxO.removeEventListener('touchend', viewE, false);
+        }
+
+        function viewE(e){
+            var type = e.type;
+
+            var child = viewBoxO.children[0],
+                h = viewBoxO.offsetHeight,
+                cH = child.offsetHeight;
+
+            MD.pullTop = h - cH;
+
+            if(type == 'touchstart'){
+                MD.y = e.touches[0].pageY;
+                MD.flag = true;
+                MD.initY = child.style.webkitTransform || child.style.webkitTransform || 0;
+                MD.initY = paramFilter(MD.initY);
+
+            }
+            if(type == 'touchmove'){
+                var initY,
+                    deltaY;
+                if(!MD.flag) return false;
+
+                MD.deltaY = MD.initY + e.touches[0].pageY - MD.y;
+                if(MD.deltaY > 0){
+                    MD.initY = 0;
+                    child.style.MozTranform = child.style.webkitTransform = 'translate3d(0, 0, 0)';
+                }else if(MD.deltaY < MD.pullTop){
+                }else{
+                    child.style.MozTranform = child.style.webkitTransform = 'translate3d(0, '+ MD.deltaY +'px, 0)';
+                }
+
+            }
+            if(type == 'touchend'){
+                MD.y = 0;
+                MD.flag = false;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        function paramFilter(a){    //'translate3d(0px, -53px, 0px)';
+            if(!a) return 0;
+            a = a.match(/\(.*,(.*),.*\)/);
+            a = a && a[1] || 0;
+            return parseInt(a);
+        }
+        function randomNum(){
+            return Math.floor(Math.random()*30) + 20;
+        }
+    }
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 30px;align:center;">
+		<form id="lecture_video_edit_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<tr>
+					<th width="20%">图片：</th>
+					<td width="80%">
+						<input type="file" name="ImageUrl"/>
+						<!--<input class="easyui-validatebox" type="text" name="ImageUrl"
+						       value="<?php echo $this->video_info['ImageUrl']; ?>"
+						       data-options="required:true" size="50"/>-->
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">标题：</th>
+					<td width="80%">
+						<input class="easyui-validatebox" type="text" name="ImagTitle"
+						       value="<?php echo $this->video_info['ImagTitle']; ?>"
+						       data-options="required:true" size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">视频连接：</th>
+					<td width="80%">
+						<input class="easyui-validatebox" type="text" name="VideoUrl"
+						       value="<?php echo $this->video_info['VideoUrl']; ?>"
+						       data-options="required:true" size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">视频描述：</th>
+					<td width="80%">
+						<textarea style="width: 350px;height: 300px;" class="easyui-validatebox" name="Description"
+						          data-options="required:true">
+							<?php echo $this->video_info['Description']; ?>
+						</textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>状态：</th>
+					<td>
+						<select name="Status">
+							<option
+								value="0" <?php if ($this->video_info['Status'] == 0): ?> selected="selected" <?php endif; ?>>
+								无效
+							</option>
+							<option
+								value="1" <?php if ($this->video_info['Status'] == 1): ?> selected="selected" <?php endif; ?>>
+								有效
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+						<input type="hidden" name="VideoID" value="<?php echo $this->video_info['VideoID'] ?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="lecture_video_edit_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="lecture_video_edit_form_close">关闭</a>
+	</div>
+</div>

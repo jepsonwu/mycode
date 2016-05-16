@@ -1,0 +1,55 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+
+        <form id="edit_force_activity_form" method="post" enctype="multipart/form-data">
+            <table class='form_table'>
+                <tr>
+                    <th width="20%">活动图片：</th>
+                    <td width="80%">
+                        <image width="50" height="50" src="<?php echo $this->forceInfo['ActivityPic'].'?imageView2/0/w/200/h/200' ?>" />
+                        <input name = "image"  type="file"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th >活动名称：</th>
+                    <td >
+                        <input type="text" name="ActivityName" class="easyui-validatebox" data-options="required:true" size="50"  value="<?php echo $this->forceInfo['ActivityName'];?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th >活动链接</th>
+                    <td >
+                        <input type="text" name="ActivityLink" class="easyui-validatebox" data-options="required:true" size="50" value="<?php echo $this->forceInfo['ActivityLink'];?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th >次数/每天</th>
+                    <td >
+                        <input type="number" name="CountPerDay" size="25" value="<?php echo $this->forceInfo['CountPerDay'];?>"/>
+                    </td>
+                </tr>               <tr>
+                    <th >开始时间</th>
+                    <td >
+                        <input type="text" name="StartTime" class="easyui-datetimebox"  size="25" value="<?php echo $this->forceInfo['StartTime'];?>" />
+                    </td>
+                </tr>               <tr>
+                    <th >结束时间</th>
+                    <td >
+                        <input type="text" name="EndTime" class="easyui-datetimebox" size="25" value="<?php echo $this->forceInfo['EndTime'];?>" />
+                    </td>
+                </tr> 
+                <tr>
+                    <td colspan='2' class='footbar'>
+                        <input type="hidden" name="ActivityID" value="<?php echo $this->forceInfo['ActivityID']?>" />
+                    </td>
+                </tr>                          
+            </table>
+        </form>
+    </div>
+
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="edit_force_activity_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="edit_force_activity_form_close">关闭</a>
+    </div>
+
+</div>

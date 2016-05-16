@@ -1,0 +1,101 @@
+.lecture-list{margin: 0 10px 0;}
+.lecture-one{margin: 10px 0 0; position: relative;}
+.lecture-one img{width: 100%; min-height: 100px; vertical-align: top;}
+.lecture-one p{position: absolute; left: 0; bottom: 0; width: 100%; height: 30px; line-height: 30px; color: #fff;  box-sizing: border-box; padding: 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: rgba(0, 0, 0, .5);
+}
+
+.body-video{background: #f2f2f2; padding: 0 0 10px;}
+.video-box{width: 100%; background: #fff;}
+.video-box section{height: 180px; }
+.video-box section.selected{background: #f3f3f3 url('/static/imgs/api/slow.png') no-repeat center center;}
+
+.video-box video{width: 100%; vertical-align: top;}
+.video-box iframe{vertical-align: top;}
+.video-tit{line-height: 22px; padding: 0 10px; margin: 10px 0 0; font-size: 16px; color: #333;}
+.video-minor{padding: 0 10px; font-size: 12px; line-height: 22px;}
+.video-minor span:nth-child(1){color: #576b95;}
+.video-minor span:nth-child(2){margin: 0 0 0 10px; color: #999;}
+
+.video-subscription{margin: 10px 0 0; background: #fff;}
+.vs-list{
+    display: -webkit-box;
+    display: box;
+    padding: 10px 0 ;
+}
+.vs-avatar{
+    width: 40px; padding: 0 0 0 10px;
+}
+.vs-info{
+    -webkit-box-flex: 1;
+    box-flex: 1;
+    padding: 0 6px 0 10px;
+}
+.vs-dingyue{
+    width: 60px; padding: 0 10px 0 0;
+}
+.vs-avatar img{width: 40px; height: 40px; border-radius: 5px;}
+.vs-info strong{line-height: 22px; color: #333;}
+.vs-info p{font-size: 12px; color: #666;}
+.vs-button{display: block; margin: 4px 0 0; line-height: 30px; color: #FF8114; border: #FFD2AA solid 1px; border-radius: 5px; text-align: center;}
+
+.video-commnet{background: #fff; margin: 10px 0 0;}
+.vc-tit{color: #999; line-height: 25px; padding: 10px 10px 0;}
+.video-info{line-height: 34px; height: 34px; padding: 0px 10px; border-top: #e6e6e6 solid 1px;  font-size: 12px; color: #999;}
+.video-count, .video-vote, .video-reply{background: no-repeat left center; background-size: auto 22px; padding: 0 0 0 25px;}
+.video-count{background-image: url('/static/imgs/api/classroom_ic_video_normal.png');}
+.video-vote{background-image: url('/static/imgs/api/totle_bt_praise_normal.png'); background-position: 0 5px; margin: 0 20px 0 0;}
+.video-vote.selected{background-image: url('/static/imgs/api/totle_bt_praise_press.png');}
+.video-reply{background-image: url('/static/imgs/api/totle_bt_comment_normal.png'); background-position: 0 7px;}
+.vc-one{
+    display: -webkit-box;
+    display: box;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+    padding: 8px 10px  6px;
+    position: relative;
+}
+.vc-report{position: absolute; width: 80px; height: 30px; left: 50%; margin-left: -40px; top: -36px; line-height: 30px; background: #28282A; color: #fff; text-align: center; border-radius: 5px;}
+.vc-report:after{position: absolute; left: 34px; bottom: -12px; content: '';height: 0;width: 0; border:6px solid; border-color: #28282A transparent transparent;}
+.vc-one.touch{background: #EBECED;}
+.vc-avatar{
+    width: 40px;
+}
+.vc-info{
+    -webkit-box-flex: 1;
+    box-flex: 1;
+    padding: 0 0 0 10px;
+}
+.vc-avatar img{width: 40px; height: 40px; border-radius: 5px; }
+.vc-name > span{float: left; line-height: 22px; height: 22px; overflow: hidden;}
+.vc-name span:nth-child(1){color: #333; font-weight: bold; width: 60%; text-overflow: ellipsis; white-space: nowrap;}
+.vc-name span:nth-child(2){color: #999; text-align: right; width: 40%; font-size: 12px;}
+.vc-det{margin: 4px 0 0; color: #666; line-height: 20px; }
+
+
+.lecture-more{margin: 10px 0 0;}
+.lm-one{padding: 0 10px; color:#000;
+    -webkit-transition: all .3s linear;
+    transition: background-color .3s linear;
+}
+.lm-one.touch{background-color: #EBECED; }
+.lm-one span{display: block; height: 35px; overflow: hidden; line-height: 35px; border-bottom: #F3F3F3 solid 1px; background: url('/static/imgs/api/total_ic_arrows_normal.png') no-repeat right center; background-size: auto 12px;}
+
+
+/* ÐéÄâµ¯¿ò */
+.m-prompt-box{position: fixed; left: 0; bottom: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, .7); }
+.m-prompt{
+    position: absolute; left: 50%; top: 50%; margin-left: -120px; margin-top: -50px; width:240px; height: 100px; background: #fff; border-radius: 6px; text-align: center; font-size: 16px; line-height: 50px; overflow: hidden;
+}
+.m-prompt p{border-bottom: #eaeaea solid 1px;}
+.m-prompt span{display: block; color: #4597FF; background: #fff;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+}
+.m-prompt span:active{background: #f0f0f0;}
+
+
+
+/* ¼ÓÔØ¸ü¶à */
+
+.api-loading{padding: 10px 15px; font-size: 12px; color: #666; background: #fff; text-align: center;}
+.loading{height: 30px; background: url('/static/imgs/api/loading.gif') no-repeat center center; background-size: 30px 30px;}

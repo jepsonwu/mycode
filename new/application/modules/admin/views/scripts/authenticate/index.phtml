@@ -1,0 +1,274 @@
+<table id="authenticate_list"></table>
+<div id="authenticate_list_toolbar"></div>
+<div id="authenticate_view_window"></div>
+<div id="authenticate_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="authenticateObj.containerObj.edatagrid('reload');">刷新</a>
+    <select name="searchType">
+        <option value="AuthenticateID">认证ID</option>
+        <option value="UserName">申请用户</option>
+    </select><input type="text" value="" name="searchTypeValue" size="20" />  &nbsp;&nbsp;
+
+   认证类型：
+    <select name="AuthenticateType">
+        <option value="0">所有</option>
+        <option value="1">个人</option>
+        <option value="2">理财师</option>
+        <option value="3">企业</option>
+        <option value="4">机构</option>
+    </select>&nbsp;&nbsp;
+    审核状态：
+    <select name="Status">
+        <option value="-1">所有</option>
+        <option value="0">待审核</option>
+        <option value="1">已通过</option>
+        <option value="2">已拒绝</option>
+    </select>&nbsp;&nbsp;
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchauthenticateList()" iconCls="icon-search">搜索</a>
+</div>
+
+<div id="img_dialog" class="easyui-dialog" title="img" closed="true" data-options="modal:true"
+     style="width:700px;height:500px;">
+
+</div>
+<script type="text/javascript">
+    $("#authenticate_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchauthenticateList();
+        }    
+    });
+    
+    $("#authenticate_list_searcher_container select[name]").change(function(){
+        toSearchauthenticateList();
+    });
+    
+    function toSearchauthenticateList(flag)
+    {
+        var searchType       = $("#authenticate_list_searcher_container select[name='searchType']").val();
+        var searchTypeValue  = $("#authenticate_list_searcher_container input[name='searchTypeValue']").val();
+        var AuthenticateType = $("#authenticate_list_searcher_container select[name='AuthenticateType']").val();
+        var Status           = $("#authenticate_list_searcher_container select[name='Status']").val();
+        var start_date       = $("#authenticate_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#authenticate_list_searcher_container input[name='end_date']").val();
+        
+        authenticateObj.containerObj.datagrid('load', {
+            searchType:searchType,
+            searchTypeValue:searchTypeValue,
+            AuthenticateType:AuthenticateType,
+            Status:Status,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var authenticateObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'authenticate','action'=>'list'));?>',
+        'checkUrl':'<?php echo $this->url(array('controller'=>'authenticate','action'=>'check'));?>',
+         'viewUrl':'<?php echo $this->url(array('controller'=>'authenticate','action'=>'qualification-list'));?>',
+        // 'reportUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'report-list'));?>',
+        // 'adsLink':'<?php echo $this->url(array('controller'=>'authenticate','action'=>'ads-link'));?>',
+
+        'containerObj':$("#authenticate_list"),
+        'viewWindowObj':$("#authenticate_view_window"),
+        'imgWindowObj': $("#img_dialog"),
+        
+        'selfName':'authenticateObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //审核认证信息
+        checkHandler:function(id,status){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.checkUrl+'?authenticate_id='+id+'&status='+status,
+                'width':300,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'审核认证信息',
+                'onLoad':function(){
+                    $("#authenticate_check_form_save").off().on('click',function(){
+                        $("#authenticate_check_form").attr('action',_THIS_.checkUrl).submit();
+                        $("#authenticate_check_form_save").attr("disabled",true);  
+                    });
+
+                    $("#authenticate_check_form_close").off().on('click',function(){
+                        _THIS_.viewWindowObj.window('close');
+                    });
+                    
+                    $("#authenticate_check_form").myForm(function(data){
+                        if(data.flag == 1){                
+                             _THIS_.containerObj.datagrid('reload');
+                             $("#authenticate_check_form_save").attr("disabled",false);
+                            _THIS_.viewWindowObj.window('close');
+
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                        
+                }
+            });
+        },
+
+        //查看理财师资质
+        'viewHandler':function(authenticate_id){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.viewUrl+'?authenticate_id='+authenticate_id,
+                'width':800,
+                'height':600,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'理财师资质详情',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+        //显示图片
+        'showImg': function (url) {
+            this.imgWindowObj.html('<img src="' + url + '"/>').dialog('open');
+        },
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'AuthenticateID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#authenticate_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'AuthenticateID',title:'认证ID',width:50}, 
+                        {field:'UserName',title:'申请用户',width:60},
+                        {field:'AuthenticateType',title:'认证类型',width:80,formatter:function(value,rec,index){
+                                var type = '';
+                                switch(value){
+                                    case '1':
+                                        type = '个人';
+                                        break;
+                                    case '2':
+                                        var color="";
+                                        if(rec.qualifiteChecking>0){
+                                            color="#CA2020";
+                                        }
+                                        type = '理财师  <a href="javascript:void(0);" style="color:'+color+'" onclick="'+_THIS_.selfName+'.viewHandler(\''+rec.AuthenticateID+'\')">查看</a>';
+                                        break;
+
+                                    case '3':
+                                        type = '企业';
+                                        break;
+                                    case '4':
+                                        type = '机构';
+                                        break;
+                                }
+                                return type;
+                            }
+
+                        },
+                        {field:'OperatorName',title:'运营者姓名',width:80},  
+                        {field:'IDCard',title:'运营者身份证号码',width:150},                       
+                        {field:'IDPhoto',title:'身份证照片',width:80,formatter: function (value, rec, index) {
+                                if(value.length>0){
+                                    return '<a href="'+rec.IDPhoto+'" target="_blank">查看身份证照</a>'; 
+                                }else{
+                                    return '';
+                                }                   
+                            }
+                        },
+                        {field:'MobileNumber',title:'运营者手机号',width:100}, 
+                        {field:'InauguralCompany',title:'就职公司',width:100},               
+                        {field:'Province',title:'省',width:60},
+                        {field:'City',title:'市',width:60},
+                        {field:'Area',title:'区',width:60},
+                        {field:'Address',title:'具体地址',width:100},
+
+                        {field:'BusinessName',title:'企业名称',width:100},
+                        {field:'BusinessLicenseNumber',title:'营业执照注册号',width:100},
+                        {field:'BusinessLicenseImage',title:'营业执照图片',width:80,formatter: function (value, rec, index) {
+                                if(value.length>0){
+                                    return '<a href="'+rec.BusinessLicenseImage+'" target="_blank">查看营业执照</a>';  
+                                }else{
+                                    return '';
+                                }                   
+                            }
+                        },
+                        {field:'OrganizationName',title:'机构名称',width:100},
+                        {field:'OrganizationCode',title:'机构代码',width:100},
+                        {field:'OrganizationImage',title:'机构证件',width:80,formatter: function (value, rec, index) {
+                                if(value.length>0){
+                                    return '<a href="'+rec.OrganizationImage+'" target="_blank">查看机构证件</a>';
+                                }else{
+                                    return '';
+                                }                   
+                            }
+                        },
+                        {field:'FoundedTime',title:'企业/机构成立时间',width:120},  
+                        {field:'UpdateTime',title:'提交认证时间',width:120},
+                        {field:'DataTime',title:'审核时间',width:120},
+                        {field:'FailuresNum',title:'失败次数',width:60},                       
+                        {field:'Status',title:'审核状态',width:60,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '待审核';
+                                        break;
+                                    case '1':
+                                        status = '已通过';
+                                        break;
+                                    case '2':
+                                        status = '已拒绝';
+                                        break;
+
+                                }
+                                return status;
+                            }
+                        }, 
+                        {field:'Remark',title:'备注',width:100},
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                            var c= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.checkHandler(\''+rec.AuthenticateID+'\',\''+rec.Status+'\')">';
+                                c += '<span class="l-btn-left">审核</span></a>';
+                                if(rec.Status!=1){
+                                    return c;
+                                }                 
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#authenticate_list_toolbar").append($("#authenticate_list_searcher_container"));
+            },    
+};
+authenticateObj.init();
+</script>

@@ -1,0 +1,354 @@
+<!DOCTYPE html >
+<html>
+<head>
+<title><?php echo $this->detailInfo['ColumnTitle'];?></title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪-活动详情" >
+<meta name="description" content="财猪-活动详情" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta content="telephone=no" name="format-detection" >
+<meta name="member" content="<?php echo $this->detailInfo['MemberID'];?>" >
+<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0412" >
+
+<style>
+body{-webkit-user-select: initial; user-select: initial; padding: 0 0 50px;}
+.activity-box{font-size: 16px;}
+
+.boxh{height: 10px; background: #f2f2f2;}
+
+.ac-coverbox > img{width: 100%; min-height: 120px; max-height: 300px;}
+.ac-cover{position: absolute; right: 20px; bottom: 12px; width: 30px; height: 30px;}
+.ac-cover img{width: 100%; height: 100%; border-radius: 25px;}
+.ac-cover i{position: absolute; left: 0; bottom: 0; width: 28px; height: 12px; line-height: 12px; background: url('/static/imgs/api/icon-creator.png') no-repeat; background-size: 100% 100%; font-size: 12px; color: #fff; white-space: nowrap; font-style: normal;}
+.ac-cover span{ display: block; -webkit-transform: scale(.7, .7); transform: scale(.7, .7); position: relative; left: -2px;}
+
+.ac-header{padding: 15px 12px 0;}
+.activity-tit{font-size: 20px; }
+
+.activity-info{margin: 10px 0 0; line-height: 24px; color: #666;}
+.activity-info img{width: 24px; height: 24px; border-radius: 16px; margin: 0 6px 0 0; vertical-align: top;}
+.activity-info strong{color: #576B95; margin: 0 6px 0 0; font-weight: 100;}
+
+.activity-list{padding: 6px 15px; margin: 10px 0 0; line-height: 22px; color: #333;}
+.activity-list li{padding: 16px 0 16px 20px; background-repeat: no-repeat; background-position: 2px 21px; background-size: 12px; border-top: #e6e6e6 solid 1px; font-weight: bold;}
+.al-time{background-image: url('/static/imgs/api/activity-time.png');}
+.al-area{background-image: url('/static/imgs/api/activity-area.png');}
+.al-member{background-image: url('/static/imgs/api/activity-member.png');}
+.al-member > span{color: #f00; border: solid 1px; padding: 2px 5px; font-size: 12px; border-radius: 3px; margin: 0 0 0 8px;}
+.al-time strong{color: #ff8b26; font-size: 12px; padding: 2px 2px; border: #ff8b26 solid 1px; border-radius: 3px; font-weight: 100; margin: 0 0 0 2px;}
+
+.ac-boxtit{margin: 0 15px; padding: 16px 0 18px; line-height: 20px; border-bottom: #e6e6e6 solid 1px;}
+.activity-box{padding: 10px 15px; line-height: 22px;}
+.activity-box img{max-width: 100%;}
+
+.ac-footer{position: fixed; width: 100%; bottom: 0; background: #f5f5f5; line-height: 50px; text-align: center; color: #666; font-size: 16px;}
+.acf-enroll{display: -webkit-box; display: box;}
+.acf-enroll.hide{display: none;}
+.acf-enroll > li{padding: 0 15px; -webkit-box-flex: 1; box-flex: 1; text-align: left; color: #fff; text-align: center; background: #ff2641;}
+.acf-enroll > li.disabled{background: #999;}
+.acf-end{background: #999; line-height: 50px; color: #fff; font-weight: bold;}
+
+.article-author-list{ display: -webkit-box; display: box; padding: 10px 0; }
+.article-author-list.hide{display: none;}
+.au-avatar{ width: 40px; padding: 0 0 0 15px;}
+.au-info{-webkit-box-flex: 1; box-flex: 1; padding: 0 6px 0 10px;}
+.au-info p{height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.au-info span{margin: 0 8px 0 0;}
+.au-author{width: 60px; padding: 0 15px 0 0; line-height: 40px; height: 40px; color: #fff; /*background: url('/static/imgs/api/activity-arrow-right.png') no-repeat 60px 14px; background-size: 6px 12px;*/ white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.au-author > span{display: block; margin: 6px 0 0; line-height: 30px; background: #ff2641; border-radius: 4px; text-align: center;}
+.au-avatar img{width: 40px; height: 40px; border-radius: 20px;}
+.au-info > strong{display: block; color: #333; line-height: 20px;}
+.au-info > span{color: #808080;}
+.auto-author strong{line-height: 40px;}
+
+.enrolltip-ibox{position: absolute; top: 26%; left: 50%; width: 80%; margin-left: -40%; text-align: center; background: #fff; padding: 25px 0 15px; border-radius: 5px;}
+.enrolltip-ibox > span{display: inline-block; width: 80px; height: 80px; background: url('/static/imgs/api/icon-tip-enroll.png') no-repeat center center;}
+.enrolltip-ibox > p{line-height: 25px; padding: 0 0 6px; font-size: 12px; color: #666;}
+.enrolltip-ibox > i{display: inline-block; font-style: normal; border-radius: 3px; background: #f2f2f2; border: #e6e6e6 solid 1px; width: 150px; line-height: 30px;}
+
+.ac-status{color: #ff2641; font-weight: bold; line-height: 20px ; padding: 10px 0 0;}
+
+@media(max-height: 740px){
+    .activity-tit{font-weight: bold;}
+}
+
+/* ios6 - h667 */
+@media(max-height: 670px){
+    .activity-tit{font-weight: bold;}
+    .al-time strong{font-weight: bold;}
+}
+
+/* ios5 - h568 */
+@media(max-height: 570px){
+    .activity-tit{font-weight: 100;}
+    .al-time strong{font-weight: 100;}
+}
+
+/* ios4 - h480 */
+@media(max-height: 480px){
+    .ac-footer{font-size: 14px;}
+}
+
+
+@media(max-width: 350px){
+    .ac-footer{font-size: 14px;}
+}
+
+</style>
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+
+<section id="app00">
+
+    <figure class="ac-coverbox p-rela">
+        <span class="ac-cover boxapp" data-type="userinfo" data-id="{{*memberId}}"><img :src="acAvatar | filterAvatar" alt="avatar"><i><span>发起人</span></i></span>
+        <img id="share-pic" :src="acCover">
+    </figure>
+    <header class="ac-header">
+        <h1 class="activity-tit">{{*acTitle}}</h1>
+        <p class="ac-status" :class="{hide: footerShowFlag}">{{{acStatusStr}}}</p>
+        <!--<p class="activity-info boxapp" data-type="column" data-id="{{acColumnId}}">
+            <img class="avatar" :src="acColumnAvatar | filterAvatar" >
+            <strong class="color">{{*acColumnName}}</strong>
+            <span>{{*acCreateTime}}</span>
+        </p>-->
+    </header>
+
+    <ul class="activity-list">
+        <li class="al-time">{{{*acInfoDate}}}</li>
+        <li class="al-area">{{{*acInfoArea}}}</li>
+        <li class="al-member">{{{*acInfoJoin}}}</li>
+    </ul>
+
+    <div class="boxh"></div>
+
+    <ul class="article-author-list boxapp" data-type="column" data-id="{{*acColumnId}}" :class="{hide: isSubscribe}">
+        <li class="au-avatar" >
+            <img :src="acColumnAvatar | filterAvatar" alt="avatar">
+        </li>
+        <li class="au-info" >
+            <strong>{{*acUserName}}</strong>
+            <p>{{*acColumnDes}}</p>
+
+        </li>
+        <li class="au-author">
+            <span>+ 关注</span>
+        </li>
+    </ul>
+
+    <div class="boxh"></div>
+
+    <section>
+        <h3 class="ac-boxtit">活动详情</h3>
+        <div class="activity-box"><?php echo $this->detailInfo['Content'];?></div>
+    </section>
+
+    <footer class="ac-footer">
+        <ul class="acf-enroll" :class="{hide: !footerShowFlag}">
+            <li @click="doEnroll">{{{acStatusStr}}}</li>
+        </ul>
+        <!--<ul class="acf-end" :class="{hide: !footerShowFlag}">
+            <li>报名截止</li>
+        </ul>-->
+    </footer>
+
+</section>
+
+<div id="enrolltip" class="m-prompt-box hide">
+    <div class="enrolltip-ibox">
+        <span></span>
+        <p>活动现场需要使用财猪扫码签到</p>
+        <i class="boxlink" data-url="http://m.caizhu.com/down/down-caizhu/">下载财猪</i>
+    </div>
+</div>
+
+<div id="define-prompt"><app-defineprompt :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160405"></script>
+
+<script src="/static/js/api/image-show.js?date=15120219"></script>
+<script>
+
+var enrollFlag = '<?php echo $this->detailInfo['EnrollStatus'];?>' || '';   // 0 已报名, 1 我要报名, 2 报名截止, 3 报名已满
+var articleSystem = function(){if(memberId != '8527' && memberId != '6131' && memberId != '22453'){return false}return true;}();
+//var isDelFlag = '<?php echo $this->isDel;?>' > 0 ? true : false;
+//isDelFlag = parseInt(isDelFlag) > 0 ? true : false;
+//enrollFlag = 1;
+
+var enrollTipFlag = parseUrl('enroll') == 1 ? true : false,
+
+    picTail = '?imageView2/0/w/100';
+
+
+var currentId = '<?php echo $this->detailInfo['AID'];?>',
+    memberId = '<?php echo $this->detailInfo['MemberID'];?>',
+
+    isSubscribe = '<?php echo $this->detailInfo['IsSubscribe'];?>' == 0 ? false : true,
+
+    acTitle = '<?php echo $this->detailInfo['Title'];?>',
+    acAvatar = '<?php echo $this->detailInfo['Avatar'];?>' + picTail,
+    acUserName = '<?php echo $this->detailInfo['UserName'];?>',
+    acCover = '<?php echo $this->detailInfo['Cover'];?>',
+
+    acColumnId = '<?php echo $this->detailInfo['ColumnID'];?>',
+    acColumnAvatar = '<?php echo $this->detailInfo['ColumnAvatar'];?>' + picTail,
+    acColumnName = '<?php echo $this->detailInfo['ColumnTitle'];?>',
+    acColumnDes = '<?php echo $this->detailInfo['Description'];?>',
+    acColumnFocus = <?php echo $this->cloumnFocusInfo;?>,      // A
+    acCreateTime = '<?php echo $this->detailInfo['CreateTime'];?>',
+
+    acInfoDate = '<?php echo $this->detailInfo['StartTime'];?>(<?php echo $this->detailInfo['week'];?>)至<?php echo $this->detailInfo['EndTime'];?>',
+    acInfoArea = '<?php echo $this->detailInfo['Province'];?>  <?php echo $this->detailInfo['City'];?> <?php echo $this->detailInfo['DetailAdress'];?>',
+    acInfoJoin = '已有<?php echo $this->detailInfo['EnrollNum'];?>人报名<span>限<?php echo $this->detailInfo['LimitNum'];?>名</span>',
+
+    acLimitTime = '<?php echo $this->detailInfo['LimitTime'];?> &nbsp;&nbsp;报名截止';
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('#share-pic');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = $('.activity-tit').text();
+        opts.shareDes = $('.activity-box').text();
+
+        var linkStr = location.href;
+        linkStr = linkStr.replace('/enroll=\d/i', '');
+        opts.shareLink = linkStr;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){}
+
+    function otherRun(){}
+
+    function commonRun() {
+
+        var urlEnroll = parseUrl('enroll') == 1 ? true : false;
+
+        var app00 = new Vue({
+            el: '#app00',
+            data: {
+                currentId: currentId,
+                memberId: memberId,
+                acTitle: acTitle,
+                acAvatar: acAvatar,
+                acUserName: acUserName,
+                acCover: acCover,
+
+                isSubscribe: isSubscribe,
+
+                enrollFlag: enrollFlag,
+
+                acColumnId: acColumnId,
+                acColumnAvatar:acColumnAvatar,
+                acColumnName: acColumnName,
+                acColumnDes: acColumnDes,
+                acColumnFocus: acColumnFocus,
+                acCreateTime: acCreateTime,
+
+                acInfoDate: acInfoDate,
+                acInfoArea: acInfoArea,
+                acInfoJoin: acInfoJoin,
+
+                acLimitTime: acLimitTime
+            },
+            computed: {
+                acStatusStr: function(){
+                    var t = this.enrollFlag;
+                    if(t == 0 || enrollTipFlag) return '已报名';
+                    else if(t == 1) return '立即报名';
+                    else if(t == 2) return '报名截止';
+                    else if(t == 3) return '已报满';
+                    else return '立即报名';
+                },
+                disabledFlag: function(){
+                    var t = this.enrollFlag;
+                    if(t == 1 && !enrollTipFlag) return false;
+                    else return true;
+                },
+                footerShowFlag: function(){
+                    var t = this.enrollFlag;
+                    if (t == 1 || t>3) return true;
+                    else false;
+
+                }
+            },
+            methods: {
+                doEnroll: function(){
+                    if(caizhuAPP){
+                        if(this.enrollFlag == 1) location.href = 'http://caizhukeyjs-enroll?id=' + this.currentId;
+                    }else{
+                        if(this.enrollFlag == 1 || this.enrollflag == 0){
+                            if(enrollTipFlag){
+                                VMPrompt('已报名');
+                            }else{
+                                location.href = 'http://fe.caizhu.com/public/html/enroll.html?type=activity&id=' + this.currentId + '&from=' + encodeURIComponent(location.href);
+                            }
+
+                        }
+                    }
+                }
+            },
+            compiled: function(){
+                if(urlEnroll){
+                    $('#enrolltip').removeClass(hide).click(function(){
+                        $(this).addClass(hide);
+                    });
+                }
+
+                //isDelDo();
+
+            }
+        });
+
+        function isDelDo(){
+            if(isDelFlag && caizhuAPP){
+                setTimeout(function(){
+                    VMPrompt('该活动已被删除', function(){location.href = 'http://caizhukeyjs-columnjump?id=' + acColumnId;});
+                }, 3000);
+            }
+        }
+
+    }
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+        var demo = ImagesShow.init({elem: '.activity-box'});
+    }, false)
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>内容已被删除</title>
+<meta charset="utf-8" >
+<meta name="keywords" content="内容已被删除" >
+<meta name="description" content="内容已被删除" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta content="telephone=no" name="format-detection" >
+<!--<link rel="stylesheet" href="/static/css/api/m-main.css" >-->
+
+<style>
+    *{margin: 0; padding: 0; list-style: normal; }
+    html, body{height: 100%;}
+    .content-empty{width: 100%; height: 100%; background: url('/static/imgs/api/content-empty.png') no-repeat center 35%; background-size: 192px auto; }
+
+body{background: #fff;}
+
+</style>
+
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<div class="content-empty"></div>
+
+<div id="define-prompt"><app-defineprompt :pmodeflag.sync="pmodeflag" :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160304"></script>
+
+<script src="/static/js/api/image-show.js?date=15120219"></script>
+
+<script>
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('#share-pic');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = '财猪提醒';
+        opts.shareDes = '内容已删';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){}
+
+    function otherRun(){}
+
+    function commonRun() {
+
+        if(caizhuAPP) createMeta.menu('false');
+
+    }
+
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<table id="fiance_list" style="width:800px;height:600px"></table>
+<div id="finance_operate_window"></div>
+
+<div id="finance_list_toolbar"></div>
+<div id="fiance_list_searcher_container">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="financeManageObj.addOperateHandler();">入账/扣款</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="financeManageObj.containerObj.edatagrid('reload');">刷新</a>
+	<select name="numberType">
+		<option value="MemberID">会员编号</option>
+		<option value="RelationID">交易编号</option>
+    </select>&nbsp;<input type="text" value="" name="number" size="10" />&nbsp;
+		收支类型:	<select name="Income-Payout">
+			<option value="0">所有</option>
+			<option value="1">收入</option>
+			<option value="2">支出</option>
+		</select>
+		明细类型:	<select name="FinanceType">
+			<option value="0">所有</option>
+			<option value="1">充值</option>
+			<option value="2">提现</option>
+            <option value="3">财猪红包</option>
+            <option value="4">观点打赏</option>
+            <option value="5">文章付费</option>
+            <option value="6">文章打赏</option>
+            <option value="7">活动付费</option>
+            <option value="8">转账</option>
+            <option value="20">退款</option>
+		</select>
+		金额:
+		<input type="text" name="start_amount" size="8"/>
+		至&nbsp;<input type="text" name="end_amount" size="8"/>
+		时间:
+		<input class="easyui-datebox" type="text" name="start_date" value="2016-01-01" data-options="onSelect:toSearchFinanceIndex" size="20"></input>
+		至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="<?php echo date('Y-m-d');?>" data-options="onSelect:toSearchFinanceIndex" size="20"></input>
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchFinanceIndex()" iconCls="icon-search">搜索</a>
+</div>
+<script type="text/javascript">
+    //回车查询
+    $("#fiance_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchFinanceIndex();
+        }
+    });
+
+    $("#fiance_list_searcher_container select[name]").change(function(){
+
+        toSearchFinanceIndex();
+    });
+
+    //执行查询
+    function toSearchFinanceIndex()
+    {
+        var numberType = $("#fiance_list_searcher_container select[name='numberType']").val();
+        var number = $("#fiance_list_searcher_container input[name='number']").val();
+        var Income_Payout = $("#fiance_list_searcher_container select[name='Income-Payout']").val();
+        var FinanceType = $("#fiance_list_searcher_container select[name='FinanceType']").val();
+        var start_amount = $("#fiance_list_searcher_container input[name='start_amount']").val();
+        var end_amount = $("#fiance_list_searcher_container input[name='end_amount']").val();
+        var start_date = $("#fiance_list_searcher_container input[name='start_date']").val();
+        var end_date = $("#fiance_list_searcher_container input[name='end_date']").val();
+
+        financeManageObj.containerObj.datagrid('load', {
+                                                        start_date: start_date,
+                                                        end_date: end_date,
+                                                        start_amount:start_amount,
+                                                        end_amount:end_amount,
+                                                        numberType: numberType,
+                                                        number: number,
+                                                        Income_Payout:Income_Payout,
+                                                        FinanceType:FinanceType,
+            });
+    }
+
+    var financeManageObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'list'));?>',
+		'operateUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'add-detail'));?>',
+				
+		'containerObj':$("#fiance_list"),
+		'addWindowObj':$("#finance_operate_window"),
+				
+		'selfName':'financeManageObj',
+
+		'init':function(){
+			this.showData();
+		},
+
+		//会员入账/扣款
+		addOperateHandler:function(){
+			var _THIS_ = this;
+			_THIS_.addWindowObj.window({
+                'href':_THIS_.operateUrl,
+                'width':430,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'会员入账/扣款',
+                'onLoad':function(){
+                    $("#finance_add_form_save").off().click(function(){
+                        if($("#finance_add_form input[name='member_id']").val()==""){
+                            $.messager.alert("提示信息",'会员编号不能为空!','error');return false;
+                        }
+                        if($("#finance_add_form input[name='amount']").val()==""){
+                            $.messager.alert("提示信息",'金额不能为空!','error');return false;
+                        }
+                        $("#finance_add_form").attr('action',_THIS_.operateUrl).submit();
+                    });
+                    $("#finance_add_form_close").off().click(function(){
+                        _THIS_.addWindowObj.window('close');
+                    });
+                    $("#finance_add_form").myForm(function(data){
+                        if(data.flag == 1){
+                            _THIS_.addWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                }
+			});
+		},
+		
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+                    pageSize: 50,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:true,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+					idField:'AmountLogID',
+	
+				    url:_THIS_.loadUrl,
+                    toolbar:'#finance_list_toolbar',
+
+				    //设置列   
+				    columns:[[   
+				        {field:'AmountLogID',title:'编号',sortable:true,width:80},   
+				        {field:'CreateDate',title:'时间',width:130},
+				        {field:'MemberID',title:'会员',width:80},
+                        {field:'Email',title:'邮箱',width:150},
+				        {field:'TypeName',title:'明细类型',width:100},
+				        {field:'Payout',title:'支出',align:'right',width:90,formatter:function(value,rowData,rowIndex){
+                                if(rowData.Income_Payout==2){
+                                    return "￥"+rowData.Amount;
+                                }else{
+                                    return "--";
+                                }
+                        }},
+				        {field:'Income',title:'收入',align:'right',width:90,formatter:function(value,rowData,rowIndex){
+                                if(rowData.Income_Payout==1){
+                                    return "￥"+rowData.Amount;
+                                }else{
+                                    return "--";
+                                }
+                        }},
+				        {field:'Balance',title:'余额',align:'right',width:100,formatter:addCurrencyUnit},
+				        {field:'RelationID',title:'交易编号',width:80},
+				        {field:'Ip',title:'IP',width:80},
+				        {field:'Remark',title:'备注',width:200}
+				    ]]
+				});
+				
+				//设置分页
+				var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+                $("#finance_list_toolbar").append($("#fiance_list_searcher_container"));
+			}
+    };
+    financeManageObj.init();
+</script>

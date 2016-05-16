@@ -1,0 +1,199 @@
+<table id="famous_list"></table>
+<div id="famous_list_toolbar"></div>
+<div id="famous_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="famousObj.containerObj.edatagrid('reload');">刷新</a> 
+
+    用户ID：
+    <input type="text" name = "MemberID"  size="30" value="" />&nbsp;&nbsp;
+    显示理财号：
+    <select name="IsShowColumn">
+        <option value="-1">所有</option>
+        <option value="0">不显示</option>
+        <option value="1">显示</option>
+    </select>&nbsp;&nbsp;
+    显示询财主页：
+    <select name="IsShowCounsel">
+        <option value="-1">所有</option>
+        <option value="0">不显示</option>
+        <option value="1">显示</option>
+    </select>&nbsp;&nbsp;
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchFamousList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="famous_view_window"></div>
+
+<script type="text/javascript">
+    $("#famous_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchFamousList();
+        }    
+    });
+    
+    $("#famous_list_searcher_container select[name]").change(function(){
+        toSearchFamousList();
+    });
+    
+    function toSearchFamousList(flag)
+    {
+        var MemberID       = $("#famous_list_searcher_container input[name='MemberID']").val();
+        var IsShowColumn   = $("#famous_list_searcher_container select[name='IsShowColumn']").val();
+        var IsShowCounsel  = $("#famous_list_searcher_container select[name='IsShowCounsel']").val();
+        var start_date     = $("#famous_list_searcher_container input[name='start_date']").val();
+        var end_date       = $("#famous_list_searcher_container input[name='end_date']").val();
+        
+        famousObj.containerObj.datagrid('load', {
+            MemberID:MemberID,
+            IsShowColumn:IsShowColumn,
+            IsShowCounsel:IsShowCounsel,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var famousObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'famous','action'=>'list'));?>',
+        'editUrl':'<?php echo $this->url(array('controller'=>'famous','action'=>'edit'));?>',
+        'delUrl':'<?php echo $this->url(array('controller'=>'famous','action'=>'del'));?>',
+
+        'containerObj':$("#famous_list"),
+        'viewWindowObj':$("#famous_view_window"),
+        
+        'selfName':'famousObj',
+
+        'init':function(){
+            this.showData();
+        },
+       
+        //编辑课时
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.viewWindowObj.window({
+                        'href':_THIS_.editUrl+'?famous_id='+id,
+                        'width':450,
+                        'height':200,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑名人堂',
+                        'onLoad':function(){
+                            $("#edit_famous_form_save").off().on('click',function(){
+                                $("#edit_famous_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $("#edit_famous_form_close").off().on('click',function(){
+                                _THIS_.viewWindowObj.window('close');
+                            });
+                            
+                            $("#edit_famous_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.viewWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+
+            //删除
+            'deleteHandler':function(id){
+                            var _THIS_ = this;
+                            $.messager.confirm('删除','确认要删除吗？', function(d){
+                                if(d) {
+                                    $.ajax({
+                                            url:_THIS_.delUrl,
+                                            type: "POST",
+                                            data: {id:id},
+                                            dataType: 'json',
+                                            success: function(ret){
+                                                if(ret.flag > 0) {
+                                                    $.messager.alert("提示信息",'删除成功！','info');
+                                                    _THIS_.containerObj.datagrid('reload');
+                                                } else{
+                                                    $.messager.alert("提示信息",ret.msg,'error');
+                                                }
+                                            }
+                                    });
+                                }
+                            });
+                        },
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'FID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#famous_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'FID',title:'名人堂ID',width:70}, 
+                        {field:'MemberID',title:'用户ID',width:70},
+                        {field:'UserName',title:'财猪号',width:100},
+                        {field:'DetailUrl',title:'链接地址',width:150}, 
+                        {field:'ImgUrl',title:'背景图片',width:100,formatter:function(value,rec,index){
+                                if(value){
+                                    return '<img src="'+value+'?imageView2/0/w/200/h/200"/>';
+                                }
+                            }
+                        },
+                        {field:'IsShowColumn',title:'是否显示理财号',width:120,formatter:function(value,rec,index){
+                                var status = '不显示';
+                                if(value==1){
+                                    status =  '显示';
+                                }
+                                return status;
+                            }
+                        },
+                        {field:'IsShowCounsel',title:'是否显示询财主页',width:120,formatter:function(value,rec,index){
+                                var status = '不显示';
+                                if(value==1){
+                                    status =  '显示';
+                                }
+                                return status;
+                            }
+                        },        
+                        {field:'AddTime',title:'添加时间',width:150},  
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.FID+'\')">';
+                                    e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                var d = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.deleteHandler(\''+rec.FID+'\')">';
+                                    d += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">删除</span></span></a>';
+                                return e + d;          
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#famous_list_toolbar").append($("#famous_list_searcher_container"));
+            },    
+};
+famousObj.init();
+</script>

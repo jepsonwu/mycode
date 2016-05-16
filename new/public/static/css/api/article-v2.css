@@ -1,0 +1,16 @@
+.av2-top{height: 150px; background: url('/static/imgs/api/article-top-v2.png') no-repeat; background-size: 100% 100%; overflow: hidden;}
+.av2-tit{margin: 66px 10px; line-height: 28px; font-size: 22px; height: 56px; overflow: hidden; color: #fff; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
+.av2-box{margin: 15px 15px 0; padding: 0 0 10px;}
+
+.av2-userinfo{display: -webkit-box; display: box; height: 30px;}
+.av2-userinfo img{width: 22px; height: 22px; margin: 9px 0 0;}
+.av2-userinfo > div{-webkit-box-flex: 1; box-flex: 1; padding: 0 0 0 10px;}
+
+.av2-ui-det{line-height: 40px; height: 40px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.av2-ui-det strong{padding: 0 5px 0 0; border-right: solid 1px; color: #576B95; margin: 0 5px 0 0; font-weight: 100;}
+.av2-ui-det > div{display: inline;}
+
+.av2-ui-det.active strong{display: block; line-height: 20px; border: none; margin: 0;}
+.av2-ui-det.active > div{display: block; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+
+

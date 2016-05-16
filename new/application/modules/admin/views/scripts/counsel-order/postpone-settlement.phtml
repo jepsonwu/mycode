@@ -1,0 +1,41 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 30px;align:center;">
+
+		<form id="counsel_order_postponeSettlement_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<tr>
+					<th width="20%">订单号：</th>
+					<td width="80%"><?php echo $this->order_info['OrderNo'] ?></td>
+				</tr>
+				<tr>
+					<th width="20%">延期天数：</th>
+					<td width="80%">
+						<select name="postpone_time">
+							<?php for ($i = 1; $i <= 7; $i++) {
+								echo "<option value='{$i}'>{$i}天</option>";
+							} ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">延期原因：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="reason"
+					                       value=""
+					                       data-options="required:true"
+					                       size="30"/></td>
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+						<input type="hidden" name="oid" value="<?php echo $this->order_info['OID'] ?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="counsel_order_postponeSettlement_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="counsel_order_postponeSettlement_form_close">关闭</a>
+	</div>
+
+</div>

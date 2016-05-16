@@ -1,0 +1,454 @@
+<table id="member_list"></table>
+<div id="member_list_toolbar"></div>
+<div id="member_view_window"></div>
+<div id="staff_dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" onclick="staffSave()">保存</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+	   onclick="javascript:$('#staffAdd-dlg').dialog('close')">取消</a>
+</div>
+<div id="member_list_searcher_container">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true"
+	   onclick="memberObj.addHandler();">添加</a>
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true"
+	   onclick="memberObj.containerObj.edatagrid('reload');">刷新</a>
+
+	<select name="searchType1">
+		<option value="MemberID">会员编号</option>
+		<option value="UserName">用户名</option>
+		<option value="Email">E-mail</option>
+		<option value="MobileNumber">手机号码</option>
+	</select><input type="text" value="" name="searchType1Name" size="20"/>
+
+	邮箱验证：<select name="searchType2">
+		<option value="">全部</option>
+		<option value="Pending">未验证</option>
+		<option value="Verified">验证通过</option>
+		<option value="Failure">验证失败</option>
+	</select>
+
+	手机验证：<select name="searchType3">
+		<option value="">全部</option>
+		<option value="Pending">未验证</option>
+		<option value="Verified">验证通过</option>
+		<option value="Failure">验证失败</option>
+	</select>
+
+	用户状态：<select name="searchType4">
+		<option value="-1">全部</option>
+		<option value="1">启用</option>
+		<option value="0">禁用</option>
+	</select>
+
+	注册时间：
+	<input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>
+	<a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchMemberList()"
+	   iconCls="icon-search">搜索</a>
+</div>
+
+<script type="text/javascript">
+	num = 0;
+	$("#member_list_searcher_container input[name]").keydown(function (event) {
+		if (event.keyCode == 13) {
+			toSearchMemberList();
+		}
+	});
+
+	$("#member_list_searcher_container select[name]").change(function () {
+		toSearchMemberList();
+	});
+
+	function toSearchMemberList(flag) {
+		var fieldOneName = $("#member_list_searcher_container select[name='searchType1']").val();
+		var fieldOneValue = $("#member_list_searcher_container input[name='searchType1Name']").val();
+		var emailStatus = $("#member_list_searcher_container select[name='searchType2']").val();
+		var mobileStatus = $("#member_list_searcher_container select[name='searchType3']").val();
+		var status = $("#member_list_searcher_container select[name='searchType4']").val();
+		var start_date = $("#member_list_searcher_container input[name='start_date']").val();
+		var end_date = $("#member_list_searcher_container input[name='end_date']").val();
+		// if(flag == 110){
+		//     var tmpUrl = '/admin/member/list?'
+		//                 +'start_date='+start_date
+		//                 +'&end_date='+end_date
+
+		//                    +'&fieldOneName='+fieldOneName
+		//                    +'&fieldOneValue='+fieldOneValue
+		//                 ;
+		//     window.open(tmpUrl,'newwindow','height=100,width=400,top=0,left=0,toolbar=no status=no');
+		//     return false;
+		// }
+
+		memberObj.containerObj.datagrid('load', {
+			fieldOneName: fieldOneName,
+			fieldOneValue: fieldOneValue,
+			emailStatus: emailStatus,
+			mobileStatus: mobileStatus,
+			status: status,
+			start_date: start_date,
+			end_date: end_date
+		});
+	}
+
+	var memberObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'member','action'=>'list'));?>',
+		'viewUrl': '<?php echo $this->url(array('controller'=>'member','action'=>'view'));?>',
+		'addUrl': '<?php echo $this->url(array('controller'=>'member','action'=>'add'));?>',
+		'adsLink': '<?php echo $this->url(array('controller'=>'member','action'=>'ads-link'));?>',
+		'addBestUrl': '<?php echo $this->url(array('controller'=>'member','action'=>'add-best'));?>',
+		'addFamousUrl': '<?php echo $this->url(array('controller'=>'member','action'=>'add-famous'));?>',
+
+		'containerObj': $("#member_list"),
+		'statusWindowObj': $("#member_view_window"),
+
+		'editLevelObj': $("#level_edit_window"),
+
+		'selfName': 'memberObj',
+
+		//更改用户等级
+		'statuspass': function (id, status) {
+			var _THIS_ = this;
+
+			$.messager.confirm('', '确定要更改该用户等级?', function (d) {
+				if (d) {
+					$.ajax({
+						url: _THIS_.updateUrl,
+						type: 'POST',
+						data: {member_id: id, status: status},
+						dataType: 'json',
+						success: function (ret) {
+							if (ret.flag) {
+								_THIS_.containerObj.datagrid('reload');
+							} else {
+								$.messager.alert("提示信息", ret.msg, 'error');
+							}
+						}
+					});
+				}
+			});
+		},
+
+		'init': function () {
+			this.showData();
+		},
+
+		//添加用户
+		addHandler: function () {
+			var _THIS_ = this;
+			_THIS_.statusWindowObj.window({
+				'href': _THIS_.addUrl,
+				'width': 400,
+				'height': 150,
+				'modal': true,
+				'resizable': false,
+				'title': '添加用户',
+				'onClose': function () {
+					_THIS_.statusWindowObj.window('destroy');
+				},
+				'onLoad': function () {
+					$("#member_add_form_save").off().on('click', function () {
+						$("#member_add_form").attr('action', _THIS_.addUrl).submit();
+
+					});
+
+					$("#member_add_form_close").off().on('click', function () {
+						_THIS_.statusWindowObj.window('destroy');
+					});
+					$("#member_add_form").myForm(function (ret) {
+						if (ret.flag == 1) {
+							_THIS_.statusWindowObj.window('destroy');
+							_THIS_.containerObj.datagrid('reload');
+						} else {
+							$.messager.alert("提示信息", ret.msg, 'error');
+						}
+					});
+
+				}
+			});
+		},
+
+
+		//修改
+		'editLevelHandler': function (id) {
+			var _THIS_ = this;
+			_THIS_.editLevelObj.window({
+				'href': _THIS_.updateLevelUrl + '?member_id=' + id,
+				'width': 400,
+				'height': 300,
+				'modal': true,
+				'resizable': false,
+				'title': '编辑会员',
+				'onLoad': function () {
+
+					$("#level_update_form_save").die().live('click', function () {
+						$("#level_update_form").attr('action', _THIS_.updateLevelUrl).submit();
+						_THIS_.containerObj.datagrid('reload');
+					});
+
+					$("#level_update_form_close").die().live('click', function () {
+						_THIS_.editLevelObj.window('close');
+						_THIS_.containerObj.datagrid('reload');
+					});
+
+					$("#level_update_form").myForm(function (ret) {
+						console.info(ret);
+						if (ret.flag) {
+							alert("添加成功");
+							//$.messager.alert("提示信息", '修改成功！', 'info');
+							_THIS_.editLevelObj.window('close');
+							_THIS_.containerObj.datagrid('reload');
+						} else {
+							$.messager.alert("提示信息", ret.msg, 'error');
+						}
+					});
+				}
+			});
+		},
+
+		//添加达人
+		'addBestHandler': function (id) {
+			var _THIS_ = this;
+			_THIS_.statusWindowObj.window({
+				'href': _THIS_.addBestUrl + '?MemberID=' + id,
+				'width': 400,
+				'height': 200,
+				'modal': true,
+				'resizable': false,
+				'title': '添加达人',
+				'onLoad': function () {
+
+					$("#add_best_form_save").on('click', function () {
+						$("#add_best_form").attr('action', _THIS_.addBestUrl).submit();
+						_THIS_.containerObj.datagrid('reload');
+					});
+
+					$("#add_best_form_close").on('click', function () {
+						_THIS_.statusWindowObj.window('close');
+					});
+
+					$("#add_best_form").myForm(function (ret) {
+						if (ret.flag) {
+							$.messager.alert("提示信息", '添加成功！', 'info');
+							_THIS_.statusWindowObj.window('close');
+							_THIS_.containerObj.datagrid('reload');
+						} else {
+							$.messager.alert("提示信息", ret.msg, 'error');
+						}
+					});
+				}
+			});
+		},
+
+		//广告链接
+		adsHandler: function (id) {
+			var _THIS_ = this;
+			_THIS_.statusWindowObj.window({
+				'href': _THIS_.adsLink + '?member_id=' + id,
+				'width': 500,
+				'height': 150,
+				'modal': true,
+				'resizable': false,
+				'cache': false,
+				'title': '复制链接',
+				'onLoad': function () {
+					if (window.clipboardData) {
+						$('.copy_btn').click(function () {
+							var tempID = $(this).attr('data-value-id');
+							window.clipboardData.setData("Text", $("#" + tempID).val());
+							alert('复制成功！');
+						});
+					} else {
+						$(".copy_btn").zclip({
+							path: '/static/js/ZeroClipboard.swf',
+							copy: function () {
+								var tempID = $(this).attr('data-value-id');
+								return $("input#" + tempID).val();
+								//return $(this).prev('input').val();
+							},
+							afterCopy: function () {
+								alert('复制成功！');
+							}
+						});
+					}
+				}
+			});
+		},
+
+
+		//添加到名人堂
+		'addFamousHandler': function (id) {
+			var _THIS_ = this;
+			_THIS_.statusWindowObj.window({
+				'href': _THIS_.addFamousUrl + '?MemberID=' + id,
+				'width': 450,
+				'height': 200,
+				'modal': true,
+				'resizable': false,
+				'title': '添加到名人堂',
+				'onLoad': function () {
+
+					$("#add_famous_form_save").on('click', function () {
+						if ($("#add_famous_form input[name='DetailUrl']").val() == "") {
+							$.messager.alert("提示信息", '链接地址不能为空！!', 'error');
+							return false;
+						}
+						if (num == 0) {
+							$("#add_famous_form").attr('action', _THIS_.addFamousUrl).submit();
+							num = 1;
+						}
+					});
+
+					$("#add_famous_form_close").on('click', function () {
+						_THIS_.statusWindowObj.window('close');
+					});
+
+					$("#add_famous_form").myForm(function (ret) {
+						num = 0;
+						if (ret.flag) {
+							$.messager.alert("提示信息", '添加成功！', 'info');
+							_THIS_.containerObj.datagrid('reload');
+							_THIS_.statusWindowObj.window('close');
+						} else {
+							$.messager.alert("提示信息", ret.msg, 'error');
+						}
+					});
+				}
+			});
+		},
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				fitColumns: true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'MemberID',
+
+				url: _THIS_.loadUrl,
+				nowrap: false,
+				toolbar: '#member_list_toolbar',
+				rowStyler: function (index, row) {
+					if (row.email_verify_status != 1) {
+						//return 'background-color:red';邮箱未认证用户标红，暂时去掉
+					}
+				},
+
+				//设置列
+				columns: [[
+					{field: 'MemberID', title: '会员ID', width: 50},
+					{field: 'UserName', title: '用户名', width: 70},
+					{field: 'Email', title: '邮箱', width: 120},
+					{field: 'MobileNumber', title: '手机号码', width: 120},
+					{field: 'Name', title: '姓名', width: 70},
+					{
+						field: 'EmailVerifyStatus', title: '邮箱验证', width: 70, formatter: function (value, rec, index) {
+						var bg_color = value == 'Pending' ? '<span style="color:#CA2020">' : '<span>';
+						var text_value = <?=json_encode($this->memberEnum )?>['email_verify_status'][value];
+						return bg_color + text_value + "</span>";
+					}
+					},
+					{
+						field: 'MobileVerifyStatus',
+						title: '手机验证',
+						width: 70,
+						formatter: function (value, rec, index) {
+							var bg_color = value == 0 ? '<span style="color:#CA2020">' : '<span>';
+							var text_value = <?=json_encode($this->memberEnum )?>['mobile_verify_status'][value];
+							return bg_color + text_value + "</span>";
+						}
+					},
+
+					{field: 'RegisterTime', title: '注册时间', width: 100},
+					{
+						field: 'Status', title: '用户状态', formatter: function (value, rec, index) {
+
+						var bg_color = value == 0 ? '<span style="color:#CA2020">' : '<span>';
+						var text_value = <?=json_encode($this->memberEnum )?>['status'][value];
+						return bg_color + text_value + "</span>";
+					}
+					},
+
+					{
+						field: 'IsBest', title: '达人', width: 30, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '0':
+								status = '否';
+								break;
+							case '1':
+								status = '是';
+								break;
+							case '2':
+								status = '否';
+								break;
+						}
+						return status;
+					}
+					},
+
+					{
+						field: 'BestType', title: '达人类型', width: 40, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case "0":
+								status = "";
+								break;
+							case '1':
+								status = '普通';
+								break;
+							case '2':
+								status = '签约';
+								break;
+						}
+						return status;
+					}
+					},
+					{field: 'BestInfo', title: '达人头衔', width: 150},
+					{
+						field: 'opt',
+						title: '操作',
+						width: 150,
+						align: 'center',
+						formatter: function (value, rec, index) {
+							var btn = '';
+							btn += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" onclick="new dn.member.view(\'' + rec.MemberID + '\')">';
+							btn += '<span class="l-btn-text icon-detail l-btn-icon-left"></span></a>';
+							var a = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="' + _THIS_.selfName + '.adsHandler(\'' + rec.MemberID + '\')">';
+							a += '<span class="l-btn-left">复制链接</span></a>';
+							if (rec.AuthenticateType == null || rec.AuthenticateType == "1") {
+								a += '<a class="l-btn l-btn-plain" onclick="' + _THIS_.selfName + '.addBestHandler(\'' + rec.MemberID + '\')">新增达人</a>';
+							}
+							if (rec.IsJoinedFamous == 0) {
+								a += '<a class="l-btn l-btn-plain" onclick="' + _THIS_.selfName + '.addFamousHandler(\'' + rec.MemberID + '\')">添加到名人堂</a>';
+							}
+							return btn + a;
+						}
+					}
+
+				]],
+				'onDblClickRow': function (rowindex, rowData) {
+					new dn.member.view(rowData.MemberID);
+				},
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50,
+			});
+
+
+			$("#member_list_toolbar").append($("#member_list_searcher_container"));
+		},
+	};
+	memberObj.init();
+</script>

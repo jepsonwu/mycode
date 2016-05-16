@@ -1,0 +1,752 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title><?php echo $this->detailInfo['ColumnTitle'];?></title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪-文章详情" >
+<meta name="description" content="财猪-文章详情" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="format-detection"content="telephone=no">
+<meta name="member" content="<?php echo $this->detailInfo['MemberID'];?>" >
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0415" >
+<link rel="stylesheet" href="/static/css/api/promotion.css?date=160117" >
+<script>
+    (function(){
+        var href = location.href,
+                protocol = location.protocol;
+        if(protocol == 'https:'){
+            href = href.replace(/^https:\/\//, 'http://');
+            location.href = href;
+        }
+    })();
+</script>
+<style>
+
+body{background: #f6f6f6;}
+
+.article-box{background: #fff;}
+.article-det{font-size: 16px;}
+
+.av2-userinfo{display: -webkit-box; display: box; height: 40px;}
+.av2-userinfo img{width: 25px; height: 25px; margin: 8px 0 0; border-radius: 13px;}
+.av2-userinfo > div{-webkit-box-flex: 1; box-flex: 1; padding: 0 0 0 10px;}
+
+.av2-ui-det{line-height: 40px; height: 40px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.av2-ui-det strong{padding: 0 5px 0 0; border-right: solid 1px; color: #576B95; margin: 0 5px 0 0; font-weight: 100;}
+.av2-ui-det > div{display: inline;}
+
+.av2-ui-det.active strong{display: block; line-height: 20px; border: none; margin: 0;}
+.av2-ui-det.active > div{display: block; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+
+.av2-reward > span{background: #ff2641; color: #fff; border: none; line-height: 48px;}
+.av2-reward > p{width: 90px; position: relative; left: -18px; margin: 10px 0 0;}
+
+.av2-reading{padding: 8px 10px; border: #e6e6e6 solid 1px; margin: 40px 0 0;}
+.av2-reading h3{color: #999; font-size: 12px; line-height: 22px;}
+.av2-reading a{color: #333;}
+.av2-reading li{position: relative; border-bottom: #e6e6e6 solid 1px; height: 30px; line-height: 30px; padding: 0 0 0 15px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.av2-reading li:after{position: absolute; content: '•'; left: 2px;}
+.av2-reading li:last-child{border-bottom: none;}
+.av2-reading li > span{color: #ff2641; padding: 0 2px; border: solid 1px; border-radius: 2px; font-size: 12px; margin: 0 0 0 6px;}
+
+.av2-vote, .av2-view{padding: 5px 5px 5px 30px; background: url('/static/imgs/api/totle_bt_praise_normal.png') no-repeat -2px -4px; background-size: 30px 30px; color: #999;}
+.av2-vote.selected{background-image: url('/static/imgs/api/totle_bt_praise_press.png?data'); color: #ff2641;}
+
+.av2-view{background: url('/static/imgs/api/icon-view.png') no-repeat 2px 5px; background-size: 22px 15px;}
+
+.av2-rewardlist{text-align: center; margin: 20px 0 0;}
+.av2-rewardlist li{margin: 0 5px; display: inline; line-height: 40px;}
+.av2-rewardlist li img{width: 40px; height: 40px; border-radius: 5px;}
+.av2-rewardlist .last img{width: 8px; height: 16px;}
+
+.av2-showallbg{position: absolute; bottom: 0; height: 18px; width: 100%; opacity: .9;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #fff), color-stop(50%, #fff), color-stop(1, rgba(255, 255, 255, 0)));
+}
+
+.av2-showall{width: 200px; height: 30px; margin: 20px auto; line-height: 30px; text-align: center; color: #2F82CA; }
+.av2-showall img{width: 12px; height: 6px; margin: 0 0 0 6px;}
+
+.comment-box{padding: 0 15px; background: #fff;}
+.comment-tit{line-height: 36px; border-bottom: #e6e6e6 solid 1px;}
+.comment-tit > strong{float: left; color: #999; font-weight: 100;}
+.comment-tit > span{float: right; color: #ff2641; padding: 0 0 0 26px; background: url('/static/imgs/api/icon-edit-on.png?data') no-repeat 4px 10px; background-size: 16px 16px;}
+.comment-tip{line-height: 46px; color: #999; text-align: center;}
+.comment-tip.selected{line-height: 76px;}
+.comment-one{padding: 10px 0 8px; border-bottom: #e6e6e6 solid 1px;}
+.comment-one > p{margin: 6px 0 0;line-height: 22px; color: #333;}
+.cone-box{display: -webkit-box; display: box;}
+.cone-box > img{width: 40px; height: 40px; border-radius: 4px; }
+.cone-box > div{-webkit-box-flex: 1; box-flex: 1; padding: 0 10px;}
+.cone-box > span{display: block; overflow: hidden; height: 24px; line-height: 24px; margin: 10px 0 0; color: #999; padding: 0 0 0 24px; background: url('/static/imgs/api/totle_bt_praise_normal.png') no-repeat -2px -6px; background-size: 30px 30px;}
+.cone-box > .selected{background-image: url('/static/imgs/api/totle_bt_praise_press.png?data'); color: #ff2641;}
+.cone-inner p:nth-child(1){font-weight: bold;}
+.cone-inner p:nth-child(2){color: #999;}
+.ione-box{margin: 10px 0 0; color: #999; font-size: 12px; padding: 0 0 0 30px;}
+.ione-info{padding: 0 0 0 6px; line-height: 14px; border-left: #ff2641 solid 2px;}
+.ione-box > p{line-height: 20px; color: #333; padding: 0 0 0 8px;}
+
+.nomore{font-size: 12px; text-align: center; color: #999; line-height: 40px; height: 25px;}
+
+.h5-videobg{background: url('/static/imgs/api/slow.png') no-repeat center center;}
+
+body{-webkit-user-select: initial; user-select: initial;}
+
+</style>
+
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<img id="user-cover" style="display: none;" alt="财猪" src="<?php echo $this->detailInfo['Cover'];?>?imageView2/0/w/200">
+
+<?php if(false):?>
+<section class="video-subscription">
+    <ul class="vs-list boxlink callcaizhu" data-url="http://caizhukeyjs-columnjump?id=<?php echo $this->detailInfo['ColumnID'];?>" >
+        <li class="vs-avatar">
+            <img src="<?php echo $this->detailInfo['ColumnAvatar'];?>" alt="avatar">
+        </li>
+        <li class="vs-info" >
+            <strong><?php echo $this->detailInfo['ColumnTitle'];?></strong>
+            <p><?php echo $this->detailInfo['ColumnDescription'];?></p>
+        </li>
+        <li id="vs-dingyue" class="vs-dingyue" data-id="<?php echo $this->detailInfo['ColumnID'];?>">
+            <span class="vs-button <?php if($this->detailInfo['IsSubscribe'] == 1):?>selected<?php endif;?>"><span>+订阅</span><span>已订阅</span></span>
+        </li>
+
+    </ul>
+</section>
+<?php endif;?>
+<article class="article-box">
+    <h1 class="article-tit"><?php echo $this->detailInfo['Title'];?></h1>
+
+
+    <!--<p class="article-minor">
+        <span class="boxlink" data-url="http://caizhukeyjs-columnjump?id=<?php echo $this->detailInfo['ColumnID'];?>"><?php echo $this->detailInfo['ColumnTitle'];?></span>
+        <span><?php echo $this->detailInfo['PublishTime'];?></span>
+    </p>-->
+
+    <div id="userinfo" class="av2-box mt20 hide">
+
+        <section class="av2-userinfo" :class="[caizhuAPPBoolean ? 'boxapp' : 'boxlink' ]" data-url="/api/public/column-detail/columnID/<?php echo $this->detailInfo['ColumnID'];?>" data-type="column" data-id="<?php echo $this->detailInfo['ColumnID'];?>">
+            <img :src="avatar | filterAvatar">
+            <div class="av2-ui-det" :class="{active: userflag}">
+                <strong>{{*name}}</strong><div>{{*des}} {{*date}}</div>
+            </div>
+        </section>
+
+    </div> <!-- av2-box -->
+
+
+    <div class="article-det p-rela">
+        <?php echo $this->detailInfo['Content'];?>
+        <div id="showall-bg" class="av2-showallbg hide"></div>
+    </div>
+
+    <div id="showall" class="av2-showall boxapp hide" data-type="article" data-id="<?php echo $this->detailInfo['AID'];?>" data-mode="other">
+        <span>查看全文</span><img src="/static/imgs/api/icon-arrow-b.png" >
+    </div>
+
+    <div id="reward-box" class="article-votes-box" :class="{hide: feeFlag}">
+        <div id="reward" class="article-votes av2-reward boxapp" data-type="article" data-id="<?php echo $this->detailInfo['AID'];?>" data-mode="other">
+            <span>打赏</span>
+            <p :class='{hide: giftNumFlag}'><i>{{giftNum}}</i>人打赏了</p>
+        </div>
+
+        <div id="rewarder" class="hide" >
+            <ul class="av2-rewardlist">
+                <li v-for="one in rewarderLimit" :class="{boxapp: versionFlag}" data-id="{{id}}" data-author="{{authorid}}" data-type="rewardlist" data-itype="2" @click="vtip"><img :src="one.Avatar | filterAvatar"></li>
+                <li class="last" :class="{boxapp: versionFlag}" data-id="{{id}}" data-author="{{authorid}}" data-type="rewardlist" data-itype="2" @click="vtip"><img src="/static/imgs/api/activity-arrow-right.png"></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <section id="reading" class="av2-reading hide">
+        <h3>相关阅读</h3>
+        <ul>
+            <li class="boxlink hide" data-url="simida.html">1111<span>活动</span></li>
+            <li class="boxlink" v-for="read in reads" data-url="/api/public/article-detail/articleID/{{read.ArticleID}}" data-type="article" data-id="{{read.ArticleID}}">{{read.Title}}</li>
+        </ul>
+    </section>
+
+    <div id="article-origin" class="article-origin clearfix" :class="{hide: feeFlag}">
+        <a class="mr" href="<?php echo $this->detailInfo['ArticleLink'];?>">阅读原文</a>
+
+        <span class="av2-view boxapp  selected hide" data-type="article" data-mode="other" data-id="currentId"><?php echo $this->detailInfo['ReadNum'];?></span>
+
+        <span class="av2-vote boxapp <?php $isPraise=$this->detailInfo['IsPraise'];$praiseNum=$this->detailInfo['PraiseNum'];if($isPraise==1)echo ' selected'; ?> " data-type="article" data-mode="other" data-id="<?php echo $this->detailInfo['AID'];?>"><?php if($praiseNum == 0){echo '赞';}else{ echo $praiseNum;}?></span>
+    </div>
+</article>
+
+<section id="comment" class="comment-box mt20" :class="{hide: feeFlag}">
+    <div class="comment-tit clearfix">
+        <strong>精选评论</strong>
+        <span id="message" class="boxapp" data-type="article" data-id="{{currentId}}" data-mode="other" @click="toComment">写评论</span>
+    </div>
+    <ul id="comment-list" class="comment-list">
+        <li class="comment-one" v-for="one in commentArr">
+            <div class="cone-box">
+                <img :src="one.Avatar | filterAvatar" >
+                <div class="cone-inner">
+                    <p class="" data-type="userinfo" data-id="{{one.CommentID}}">{{one.UserName}}</p>
+                    <p>{{one.CreateTime}}</p>
+</div>
+                <span class="boxapp" @click="commentdo($index, one.CommentID, one.IsPraise)" :class="{selected: one.IsPraise}" data-type="article" data-id="{{currentId}}" data-mode="other">{{one.PraiseNum}}</span>
+            </div>
+            <p>{{{one.CommentContent | filterEmoji}}}</p>
+            <div class="ione-box" v-for="ione in one.ReplyList">
+                <div class="ione-info">
+                    <span>作者回复：</span>
+                    <span>{{ione.CreateTime}}</span>
+                </div>
+                <p>{{{ione.CommentContent | filterEmoji}}}</p>
+            </div>
+        </li>
+    </ul>
+    <p class="comment-tip">精选评论由作者筛选后显示</p>
+</section>
+<div id="define-prompt"><app-defineprompt :pmodeflag.sync="pmodeflag" :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160406"></script>
+
+<script src="/static/js/api/image-show.js?date=15120219"></script>
+
+<script>
+
+
+</script>
+
+<script>
+
+var feeFlag = '<?php echo $this->isViewAll;?>';     // 是否需要交费
+feeFlag = parseInt(feeFlag);
+var money = '<?php echo $this->detailInfo['Cost'];?>';
+
+//feeFlag = '1';
+//money = '0.1';
+
+var currentId = '<?php echo $this->detailInfo['AID'];?>';
+var memberId = '<?php echo $this->detailInfo['MemberID'];?>';
+
+var articleSystem = function(){if(memberId != '8527' && memberId != '6131' && memberId != '22453'){return false}return true;}();
+
+var avatarArr = <?php echo $this->avatarArr;?> || [];   //送礼的头像
+var relationArticles = <?php echo $this->relationArticles;?> || [];   //相关阅读文章
+
+function getMemberId(){
+    return memberId;
+}
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('#user-cover');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = $('.article-tit').text();
+        opts.shareDes = $('.article-det').text();
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+var $showall = $('#showall'),
+    $showallBg = $('#showall-bg'),
+    $rewardBox = $('#reward-box');
+
+var appTarget, appTime, appTId, appMoveFlag = false;
+
+var $vote;
+
+    function caizhuRun(){
+
+        var showAllDom = document.getElementById('showall'),
+            rewardDom = document.getElementById('reward');
+
+        var versionFlag = detectAppVersion('2.2.1');
+
+            //document.body.appendChild(document.createTextNode(versionFlag));
+
+        if(showAllDom){
+            showAllDom.addEventListener('touchstart', function(){
+                appMoveFlag = false;
+                appTime = new Date();
+            }, false);
+            showAllDom.addEventListener('touchmove', function(){
+                appMoveFlag = true;
+            }, false);
+            showAllDom.addEventListener('touchend', function(){
+                if(appMoveFlag){appMoveFlag = false; return false;}
+                if( (new Date()) - appTime > 300) return false;
+
+                if(!versionFlag){
+                    clearTimeout(appTId);
+                    appTId = setTimeout(function(){
+                        VMPrompt('您的版本不支持支付, 赶紧去升级吧!!!');
+                    }, 400);
+
+                    return false;
+                }
+
+                location.href = 'http://caizhukeyjs-pay?id=' + currentId + '&memberId=' + memberId + '&type=3&money=' + money;
+            }, false);
+
+        }
+
+        if(rewardDom){
+
+            rewardDom.addEventListener('touchstart', function(){
+                appMoveFlag = false;
+                appTime = new Date();
+            }, false);
+            rewardDom.addEventListener('touchmove', function(){
+                appMoveFlag = true;
+            }, false);
+            rewardDom.addEventListener('touchend', function(){
+
+                /*if(feeFlag == 1){
+                    clearTimeout(appTId);
+                    appTId = setTimeout(function(){
+                        VMPrompt('请先付费');
+                    }, 400);
+                    return false;
+                }*/
+
+                if(appMoveFlag){appMoveFlag = false; return false;}
+                if( (new Date()) - appTime > 300) return false;
+
+                if(!versionFlag){
+                    clearTimeout(appTId);
+                    appTId = setTimeout(function(){
+                        VMPrompt('您的版本不支持支付, 赶紧去升级吧!!!');
+                    }, 400);
+                    return false;
+                }
+
+                location.href = 'http://caizhukeyjs-reward?id=' + currentId + '&memberId=' + memberId + '&type=2';
+            }, false);
+
+        }
+
+        // vote - action;
+        $vote = $('.av2-vote');
+
+        $vote.click(function(){
+
+            /*if(feeFlag == 1){
+                clearTimeout(appTId);
+                appTId = setTimeout(function(){
+                    VMPrompt('请先付费');
+                }, 400);
+                return false;
+            }*/
+
+            var $this = $(this),
+                    $parent = $this.parent(),
+                    flag = $this.data('flag'),
+                    initStr = '赞', current;
+
+            if(flag) return false;
+            $this.data('flag', true);
+            setTimeout(function(){
+                $this.data('flag', '');
+            }, 1200);
+
+            var selectedFlag = $vote.hasClass(selected);
+
+            if(selectedFlag){
+                var postUrl = '/api/column/un-praise';
+            }else{
+                var postUrl = '/api/column/praise';
+            }
+
+            $.ajax({
+                url:postUrl,
+                type: 'post',
+                dataType: 'json',
+                data: {articleID: currentId},
+                success: function(d){
+                    if(d.flag == 1){
+                        if(selectedFlag){
+                            current = d.data.PraiseNum;
+                            $this.text(current == 0 ? initStr : current);
+                            $vote.removeClass(selected);
+                        }else{
+                            current = d.data.PraiseNum;
+                            $this.text(current == 0 ? initStr : current);
+                            $vote.addClass(selected);
+                        }
+                    }else if(d.flag == '-100'){
+                        location.href = 'http://caizhukeyjs-loginjump?url=' + encodeURIComponent(location.href);
+                        return;
+                    }else{
+                        PVMPrompt(d.msg);
+                    }
+                },
+                error: function(err){
+                    PVMPrompt('网络错误,请过一会再试一试');
+                }
+
+            })
+
+        });
+
+    }
+
+    function otherRun(){
+
+        new Vue({
+            el: '#reading',
+            data: {
+                reads: relationArticles
+            },
+            compiled: function(){
+                $(this.$el).removeClass(hide);
+            }
+        });
+
+
+    }
+
+    var REWARDBOX,           // 打赏
+        articleInfo,         // 文章其他信息
+        vComment;             // 精选评论
+    function commonRun(){
+
+        var versionFlagSec = detectAppVersion('2.3.2');
+
+        new Vue({
+            el: '#userinfo',
+            data: {
+                avatar: '<?php echo $this->detailInfo['ColumnAvatar'];?>',
+                name: '<?php echo $this->detailInfo['ColumnTitle'];?>',
+                des: '<?php echo $this->detailInfo['Author'];?>',
+                date: '<?php echo $this->detailInfo['PublishTime'];?>'
+            },
+            computed: {
+                userflag: function(){
+                    var len = this.name.length + this.des.length + this.date.length;
+                    if(len > 20){
+                        return true;
+                    }
+                    return false;
+                },
+                caizhuAPPBoolean: function(){
+                    if(caizhuAPP){
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            compiled: function(){
+                $(this.$el).removeClass(hide);
+            }
+        });
+
+        REWARDBOX = new Vue({
+            el: '#reward-box',
+            data: {
+                id: currentId,
+                rewarders: avatarArr,
+                authorid: memberId,
+
+                giftNum: '<?php echo $this->sendGiftNum;?>',
+
+                feeFlag: feeFlag
+
+            },
+            computed: {
+                versionFlag: function(){
+                    if(!detectAppVersion('2.2.1') && caizhuAPP) return false;
+                    return true;
+                },
+                rewarderLimit: function(){
+                    return this.rewarders.slice(0, 5);
+                },
+
+                giftNumFlag: function(){
+                    if(this.giftNum == 0){
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            methods: {
+                vtip: function(){
+                    if(this.versionFlag){}else{   //财猪+低版本
+                        VMPrompt('您的版本不支持查看, 赶紧去升级吧!!!');
+                    }
+                }
+            },
+            compiled: function(){
+                if(this.rewarders.length != 0){
+                    $(this.$el).find('#rewarder').removeClass(hide);
+                }
+            }
+        });
+
+        // comment - action
+        var $commentList = $('.comment-list'),
+            cListEnd = false;
+            cListFlag = false;
+        var changeProcessor = {
+            timeoutId: '',
+            perform: function(){
+
+                var winH = document.body.offsetHeight,
+                    tipH = $('.comment-tip')[0].offsetHeight,
+                    pageTop = window.pageYOffset + window.innerHeight;
+
+                if(tipH+pageTop >= winH){
+                    getCommentList();
+                }
+
+            },
+            process: function(){
+                var self = this;
+
+                var flagId,
+                    endFlag = $commentList.data('end'),
+                    flag = $commentList.data('flag');
+
+                if(endFlag){window.onscroll = null; return false;}
+                if(flag) return false;
+                setTimeout(function(){
+                    $commentList.data('flag', false);
+                }, 1000);
+
+                clearTimeout(this.timeoutId);
+                this.timeoutId = setTimeout(function(){
+                    self.perform();
+                }, 100);
+            }
+
+        }
+        changeProcessor.process();
+        window.onscroll = function(){
+            changeProcessor.process();
+        }
+
+        articleInfo = new Vue({
+            el: '#article-origin',
+            data: {
+                feeFlag: feeFlag
+            }
+        });
+
+        var appIdSec;
+        vComment = new Vue({
+            el: '#comment',
+            data: {
+                currentId: currentId,
+                commentArr: [],
+                feeFlag: feeFlag
+            },
+            methods: {
+                toComment: function(){
+                    //if(feeFlag == 1){ VMPrompt('请先付费'); return false;};
+                    if(caizhuAPP){
+                        if(versionFlagSec){
+                            if(caizhuAPP) location.href = 'http://caizhukeyjs-articlecomment?id='+ this.currentId;
+                        }else{
+                            setTimeout(function(){
+                                clearTimeout(appIdSec);
+                                appIdSec = setTimeout(function(){
+                                    VMPrompt('您的版本不支持评论, 赶紧去升级吧!!!', function(){location.href="http://m.caizhu.com/down/down-caizhu/"}, 1);
+                                }, 300);
+
+                                return false;
+                            }, 300)
+                        }
+                    }
+                },
+                commentdo: function(index, id, type){
+                    if(!caizhuAPP) return false;
+                    commentdoAjax(index, id, type);
+                }
+            }
+        });
+
+        function commentdoAjax(index, id, type){   // type: 1，点赞   0，取消点赞
+            var url;
+            if(type == 0){
+                url = '/api/article-comment/praise';
+            }else{
+                url = '/api/article-comment/un-praise';
+            }
+
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                data: {
+                    commentID: id,
+                },
+                success: function(d){
+                    if(d.flag == 1){
+                        if(type == 0){
+                            vComment.commentArr[index].IsPraise = 1;
+                        }else{
+                            vComment.commentArr[index].IsPraise = 0;
+                        }
+
+                        vComment.commentArr[index].PraiseNum = d.data.PraiseNum;
+                    }else{
+                        var iFlag;
+                        iFlag = d.flag;
+
+                        if(iFlag = '-100'){
+                            var iUrl = encodeURIComponent(location.href);
+                            location.href = 'http://caizhukeyjs-loginjump?url=' + iUrl;
+                        }else if(iFlag = '-1'){
+                            var fn = function(){
+                            vComment.commentArr.splice(index, 1);
+                            }
+                            VMPrompt(d.msg, fn);
+                        }else{}
+
+                    }
+                },
+                error: function(err){
+                    VMPrompt('网络错误');
+                }
+
+            })
+        }
+
+        var listPage = 1, listEndFlag = false;
+        function getCommentList(){
+            var pageSize = 10;
+            if(listEndFlag){return false;}
+            $commentList.data('flag', true);
+            $.ajax({
+                url: '/api/article-comment/get-article-comments',
+                dataType: 'json',
+                data: {
+                    articleID: currentId,
+                    page: listPage,
+                    pagesize: pageSize
+                },
+                success: function(d){
+                    if(d.flag == 1){
+                        var d = d.data.Rows,
+                            len = d.length;
+
+                        listPage++;
+
+                        for(var i=0; i<len; i++){
+                            vComment.commentArr.push(d[i]);
+                        }
+                        if(len == 0){
+                            listEndFlag = true;
+                            if(vComment.commentArr == 0){
+                                //$commentList.append('<li class="nomore">暂无精选 ¯﹃¯ 。。。</li>');
+                            }else{
+                                $commentList.append('<li class="nomore">没有更多了 ¯﹃¯ 。。。</li>');
+                            }
+
+                        }
+                    }else{
+                        VMPrompt(d.msg);
+                    }
+                },
+                error: function(err){
+                    VMPrompt('网络错误');
+                }
+
+            })
+        };
+
+
+        (function originDo(){
+            var $articleO = $('#article-origin'),
+                $aa = $articleO.find('a');
+            var flag = $aa[0].getAttribute('href');
+
+            if(!flag){
+                $aa.addClass('hide');
+            }
+            return ;
+
+        })();
+
+        if(!articleSystem){
+            $('.article-det a').click(function(){
+                return false;
+            });
+        }
+
+        if(feeFlag == 1){
+            $showallBg.removeClass(hide);
+            $showall.removeClass(hide);
+        }else{
+            ImageShow();
+        }
+
+    }
+
+function showAllArticle(){
+    //document.body.appendChild(document.createTextNode('ok，App-callback'));
+
+    feeFlag = 0;
+    REWARDBOX.feeFlag = 0;
+    articleInfo.feeFlag = 0;
+    vComment.feeFlag = 0;
+
+    $.ajax({
+        url: '/api/public/get-All-Content?articleID='+currentId,
+        dataType: 'json',
+        success: function(d){
+
+            if(d.flag == 1){
+                $('.article-det').empty().html(d.data.allContents);
+                ImageShow();
+                $showall.addClass(hide);
+            }else{
+                VMPrompt(d.msg);
+            };
+        },
+        error: function(err){
+            VMPrompt('网络错误');
+        }
+    });
+}
+
+function ImageShow(){
+    //document.addEventListener('DOMContentLoaded', function(){
+        var demo = ImagesShow.init({elem: '.article-det'});
+    //}, false);
+}
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

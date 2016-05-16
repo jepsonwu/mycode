@@ -1,0 +1,18 @@
+
+<? if($this->totalItemCount): ?>
+   <ul id="page" class="page-box">
+            <li class="page-one page-previous">
+                <a href="<?php if(isset($this->previous)){echo $this->url().'?page='.$this->previous;} ?>" number='<? if (isset( $this->previous )): ?><?=$this->previous?><? else: ?>1<? endif; ?>'>&lt;上一页</a>
+            </li>
+             <? foreach ($this->pagesInRange as $page): ?>
+		  <li class="page-one <? if ($page == $this->current): ?>selected <? endif;?>"><a href="<?php echo $this->url() .'?page='.$page?>" number="<?=$page?>"><?=$page?></a></li>
+		<? endforeach; ?>
+            <li class="page-one page-next">
+                <a href="<?php if(isset($this->next)){echo $this->url().'?page='.$this->next;} ?>" number='<? if (isset( $this->next )): ?><?=$this->next?><? else: ?><?=$this->last?><? endif; ?>'>下一页 &gt;</a>
+            </li>
+
+        </ul>
+<input type='hidden' name='rowcount' value='<?=$this->totalItemCount?>'>
+<input type='hidden' name='pagesize' value='<?=$this->itemCountPerPage?>'>
+ <? endif; ?>
+<input type='hidden' name='page' value='1'>

@@ -1,0 +1,45 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 30px;align:center;">
+
+		<form id="add_best_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<?php if ($this->member_info['IsBest'] == 0) { ?>
+					<tr>
+						<th width="20%">类型：</th>
+						<td width="80%">
+							<select name="BestType">
+								<option value="1">普通</option>
+								<option value="2">签约</option>
+							</select>
+						</td>
+					</tr>
+				<?php } else { ?>
+					<tr>
+						<td><input type="hidden" name="BestType" value="<?php echo $this->member_info['BestType']; ?>"></td>
+					</tr>
+				<?php } ?>
+				<tr>
+					<th width="20%">头衔ID：</th>
+					<td width="80%">
+						<select name="TID">
+							<?php foreach ($this->best_titles as $key => $val) { ?>
+								<option value="<?php echo $key ?>"><?php echo $val ?></option>
+							<?php } ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+						<input type="hidden" name="MemberID" value="<?php echo $this->member_info['MemberID'] ?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="add_best_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="add_best_form_close">关闭</a>
+	</div>
+
+</div>

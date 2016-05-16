@@ -1,0 +1,373 @@
+<table id="view_list"></table>
+<div id="view_list_toolbar"></div>
+<div id="view_view_window"></div>
+<div id="view_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="viewObj.containerObj.edatagrid('reload');">刷新</a>
+    <select name="searchType">
+        <option value="TopicID">话题ID</option>
+        <option value="ViewContent">观点内容</option>
+        <option value="UserName">发布人</option>
+    </select><input type="text" value="" name="searchTypeValue" size="20" />  &nbsp;&nbsp;
+
+   状态：
+    <select name="CheckStatus">
+        <option value="-1">所有</option>
+        <option value="0">待审核</option>
+        <option value="1">正常</option>
+        <option value="2">隐藏</option>
+        <option value="3">人工屏蔽</option>
+        <option value="4">系统屏蔽</option>
+    </select>&nbsp;&nbsp;
+     是否被举报：
+    <select name="ReportNum">
+        <option value="-1">所有</option>
+        <option value="0">未举报</option>
+        <option value="1">举报</option>
+    </select>&nbsp;&nbsp;
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchViewList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="view_window"></div>
+<!--<div id="view_edit_window"></div>-->
+
+<script type="text/javascript">
+    $("#view_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchViewList();
+        }    
+    });
+    
+    $("#view_list_searcher_container select[name]").change(function(){
+        toSearchViewList();
+    });
+    
+    function toSearchViewList(flag)
+    {
+        var searchType       = $("#view_list_searcher_container select[name='searchType']").val();
+        var searchTypeValue  = $("#view_list_searcher_container input[name='searchTypeValue']").val();
+        var CheckStatus      = $("#view_list_searcher_container select[name='CheckStatus']").val();
+        var ReportNum        = $("#view_list_searcher_container select[name='ReportNum']").val();
+        var start_date       = $("#view_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#view_list_searcher_container input[name='end_date']").val();
+        
+        viewObj.containerObj.datagrid('load', {
+            searchType:searchType,
+            searchTypeValue:searchTypeValue,
+            CheckStatus:CheckStatus,
+            ReportNum:ReportNum,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var viewObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'view','action'=>'list'));?>',
+        //'addUrl':'<?php echo $this->url(array('controller'=>'view','action'=>'add'));?>',
+        //'editUrl':'<?php echo $this->url(array('controller'=>'view','action'=>'edit'));?>',
+        'checkUrl':'<?php echo $this->url(array('controller'=>'view','action'=>'check'));?>',
+        'viewUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'view-list'));?>',
+        'reportUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'report-list'));?>',
+        'adsLink':'<?php echo $this->url(array('controller'=>'view','action'=>'ads-link'));?>',
+        'joinSpecial':'<?php echo $this->url(array('controller'=>'view','action'=>'join-special'));?>',
+
+        'containerObj':$("#view_list"),
+        'viewWindowObj':$("#view_window"),
+        //'editWindowObj':$("#view_edit_window"),
+        
+        'selfName':'viewObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        /*//添加话题
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':450,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'title':'添加',
+                'onClose':function(){
+                    _THIS_.addWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#topic_add_form_save").off().on('click',function(){
+                         $("#topic_add_form").attr('action',_THIS_.addUrl).submit();
+                         _THIS_.addWindowObj.window('destroy');
+                    });
+
+                    $("#topic_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('destroy');
+                    });
+                    $("#topic_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //修改话题
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.editWindowObj.window({
+                        'href':_THIS_.editUrl+'?topic_id='+id,
+                        'width':450,
+                        'height':300,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑会员',
+                        'onLoad':function(){
+
+                            $("#topic_edit_form_save").off().on('click',function(){
+                                $("#topic_edit_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $("#topic_edit_form_close").off().on('click',function(){
+                                _THIS_.editWindowObj.window('close');
+                            });
+                            
+                            $("#topic_edit_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.editWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },*/
+
+        //审核观点
+        checkHandler:function(id,status){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.checkUrl+'?view_id='+id+'&status='+status,
+                'width':300,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'审核观点',
+                'onLoad':function(){
+                    $("#view_check_form_save").off().on('click',function(){
+                        $("#view_check_form").attr('action',_THIS_.checkUrl).submit();
+                    });
+
+                    $("#view_check_form_close").off().on('click',function(){
+                        _THIS_.viewWindowObj.window('close');
+                    });
+                    
+                    $("#view_check_form").myForm(function(data){
+                        if(data.flag == 1){
+                            _THIS_.viewWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                        
+                }
+            });
+        },
+
+
+        //广告链接
+        adsHandler:function(id){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.adsLink+'?view_id='+id,
+                'width':500,
+                'height':150,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'复制链接',
+                'onLoad':function(){
+                    if ( window.clipboardData ) {  
+                        $('.copy_btn').click(function() {  
+                            var tempID = $(this).attr('data-value-id');
+                            window.clipboardData.setData("Text", $("#"+tempID).val());  
+                            alert('复制成功！');  
+                        });  
+                    } else {  
+                        $(".copy_btn").zclip({  
+                            path:'/static/js/ZeroClipboard.swf',  
+                            copy:function(){
+                                var tempID = $(this).attr('data-value-id');
+                                return $("input#"+tempID).val();
+                                //return $(this).prev('input').val();
+                            },  
+                            afterCopy:function(){alert('复制成功！');}  
+                        });  
+                    }              
+                }
+            });
+        },
+
+
+        //查看违规记录
+        'viewHandler':function(member_id){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.viewUrl+'?member_id='+member_id,
+                'width':500,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'违规记录',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+        //查看举报记录
+        'reportHandler':function(infoID){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.reportUrl+'?infoID='+infoID+'&infoType=2',
+                'width':500,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'举报记录',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+        //加入财猪日报
+        joinSpecialHandler: function (id) {
+            var _THIS_ = this;
+            $.messager.confirm('', '确定要加入吗?', function (d) {
+                if (d) {
+                    $.ajax({
+                        url: _THIS_.joinSpecial,
+                        type: 'POST',
+                        data: {view_id: id},
+                        dataType: 'json',
+                        success: function (ret) {
+                            if (ret.flag) {
+                                _THIS_.containerObj.datagrid('reload');
+                            } else {
+                                $.messager.alert("提示信息", ret.msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'ViewID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#view_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'ViewID',title:'观点ID',width:60}, 
+                        {field:'ViewContent',title:'观点内容',width:450},
+                        {field:'CreateTime',title:'发布时间',width:150},
+                        {field:'UserName',title:'发布人',width:60,formatter:function(value,rowData,rowIndex){
+                                if(value != null){
+                                    return '<a style="color:red" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.viewHandler(\''+rowData.MemberID+'\')">'+value+'</a>';
+                                }
+                            }
+                        },  
+                        {field:'TopicID',title:'话题ID',width:60},                       
+                        {field:'PraiseNum',title:'点赞数',width:80},
+                        {field:'ReplyNum',title:'回复数',width:80},                       
+                        {field:'ShareNum',title:'分享数',width:80},
+                        {field:'ReportNum',title:'举报',width:80,formatter:function(value,rowData,rowIndex){
+                                if(value != null){
+                                    return '<a style="color:red" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.reportHandler(\''+rowData.ViewID+'\')">'+value+'</a>';
+                                }
+                            }
+                        },
+                        {field:'CheckStatus',title:'审核状态',width:70,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '待审核';
+                                        break;
+                                    case '1':
+                                        status = '正常';
+                                        break;
+                                    case '2':
+                                        status = '隐藏';
+                                        break;
+                                    case '3':
+                                        status = '人工屏蔽';
+                                        break;
+                                    case '4':
+                                        status = '系统屏蔽';
+                                        break;
+                                }
+                                return status;
+                            }
+                        }, 
+                        {field:'Remark',title:'隐藏理由',width:100},
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                            var c= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.checkHandler(\''+rec.ViewID+'\',\''+rec.CheckStatus+'\')">';
+                                c += '<span class="l-btn-left">审核</span></a>';
+                                var a= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.adsHandler(\''+rec.ViewID+'\')">';
+                                a += '<span class="l-btn-left">复制链接</span></a>';
+                                var j= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.joinSpecialHandler(\''+rec.ViewID+'\')">';
+                                j+= '<span class="l-btn-left">加入财猪日报</span></a>';
+                                if(rec.HasJoin >0){
+                                    return c + a ;
+                                }else{
+                                    return c + a + j;
+                                }                  
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#view_list_toolbar").append($("#view_list_searcher_container"));
+            },    
+};
+viewObj.init();
+</script>

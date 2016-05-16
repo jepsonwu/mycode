@@ -1,0 +1,231 @@
+<?php if(isset($this)){ $activityConf = $this->activityConf;}else{$activityConf = array();} ?>
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>谁是主讲人</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="财猪,讲堂,谁是主讲人" >
+<meta name="description" content="财猪,讲堂,谁是主讲人" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta name="format-detection" content="telephone=no">
+<link href="/hd/20151209110247/activity-v2.css" rel="stylesheet" />
+</head>
+<body>
+<section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/wechat-arrow.png" alt="指示图" >
+        </li>
+    </ul>
+</section>
+
+<section id="caizhu-open" class="caizhu-open hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+            </p></li>
+        <li class="czo-three">
+            <a href="http://m.caizhu.com/down/down-caizhu" id="czo-open">下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close" class="open-close">X</span>
+</section>
+<h1>谁是主讲人</h1>
+<figure class="figure">
+    <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/<?php echo (isset($activityConf['imgsName']) && !empty($activityConf['imgsName']))?$activityConf['imgsName']:'title'; ?>.png" alt="理财规划">
+</figure>
+<figure class="figure p-rela title">
+    <div class="title-det">
+        <p><?php echo (isset($activityConf['title']) && !empty($activityConf['title']))?$activityConf['title']:'财猪课堂预告'; ?></p>
+        <p>第<?php echo (isset($activityConf['journal']) && !empty($activityConf['journal']))?$activityConf['journal']:'04'; ?>期</p>
+        <p><?php echo (isset($activityConf['datetime']) && !empty($activityConf['datetime']))?$activityConf['datetime']:'2015年12月3日20：00'; ?></p>
+    </div>
+    <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/top-bg.png" alt="理财规划">
+</figure>
+
+<section class="det">
+    <ul class="det-box">
+        <li class="t"></li>
+        <li class="m clearfix">
+                <!--<div class="m-00 boxlink" data-url="caizhu://caizhu/userInfo?id=14893"></div>-->
+
+            <div class="mt-00">
+                <div class="boxlink callcaizhu" data-url="caizhu://caizhu/userInfo?id=<?php echo (isset($activityConf['memberId']) && !empty($activityConf['memberId']))?$activityConf['memberId']:'21375'; ?>"><?php echo (isset($activityConf['account']) && !empty($activityConf['account']))?$activityConf['account']:'封磊'; ?></div>
+            </div>
+            <div class="mt-01 boxlink callcaizhu" data-url="caizhu://caizhu/userInfo?id=<?php echo (isset($activityConf['memberId']) && !empty($activityConf['memberId']))?$activityConf['memberId']:'21375'; ?>"><img class="avatar" src="<?php $path = '/hd/'.$activityConf['Path'].'/imgs/avatar.png'; echo (isset($activityConf['Avatar']) && !empty($activityConf['Avatar']))?$activityConf['Avatar']:$path; ?>" alt="头像" align="left"></div>
+            <div class="mt-02 boxlink callcaizhu" data-url="caizhu://caizhu/userInfo?id=<?php echo (isset($activityConf['memberId']) && !empty($activityConf['memberId']))?$activityConf['memberId']:'21375'; ?>"></div>
+            <p class="mt"><?php if(isset($activityConf['depict']) && !empty($activityConf['depict'])){ echo $activityConf['depict'];}else{ ?>国家高级理财规划师，财猪特约理财师，公益财商传播平台杭州站发起人，在金融及住宅地产实战投资方面经验丰富；长期帮助客户及伙伴梳理资产及负债情况，洞察财务漏洞和风险，一起制定阶段性财富管理目标并取得成功。
+                <br/><br/>
+            内容预告：你有过风险投资的经历吗？你是否真的了解自己的风险承受能力呢？你想知道自己的投资产品分配是否合理吗？又该如何找到最适合自己的资产配置方式呢？<?php } ?></p>
+        </li>
+        <li class="m2 clearfix boxlink" align="center">
+                <div class="m-lecture boxlink callcaizhu" data-flag="lecture" data-url="caizhu://caizhu/groupInfo?id=1448268221020">
+                    <span></span>
+                </div>
+        </li>
+        <li class="b"></li>
+    </ul>
+</section>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、百度、360浏览器等</p>
+</section>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script src="/hd/zepto.min.js"></script>
+<script>
+
+    var UAgent = navigator.userAgent.toLowerCase();
+    var caizhuAPP = function(){                                   //财猪app
+        var reg = /caizhuapp/i;
+        if(reg.test(UAgent)) {
+            return true;
+        } else {
+            return false;
+        }
+    }();
+
+    if(caizhuAPP){    // 财猪里执行动作
+
+            caizhuAppRun();
+
+    }else {
+
+        // third parts - action
+        var commonFunc = {};
+
+        var otherJs = document.createElement('script');
+        otherJs.type = 'text/javascript';
+        otherJs.src = '/hd/activity-call.js';
+
+        otherJs.onload = function(){
+
+            var loadIframe = null;
+            commonFunc.createIframe = function(){
+                var iframe = document.createElement("iframe");
+                iframe.style.cssText = "display:none;width:0px;height:0px;";
+                document.body.appendChild(iframe);
+                loadIframe = iframe;
+            }
+            commonFunc.redirect = function(url) {
+
+                if(!url) return ;
+
+                var rUa = navigator.userAgent;
+                isChrome = rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+                if (isChrome) {
+                    if (info.os.android) {
+                        if (rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)) {
+                            loadIframe.src = url;
+                        } else {
+
+                            var str = url,
+                                    type,
+                                    id,
+                                    regExp;
+
+                            regExp = /caizhu\/([a-zA-Z]{2,20})\?id=(\d*)$/;
+                            str = regExp.exec(str);
+                            type = str[1];
+                            id = str[2];
+
+                            window.location.href = 'intent://caizhu/'+ type +'?id=' + id + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                        }
+
+                    } else {
+                        window.location.href = url;
+                    }
+                } else {
+                    if (safariBrowser) {                  // ios6-plus, 只能用location跳转
+                        window.location.href = url;
+                    } else {
+                        loadIframe.src = url;
+                    }
+                }
+                var t = Date.now();
+                setTimeout(function () {
+                    if (Date.now() - t < 600) {
+                        //location.href="http://m.caizhu.com/down/down-caizhu";
+
+                        $('#caizhu-open').removeClass(hide);
+                    }
+                }, 500)
+            }
+
+        }
+
+        document.body.appendChild(otherJs);
+
+    }
+
+
+
+
+    var acTime, touchMove;
+    function caizhuAppRun(){
+        // active伪状态
+
+
+        $('body').delegate('.boxlink',{'touchstart': function(){
+            var touch = 'touch';
+            var $this = $(this);
+            touchMove = false;
+            $('.boxlink').removeClass(touch);
+            acTime = new Date();
+            $this.addClass(touch);
+            touchElem = $this;
+
+        },'touchmove': function(){
+            touchMove = true;
+        },'touchend': function(){
+
+            var $this = $(this), url;
+            var shareFlag = $this.data('flag');
+            if(!shareFlag) shareFlag = 'member-21375';
+
+            if(touchMove) {
+                touchMove = false;
+                return ;
+            }
+
+            $this.removeClass('touch');
+            if((new Date()) - acTime > 300){   // 触摸的时间超过130ms，不触发触摸效果 。。。
+                return ;
+            }
+
+            url = $this.data('url');
+
+            _hmt.push(['_trackEvent', shareFlag, 'click', 'down']);
+            if(url) location.href = url;
+            return ;
+
+        }});
+    }
+
+</script>
+
+</body>
+</html>
+

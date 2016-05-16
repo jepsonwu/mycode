@@ -1,0 +1,148 @@
+<table id="member_log_list"></table>
+<div id="member_log_list_toolbar"></div>
+<div id="member_log_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="memberlogObj.containerObj.edatagrid('reload');">刷新</a> 
+    
+    <select name="searchType1">
+        <option value="LogID">日志编号</option>
+        <option value="MemberID">会员编号</option>
+    </select><input type="text" value="" name="searchType1Name" size="10" />    
+    操作时间：
+    <input class="easyui-datebox" type="text" name="start_date" value="" data-options="onSelect:toSearchMemberList"></input>
+    至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options="onSelect:toSearchMemberList"></input>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchMemberLog()" iconCls="icon-search">搜索</a>
+        
+</div>
+<div id="member_view_window"></div>
+<script type="text/javascript">
+    $("#member_log_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchMemberLog();
+        }    
+    });
+    
+    $("#member_log_list_searcher_container select[name]").change(function(){
+        toSearchMemberLog();
+    });
+    
+    function toSearchMemberLog()
+    {
+        
+        var fieldOneName     = $("#member_log_list_searcher_container select[name='searchType1']").val();
+        var fieldOneValue    = $("#member_log_list_searcher_container input[name='searchType1Name']").val();
+        var start_date       = $("#member_log_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#member_log_list_searcher_container input[name='end_date']").val();
+        memberlogObj.containerObj.datagrid('load', {
+                                                fieldOneName : fieldOneName,
+                                                fieldOneValue : fieldOneValue,
+                                                start_date : start_date,
+                                                end_date : end_date
+        });
+    }
+
+var memberlogObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'member-log','action'=>'list'));?>',
+        'viewUrl':'<?php echo $this->url(array('controller'=>'member','action'=>'view'));?>',
+        'containerObj':$("#member_log_list"),
+        'statusWindowObj':$("#member_view_window"),
+
+        
+        'selfName':'memberlogObj',
+
+        'init':function(){
+            this.showData();
+        },
+       
+        //查看详情
+        'viewHandler':function(member_id){
+            var _THIS_ = this;
+            _THIS_.statusWindowObj.window({
+                'href':_THIS_.viewUrl+'?member_id='+member_id,
+                'width':640,
+                'height':410,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'详情',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    //是否分页
+                    pagination:true,
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'LogID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#member_log_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'LogID',title:'ID',width:80},
+                        {field:'MemberID',title:'会员编号',width:100,formatter:function(value,rec,index){
+                            var btn  = value+'&nbsp;&nbsp;&nbsp;&nbsp;';
+                            btn += '<a  href="javascript:void(0);" style="color:#CA2020" onclick="'+_THIS_.selfName+'.viewHandler(\''+rec.MemberID+'\')">查看会员</a>';
+                            return btn;
+                           }
+                        },
+                        
+                        {field:'Action',title:'操作信息',width:100},
+                        {field:'Info',title:'操作详情',width:100},
+                        {field:'IP',title:'IP',width:100},
+                        {field:'DeviceID',title:'设备号',width:100},
+                        {field:'Platform',title:'平台',formatter:function(value,rowData,index){
+                                var platform = '';
+                                switch(value)
+                                {
+                                    case '1':
+                                        platform = 'Android';
+                                        break;
+                                    case '2':
+                                        platform = 'Ios';
+                                        break;
+                                    default:
+                                        platform = '其他';
+                                }
+                                return platform;
+                            }
+                        },
+                        {field:'CreateTime',title:'添加时间',width:100},
+                        {field:'Extra',title:'备注',width:100},
+                    ]]
+                });
+    
+                
+                //设置分页
+                var pager = _THIS_.containerObj.datagrid('getPager');
+                pager.pagination({
+                    pageList:[10,50,100,150,200],
+                    pageSize:50,
+                    beforePageText:'第',
+                    afterPageText:'页',
+                    displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+                });
+
+
+            $("#member_log_list_toolbar").append($("#member_log_list_searcher_container"));
+            },    
+};
+memberlogObj.init();
+</script>

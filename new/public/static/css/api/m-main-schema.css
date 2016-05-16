@@ -1,0 +1,389 @@
+@charset"utf-8";
+/**
+*   三思 2012.7.1
+*   Made by 492831343@qq.com
+**/
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+img {
+    border: none;
+    vertical-align: middle;
+}
+
+ul,ol,li {
+    list-style: none;
+}
+
+section,article,aside,header,footer,nav,dialog,figure {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+html,body {
+    font: 14px/1.5 Helvetica,STHeiti,Droid Sans Fallback;
+    -webkit-tap-highlight-color: rgba(255,0,0,0);
+}
+
+.fl,.f_left {
+    float: left;
+}
+
+.fr,.f_right {
+    float: right;
+}
+
+.clearfix:after {
+	content: '';display:block;height:0;clear:both;
+}
+
+a {
+    outline: none;
+}
+
+a:link,a:visited,a:active {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffa640;
+    text-decoration: none;
+}
+
+.mt {
+    margin-top: 10px;
+}
+
+.mr {
+    margin-right: 10px;
+}
+
+.mb {
+    margin-bottom: 10px;
+}
+
+.ml {
+    margin-left: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mr20 {
+    margin-right: 20px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.f_clear {
+    clear: both;
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+.p-rela, .p-relative {
+    position: relative;
+}
+
+.p-abso, .p-absolute {
+    position: absolute;
+}
+
+.fc-000 {
+    color: #000;
+}
+
+.fc-fff {
+    color: #fff;
+}
+
+.fc-333 {
+    color: #333;
+}
+
+.fc-666 {
+    color: #666;
+}
+
+.fc-999 {
+    color: #999;
+}
+
+.fc-ccc {
+    color: #ccc;
+}
+
+.fc_f00 {
+    color: #f00;
+}
+
+.fc-c00 {
+    color: #c00;
+}
+
+.fc-green {
+    color: #009901;
+}
+
+.fc-cheng {
+    color: #FF7800;
+}
+
+.fc-bigred {
+    color: #C00;
+}
+
+.fm-heit {
+    font-family: "SimHei","STHei";
+}
+
+.fm-song {
+    font-family: "SimSun","STSong";
+}
+
+.fm-weir {
+    font-family: "Microsoft YaHei","微软雅黑";
+}
+
+.fs-12 {
+    font-size: 12px;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+
+.fs-16 {
+    font-size: 16px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.fs-20 {
+    font-size: 20px;
+}
+
+.fs-22 {
+    font-size: 22px;
+}
+
+.fw-thin,.fw-normal {
+	font-weight: normal;
+}
+
+.fw-bold {
+	font-weight: bold;
+}
+
+.cursor-default {
+	cursor: default;
+}
+
+.cursor-point {
+	cursor: pointer;
+}
+
+body{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;}
+
+/* 微信下拉提示 */
+
+.pull-wechat-box{
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+.pull-wechat-box.active{
+    height: 110px;
+}
+.pull-wechat{
+    height: 60px;
+    padding: 20px 20px 30px;
+    background: #4f5553;
+}
+.pw-info{
+    color: #fff;
+    line-height: 30px;
+}
+.pw-arrow{
+    width: 45px;
+}
+.pw-arrow img{
+    width: 100%;
+}
+
+.qqbrowser{
+    position: fixed;
+    width: 80%;
+    height: 45px;
+    line-height: 24px;
+    left: 50%;
+    top: 50%;
+    margin-left: -40%;
+    margin-top: -15px;
+    padding: 15px 0;
+    background: rgba(10, 10, 10, .7);
+    color: #fff;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+}
+.qqbclose{
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    line-height: 26px;
+    background: #aaa;
+    border-radius: 25px;
+}
+
+.caizhu-open{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background: rgba(10, 10, 10, .6);
+    z-index: 10;
+
+}
+
+.czo-list{
+    width: 100%;
+    display: -webkit-box;
+    display: box;
+}
+.czo-one{
+    width: 45px;
+    height: 40px;
+    margin: 5px 0 0 8px;
+    overflow: hidden;
+}
+.czo-one img{
+    width: 40px;
+    height: 40px;
+}
+.czo-two{
+    width: 144px;
+    padding: 0 0 0 3px;
+    color: #fff;
+}
+.czo-two strong{
+    display: inline-block;
+    height: 28px;
+    line-height: 34px;
+}
+.czo-two p{
+    height: 22px;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.czo-three{
+    -webkit-box-flex: 1;
+    box-flex: 1;
+}
+.czo-three{
+    line-height: 50px;
+}
+.czo-three a{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 20px;
+    color: #fff;
+    background: #aaa;
+    border-radius: 3px;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+}
+.czo-three span:active{
+    background: #19B4ED;
+}
+.open-close{
+    position: absolute;
+    right: 0;
+    top: -0px;
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    color: #fff;
+    background: rgba(255, 255, 255, .2);
+    border-radius: 0 0 0 30px;
+    line-height: 32px;
+    text-indent: 12px;
+
+    -webkit-transition: all .2s;
+
+    transition: all .2s;
+}
+.open-close:active{
+    background: #19B4ED;
+}
+
+/* imitation APP prompt */
+.m-prompt-box{position: fixed; left: 0; bottom: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, .7); }
+.m-prompt{
+    position: absolute; left: 50%; top: 40%; margin-left: -120px; margin-top: -50px; width:240px; background: #fff; border-radius: 6px; text-align: center; font-size: 16px; line-height: 50px; overflow: hidden;
+}
+.prompt-p{line-height: 24px; padding: 20px 8px 15px; border-bottom: #eaeaea solid 1px;}
+.prompt-one{display: block; color: #4597FF; background: #fff;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+}
+.m-prompt span:active{background: #f0f0f0;}
+
+/* 大图展示 */
+.show-mask{position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, .8); overflow: hidden; display: none; z-index: 5;
+    background-image: url('/static/imgs/api/loading.gif');
+    background-repeat: no-repeat;
+    background-size: 60px auto;
+    background-position: center 46%;
+
+}
+.show-close{position: fixed; top: 10px; right: 10px; width: 30px; height: 30px; line-height: 30px; text-align: center; color: #fff; background: #333; border: #f90 solid 1px; border-radius: 15px; font-size: 18px; font-family: helvetica,arial,"Microsoft YaHei"; z-index: 20;}
+.show-mask img{position: absolute; top: 50px; left: 0; top: 50%; left: 0; width: 100%; z-index: 10;}
+
+
+
+/* events correctly on iPhone  */
+.callcaizhu, .boxapp{cursor: pointer;}
+
+.dot{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* page loading */
+.init-pageshow{position: fixed; width: 100%; height: 100%; z-index: 1000; background: #f7f7f7 url('http://fe.caizhu.com/public/imgs/loading.gif') no-repeat center 45%; }

@@ -1,0 +1,57 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 60px;align:center;">
+		<form id="role_add_form" method="post">
+			<table class='form_table'>
+				<tr>
+					<th>角色名称:</th>
+					<td><input class="easyui-validatebox" type="text" name="name" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<table class="form_table">
+						<tr>
+							<th>权限</th>
+							<!--<th>允许</th>-->
+							<th>拒绝</th>
+						</tr>
+						<?php foreach($this->privilegeList as $key=>$item):?>
+							<tr>
+								<td><?php echo $item['Describe'];?></td>
+								<!--<td><input  data="<?php echo $item['PrivilegeID'];?>" class="checkbox_allow_add" id="allow_add_<?php echo $item['PrivilegeID'];?>" type="checkbox" name="allowCheck[<?php echo $item['PrivilegeID'];?>]" /></td>-->
+								<td><input  data="<?php echo $item['PrivilegeID'];?>" class="checkbox_deny_add" id="deny_add_<?php echo $item['PrivilegeID'];?>" type="checkbox" name="denyCheck[<?php echo $item['PrivilegeID'];?>]" /></td>
+							</tr>
+						<?php endforeach;?>
+						</table>
+					</td>		
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	
+	<div style="text-align:center;padding:5px">
+    	<a href="javascript:void(0)" class="easyui-linkbutton" id="role_add_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="role_add_form_close">关闭</a>
+    </div>
+	
+</div>
+<script>
+$(function(){
+	$(".checkbox_allow_add").off().on('click',function(){
+		var id = $(this).attr('data');
+		if(document.getElementById("allow_add_"+id).checked){
+			$("#deny_add_"+id).attr('checked',false);
+		}
+	});
+
+	$(".checkbox_deny_add").off().on('click',function(){
+		var id = $(this).attr('data');
+		if(document.getElementById("deny_add_"+id).checked){
+			$("#allow_add_"+id).attr('checked',false);
+		}
+	});
+});
+</script>

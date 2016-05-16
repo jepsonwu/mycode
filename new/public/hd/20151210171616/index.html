@@ -1,0 +1,291 @@
+<?php if(isset($this)){ $activityConf = $this->activityConf;}else{$activityConf = array();} ?>
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>听课打卡</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/hd/<?php echo $activityConf['Path']; ?>/css/m-main.css?date=151215" >
+
+<style>
+</style>
+</head>
+<body class="body-navgooter">
+    <script>footerNavFlag = 1;</script>
+    <section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="http://cz.caizhu.com/static/imgs/web/wechat-arrow.png" alt="指示图" >
+        </li>
+    </ul>
+</section>
+
+<section id="caizhu-open" class="caizhu-open hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="http://fe.caizhu.com/20150504/clutter/wechat/tuiguang151208/imgs/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+            </p></li>
+        <li class="czo-three">
+            <a href="http://m.caizhu.com/down/down-caizhu" id="czo-open">下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close" class="open-close">X</span>
+</section>
+<section>
+    <figure class="figure">
+        <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/01/01.png" alt="pic" />
+    </figure>
+    <figure class="figure">
+        <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/01/02.png" alt="pic" />
+    </figure>
+    <figure class="figure">
+        <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/01/03.png" alt="pic" />
+    </figure>
+    <figure class="figure">
+        <img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/01/04.png" alt="pic" />
+    </figure>
+
+    <div class="do">
+        <ul class="do-list clearfix">
+            <li class="do-date" id="month"><?php echo (isset($activityConf['month']) && !empty($activityConf['month']))?$activityConf['month']:'12'; ?></li>
+            <li class="do-str">月</li>
+            <li class="do-date" id="day"><?php echo (isset($activityConf['day']) && !empty($activityConf['day']))?$activityConf['day']:'14'; ?></li>
+            <li class="do-str">日</li>
+            <li class="do-str">蜕变营&nbsp;&nbsp;第<span id="count"><?php echo (isset($activityConf['count']) && !empty($activityConf['count']))?$activityConf['count']:'1'; ?></span>课</li>
+        </ul>
+    </div>
+
+    <span id="lecture" class="lecture callcaizhu" data-url="caizhu://caizhu/groupInfo?id=1448268221020"><img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/01/btn.png"></span>
+
+</section>
+
+<section id="prompt" class="prompt hide"></section>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、百度、360浏览器等</p>
+</section>
+
+<script src="/hd/<?php echo $activityConf['Path']; ?>/js/zepto.min.js"></script>
+<script>
+    var hide = 'hide',
+            select = 'select',
+            $lecture = $('#lecture');
+    var promptId,
+            hide = 'hide',
+            $prompt = $('#prompt');
+    function showPrompt(str){
+        if(!str) return ;
+        clearTimeout(promptId);
+        $prompt.empty().html(str).removeClass(hide);
+
+        setTimeout(function(){
+            $prompt.addClass(hide);
+        }, 3300)
+    }
+    $prompt.click(function(){
+        return false;
+    });
+    $('body').click(function(){
+        $prompt.addClass(hide);
+    });
+
+    var sharePic = $('.share-pic');
+    if(sharePic.length>0){
+        sharePic = sharePic[0].src;
+    }else{
+        sharePic = '';
+    }
+    sharePic = 'http://'+location.host+"/hd/<?php echo $activityConf['Path']; ?>/imgs/share-00.png";
+
+    function jsonpCallback(){
+        var d = arguments[0];
+
+        if(d.flag == 1){
+            var d = d.data;
+
+            var wechatJs = document.createElement('script');
+            wechatJs.type = 'text/javascript';
+            wechatJs.src = 'http://res.wx.qq.com/open/js/jweixin-1.0.0.js';
+            wechatJs.onload = function(){
+                wechatShare(d, {title: replaceBlank(shareTitle), des: replaceBlank(shareDes), pic: sharePic, link: shareLink});
+            };
+            document.body.appendChild(wechatJs);
+
+        }
+    }
+
+    var shareTitle = '记录理财，今天你打卡了吗？',
+            shareDes = '不让知识溜走，30天坚持学习，理财从此刻开始！',
+            shareLink = location.href;
+
+    var UAgent = navigator.userAgent.toLowerCase();
+    var caizhuAPP = function(){                                   //财猪app
+        var reg = /caizhuapp/i;
+        if(reg.test(UAgent)) {
+            return true;
+        } else {
+            return false;
+        }
+    }();
+
+    if(caizhuAPP){    // 财猪里执行动作
+        var basicJs = document.createElement('script');
+        basicJs.type = 'text/javascript';
+        basicJs.src = 'http://fe.caizhu.com/20150504/clutter/wechat/basic.js?date=151215';
+        basicJs.onload = function(){
+            caizhuAppRun();
+
+            var caizhukeyjsShare = new caizhuShare({
+                pic: sharePic,
+                title: replaceBlank(shareTitle),
+                description: shareDes,
+                link: location.href
+            });
+            caizhukeyjsShare.createUrlMeta();
+        }
+        document.body.appendChild(basicJs);
+
+    }else {
+
+        // third parts - action
+        var commonFunc = {};
+
+        var otherJs = document.createElement('script');
+        otherJs.type = 'text/javascript';
+        otherJs.src = 'http://fe.caizhu.com/20150504/clutter/wechat/app-running.js?date=151215';
+
+        otherJs.onload = function(){
+
+            var loadIframe = null;
+            commonFunc.createIframe = function(){
+                var iframe = document.createElement("iframe");
+                iframe.style.cssText = "display:none;width:0px;height:0px;";
+                document.body.appendChild(iframe);
+                loadIframe = iframe;
+            }
+            commonFunc.redirect = function(url) {
+
+                if(!url) return ;
+
+                var rUa = navigator.userAgent;
+                isChrome = rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+                if (isChrome) {
+                    if (info.os.android) {
+                        if (rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)) {
+                            loadIframe.src = url;
+                        } else {
+
+                            var str = url,
+                                    type,
+                                    id,
+                                    regExp;
+
+                            regExp = /caizhu\/([a-zA-Z]{2,20})\?id=(\d*)$/;
+                            str = regExp.exec(str);
+                            type = str[1];
+                            id = str[2];
+
+                            window.location.href = 'intent://caizhu/'+ type +'?id=' + id + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                        }
+
+                    } else {
+                        window.location.href = url;
+                    }
+                } else {
+                    if (safariBrowser) {                  // ios6-plus, 只能用location跳转
+                        window.location.href = url;
+                    } else {
+                        loadIframe.src = url;
+                    }
+                }
+                var t = Date.now();
+                setTimeout(function () {
+                    if (Date.now() - t < 600) {
+                        //location.href="http://m.caizhu.com/down/down-caizhu";
+
+                        $('#caizhu-open').removeClass(hide);
+                    }
+                }, 500)
+            }
+
+            // wechat share - start
+            $.ajax({
+                url: 'http://cz.caizhu.com/api/wechat/get-signature?url='+location.href,
+                type: 'get',
+                dataType: 'jsonp',
+                data: {
+                    url: location.href,
+                    _callback: 'jsonpCallback'
+                }
+
+            });
+            // wechat share - end
+
+        }
+
+        document.body.appendChild(otherJs);
+        
+    }
+
+    var acTime, touchMove;
+    function caizhuAppRun(){
+
+        $('#lecture').click(function(){
+            $.ajax({
+                url: "/api/activity/submit-data?id=<?php echo $activityConf['activityId']; ?>",
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    url: location.href
+                },
+                success: function(d){
+                    if(d.flag == 1){
+                        var d = d.data;
+                        location.href = "caizhu://caizhui/viewList?id=<?php echo $activityConf['topicID']; ?>";
+                    }else if(d.flag == '-100'){
+                        location.href = 'http://caizhukeyjs-loginjump?url=' + location.href;
+                        return;
+                    }else{
+                        showPrompt(d.msg);
+                    }
+                },
+                error: function(d){
+                    showPrompt('网络错误，过会儿再试试吧');
+                }
+            })
+            return false;
+        });
+
+    }
+
+</script>
+<script src="http://fe.caizhu.com/20150504/clutter/wechat/footer-nav-lecture.js?date=160104"></script>
+<script>
+
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+</script>
+</body>
+</html>

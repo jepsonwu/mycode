@@ -1,0 +1,62 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 10px;align:center;">
+        <form id="article_add_form" method="post" action="">
+            <table class='form_table'>                
+                <tr>
+                    <th width="11%">分类：</th>
+                    <td width="89%">
+                        <select name="ret[CategoryID]" class="easyui-validatebox" data-options="required:true">
+                    <? foreach($this->cate as $item):?><option value="<?=$item['CategoryID']?>" ><?=$item['Name']?></option><?endforeach;?>
+                        </select>
+                    </td>
+                </tr>
+                <?php if($this->CategoryID==1):?>
+                    <tr>
+                        <th>平台：</th>
+                        <th>
+                            <input name="ret[platform]" type="radio" value="1" checked="checked" />android &nbsp;&nbsp;
+                            <input name="ret[platform]" type="radio" value="2" />ios
+                        </th>
+                    </tr>
+                <?php endif;?>
+                <tr>
+                    <th width="11%">媒体来源：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="text"  name="ret[MediaSource]" ></td>
+                </tr>
+                <tr>
+                    <th width="11%">标题：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="text"  data-options="required:true" name="ret[Title]" size="80"></td>
+                </tr>
+                <tr>
+                    <th width="11%">URL：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="url"  name="ret[Url]" size="80"></td>
+                </tr>
+                <tr>
+                    <th>内容：</th>
+                    <td>
+                        <textarea id="add_content_<?=$this->CategoryID?>" name="ret[Contents]" class="myEditor"   rows='20' cols='100'></textarea>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_config.js"></script>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_all_min.js"></script>
+    <script type="text/javascript" >
+        var edit1 = new UE.ui.Editor({
+            initialContent : '',
+            initialFrameWidth : 800
+        });
+        edit1.render("add_content_<?=$this->CategoryID?>");
+    </script>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    </td>
+                </tr>
+            </table>
+        </form>
+            <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="article_add_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="article_add_form_close">关闭</a>
+    </div>
+    </div>
+</div>

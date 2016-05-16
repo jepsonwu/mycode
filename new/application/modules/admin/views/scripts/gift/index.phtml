@@ -1,0 +1,157 @@
+<table id="gift_list"></table>
+<div id="gift_list_toolbar"></div>
+<div id="gift_view_window"></div>
+<div id="gift_list_searcher_container">
+<form action="" id="gift_search_form">
+<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="giftObj.editHandler();">添加</a>
+<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="giftObj.containerObj.edatagrid('reload');">刷新</a>
+    礼物名称：<input type="text" name="giftName" />
+
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchgiftList()" iconCls="icon-search">搜索</a>
+</form>
+</div>
+<div id="gift_add_window"></div>
+<script type="text/javascript">
+        $("#gift_list_searcher_container input[name]").keydown(function(event){
+            if(event.keyCode == 13){
+                toSearchgiftList();
+            }    
+        });
+        
+        $("#gift_list_searcher_container select[name]").change(function(){
+            toSearchgiftList();
+        });
+        
+        function toSearchgiftList() {
+            giftObj.containerObj.datagrid('load', $('#gift_search_form').serializeObject());
+        }
+
+        var giftObj = {
+            //数据加载url
+            'loadUrl':'<?php echo $this->url(array('controller'=>'gift','action'=>'list'));?>',
+            'deleteUrl':'<?php echo $this->url(array('controller'=>'gift','action'=>'remove'));?>',
+
+            'containerObj':$("#gift_list"),
+            'addWindowObj':$("#gift_add_window"),
+            'selfName':'giftObj',
+
+            'init':function(){
+                this.showData();
+            },
+
+            //添加或修改礼物
+            'editHandler':function(id){
+                    var _THIS_ = this;
+                    if( id ) {
+                        var href = '<?php echo $this->url(array('controller'=>'gift','action'=>'add'));?>' + '?id=' + id;
+                        var title = '编辑礼物';
+                    } else {
+                        var href = '<?php echo $this->url(array('controller'=>'gift','action'=>'add'));?>';
+                        var title = '添加礼物';
+                    }
+                    _THIS_.addWindowObj.window({
+                        'href': href,
+                        'width': 450,
+                        'height': 360,
+                        'modal': true,
+                        'resizable': true,
+                        'title': title,
+                        'onLoad':function() {
+                            $('#gift_add_form_save').on('click', function() {
+                                $("#gift_add_form").submit();
+                            });
+
+                            $('#gift_add_form_close').on('click', function() {
+                                _THIS_.addWindowObj.window('close');
+                            });
+                            
+                            $("#gift_add_form").myForm(function(ret){
+                                if(ret.flag > 0){
+                                    _THIS_.addWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                } else {
+                                    $.messager.alert("提示信息", ret.msg, 'error');
+                                }
+                            });    
+                        }
+                    });
+                },
+            
+            //加载数据
+            'showData':function(){
+                var _THIS_ = this;
+                _THIS_.containerObj.datagrid({
+                        //是否条纹显示
+                        striped:true,
+                        //加载提示信息
+                        loadMsg:'正在加载...',
+                        //列是否自适应
+                        //fitColumns:true,
+                        rownumbers : true,
+                        fit:true, 
+                        //是否单行选择
+                        singleSelect:true,
+                        idField:'AdsID',
+                        url:_THIS_.loadUrl,
+                        toolbar: '#gift_list_toolbar',
+            
+                        //设置列   
+                        columns:[[
+                            {field:'GiftID',title:'礼物ID',width:50}, 
+                            {field:'GiftName',title:'礼物名称',width:100}, 
+                            {field:'Type',title:'礼物类型',width:80,formatter:function(value,rec,index){
+                                var type = '';
+                                switch(value){
+                                    case '1':
+                                        type = '现金';
+                                        break;
+                                    case '2':
+                                        type = '虚拟商品';
+                                        break;
+                                }
+                                return type;
+                            }
+
+                            },
+                            {field:'Unit',title:'礼物单位',width:80},
+                            {field:'Price',title:'礼物价格',width:80},
+                            {field:'Cover',title:'图片',width:200,formatter:function(value,rec,index){
+                                return '<img src="'+value+'?imageView2/0/w/80"/>';
+                            }
+                        	},  
+                            {field:'Status',title:'是否有效',width:80,formatter:function(value,rec,index){
+                                var Status = '';
+                                switch(value){
+                                    case '1':
+                                    	Status = '有效';
+                                        break;
+                                    case '0':
+                                    	Status = '无效';
+                                        break;
+                                }
+                                return Status;
+                            } 
+                            },
+                            {field:'CreateTime',title:'创建时间',width:150}, 
+                            {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                 var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.GiftID+'\')">';
+                                     e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                
+                                 return e;         
+                               }
+                            }
+
+                        ]],
+
+                        //分页信息
+                        pagination:true,
+                        // pagePosition:'both',
+                        pageList:[20,50,100,150,200],
+                        pageSize:50,
+                    });
+
+                $("#gift_list_toolbar").append($("#gift_list_searcher_container"));
+            },    
+    };
+    giftObj.init();
+</script>

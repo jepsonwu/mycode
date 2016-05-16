@@ -1,0 +1,218 @@
+<table id="vote_view_list"></table>
+<div id="vote_view_list_toolbar"></div>
+<div id="vote_view_view_window"></div>
+<div id="vote_view_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="voteviewObj.addHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="voteviewObj.containerObj.edatagrid('reload');">刷新</a>
+   期数：
+    <select name="PeriodID">
+        <option value="-1">所有</option>
+        <?php foreach ($this->periodInfo as $item):?>
+            <option value="<?php echo $item['PeriodID'];?>"><?php echo $item['PeriodName'];?></option>
+        <?php endforeach;?>
+    </select>&nbsp;&nbsp;
+    观点类型：
+    <select name="ViewType">
+        <option value="-1">所有</option>
+        <option value="1">投票观点</option>
+        <option value="2">热门观点</option>
+    </select>&nbsp;&nbsp;
+    状态：
+    <select name="Status">
+        <option value="-1">所有</option>
+        <option value="0">无效</option>
+        <option value="1">有效</option>
+    </select>&nbsp;&nbsp;
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchVoteView()" iconCls="icon-search">搜索</a>
+</div>
+<div id="vote_view_window"></div>
+
+<script type="text/javascript">
+    $("#vote_view_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchVoteView();
+        }    
+    });
+    
+    $("#vote_view_list_searcher_container select[name]").change(function(){
+        toSearchVoteView();
+    });
+    
+    function toSearchVoteView(flag)
+    {
+        var PeriodID       = $("#vote_view_list_searcher_container select[name='PeriodID']").val();
+        var ViewType       = $("#vote_view_list_searcher_container select[name='ViewType']").val();
+        var Status         = $("#vote_view_list_searcher_container select[name='Status']").val();
+
+        
+        voteviewObj.containerObj.datagrid('load', {
+            PeriodID:PeriodID,
+            ViewType:ViewType,
+            Status:Status
+        });
+    }
+
+var voteviewObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'vote-view','action'=>'list'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'vote-view','action'=>'add'));?>',
+        'editUrl':'<?php echo $this->url(array('controller'=>'vote-view','action'=>'edit'));?>',
+
+        'containerObj':$("#vote_view_list"),
+        'viewWindowObj':$("#vote_view_window"),
+        
+        'selfName':'voteviewObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //添加期数
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':450,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'title':'添加观点',
+                'onClose':function(){
+                    _THIS_.viewWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#vote_view_add_form_save").off().on('click',function(){
+                         $("#vote_view_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#vote_view_add_form_close").off().on('click',function(){
+                        _THIS_.viewWindowObj.window('destroy');
+                    });
+                    $("#vote_view_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.viewWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //修改观点
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.viewWindowObj.window({
+                        'href':_THIS_.editUrl+'?voteview_id='+id,
+                        'width':450,
+                        'height':200,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑观点',
+                        'onLoad':function(){
+
+                            $("#vote_view_edit_form_save").off().on('click',function(){
+                                $("#vote_view_edit_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $("#vote_view_edit_form_close").off().on('click',function(){
+                                _THIS_.viewWindowObj.window('close');
+                            });
+                            
+                            $("#vote_view_edit_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.viewWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+
+
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'VoteViewListID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#vote_view_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'VoteViewListID',title:'ID',width:60}, 
+                        {field:'PeriodID',title:'期数ID',width:60},
+                        {field:'PeriodName',title:'期数名称',width:60},
+                        {field:'ViewID',title:'观点ID',width:60},
+                        {field:'ViewContent',title:'观点内容',width:300},
+                        {field:'ViewType',title:'观点类型',width:60,formatter:function(value,rec,index){
+                                var type = '';
+                                switch(value){
+                                    case '1':
+                                        type = '投票观点';
+                                        break;
+                                    case '2':
+                                        type = '热门观点';
+                                        break;
+                                }
+                                return type;
+                            }
+                        }, 
+                        {field:'VoteCount',title:'投票总数',width:60},                       
+                        {field:'Status',title:'状态',width:60,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '无效';
+                                        break;
+                                    case '1':
+                                        status = '有效';
+                                        break;
+                                }
+                                return status;
+                            }
+                        }, 
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                var e= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.VoteViewListID+'\')">';
+                                e += '<span class="l-btn-left">编辑</span></a>';
+
+                                return e;  
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[10,20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#vote_view_list_toolbar").append($("#vote_view_list_searcher_container"));
+            },    
+};
+voteviewObj.init();
+</script>

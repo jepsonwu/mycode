@@ -1,0 +1,497 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>财猪送流量</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/hd/flow0916/style.css" >
+<style>
+.mt6{margin-top: 6px;}
+</style>
+<script>
+var isStart = <?php echo $this->isStart ;?>; //1表示活动开始,0未开始
+</script>
+</head>
+<body>
+
+<figure class="t-banner">
+    <img src="/static/imgs/hd/flow0916/banner.png" alt="财猪送流量咯">
+</figure>
+
+<section>
+
+</section>
+
+<form name="register" onSubmit="javascript:void(0);">
+    <p id="reg-more" class="reg-more hide">微信粉丝可获得更多流量，请先关注 <a id="to-wechat-caizhu" href="http://mp.weixin.qq.com/s?__biz=MzAxMzM5OTQwNg==&mid=211166930&idx=1&sn=ff2b013cde6aa90b557efea78c9815eb#rd">财猪微信</a></p>
+    <ul class="reg-list clearfix">
+        <li class="reg-line">
+            <span>
+                <input type="tel" name="mobile" id="tel" class="valid" placeholder="请输入手机号码" data-msg="请输入有效的手机号码">
+            </span>
+        </li>
+        <li class="reg-line p-rela">
+            <span>
+                <input type="tel" name="code" id="code" class="valid" placeholder="请输入验证码" data-msg="请输入有效验证码" >
+            </span>
+            <ul id="verify" class="verify">
+                <li id="getcode" class="getcode">
+                    获取验证码
+                </li>
+                <li id="countdown" class="countdown hide">
+
+                </li>
+            </ul>
+        </li>
+        <li class="reg-line">
+            <span>
+                <input type="password" name="password" id="password" class="valid" placeholder="请设置登录密码" data-msg="请输入至少6位密码">
+            </span>
+        </li>
+        <li class="reg-agree clearfix">
+
+                <span class="reg-do active" id="reg-do"></span>
+
+                <span id="diantou" for="reg-do">已阅读并同意</span><strong class="agree-protocol active" data-url="http://cz.caizhu.com/api/user/private">《财猪使用条款及隐私协议》</strong></span>
+
+        </li>
+        <li class="reg-btn mt6">
+            <input type="button" id="submit" value="立即领取" >
+        </li>
+    </ul>
+</form>
+
+<figure class="bg-middle">
+    <img src="/static/imgs/hd/flow0916/middle.png" alt="中间背景">
+</figure>
+
+<section class="result-box p-rela">
+    <figure class="result">
+        <img src="/static/imgs/hd/flow0916/bg-form.png" alt="背景">
+    </figure>
+    <ul class="result-list p-abso" id="result-list">
+    <?php foreach($this->record as $item):?>
+        <li class="result-one clearfix">
+            <span><?php echo $item['Mobile']?></span>
+            <span></span>
+            <span>已领取<?php echo $item['FlowSize']?>M</span>
+        </li>
+   <?php endforeach;?>
+    </ul>
+</section>
+
+<figure class="rules">
+    <img src="/static/imgs/hd/flow0916/bg-rule.png" alt="规则">
+</figure>
+
+<ul class="rules-list">
+    <li>1、活动时间：2015-09-23 08:00:00至2015-09-27 23:59。</li>
+    <li>2、活动期间内共累计赠送1500个流量包，每个流量包随机10M-80M，每天300个，赠完为止，先到先得。</li>
+    <li>3、活动期间每天8点准时开抢，24点截止。</li>
+    <li>4、每个用户最高可获得100M，可多次参与。</li>
+    <li>5、本次活动移动、联通、电信全国用户均可参与。</li>
+    <li>6、抢到的流量将于24小时内充值到获奖手机中，流量当月有效，全国可用。</li>
+    <li>7、如果你喜欢本活动，请分享给你的朋友一起抢流量吧。</li>
+    <li>8、如有疑问请直接留言财猪微信平台或咨询财猪客服400-681-2858。</li>
+    <li>9、由于个别地区运营商系统维护，可能会出现无法充值，此情况还请用户谅解。</li>
+</ul>
+
+<footer>※本活动的最终解释权归杭州小麦金融信息服务有限公司所有</footer>
+
+
+<section id="vpromptbox" class="vpromptbox hide">
+    <span id="vclose" class="close"><img src="/static/imgs/hd/close.png" alt="关闭" ></span>
+    <span id="vprompt"></span>
+</section>
+
+<script src="/static/js/web/zepto.min.js"></script>
+
+<script>
+var initUa = navigator.userAgent.toLowerCase(),
+    wxFlag=function(){
+        if(initUa.match(/MicroMessenger/i)=="micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }();
+
+if(wxFlag){
+    $('#reg-more').removeClass('hide');
+}
+</script>
+
+<script>
+$(function(){
+
+    var $diantou = $('#diantou'),
+        $regDo = $('#reg-do');
+    $('#diantou, #reg-do').click(function(){
+        var flag = $(this).data('flag');
+
+        if(!flag) return false;
+        virtualDo();
+    });
+    setTimeout(function(){
+        $diantou.data('flag', true);
+        $regDo.data('flag', true);
+    }, 700);
+
+    function virtualDo(){
+        var active = 'active',
+            flag = $regDo.hasClass(active);
+            if(flag){$regDo.removeClass(active);}
+            else{$regDo.addClass(active);}
+    }
+
+
+    var hide = 'hide', promptId, vPromptId, t = 60, current = 'current',
+            h = window.innerHeight,
+            $valid = $('.valid'),
+            $promptBox = $('#promptbox'),
+            $close = $('#close'),
+            $vPromptBox = $('#vpromptbox'),
+            $vPrompt = $('#vprompt'),
+            $vClose = $('#vclose'),
+
+            $getCode = $('#getcode'),
+            $countdown = $('#countdown'),
+
+            $tel = $('#tel'),
+            $code = $('#code'),
+            $password = $('#password'),
+
+            $submit = $('#submit');
+
+    $promptBox.css('height', h);
+    
+    window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function(){
+        $promptBox.css('height', window.innerHeight);
+    }, false)
+    
+    $close.click(function(){
+        $promptBox.addClass(hide);
+    });
+
+    $vClose.click(function(){
+        $vPromptBox.addClass(hide);
+    });
+
+    $valid.blur(function(){
+
+        var startFlag = startTime();
+        if(startFlag) return false;
+
+        var $this = $(this),
+                val = $this.val(),
+                msg = $this.data('msg'),
+                type = $this.attr('name');
+
+        switch(type){
+            case 'mobile':
+                    if(val == ''){
+                        $vPromptBox.removeClass(hide);
+                        $vPrompt.empty().html(msg);
+                        disSubmit();
+                    }else{
+                        var reg =  /^1\d{10}$/;
+                        if(reg.test(val)){
+                            $vPromptBox.addClass(hide);
+                            checkAll();
+                        }else{
+                            $vPromptBox.removeClass(hide);
+                            $vPrompt.empty().html(msg);
+                            disSubmit();
+                        }
+                    }
+                closeVPromptBox();
+                break;
+
+            case 'code':
+                if(val == ''){
+                    $vPromptBox.removeClass(hide);
+                    $vPrompt.empty().html(msg);
+                    disSubmit();
+                }
+                closeVPromptBox();
+                break;
+
+            case 'password':
+                if(val == ''){
+                    $vPromptBox.removeClass(hide);
+                    $vPrompt.empty().html(msg);
+                    disSubmit();
+                }else{
+                    if(val.length > 5){
+                        $vPromptBox.addClass(hide);
+                        checkAll();
+                    }else{
+                        $vPromptBox.removeClass(hide);
+                        $vPrompt.empty().html(msg);
+                        disSubmit();
+                    }
+                }
+                closeVPromptBox();
+                break;
+
+        }
+    });
+
+    $getCode.click(function(){
+        ajaxGetCode();
+    });
+
+    $regDo.click(function(){
+        checkAll();
+    });
+
+    $diantou.click(function(){
+        checkAll();
+    });
+
+    $submit.click(function(e){
+
+        var startFlag = startTime();
+        if(startFlag) return false;
+
+        var $this = $(this),
+                dataGet, dataThrough;
+
+        if(!$this.hasClass(current)) return false;
+
+        dataThrough = $this.data('through');
+        if(dataThrough ) return false;
+        $this.data('through', true);
+        setTimeout(function(){
+            $this.data('through', '');
+        }, 700);
+
+        dataGet = $this.data('get');
+        if(dataGet){
+            $promptBox.removeClass(hide);
+        }else{
+            var mobile = $tel.val();
+            $.ajax({
+                url: '/api/user/register',
+                data: {
+                	fromPlatform: "wx",
+                    mobile: $tel.val(),
+                    code: $code.val(),
+                    password: $password.val(),
+                    isEncrypt:0,
+                    platform:1
+                },
+                success: function(d){           // data = {no: 0/1, msg: '手机已经被注册/验证码不正确，什么的。。。'};
+                    if(d.flag == 1){
+                        $this.data('get', true);
+                        location.href = '/api/activity/flow-record?success='+d.data.success+'&mobile='+mobile;
+                        //$promptBox.removeClass(hide);
+                    }else{
+                        $this.data('get', '');
+                        $vPrompt.empty().html(d.msg);
+                        $vPromptBox.removeClass(hide);
+                    }
+                },
+                error: function(err){
+                    $this.data('get', '');
+                    $vPrompt.empty().html('网络错误！');
+                    $vPromptBox.removeClass(hide);
+                }
+            })
+
+        }
+        return false;
+    });
+    
+    function ajaxGetCode(){
+
+        var $this = $('#tel'),
+        val = $this.val(),
+        msg = $this.data('msg');
+
+        if(val == ''){
+            $vPromptBox.removeClass(hide);
+            $vPrompt.empty().html(msg);
+            return false;
+        }else{
+            var reg =  /^1\d{10}$/;
+            if(reg.test(val)){
+                $vPromptBox.addClass(hide);
+                checkAll();
+            }else{
+                $vPromptBox.removeClass(hide);
+                $vPrompt.empty().html(msg);
+
+                return false;
+            }
+        }
+
+        closeVPromptBox();
+
+        $getCode.addClass(hide);
+        $countdown.removeClass(hide);
+        $countdown.empty().html(t + 's');
+        getCodeCountdown();
+
+        var netErrStr = '网络错误，请重新获取验证码';
+        $.ajax({                  // 返回值    data = {no: 0/1, code: '294753', msg: '手机号码已被注册'}
+            url: '/api/user/get-reg-code',
+            dataType:'json',
+            data: {mobile: val},
+            success: function(d){
+                if(d.flag == 1){
+                	$vPrompt.empty().html(d.msg);
+                	$vPromptBox.removeClass(hide);
+                }else{
+                    $vPrompt.empty().html(d.msg);
+                    $vPromptBox.removeClass(hide);
+                }
+            },
+            error: function(){
+                $vPrompt.empty().html(netErrStr);
+                $vPromptBox.removeClass(hide);
+            }
+        })
+    }
+
+    function parseUrl(key){
+        if(!key)return ;
+        var uStr=location.search.substring(1),uArr=[];
+        uArr=uStr.split('&');
+        for(var i=0,uLen=uArr.length;i<uLen;i++){
+            uStr=uArr[i].split('=');
+            if(uStr[0] == key)return String(uStr[1]);
+        }
+        return ;
+    }
+
+    function getCodeCountdown(){
+
+        setTimeout(function(){
+            if(t > 0){
+                t--;
+                $countdown.empty().html(t + 's');
+                getCodeCountdown();
+                return ;
+            }
+            t = 60;
+            $getCode.removeClass(hide);
+            $countdown.addClass(hide);
+        }, 1000);
+    }
+
+    function closeVPromptBox(){
+        clearTimeout(vPromptId);
+        vPromptId = setTimeout(function(){
+            $vPromptBox.addClass(hide)
+        }, 3300);
+    }
+    function checkAll(){
+
+        var $this, val, reg;
+
+        val = $tel.val();
+        if(val == ''){ disSubmit(); return; }
+        reg = /^1\d{10}$/;
+        if(!reg.test(val)){ disSubmit(); return; }
+
+        $this = $code;
+        val = $this.val();
+        if(val == ''){ disSubmit(); return; }
+
+        $this = $password;
+        val = $this.val();
+        if(val == ''){ disSubmit(); return; }
+        if(val.length < 6){ disSubmit(); return; }
+
+        $this = $regDo;
+        reg = $this.hasClass('active');
+        if(!reg){ disSubmit(); return; }
+
+        $submit.addClass('current');
+
+    }
+
+    function disSubmit(){
+        $submit.removeClass('current');
+    }
+
+    // active伪状态
+    var acTime;
+    $('.active').on('touchstart', function(){
+
+        acTime = new Date();
+        $(this).addClass('touch');
+
+    }).on('touchend', function(){
+
+        var $this = $(this), url;
+        $this.removeClass('touch');
+        if((new Date()) - acTime > 500){   // 触摸的时间超过500ms，不触发触摸效果 。。。
+            return ;
+        }
+
+        url = $this.data('url');
+        if(url) location.href = url;
+        return ;
+
+    });
+
+    // 活动始于8点
+
+    function startTime(){
+        var s = '活动8：00点开抢';
+
+        if(isStart < 1){
+            $vPrompt.empty().html(s);
+            $vPromptBox.removeClass(hide);
+             return true;
+        }
+    }
+
+});
+</script>
+
+<script>
+$(function(){
+
+    resultScroll();
+
+    function resultScroll(){
+        var limit = 6,
+            $resultList = $('#result-list'),
+            len = $resultList.children().length;
+
+        if(len < 6) return ;
+
+        var ani = 'result-ani';
+        setInterval(function(){
+
+        var lastData = $resultList.children().last().addClass(ani).clone();
+        $resultList.children().first().before(lastData);
+        $resultList.children().last().remove();
+
+        }, 2500);
+    }
+
+});
+</script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+
+        <form id="edit_famous_form" method="post" enctype="multipart/form-data">
+            <table class='form_table'>
+                <tr>
+                    <th width="20%">背景图片：</th>
+                    <td width="80%">
+                        <image width="50" height="50" src="<?php echo $this->famousInfo['ImgUrl'].'?imageView2/0/w/200/h/200' ?>" />
+                        <input name = "image"  type="file"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th >链接地址：</th>
+                    <td >
+                        <input type="text" name="DetailUrl" class="easyui-validatebox" data-options="required:true" size="50" value="<?php echo $this->famousInfo['DetailUrl'];?>" />
+                    </td>
+                </tr>
+                <!--<tr>
+                    <th >从业经历：</th>
+                    <td >
+                        <textarea name="Experience" rows = "5" cols="50"><?php echo $this->famousInfo['Experience'];?></textarea>
+                    </td>
+                </tr>-->
+                <?php if($this->hasColumn || $this->hasCounsel):?>          
+                    <tr>
+                        <th >其他:</th>
+                        <td >
+                            <?php if($this->hasColumn):?>
+                                <input type="checkbox" name="IsShowColumn" value="1" <?php if($this->famousInfo['IsShowColumn']==1){echo 'checked=checked';}?>/>显示理财号&nbsp;&nbsp;&nbsp;&nbsp;
+                            <?php endif;?>
+                            <?php if($this->hasCounsel): ?>
+                                <input type="checkbox" name="IsShowCounsel" value="1" <?php if($this->famousInfo['IsShowCounsel']==1){echo 'checked=checked';}?>/>显示询财主页
+                            <?php endif;?>
+                        </td>
+                    </tr>
+                <?php endif;?>  
+            <tr>
+                <td colspan='2' class='footbar'>
+                    <input type="hidden" name="FID" value="<?php echo $this->famousInfo['FID']?>"/>
+                </td>
+            </tr>
+            </table>
+        </form>
+    </div>
+
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="edit_famous_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="edit_famous_form_close">关闭</a>
+    </div>
+
+</div>

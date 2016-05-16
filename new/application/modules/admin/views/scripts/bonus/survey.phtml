@@ -1,0 +1,131 @@
+<table id="bonus_survey_list" style="width:800px;height:600px"></table>
+<div id="bonus_trend_window"></div>
+
+<div id="bonus_survey_toolbar"></div>
+<div id="bonus_survey_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="bonusSurveyObj.containerObj.edatagrid('reload');">刷新</a>
+	会员编号:<input type="text" name="memberId" size="10"/>&nbsp;
+		统计单位:	<select name="unit">
+			<option value="1">天</option>
+			<option value="2">月</option>
+		</select>
+		时间:
+		<input class="easyui-datebox" type="text" name="start_date" value="<?php echo date('Y-m-d',strtotime('- 30 days'));?>" data-options="onSelect:toSearchBonusSurvey" size="20"></input>
+		至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="<?php echo date('Y-m-d');?>" data-options="onSelect:toSearchBonusSurvey" size="20"></input>
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchBonusSurvey()" iconCls="icon-search">搜索</a>
+        
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="bonusSurveyObj.trendView()" iconCls="icon-search">查看走势图</a>
+</div>
+<script type="text/javascript">
+    //回车查询
+    $("#bonus_survey_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchBonusSurvey();
+        }
+    });
+
+    $("#bonus_survey_searcher_container select[name]").change(function(){
+        toSearchBonusSurvey();
+    });
+
+    //执行查询
+    function toSearchBonusSurvey()
+    {
+        var memberId = $("#bonus_survey_searcher_container input[name='memberId']").val();
+        var unit = $("#bonus_survey_searcher_container select[name='unit']").val();
+        var start_date = $("#bonus_survey_searcher_container input[name='start_date']").val();
+        var end_date = $("#bonus_survey_searcher_container input[name='end_date']").val();
+
+        bonusSurveyObj.containerObj.datagrid('load', {
+                                                        start_date: start_date,
+                                                        end_date: end_date,
+                                                        memberId: memberId,
+                                                        unit:unit
+            });
+    }
+
+    var bonusSurveyObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'bonus','action'=>'survey'));?>',
+        'trendUrl':'<?php echo $this->url(array('controller'=>'bonus','action'=>'trend'));?>',
+				
+		'containerObj':$("#bonus_survey_list"),
+        'trendViewObj':$("#bonus_trend_window"),
+				
+		'selfName':'bonusSurveyObj',
+
+		'init':function(){
+			this.showData();
+		},
+                
+        //查看红包的兑换列表
+		trendView:function(){
+			var _THIS_ = this;
+            var memberId = $("#bonus_survey_searcher_container input[name='memberId']").val();
+            var unit = $("#bonus_survey_searcher_container select[name='unit']").val();
+            var start_date = $("#bonus_survey_searcher_container input[name='start_date']").val();
+            var end_date = $("#bonus_survey_searcher_container input[name='end_date']").val();
+			_THIS_.trendViewObj.window({
+                'href':_THIS_.trendUrl+'?memberId='+memberId+"&unit="+unit+'&start_date='+start_date+"&end_date="+end_date,
+                'width':1250,
+                'height':550,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'红包概况走势图',
+                'onLoad':function(){
+                    $("#bonus_trend_close").off().click(function(){
+                        _THIS_.trendViewObj.window('close');
+                    });
+                }
+			});
+		},
+        
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+                    pageSize: 50,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:false,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+				    url:_THIS_.loadUrl,
+                    toolbar:'#bonus_survey_toolbar',
+
+				    //设置列   
+				    columns:[[
+				        {field:'DateTime',title:'日期',width:150},
+				        {field:'SendBonusNum',title:'发送红包数',align:'right',width:140},
+				        {field:'SendBonusAmount',title:'发送红包金额',align:'right',width:140,formatter:function(value,rowData,rowIndex){
+                                return "￥"+rowData.SendBonusAmount;
+                        }},
+				        {field:'ReceiveNum',title:'总领取红包数',align:'right',width:140},
+				        {field:'ReceiveAmount',title:'总领取红包金额',align:'right',width:140,formatter:function(value,rowData,rowIndex){
+                                return "￥"+rowData.ReceiveAmount;
+                        }}
+				    ]]
+				});
+				
+				//设置分页
+				var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+                $("#bonus_survey_toolbar").append($("#bonus_survey_searcher_container"));
+			}
+    };
+    bonusSurveyObj.init();
+</script>

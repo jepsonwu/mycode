@@ -1,0 +1,266 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+img {
+    border: none;
+    vertical-align: middle;
+}
+
+ul,ol,li {
+    list-style: none;
+}
+
+section,article,aside,header,footer,nav,dialog,figure {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+html,body {
+    font: 14px/1.5 helvetica,arial,"Microsoft YaHei","微软雅黑",sans-serif;
+    -webkit-tap-highlight-color: rgba(255,0,0,0);
+}
+
+.fl,.f_left {
+    float: left;
+}
+
+.fr,.f_right {
+    float: right;
+}
+
+.clearfix:after {
+    content: '';display:block;height:0;clear:both;
+}
+
+a {
+    outline: none;
+}
+
+a:link,a:visited,a:active {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffa640;
+    text-decoration: none;
+}
+
+body{background: #F3C720;}
+h1{line-height: 30px; font-size: 16px; color: #000; border: #967A14 solid; border-width: 1px 1px 1px 0; padding: 0 20px; border-radius: 0 15px 15px 0; display: inline-block; margin: 10px 0 0;}
+.figure{padding: 10px 10px 0;}
+.figure img{width: 100%; vertical-align: top;}
+.det{font-size: 16px; color: #fff; line-height: 24px;}
+.det .m, .det .m2{padding: 10px 15px; background: url('imgs/m.png') repeat-y; background-size: 100% auto;}
+.det .t{height: 16px; background: url('imgs/t.png') no-repeat; background-size: 100% 100%;}
+.det .b{height: 40px; background: url('imgs/b.png') no-repeat; background-size: 100% 100%;}
+.avatar{width: 55px; height: 55px;}
+.title span:nth-child(1){float: left;}
+.title span:nth-child(2){float: right;}
+
+.m > div{float: left;}
+.mt-00{width: 100%;}
+.mt-00 div{margin: 0 60px 0 65px; line-height: 40px; height: 40px; color: #342A06;}
+.mt-01{margin-left: -100%; width: 65px;}
+.mt-01 img{width: 55px; height: 55px;}
+.mt-02{margin-left: -100px; margin-top: 6px; width: 100px; height: 25px; background: url('imgs/come.png') no-repeat; -webkit-transition: all .3s .3s linear; transition: all .2s .2s linear; background-size: 100% auto;}
+.mt-02.touch{background-image: url('imgs/come-on.png')}
+.m p{color: #342A06;}
+.m-lecture{text-align: center; padding: 15px 10px 10px; height: 40px;}
+.m-lecture span{display: inline-block; width: 150px; height: 36px; background: url('imgs/lec.png') no-repeat; background-size: 100% auto;}
+.m-lecture.touch span{background-image: url('imgs/lec-on.png'); -webkit-transition: all .2s .2s linear; transition: all .2s .2s linear;}
+
+.det-box{padding: 10px;}
+
+.p-rela{position: relative;}
+.title-det{width: 150px; position: absolute; top: 26px; right: 47%; text-align: center;
+    -webkit-transform: rotate(-5deg);
+}
+.title-det p:nth-child(1){font-size:18px; font-weight: bold; color: #fff;}
+.title-det p:nth-child(2){font-size: 16px; font-weight: bold; color: #FFDC3C;}
+.title-det p:nth-child(3){font-size: 12px; color: #fff;}
+
+/* ios6(Plus) - h736 */
+@media(max-height: 740px){
+    .title-det{top: 36px;}
+}
+
+/* ios5 - h568 */
+@media(max-height: 570px){
+    .title-det{top: 26px;}
+}
+
+
+.hide{display: none;}
+.fl{float: left;}
+.fr{float: right;}
+/* 微信下拉提示 */
+
+
+.zindex-10{position: relative; z-index: 10;}
+
+.pull-wechat-box{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+.pull-wechat-box.active{
+    height: 110px;
+}
+
+.pull-wechat{
+    height: 60px;
+    padding: 20px 20px 30px;
+    background: #4f5553;
+}
+.pw-info{
+    color: #fff;
+    line-height: 30px;
+}
+.pw-arrow{
+    width: 45px;
+}
+.pw-arrow img{
+    width: 100%;
+}
+
+.qqbrowser{
+    position: fixed;
+    width: 80%;
+    height: 45px;
+    line-height: 24px;
+    left: 50%;
+    top: 50%;
+    margin-left: -40%;
+    margin-top: -15px;
+    padding: 15px 0;
+    background: rgba(10, 10, 10, .7);
+    color: #fff;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+}
+.qqbclose{
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    line-height: 26px;
+    background: #aaa;
+    border-radius: 25px;
+}
+
+
+/* 下载banner提示 */
+.caizhu-open{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background: rgba(10, 10, 10, .6);
+
+}
+.caizhu-open-down.hide{display: block; height: 0; overflow: hidden;}
+.caizhu-open-down{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background: rgba(10, 10, 10, .6);
+    z-index: 0;
+    -webkit-transition: all .3s .3s linear; transition: all .3s .3s linear;
+
+}
+.czo-list{
+    width: 100%;
+    display: -webkit-box;
+    display: box;
+}
+.czo-one{
+    width: 45px;
+    height: 40px;
+    margin: 5px 0 0 8px;
+    overflow: hidden;
+}
+.czo-one img{
+    width: 40px;
+    height: 40px;
+}
+.czo-two{
+    width: 144px;
+    padding: 0 0 0 3px;
+    color: #fff;
+}
+.czo-two strong{
+    display: inline-block;
+    height: 28px;
+    line-height: 34px;
+}
+.czo-two p{
+    height: 22px;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.czo-three{
+    -webkit-box-flex: 1;
+    box-flex: 1;
+}
+.czo-three{
+    line-height: 50px;
+}
+.czo-three a{
+    display: inline-block;
+    width: 40px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    color: #fff;
+    background: #aaa;
+    border-radius: 3px;
+    -webkit-transition: all .2s;
+    transition: all .2s;
+}
+.czo-three span:active{
+    background: #19B4ED;
+}
+.open-close{
+    position: absolute;
+    right: 0;
+    top: -0px;
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    color: #fff;
+    background: rgba(255, 255, 255, .2);
+    border-radius: 0 0 0 30px;
+    line-height: 32px;
+    text-indent: 12px;
+
+    -webkit-transition: all .2s;
+
+    transition: all .2s;
+}
+.open-close:active{
+    background: #19B4ED;
+}
+

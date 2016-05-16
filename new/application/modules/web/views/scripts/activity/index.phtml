@@ -1,0 +1,151 @@
+    <div class="main-right fr">
+
+        <h2 class="content-tit clearfix p-rela nobd">
+            内容管理
+            <span class="article-tit-do">
+                <a href = "/article/index">头条文章</a>
+                <?php if($this->authenticateType>1):?><span class="at-separate">|</span>
+                <a class="selected" href="/activity/index">线下活动</a><?php endif;?>
+                <?php if($this->authenticateType==2):?><span class="at-separate">|</span>
+                <a href="/counsel/index">询财服务</a><?php endif;?>
+
+                <?php if($this->authenticateType>1):?><a class="article-todo" href="/activity/add">创建活动</a><?php endif;?>
+            </span>
+        </h2>
+
+        <div class="nav-list">
+
+            <a id="key-running" href="/activity/index?type=1">进行中(<?php echo $this->runningTotal;?>)</a>
+            <span>|</span>
+            <a id="key-end"  href="/activity/index?type=2">已结束(<?php echo $this->endTotal;?>)</a></span>
+
+        </div>
+
+
+        <table class="activity-table" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="cell00">活动标题</th>
+                <th class="cell01">开始时间</th>
+                <th class="cell02">活动地点</th>
+                <th class="cell03">报名人数</th>
+                <th class="cell04">操作</th>
+
+            </tr>
+  <?php foreach ($this->activityInfo as $value):?>
+            <tr data-id="<?php echo $value['AID'];?>" data-status="<?php echo $value['IsGoing'];?>">
+                <td class="cellone cell00"><div><a href="/activity/detail?activityID=<?php echo $value['AID'];?>"><?php echo $value['Title'];?></a></div></td>
+                <td class="cellone cell01"><div><?php echo $value['StartTime'];?></div></td>
+                <td class="cellone cell02"><div><?php echo $value['Province'];?> <?php echo $value['City'];?></div></td>
+                <td class="cellone cell03"><div><?php echo $value['EnrollNum'];?></div></td>
+                <td class="cellone cell04"><div><a class="ac-delbtn">删除</a></div></td>
+            </tr>
+  <?php endforeach;?>          
+
+        </table>
+        <?=$this->paginationControl($this->activityInfo, 'Sliding', 'page.phtml')?>
+
+    </div> <!-- main-right -->
+
+<script>
+var $keyEnd = $('#key-end');
+var keyFlag = parseUrl('type');
+if(keyFlag == 2){
+    $keyEnd.addClass('selected');
+}else{
+    $keyEnd.prev().prev().addClass('selected');
+}
+
+function parseUrl(key){
+	if(!key)return false;
+	var uStr=location.search.substring(1),uArr=[];
+	uArr=uStr.split('&');
+	for(var i=0,uLen=uArr.length;i<uLen;i++){
+		uStr=uArr[i].split('=');
+		if(uStr[0] == key)return String(uStr[1]);
+	}
+	return false;
+}
+
+
+// DEL - action
+
+var acGoingStatus = keyFlag == 2 ? 0 : 1;           // 0, 结束后  1，结束前
+
+var $listBox = $('.activity-table');
+
+
+$listBox.find('tr').each(function(){
+    var $this = $(this),
+        isGoing = $this.data('status');
+
+    if(isGoing == 1){$(this).find('.ac-delbtn').addClass('selected');}
+
+});
+
+
+$listBox.delegate('.ac-delbtn', 'click', function(){
+    var id, status,
+        $this = $(this),
+        $parents,
+        commentNum,
+        selected = 'selected',
+
+        pStr = '删除的活动将不可恢复，确定删除吗？',
+        pStr01 = '该活动已有报名者，删除活动意味着取消活动，确定删除吗？',
+        pStr02 = '删除活动意味着取消活动，确定删除吗？';
+
+    if($this.hasClass(selected)){ return false;}
+
+    $parents = $this.parents('tr');
+    id = $parents.data('id');
+    status = $parents.data('status');
+    commentNum = $parents.find('.cell03').text();
+    commentNum = parseInt(commentNum);
+
+    if(acGoingStatus == 1){
+        if(commentNum > 0){
+            definedPrompt000(pStr01, function(){
+                delOne(id, status, $parents);
+            });
+        }else{
+            definedPrompt000(pStr02, function(){
+                delOne(id, status, $parents);
+            });
+        }
+    }else{
+        definedPrompt000(pStr, function(){
+            delOne(id, status, $parents);
+        });
+    }
+
+
+
+    return false;
+
+});
+
+function delOne(id, status, obj){
+    $.ajax({
+        url: '/activity/delete',
+        type: 'post',
+        dataType :'json',
+        data:{
+            activityID: id,
+            isSend: acGoingStatus
+        },
+        dataType: 'json',
+        success: function(d){
+            if(d.flag == 1){
+                obj.remove();
+            }else{
+                definedPrompt(d.msg);
+            }
+        },
+        error: function(){
+            definedPrompt('网络错误');
+        }
+
+    });
+}
+
+</script>

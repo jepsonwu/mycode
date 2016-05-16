@@ -1,0 +1,132 @@
+<table id="accountbook_list"></table>
+<div id="accountbook_list_toolbar"></div>
+<div id="accountbook_list_searcher_container">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="accountbookObj.containerObj.edatagrid('reload');">刷新</a> 
+	会员ID：<input type="text" name="MemberID" size="15" />&nbsp;&nbsp;
+	账本名称：<input type="text" name="BookName" size="15" />&nbsp;&nbsp;
+    余额：
+		<input type="text" name="start_amount" size="8"/>
+		-<input type="text" name="end_amount" size="8"/>&nbsp;&nbsp;		
+    更新时间：
+    <input type='date' class="easyui-datetimebox" name="start_date"> - <input type='date' class="easyui-datetimebox" name="end_date">
+   <input class="easyui-linkbutton" type="button" name="searchbtn" onclick="javascript:toSearchAccountbook()"value="搜索"/>
+</div>
+<script type="text/javascript">
+
+    //回车查询
+    $("#accountbook_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchAccountbook();
+        }    
+    });
+    
+    $("#accountbook_list_searcher_container select[name]").change(function(){
+        toSearchAccountbook();
+    });
+    
+    //执行查询
+    function toSearchAccountbook()
+    {
+        var MemberID     = $("#accountbook_list_searcher_container input[name='MemberID']").val();
+        var bookname     = $("#accountbook_list_searcher_container input[name='BookName']").val();
+        var start_amount = $("#accountbook_list_searcher_container input[name='start_amount']").val();
+        var end_amount   = $("#accountbook_list_searcher_container input[name='end_amount']").val();
+        var start_date   = $("#accountbook_list_searcher_container input[name='start_date']").val();
+        var end_date     = $("#accountbook_list_searcher_container input[name='end_date']").val();
+    
+        accountbookObj.containerObj.datagrid('load', {      
+        	    MemberID:MemberID,
+        	    bookname:bookname,
+        	    start_amount:start_amount,
+        	    end_amount:end_amount,                                                  
+                start_date: start_date, 
+                end_date: end_date,
+            });
+    }
+var accountbookObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'accountbook','action'=>'list'));?>',
+
+		'containerObj':$("#accountbook_list"),
+		
+		'selfName':'accountbookObj',
+		
+
+		'init':function(){
+			this.showData();
+		},
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:true,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+					idField:'ID',
+	
+				    url:_THIS_.loadUrl,
+					toolbar:'#accountbook_list_toolbar',
+				    //设置列   
+				    columns:[[   
+				        {field:'ID',title:'编号'},
+				        {field:'MemberID',title:'会员ID'},
+				        //{field:'Email',title:'邮箱'},
+				        {field:'BookName',title:'账本'},
+				        {field:'CaptitalChar',title:'首字母'},
+				        {field:'Balance',title:'余额'},
+				        {field:'UseCount',title:'使用次数'},
+				        {field:'Status',title:'状态',formatter:function(value,rowData,index){
+								var status = '';
+								switch(value)
+								{
+									case '1':
+										status = '显示';
+										break;
+									case '2':
+										status = '隐藏';
+										break;
+								}
+								return status;
+					        }
+					    },
+			
+				       
+			           
+				        {field:'UpdateTime',title:'更新时间',formatter: function (value,rowData,index) {
+				        		if(value){
+				        			var myDate=new Date();
+				        			return myDate.toLocaleString();
+				        		}
+
+	                        }
+					    }	        
+
+				    ]],
+
+				});
+	
+				
+				//设置分页
+				var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+				$("#accountbook_list_toolbar").append($("#accountbook_list_searcher_container"));
+			}
+};
+accountbookObj.init();
+</script>

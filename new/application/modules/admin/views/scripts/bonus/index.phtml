@@ -1,0 +1,198 @@
+<table id="bonus_list" style="width:800px;height:600px"></table>
+<div id="bonus_receive_window"></div>
+
+<div id="bonus_list_toolbar"></div>
+<div id="bonus_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="bonusManageObj.containerObj.edatagrid('reload');">刷新</a>
+	会员编号:<input type="text" name="memberId" size="10"/>&nbsp;
+		红包状态:	<select name="status">
+            <option value="0">全部</option>
+			<option value="1">有效</option>
+			<option value="2">过期</option>
+		</select>
+		红包类型:	<select name="bonusType">
+            <option value="0">全部</option>
+			<option value="1">普通红包</option>
+			<option value="2">拼手气红包</option>
+		</select>
+        红包群体属性:<select name="groupType">
+            <option value="0">全部</option>
+			<option value="1">个人红包</option>
+			<option value="2">群红包</option>
+		</select>
+		红包金额:
+		<input type="text" name="start_amount" size="8"/>
+		至&nbsp;<input type="text" name="end_amount" size="8"/>
+		发送时间:
+		<input class="easyui-datebox" type="text" name="start_date" value="2016-01-01" data-options="onSelect:toSearchBonusList" size="20"></input>
+		至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="<?php echo date('Y-m-d');?>" data-options="onSelect:toSearchBonusList" size="20"></input>
+
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchBonusList()" iconCls="icon-search">搜索</a>
+</div>
+<script type="text/javascript">
+    //回车查询
+    $("#bonus_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+
+            toSearchBonusList();
+        }
+    });
+
+    $("#bonus_list_searcher_container select[name]").change(function(){
+        toSearchBonusList();
+    });
+
+
+    //执行查询
+    function toSearchBonusList()
+    {
+        var memberId = $("#bonus_list_searcher_container select[name='memberId']").val();
+        var status = $("#bonus_list_searcher_container select[name='status']").val();
+        var bonusType = $("#bonus_list_searcher_container select[name='bonusType']").val();
+        var groupType = $("#bonus_list_searcher_container select[name='groupType']").val();
+        var start_amount = $("#bonus_list_searcher_container input[name='start_amount']").val();
+        var end_amount = $("#bonus_list_searcher_container input[name='end_amount']").val();
+        var start_date = $("#bonus_list_searcher_container input[name='start_date']").val();
+        var end_date = $("#bonus_list_searcher_container input[name='end_date']").val();
+
+        bonusManageObj.containerObj.datagrid('load', {
+                                                        start_date: start_date,
+                                                        end_date: end_date,
+                                                        start_amount:start_amount,
+                                                        end_amount:end_amount,
+                                                        memberId: memberId,
+                                                        status:status,
+                                                        bonusType:bonusType,
+                                                        groupType:groupType,
+            });
+    }
+
+    var bonusManageObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'bonus','action'=>'list'));?>',
+        'ReceiveUrl':'<?php echo $this->url(array('controller'=>'bonus','action'=>'receive'));?>',
+				
+		'containerObj':$("#bonus_list"),
+        'showWindowObj':$("#bonus_receive_window"),
+				
+		'selfName':'bonusManageObj',
+
+		'init':function(){
+			this.showData();
+		},
+		
+        //查看红包的兑换列表
+		showReceiveList:function(bid){
+			var _THIS_ = this;
+			_THIS_.showWindowObj.window({
+                'href':_THIS_.ReceiveUrl+'?bounsId='+bid,
+                'width':500,
+                'height':550,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'红包领取记录',
+                'onLoad':function(){
+                    $("#bonus_form_close").off().click(function(){
+                        _THIS_.showWindowObj.window('close');
+                    });
+                }
+			});
+		},
+        
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+                    pageSize: 50,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:false,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+					idField:'BID',
+	
+				    url:_THIS_.loadUrl,
+                    toolbar:'#bonus_list_toolbar',
+
+				    //设置列   
+				    columns:[[   
+				        {field:'BID',title:'红包编号',sortable:true,width:80},
+                        {field:'MemberID',title:'会员',width:90},
+				        {field:'SendTime',title:'发送时间',width:155},
+				        {field:'BonusAmount',title:'红包金额(红包个数)',align:'right',width:140,formatter:function(value,rowData,rowIndex){
+                                return "￥"+rowData.BonusAmount+"("+rowData.BonusNum+")";
+                        }},
+				        {field:'ReceiveAmount',title:'领取金额(领取个数)',align:'right',width:140,formatter:function(value,rowData,rowIndex){
+                                return "￥"+rowData.ReceiveAmount+"("+rowData.ReceiveNum+")";
+                        }},
+                        {field:'BackAmount',title:'退款金额',align:'right',width:140,formatter:function(value,rowData,rowIndex){
+                                return (rowData.BackAmount==0 || rowData.BackAmount=='0')?'-':("￥"+rowData.BackAmount);
+                        }},
+				        {field:'Status',title:'状态',align:'right',width:85,formatter:function(value,rowData,rowIndex){
+                                if(rowData.BonusNum==rowData.ReceiveNum){
+                                    return "<p style='color:blue'>已领完</p>";
+                                }else{
+                                    if(rowData.Status==1){
+                                        return "有效";
+                                    }else{
+                                        return "<p style='color:red'>已过期</p>";
+                                    }
+                                }
+                        }},
+				        {field:'BonusType',title:'红包类型/群体属性',align:'right',width:175,formatter:function(value,rowData,rowIndex){
+                                if(rowData.BonusType==1){
+                                    var BonusType = '普通红包';
+                                }else{
+                                    var BonusType = '拼手气红包';
+                                }
+                                if(rowData.GroupType==1){
+                                    var GroupType = '个人红包';
+                                }else{
+                                    var GroupType = '群红包';
+                                }
+                                return BonusType+'/'+GroupType;
+                        }},
+                        {field:'Receive',title:'领取情况',align:'right',width:95,formatter:function(value,rowData,rowIndex){
+                                return '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.showReceiveList('+rowData.BID+')"><p style="color:red">查看</p></a>';
+                        }},
+				        {field:'GroupList',title:'可领取红包对象',width:500,formatter:function(value,rowData,rowIndex){
+                                var groupStr = '',memberStr = '',html = '';
+                                for(var i=0;i<rowData.groupList.length;i++){
+                                    if(rowData.groupList[i].GroupType==1){
+                                        memberStr += rowData.groupList[i].GroupID+',';
+                                    }else{
+                                        groupStr += rowData.groupList[i].GroupID+',';
+                                    }
+                                }
+                                if(groupStr!=''){
+                                    html += "群组："+groupStr.substring(0,groupStr.length-1)+"<br/>";
+                                }
+                                if(memberStr!=''){
+                                    html += "会员："+memberStr.substring(0,memberStr.length-1);
+                                }
+                                return html;
+                        }}
+				    ]]
+				});
+				
+				//设置分页
+				var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+                $("#bonus_list_toolbar").append($("#bonus_list_searcher_container"));
+			}
+    };
+    bonusManageObj.init();
+</script>

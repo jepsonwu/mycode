@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>消息详情</title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪-消息详情" >
+<meta name="description" content="财猪-消息详情" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="format-detection"content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=160117" >
+<link href="/static/css/api/front.css" rel="stylesheet" type="text/css" />
+
+<style>
+body{height: 100%;}
+.content{overflow: hidden;}
+.content img{
+    max-width: 100%;
+}
+</style>
+
+</head>
+<body>
+    <div id="main">
+        <h2 class="title"><?php echo $this->title;?></h2>
+        <h4 class="time_author"><i class="time"><?php echo $this->showTime;?></i><!-- <i class="author">机器人1号</i> --></h4>
+        <div class="content">
+            <!--<img src="/static/css/api/images/test.jpg">-->
+            <p style="word-break:break-all;word-wrap:break-word;"><?php echo $this->content;?></p>
+            <?php if($this->isFeedBack):?><br/><p style="word-break:break-all;word-wrap:break-word;"><?php echo $this->feedContents;?></p><?php endif;?>
+        </div>
+        <footer>
+            <?php if($this->mtype == 1):?><span>不感兴趣</span><?php endif;?>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<table id="reply_list"></table>
+<div id="reply_list_toolbar"></div>
+<div id="reply_view_window"></div>
+<div id="reply_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="replyObj.containerObj.edatagrid('reload');">刷新</a>
+    <select name="searchType">
+        <option value="ViewID">观点ID</option>
+        <option value="UserName">评论人</option>
+        <option value="ReplyContent">评论内容</option>
+    </select><input type="text" value="" name="searchTypeValue" size="20" />&nbsp;&nbsp;  
+
+   状态：
+    <select name="CheckStatus">
+        <option value="-1">所有</option>
+        <option value="0">隐藏</option>
+        <option value="1">有效</option>
+    </select>&nbsp;&nbsp;
+  
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchReplyList()" iconCls="icon-search">搜索</a>
+</div>
+
+<script type="text/javascript">
+    $("#reply_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchReplyList();
+        }    
+    });
+    
+    $("#reply_list_searcher_container select[name]").change(function(){
+        toSearchReplyList();
+    });
+    
+    function toSearchReplyList(flag)
+    {
+        var searchType       = $("#reply_list_searcher_container select[name='searchType']").val();
+        var searchTypeValue  = $("#reply_list_searcher_container input[name='searchTypeValue']").val();
+        var CheckStatus      = $("#reply_list_searcher_container select[name='CheckStatus']").val();
+        var start_date       = $("#reply_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#reply_list_searcher_container input[name='end_date']").val();
+        
+        replyObj.containerObj.datagrid('load', {
+            searchType:searchType,
+            searchTypeValue:searchTypeValue,
+            CheckStatus:CheckStatus,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var replyObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'reply','action'=>'list'));?>',
+        //'addUrl':'<?php echo $this->url(array('controller'=>'view','action'=>'add'));?>',
+        //'editUrl':'<?php echo $this->url(array('controller'=>'view','action'=>'edit'));?>',
+        'checkUrl':'<?php echo $this->url(array('controller'=>'reply','action'=>'check'));?>',
+        'viewUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'view-list'));?>',
+
+        'containerObj':$("#reply_list"),
+        'viewWindowObj':$("#reply_view_window"),
+        //'editWindowObj':$("#view_edit_window"),
+        
+        'selfName':'replyObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+
+        //审核评论
+        checkHandler:function(id,status){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.checkUrl+'?reply_id='+id+'&status='+status,
+                'width':300,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'审核评论',
+                'onLoad':function(){
+                    $("#reply_check_form_save").off().on('click',function(){
+                        $("#reply_check_form").attr('action',_THIS_.checkUrl).submit();
+                    });
+
+                    $("#reply_check_form_close").off().on('click',function(){
+                        _THIS_.viewWindowObj.window('close');
+                    });
+                    
+                    $("#reply_check_form").myForm(function(data){
+                        if(data.flag == 1){
+                            _THIS_.viewWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                        
+                }
+            });
+        },
+        //查看违规记录
+        'viewHandler':function(member_id){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.viewUrl+'?member_id='+member_id,
+                'width':500,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'违规记录',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'ReplyID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#reply_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'ReplyID',title:'评论ID',width:60}, 
+                        {field:'ReplyContent',title:'评论内容',width:450},
+                        {field:'CreateTime',title:'评论时间',width:150},
+                        {field:'UserName',title:'发布人',width:60,formatter:function(value,rowData,rowIndex){
+                                if(value != null){
+                                    return '<a style="color:red" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.viewHandler(\''+rowData.MemberID+'\')">'+value+'</a>';
+                                }
+                            }
+                        },  
+                        {field:'ViewID',title:'观点ID',width:60},                       
+                        {field:'Status',title:'状态',width:70,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '隐藏';
+                                        break;
+                                    case '1':
+                                        status = '有效';
+                                        break;
+                                }
+                                return status;
+                            }
+                        },
+                        {field:'Remark',title:'隐藏理由',width:100},
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                            var c= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.checkHandler(\''+rec.ReplyID+'\',\''+rec.Status+'\')">';
+                                c += '<span class="l-btn-left">审核</span></a>';
+                                return c;
+                                
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#reply_list_toolbar").append($("#reply_list_searcher_container"));
+            },    
+};
+replyObj.init();
+</script>

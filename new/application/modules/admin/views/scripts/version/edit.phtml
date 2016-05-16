@@ -1,0 +1,91 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 30px;align:center;">
+
+		<form id="version_edit_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<tr>
+					<th>类型：</th>
+					<td>
+						<select name="Platform">
+							<option <?php if ($this->version_info['Platform'] == 1): ?> selected="selected" <?php endif; ?>
+								value="1">
+								Android
+							</option>
+							<option <?php if ($this->version_info['Platform'] == 2): ?> selected="selected" <?php endif; ?>
+								value="2">
+								IOS
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>更新类型：</th>
+					<td>
+						<select name="UpdateType">
+							<option <?php if ($this->version_info['UpdateType'] == 0): ?> selected="selected" <?php endif; ?>
+								value="0">
+								不更新
+							</option>
+							<option <?php if ($this->version_info['UpdateType'] == 1): ?> selected="selected" <?php endif; ?>
+								value="1">
+								提醒更新
+							</option>
+							<option <?php if ($this->version_info['UpdateType'] == 2): ?> selected="selected" <?php endif; ?>
+								value="2">
+								强制更新
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">最小版本：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="MinVersion"
+					                       value="<?php echo $this->version_info['MinVersion']; ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">当前版本：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="CurrentVersion"
+					                       value="<?php echo $this->version_info['CurrentVersion']; ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">下载连接：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Url"
+					                       value="<?php echo $this->version_info['Url']; ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">button：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Button"
+					                       value="<?php echo $this->version_info['Button']; ?>"
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">更新详情：</th>
+					<td width="80%">
+						<textarea style="width: 350px;height: 300px;" class="easyui-validatebox" name="Info"
+						          data-options="required:true">
+						<?php echo $this->version_info['Info']; ?>
+						</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='2' class='footbar'>
+						<input type="hidden" name="Platform" value="<?php echo $this->version_info['Platform'] ?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="version_edit_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="version_edit_form_close">关闭</a>
+	</div>
+
+</div>

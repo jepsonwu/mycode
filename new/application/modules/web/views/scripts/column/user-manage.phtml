@@ -1,0 +1,68 @@
+   <div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            用户管理(<?php echo $this->total;?>)
+        </h2>
+
+        <ul class="member-list">
+        <?php foreach ($this->dataList as $value):?>
+            <li class="member-one">
+                <img class="member-avatar" src="<?php echo $value['Avatar'].'?imageView2/0/w/50/h/50';?>" alt="头像" />
+                <div class="member-info">
+
+                    <div class="member-tit"  >
+                        <div class="member-tan-box">
+                            <a class="member-tit-a" href=""><?php echo $value['UserName'];?></a>
+                            <div class="member-tan hide">
+                                <span class="icon-tan-arrow"></span>
+                                <div class="icon-tan-avatar"><img src="<?php echo $value['Avatar'];?>" /></div>
+                                <ul class="icon-tan-info">
+                                    <li class="clearfix">
+                                        <div class="icon-div0">
+                                            财猪号
+                                        </div>
+                                        <div class="icon-div1">
+                                            <?php echo $value['UserName'];?>
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <div class="icon-div0">
+                                            地区
+                                        </div>
+                                        <div class="icon-div1">
+                                          <?php echo $value['City']?>
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <div class="icon-div0">
+                                            个性签名
+                                        </div>
+                                        <div class="icon-div1">
+                                            <?php echo $value['Signature']; ?>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div> <!-- member-tit -->
+
+                    <p class="member-des"><?php echo $value['Signature'];?></p>
+                </div>
+            
+            </li>
+	<?php endforeach;?>
+        </ul>
+
+         <?=$this->paginationControl($this->dataList, 'Sliding', 'page.phtml')?>
+
+         <div style="height: 100px;"><!-- 2行等高，超出隐藏，作处理 --></div>
+
+    </div> <!-- main-right -->
+
+<script>
+var avatarA = $('.member-tit-a');
+avatarA.mouseover(function(){
+    $(this).next().removeClass('hide');
+}).mouseout(function(){
+    $(this).next().addClass('hide');
+});
+</script>

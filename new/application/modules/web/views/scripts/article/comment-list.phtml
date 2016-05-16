@@ -1,0 +1,332 @@
+   <div class="main-right fr">
+        <h2 class="content-tit">评论管理</h2>
+
+        <ul class="cc-tit clearfix">
+            <li class="cc-00">留言</li>
+            <li class="cc-02">时间</li>
+            <li class="cc-03">
+                审核
+                <span class="mac-charge-qbox">
+                    <div class="cc-charge-q hide">
+                        <span></span>
+                        <p>通过审核的评论在手机端的文章详情页中显示</p>
+                    </div>
+                </span>
+            </li>
+            <li class="cc-04">操作</li>
+        </ul>
+        <ul class="cc-list">
+         <?php foreach ($this->commentInfo as $value):?>
+            <li class="cc-one" data-id="<?php echo $value['ArticleID'];?>" data-comment-id="<?php echo $value['CommentID'];?>">
+                <ul class="cc-ilist clearfix">
+                    <li class="cc-00"><img src="<?php echo $value['Avatar'];?>" alt="avatar"></li>
+                    <li class="cc-01">
+                        <strong><?php echo $value['UserName'];?></strong>
+                        <div class="cc-detbox"><div style="display: none;"><?php echo $value['CommentContent'];?></div></div>
+                        <i>来源于：<?php echo $value['Title'];?></i>
+                    </li>
+                    <li class="cc-02"><?php echo $value['CreateTime'];?></li>
+                    <li class="cc-03">
+                        <select <?php if($value['Status']!=3):?>xx-disabled="disabled"<?php endif;?>>
+                            <option>审核状态</option>
+                            <option value="1" <?php if($value['Status']==1):?>selected<?php endif;?>>通过</option>
+                            <option value="2" <?php if($value['Status']==2):?>selected<?php endif;?>>拒绝</option>
+                        </select>
+                    </li>
+                    <li class="cc-04">
+                        <a class="cc-comment<?php if($value['ReplyList']):?> disabled <?php endif;?>" >回复</a>
+                        <a class="cc-del">删除</a>
+                    </li>
+                </ul>
+                <ul class="cc-replybox">
+                <?php foreach($value['ReplyList'] as $reply):?>
+                    <li class="cc-replyone"><p style="display: none"><?php echo $reply['ReplyCotent']; ?></p></li>
+                <?php endforeach;?>
+                </ul>
+            </li>
+         <?php endforeach;?>
+            <!--<li class="cc-one" data-id="2">
+                <ul class="cc-ilist clearfix">
+                    <li class="cc-00"><img src="http://img.caizhu.com/Fmw-3ERxfbeBgomBGUog-JZosyTT" alt="avatar"></li>
+                    <li class="cc-01">
+                        <strong>思密达</strong>
+                        <div class="cc-detbox"><div style="display: none;">思密达-介绍 思密达-介[惊讶][NO][惊讶][偷笑]asdfadsf[惊讶][NO][惊讶][偷笑]asdfadsf绍 思密达-介绍 思密达[惊讶][NO][惊讶][偷笑]asdfadsf[惊讶][NO][惊讶]-介绍</div></div>
+                        <i>来源于：杭州小麦金融信息服务有限公司</i>
+                    </li>
+                    <li class="cc-02">0314 20:22</li>
+                    <li class="cc-03">
+                        <select>
+                            <option>审核状态</option>
+                            <option>通过</option>
+                            <option>拒绝</option>
+                        </select>
+                    </li>
+                    <li class="cc-04">
+                        <a class="cc-comment">回复</a>
+                        <a class="cc-del">删除</a>
+                    </li>
+                </ul>
+
+                <ul class="cc-replybox">
+                    <li class="cc-replyone">思密达思密达</li>
+                </ul>
+
+                <div class="cc-do">
+                    <textarea></textarea>
+                    <div class="cc-emoji clearfix">
+                        <div class="cc-emojibox">
+                            <ul class="clearfix">
+                                <li>
+                                    <img src="http://fe.caizhu.com/public/plugin/emoji/emoji_01.png">
+                                </li>
+                            </ul>
+                        </div>
+                        <p>还可以输入<i class="shownum">500</i>字，按下Shift+Enter键发送</p>
+                    </div>
+                    <div class="cc-btn">
+                        <span class="cc-send">发送</span>
+                        <span class="cc-cancel">收起</span>
+                    </div>
+                </div>
+            </li>-->
+        </ul>
+ <?=$this->paginationControl($this->commentInfo, 'Sliding', 'page.phtml')?>
+    </div>
+
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+
+<script src="/static/js/web/column/common.js"></script>
+
+<script>
+
+(function(){
+
+var articleId = '<?php $this->ArticleId;?>';
+
+var ccOne = 'cc-one',
+    ccDo = 'cc-do',
+    $ccList = $('.cc-list'),
+    errStr = '网络错误',
+    currentId,
+    $current = null;
+
+$ccList.delegate('.cc-comment', 'click', function(){
+    var $this = $(this),
+        str,
+        flag,
+        $parent,
+        $child,
+        disabled = 'disabled';
+
+    if($this.hasClass(disabled)){return false;};
+
+    $parent = $this.parents('.'+ccOne);
+    currentId = $parent.data('id');
+    $current = $parent;
+    $parent.siblings().find('.'+ccDo).remove();
+    $child = $parent.children().last();
+    flag = $child.hasClass(ccDo);
+    if(!flag){
+        str = getEmojiStr();
+        $this.parents('.'+ccOne).append(str);
+    }else{
+        $child.removeClass(hide);
+    }
+});
+
+$ccList.delegate('.cc-emojibox', 'click', function(){
+    var $this = $(this),
+        flag,
+        $child;
+
+    $child = $this.children();
+    flag = $child.hasClass(hide);
+
+    if(flag){
+        $child.removeClass(hide);
+    }else{
+        $child.addClass(hide);
+    }
+
+});
+
+$ccList.delegate('.cc-select', 'click', function(e){
+    var $this = $(this), str, val, len, initN = 500, emojiLen,
+        $textarea;
+
+    str = $this.data('str');
+    $textarea = $this.parents('.'+ccDo).find('textarea');
+    val = $textarea.val();
+    len = val.length;
+    emojiLen = str.length;
+    if(len > initN - emojiLen) return false;
+    val += str;
+    $textarea.val(val);
+
+$textarea.change();
+    //$this.parent().addClass(hide);
+    return false;
+});
+
+$ccList.delegate('.cc-send', 'click', function(){
+    sendComment();
+});
+
+$ccList.delegate('.cc-cancel', 'click', function(){
+    var $this = $(this);
+
+    $current = null;
+    $this.parents('.'+ccDo).remove();
+});
+
+$ccList.delegate('select', 'change', function(){
+    var $this = $(this),
+        val, id,
+        disabled = 'disabled',
+        $parent = $this.parents('.cc-one');
+
+    val = $this.val();
+    id = $parent.data('comment-id');
+
+    var fn = function(){
+        $this.attr('disabled', true);
+    }
+    updateComment(id, val, fn);
+});
+
+$ccList.delegate('.cc-del', 'click', function(){
+    var $this = $(this),
+        id,
+        type = 3,
+        $parent = $this.parents('.'+ccOne);
+    id = $parent.data('comment-id');
+
+var cb = function(){
+    var fn = function(){$parent.remove();}
+    updateComment(id, type, fn);
+}
+
+definedPrompt000('确定删除该评论？', cb)
+
+});
+
+function updateComment(id, type, fn){
+        $.ajax({
+        url: '/api/article-comment/update-comment-status',
+        dataType: 'json',
+        data: {
+            commentID: id,
+            type: type
+        },
+        success: function(d){
+            if(d.flag == 1){
+                if(fn) fn();
+            }else{
+                definedPrompt(d.msg);
+            }
+        },
+        error: function(e){
+            definedPrompt(errStr);
+        }
+    })
+}
+
+$ccList.delegate('textarea', 'focus keyup change', function(){
+    var $this = $(this),
+        len, val, initN = 500,
+        $showNum = $this.parent().find('.shownum');
+
+    val = $this.val();
+    len = val.length;
+    if(len > initN){
+        val = val.substr(0, initN);
+        len = val.length;
+    }
+    $this.val(val);
+    $showNum.text(initN - len);
+
+
+})
+
+document.onkeydown = function(e){
+    e == e || window.event;
+
+    if(e.shiftKey && e.keyCode == 13){
+        if(!$current) return false;
+        sendComment();
+    }
+
+}
+
+function sendComment(){
+    var $box = $current.find('.'+ccDo),
+        data = $box.find('textarea').val();
+
+    var commentId = $current.data('comment-id'),
+        articleId = $current.data('id');
+
+    $.ajax({
+        url: '/api/article-comment/reply-comment',
+        dataType: 'json',
+        data: {
+            commentID: commentId,
+            articleID: articleId,
+            replyContent: data
+        },
+        success: function(d){
+            if(d.flag == 1){
+                var str = '';
+                $current.find('.'+ccDo).addClass(hide);
+                data = replayEmojiStr(data);
+                str += '<li class="cc-replyone">'+ data +'</li>';
+                $current.find('.cc-replybox').append(str);
+
+                $current.find('.cc-comment').addClass('disabled');
+            }else{
+                definedPrompt(d.msg, function(){$current.remove()});
+            }
+        },
+        error: function(err){
+            definedPrompt(errStr);
+        }
+    });
+}
+
+// initial reply emoji
+
+    (function(){
+        $ccList.children().each(function(){
+            var $this = $(this),
+                $childBox = $this.find('.cc-replyone'),
+
+                $commentBox = $this.find('.cc-detbox');
+
+            $commentBox.each(function(){
+                var obj = $(this);
+                modifyContent(obj);
+            });
+
+            $childBox.each(function(){
+                var obj = $(this);
+                modifyContent(obj);
+            })
+
+
+        });
+        function modifyContent(obj){
+            var $inner = obj,
+                val = $inner.children().html();
+
+            val = replayEmojiStr(val);
+            $inner.append(val);
+        }
+    })();
+
+    $('.mac-charge-qbox').mouseover(function(){
+        $(this).children().removeClass(hide);
+    }).mouseout(function(){
+        $(this).children().addClass(hide);
+    });
+
+})()
+</script>

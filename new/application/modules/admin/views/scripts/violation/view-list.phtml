@@ -1,0 +1,46 @@
+<div class="easyui-layout" data-options="fit:true" >  
+   累计违规次数：<?php echo $this->countViolation;?>次
+        <table class="detail-view-table">                     
+            <tr>
+                <th >序号</th>
+                <th >违规话题名称</th>
+                <th >处罚时间</th>
+                <th >处罚理由</th>
+                <th >违规板块</th>
+                <th >处罚方式</th>
+            </tr>
+            <?php if(!empty($this->violationList)):?>
+            	<?php foreach ($this->violationList as $key => $item): ?>
+	            	<tr>
+	            		<td><?php echo $key+1;?></td>
+	            		<td><?php echo $item['TopicName']?></td>
+	            		<td><?php echo $item['CreateTime']?></td>
+	            		<td><?php echo $item['Reason']?></td>
+	            		<td>
+	            			<?php 
+	            				if($item['InfoType']==1){
+	            					echo '观点';
+	            				}elseif ($item['InfoType']==2) {
+	            					echo '评论';
+	            				}          			
+	            			?>
+	            		</td>
+	            		<td>
+	            			<?php
+	            				if($item['ProcessMethod']==1){
+	            					echo '人工屏蔽';
+	            				}elseif ($item['ProcessMethod']==2) {
+	            					echo '系统屏蔽';
+	            				}elseif ($item['ProcessMethod']==3) {
+	            					echo '删除';
+	            				}
+	            			 ?>
+	        			</td>
+	            	</tr>
+            	<?php endforeach;?>
+            <?php else:?> 
+            	<tr><td colspan="6">无违规记录</td></tr>      		
+        	<?php endif;?>
+        </table>
+  
+</div> 

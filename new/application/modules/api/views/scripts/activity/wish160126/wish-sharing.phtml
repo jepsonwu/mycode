@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<title>财猪心愿购物车</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="keywords" content="财猪">
+	<meta name="description" content="财猪">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main.css">
+	<link href="http://fe.caizhu.com/public/css/callcaizhu/prompt.css" rel="stylesheet">
+	<link href="/static/css/api/activity/wish160126/wish.css?3" rel="stylesheet">
+</head>
+<body class="body-bg01">
+
+<div id="init-pageshow">
+	<div class="init-pageshow" :class="{hide: pageshowflag}"></div>
+</div>
+<figure class="top-show" style="position: relative;padding-bottom: 20%;">
+	<img src="/static/images/api/activity/wish160126/index-00.png" alt="show">
+	<img src="/static/images/api/activity/wish160126/index-01.png" alt="show">
+	<img src="/static/images/api/activity/wish160126/share-tit.png"
+	     style="position: absolute;bottom: 0;left: 10%;width: 80%;" alt="show">
+</figure>
+
+<img class="hide" src="/static/images/api/activity/wish160126/share-pic.png" id="share-pic">
+
+<section id="app01">
+
+	<div class="wish-do">
+		<span class="ip-t"></span>
+
+		<div class="ip-m">
+			<p class="">已有<?php echo $this->wish_info['SupportCount'] ?>个小伙伴支持,每个小伙伴支持最少可获得15只财猪，集满财猪，愿望就能实现了~</p>
+			<?php echo $this->is_support == 1 ? '<div class="share-btnbox"><span @click="toVote" id="vote">已经支持</span></div>' : '<div class="share-btnbox"><span @click="toVote" id="vote">支持Ta的愿望</span></div>'; ?>
+
+
+		</div>
+		<span class="ip-b"></span>
+	</div>
+
+	<div class="wish-do">
+		<span class="ip-t"></span>
+
+		<div class="ip-m">
+			<p>是不是觉得有点意思啊，拿奖品你也可以~</p>
+
+			<div class="share-btnbox"><span @click="toWish">我也要许愿</span></div>
+		</div>
+		<span class="ip-b"></span>
+	</div>
+</section>
+
+
+<div id="app-innerprompt">
+	<app-innerprompt :ipstr.sync="ipstr" :ipflag.sync="ipflag" :ipflag04.sync="ipflag04" :ipflag09.sync="ipflag09"
+	                 :ipflag00.sync="ipflag00"
+	                 :ipflag01.sync="ipflag01" :ipflagrule.sync="ipflagrule" :ipflagtel.sync="ipflagtel"
+	                 :ipflagform.sync="ipflagform" :ipflagwish.sync="ipflagwish" :formtel.sync="formtel"
+	                 :formname.sync="formname" :formtel2.sync="formtel2" :formarea.sync="formarea"></app-innerprompt>
+</div>
+
+<div id="define-prompt">
+	<app-defineprompt :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt>
+</div>
+<div id="app-prompt">
+	<app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt>
+</div>
+
+<script src="http://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="http://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="/static/js/api/activity/wish160126/vue.inner.prompt.js?3"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160108"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-common.js"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160108"></script>
+
+<script>
+	var isvot = '<?php echo $this->is_support;?>';
+	var phone = '<?php echo $this->phone;?>';
+	function initShareData() {
+		var opts = {},
+			sharePic = $('#share-pic');
+		if (sharePic.length > 0) {
+			sharePic = sharePic[0].src
+		} else {
+			sharePic = '';
+		}
+		opts.sharePic = 'http://img.haimi.com/Fixn0Lnw1uAUEW5ksn8L5NB1xdk3';
+		opts.shareTitle = '够朋友的就进来帮我完成心愿！再来一人，所有礼物带回家！';
+		opts.shareDes = '财猪心愿购物车和你快乐过新年!过来挑选你喜欢的商品,帮你免单哦~！';
+		opts.shareLink = location.href;
+
+		return opts;
+	}
+
+	var opts = {};
+
+	opts.caizhuRun = function () {
+		caizhuRun();
+	}
+	opts.otherRun = function () {
+		otherRun();
+	}
+	opts.commonRun = function () {
+		commonRun();
+	}
+
+	//opts.appDebug = true;
+	initAction(opts);
+
+	function caizhuRun() {
+	}
+
+	function otherRun() {
+	}
+
+	function commonRun() {
+
+		var app01 = new Vue({
+			el: '#app01',
+			data: {
+				shareCount: 10,
+				issuppr: isvot
+			},
+			methods: {
+				toVote: function () {
+
+					//VMIPOpenTel();
+
+					$.ajax({
+						url: '/api/activity-wish/augment-pig',
+						dataType: 'json',
+						data: {
+							type: 2,
+							phone: phone
+						},
+						success: function (d) {
+							if (d.flag == 1) {
+								VMIPrompt('感谢支持' + d.data.pig + '只财猪！', function () {
+								})
+								$('#vote').text('已经支持');
+							} else {
+								VMIPrompt(d.msg);
+							}
+						},
+						error: function (err) {
+							VMIPrompt('网络错误');
+							;
+						}
+					});
+				},
+				toWish: function () {
+					location.href = '/api/activity-wish/wish-index'
+				}
+			},
+			compiled: function () {
+				;
+			}
+		});
+
+	}
+
+</script>
+
+<script src="http://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

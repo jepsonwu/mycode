@@ -1,0 +1,53 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="vote_period_add_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table'>
+                <tr>
+                    <th width="20%">期数名称：</th>
+                    <td width="80%"><input type="text" name="PeriodName" size="53" value="" /></td>
+                </tr>             
+                <tr>
+                    <th>引言：</th>
+                    <td><textarea  rows="5" cols="50" name="Introduction"></textarea></td>
+                </tr>
+                <tr>
+                    <th>顶部图片：</th>
+                    <td>
+                        <input name = "Image"  type="file"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>本期话题ID：</th>
+                    <td><input type="text" name="TopicID" size="53" value="" /></td>
+                </tr> 
+                <tr>
+                    <th>本期奖励：</th>
+                    <td>
+                        <input type="text" name="Reward"  size="53" value="" ></input>
+                    </td>
+                </tr>
+                <tr>
+                    <th>开始时间：</th>
+                    <td>
+                        <input class="easyui-datetimebox" size = "25" type="text" name="StartTime" value="" ></input>
+                    </td>
+                </tr>
+                <tr>
+                    <th>结束时间：</th>
+                    <td>
+                        <input class="easyui-datetimebox" size = "25" type="text" name="EendTime" value="" ></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="vote_period_add_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="vote_period_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>

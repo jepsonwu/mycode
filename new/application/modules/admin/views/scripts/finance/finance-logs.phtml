@@ -1,0 +1,91 @@
+<table id="financelogs_list_rejected" style="width:800px;height:600px"></table>
+<div id="financelogs_list_toolbar"></div>
+<div id="financelogs_list_toolbar_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="financeLogsObj.containerObj.edatagrid('reload');">刷新</a>
+	<select name="numberType">
+		<option value="AdminID">管理员</option>
+		<option value="MemberID">会员编号</option>
+    </select>&nbsp;<input type="text" value="" name="number" size="10" />
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchFinancelogs()" iconCls="icon-search">搜索</a>
+</div>
+<script type="text/javascript">
+    //回车查询
+    $("#financelogs_list_toolbar_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchFinancelogs();
+        }	
+    });
+
+    function toSearchFinancelogs()
+    {
+        var numberType	= $("#financelogs_list_toolbar_container select[name='numberType']").val();
+        var number 	= $("#financelogs_list_toolbar_container input[name='number']").val();
+
+        financeLogsObj.containerObj.datagrid('load', {
+                                                numberType:numberType,
+                                                number:number
+        });
+    }
+    var financeLogsObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'finance-logs'));?>',
+		
+		'containerObj':$("#financelogs_list_rejected"),
+				
+		'selfName':'financeLogsObj',
+
+		'init':function(){
+			this.showData();
+		},
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+                //是否分页
+                pagination:true,
+                pageSize: 50,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                //fitColumns:true,
+                fit:true, 
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'log_id',
+
+                url:_THIS_.loadUrl,
+                toolbar:'#financelogs_list_toolbar',
+
+                //设置列   
+                columns:[[   
+                    {field:'LogID',title:'日志编号',sortable:true,width:80},
+                    {field:'Username',title:'管理员',width:180},   
+                    {field:'MemberID',title:'会员编号',width:100},
+                    {field:'Email',title:'邮箱',width:200},
+                    {field:'InfoSign',title:'信息类型标识',width:100},
+                    {field:'InfoID',title:'信息ID',width:100},
+                    {field:'Content',title:'内容',width:200},
+                    {field:'AddTime',title:'操作时间',width:180}
+
+                ]]
+            });
+				
+            //设置分页
+            var pager = _THIS_.containerObj.datagrid('getPager');
+            pager.pagination({
+                pageList:[10,50,100,150,200],
+                pageSize:50,
+                beforePageText:'第',
+                afterPageText:'页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+            });
+
+            $("#financelogs_list_toolbar").append($("#financelogs_list_toolbar_container"));
+        }
+    };
+    financeLogsObj.init();
+</script>

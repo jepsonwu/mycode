@@ -1,0 +1,167 @@
+<div class="main-right fr">
+	<h2 class="content-tit clearfix p-rela nobd">
+		内容管理
+            <span class="article-tit-do">
+                <a href="/article/index">头条文章</a>
+                <?php if($this->authenticateType>1):?><span class="at-separate">|</span>
+                <a href="/activity/index">线下活动</a><?php endif;?>
+                <?php if($this->authenticateType==2):?><span class="at-separate">|</span>
+                <a class="selected" href="/counsel/index">询财服务</a>
+
+                <a class="article-todo" href="/counsel/add">创建询财</a><?php endif;?>
+            </span>
+	</h2>
+
+	<div class="nav-list">
+		<a href="/counsel/index" class="selected">首页</a>
+		<span>|</span>
+		<a href="/counsel/my-order">我的订单</a>
+		<span>|</span>
+		<a href="/counsel/my-comment">我的评价</a>
+	</div>
+
+
+	<ul class="cdraft-list">
+
+		<!--<li class="counsel-empty hide" style='display:none;'>
+			<p>在这里，你可以发挥自己在金融相关领域的专长，利用自己专业的理论知识，丰富的实践经验来为咨询者答疑解惑，这里是你实现自我价值的地方；这里是你展翅飞翔的地方；这里是你扬名立万的地方！</p>
+			<a href="/user/information?flag=go">GO</a>
+		</li>-->
+	</ul>
+	<ul class="pagination" id="pagination"></ul>
+</div> <!-- main-right -->
+
+<script src="/static/js/web/pagination.js" charset="utf-8"></script>
+<script src="/static/js/web/column/counsel.js" charset="utf-8"></script>
+<script>
+	$(function () {
+		var ps = 10,//每页显示的条数
+			isComplete = '<?php echo $this->isComplete;?>';//理财师扩展信息是否已完善，0未完善，1已完善
+
+		if (isComplete == 0) {
+			/*definedPrompt('在这里，你可以发挥自己在金融相关领域的专长，利用自己专业的理论知识，丰富的实践经验来为咨询者答疑解惑，这里是你实现自我价值的地方；这里是你展翅飞翔的地方；这里是你扬名立万的地方！',function(){
+                location.href = '/user/information';
+            });*/
+            $promptBox.find('#ppt-add00').removeClass(hide);
+            $promptBox.removeClass(hide);
+
+            $('body').delegate('#ppt-add00 .ppt-do span', 'click', function(){
+				//$promptBox.addClass(hide);
+				location.href = '/user/information';
+
+			});
+
+
+		} else {
+			getCounselList(0);
+		}
+
+		function setPaganation(pageCount,page) {
+            $("#pagination").show().pagination(pageCount, {
+                callback: getCounselList,
+                current_page : page,
+                items_per_page: ps
+            });
+		}
+
+		function getCounselList(page) {
+			var cur_page = parseInt(page + 1);
+			$.ajax({
+				url: '/api/counsel/my-counsel',
+				dataType: 'json',
+				data: {
+					pagesize: ps,
+					page: cur_page
+				},
+				success: function (d) {
+					if (d.flag === 1) {
+						var total = d.data.Total,
+							list = d.data.Rows,
+							html = '',
+							iD;
+
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+
+								iD = list[i];
+
+								html += '<li class="cdraft-one" data-id="111">' + '<h4 class="counsel-tit">' + iD.Title + '</h4>';
+								html += '<div class="cdraft-info clearfix"><div class="cdraft-det"><p class="cdraft-p">' + iD.CreateTime + '</p><div class="cdraft-text"><span class="cdraft-text">';
+								if (list[i].Desc.length > 300) {
+									html += '<span class="cdraft-text00">' + iD.Desc.substring(0, 300) + '<span>...</span></span>';
+									html += '<span class="cdraft-text01">' + iD.Desc + '</span><span class="counsel-showall" href="">显示全部</span></div></div></div>';
+								} else {
+									html += '<span class="cdraft-text00">' + iD.Desc + '</span>';
+									html += '<span class="cdraft-text01">' + iD.Desc + '</span></div></div></div>';
+								}
+								html += '<div class="counsel-status clearfix">' + (iD.Desc.length > 300 ? '<span class="counsel-up">收起</span>' : '');
+								html += '<span>￥' + iD.Price + '/1次(约' + iD.Duration + '小时)</span>';
+								var SupportCity = '';
+								for (var j = 0; j < iD.SupportCity.length; j++) {
+									SupportCity += iD.SupportCity[j].Name;
+									if (j < (iD.SupportCity.length - 1)) {
+										SupportCity += " ";
+									}
+								}
+								html += '<span>' + SupportCity + '</span>';
+								html += '<span>' + iD.ConsultTotal + '人咨询</span><span class="hide">设置</span>';
+								html += '<span>' + iD.CommentTotal + '人评价</span>';
+
+								//html += '<select data-cid="'+ iD.CID +'"><option value="0">设置</option>';
+								html += '<select data-cid="'+ iD.CID +'">';
+								html += '<option value="1" ';
+								if(iD.Status == 1 ){ html += 'selected="selected"'; };
+								html += '>显示</option>';
+
+								html += '<option value="2" ';
+								if(iD.Status == 2 ){ html += 'selected="selected"'; };
+								html += '>隐藏</option>';
+
+								html += '</select>';
+
+								html += '</li>';
+							}
+                            setPaganation(total,page)
+						} else {
+							html = '<li class="counsel-empty"><p>暂无数据</p></li>';
+							//$('#pagination').hide();
+						}
+						$('.cdraft-list').html(html);
+					} else {
+						definedPrompt(d.msg);
+					}
+				},
+				error: function () {
+					definedPrompt('网络错误');
+				}
+			});
+		}
+
+
+		$('.cdraft-list').delegate('select', 'change', function(e){
+		    var $this = $(e.target),
+		        id = $this.data('cid'),
+		        val = $this.val();
+
+		    $.ajax({
+		        url: '/api/counsel/edit',
+		        dataType: 'json',
+		        data: {
+		            cid: id,
+		            status: val
+		        },
+		        success: function(d){
+		            var msg = d.msg;
+
+		            if(d.flag == 1) msg = '设置成功';
+		            definedPrompt(msg);
+		        },
+		        error: function(err){
+		            definedPrompt('网络错误');
+		        }
+		    })
+
+		})
+
+	});
+</script>

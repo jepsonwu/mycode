@@ -1,0 +1,23 @@
+<div class="easyui-layout" data-options="fit:true" >  
+   累计举报次数：<?php echo $this->reportNum;?>次
+        <table class="detail-view-table">                     
+            <tr>
+                <th >序号</th>
+                <th >举报人</th>
+                <th >举报时间</th>
+                <th >举报理由</th>
+            </tr>
+            <?php if(!empty($this->reportList)):?>
+            	<?php foreach ($this->reportList as $key => $item): ?>
+	            	<tr>
+	            		<td><?php echo $key+1;?></td>
+	            		<td><?php echo $item['UserName']?></td>
+	            		<td><?php echo $item['CreateTime']?></td>
+	            		<td><?php echo $item['Reason']?></td>
+	            	</tr>
+            	<?php endforeach;?>
+            <?php else:?> 
+            	<tr><td colspan="4">无举报记录</td></tr>      		
+        	<?php endif;?>
+        </table> 
+</div> 

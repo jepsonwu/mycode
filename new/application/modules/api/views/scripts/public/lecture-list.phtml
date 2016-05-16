@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>讲堂</title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪-讲堂列表" >
+<meta name="description" content="财猪-讲堂列表" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=151225" >
+<link rel="stylesheet" href="/static/css/api/jiangtang.css" >
+<script>
+    (function(){
+        var href = location.href,
+                protocol = location.protocol;
+        if(protocol == 'https:'){
+            href = href.replace(/^https:\/\//, 'http://');
+            location.href = href;
+        }
+    })();
+</script>
+</head>
+<body>
+<script>
+function returnTime(){
+    var time = (new Date()).valueOf();
+    return time;
+}
+
+</script>
+<img style="display: none;" alt="财猪" src="/static/imgs/web/view-detail-100x100.png">
+
+<section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="/static/imgs/web/wechat-arrow.png" alt="指示图">
+        </li>
+    </ul>
+</section>
+
+<ul class="lecture-list">
+	<?php foreach($this->dataList as $data):?>
+	    <li class="lecture-one boxlink otherlink" data-url="lecture-detail?videoID=<?php echo $data['videoID']?>&manage=more&time=<?php echo time(); ?>">
+	        <img class="lazy" data-original="<?php echo $data['ImageUrl'];?>" >
+	        <p class="boxlink" data-url="lecture-detail?videoID=<?php echo $data['videoID']?>&manage=more&time=<?php echo time(); ?>"><?php echo $data['ImagTitle'];?></p>
+	    </li>
+	 <?php endforeach;?>    
+    
+</ul>
+
+<section id="prompt-box" class="m-prompt-box hide">
+    <div id="prompt" class="m-prompt">
+        <p>您的操作有错误</p>
+        <span>确定</span>
+    </div>
+</section>
+
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ、百度浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、UC、360浏览器等</p>
+</section>
+
+<section id="caizhu-open-down" class="caizhu-open hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="/static/imgs/web/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+            </p></li>
+        <li class="czo-three">
+            <a href="https://m.caizhu.com/down/down-caizhu" id="czo-open-down" >下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close-open" class="open-close">X</span>
+</section>
+
+<script src="/static/js/api/zepto.min.js"></script>
+<!--<script src="/static/js/api/basic.js"></script>-->
+<script src="/static/js/api/lazyload.min.js"></script>
+
+<script>
+
+var currentId = '<?php echo $this->videoDetail['videoID'];?>';
+
+var sharePic = $('.vs-avatar img');
+if(sharePic.length>0){
+    sharePic = sharePic[0].src
+}else{
+    sharePic = '';
+}
+var shareTitle = '讲堂列表',
+    shareDes = '财猪-讲堂列表',
+    shareLink = location.href;
+
+
+var UAgent = navigator.userAgent.toLowerCase();
+var caizhuAPP = function(){                                   //财猪app
+    var reg = /caizhuapp/i;
+    if(reg.test(UAgent)) {
+        return true;
+    } else {
+        return false;
+    }
+}();
+
+if(caizhuAPP){    // 财猪里执行动作
+    var basicJs = document.createElement('script');
+    basicJs.type = 'text/javascript';
+    basicJs.src = '/static/js/api/basic.js?date=151228';
+    basicJs.onload = function(){
+
+    }
+    document.body.appendChild(basicJs);
+
+}else{
+
+
+// active伪状态
+var acTime, touchMove;
+
+$('body').delegate('.otherlink',{'touchstart': function(){
+    var touch = 'touch';
+    touchMove = false;
+    $('.otherlink').removeClass(touch);
+    acTime = new Date();
+    $(this).addClass(touch);
+
+},'touchmove': function(){
+     touchMove = true;
+},'touchend': function(){
+
+    var $this = $(this), url;
+
+    if(touchMove) {
+        touchMove = false;
+        return ;
+    }
+
+    $this.removeClass('touch');
+    if((new Date()) - acTime > 300){   // 触摸的时间超过130ms，不触发触摸效果 。。。
+        return ;
+    }
+
+    url = $this.data('url');
+    if(url) location.href = url;
+    return ;
+
+}});
+
+
+    var commonFunc = {};
+
+    var otherJs = document.createElement('script');
+    otherJs.type = 'text/javascript';
+    otherJs.src = '/static/js/api/app-running.js?date=151223';
+
+    otherJs.onload = function(){
+
+        var loadIframe = null;
+        commonFunc.createIframe = function(){
+            var iframe = document.createElement("iframe");
+            iframe.style.cssText = "display:none;width:0px;height:0px;";
+            document.body.appendChild(iframe);
+            loadIframe = iframe;
+        }
+        commonFunc.redirect = function(){
+            var rUa = navigator.userAgent;
+            isChrome =rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+            if(isChrome){
+                if(info.os.android){
+                    if(rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)){
+                        loadIframe.src="caizhu://caizhu/lecturelist?id="+currentId;
+                    }else{
+                        window.location.href = 'intent://caizhu/lecturelist?id=' + currentId + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                    }
+
+                }else{
+                    window.location.href = 'caizhu://caizhu/lecturelist?id=' + currentId;
+                }
+            }else{
+                if(safariBrowser){                  // ios6-plus, 只能用location跳转
+                    window.location.href = "caizhu://caizhu/lecturelist?id=" + currentId;
+                }else{
+                    loadIframe.src = "caizhu://caizhu/lecturelist?id=" + currentId;
+                }
+            }
+            var t = Date.now();
+            setTimeout(function(){
+                if(Date.now()-t < 600){
+                    //location.href="http://m.caizhu.com/down/down-caizhu";
+
+                    $('#caizhu-open-down').removeClass(hide);
+                }
+            },500)
+        };
+
+        // wechat share - start
+        $.ajax({
+            url: '/api/wechat/get-signature',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                url: location.href
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    var d = d.data;
+
+                    var wechatJs = document.createElement('script');
+                    wechatJs.type = 'text/javascript';
+                    wechatJs.src = 'https://fe.caizhu.com/public/js/callcaizhu/jweixin-1.0.0.js';
+                    wechatJs.onload = function(){
+                        wechatShare(d, {title: replaceBlank(shareTitle), des: replaceBlank(shareDes), pic: sharePic, link: shareLink});
+                    };
+                    document.body.appendChild(wechatJs);
+
+                }
+            }
+        });
+        // wechat share - end
+
+    }
+
+    document.body.appendChild(otherJs);
+
+}
+</script>
+
+<script>
+
+    $("img.lazy").lazyload({
+        no_fake_img_loader:true
+    });
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

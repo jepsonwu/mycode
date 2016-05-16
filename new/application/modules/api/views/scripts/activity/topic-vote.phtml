@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>参与今日话题</title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪、话题、今日" >
+<meta name="description" content="参与今日话题，获得流量大礼包" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<style>
+    *{
+        margin: 0; padding: 0; list-style: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+    body {
+        font: 14px/1.5 helvetica,arial,"Microsoft YaHei","微软雅黑",sans-serif;
+        -webkit-tap-highlight-color: rgba(255,0,0,0);
+        background: #fff;
+
+        min-width: 320px;
+        max-width: 640px;
+        margin: 0 auto;
+
+    }
+    .clearfix:after {
+        content: '';display:block;height:0;clear:both;
+    }
+    .fl{float: left;}
+    .fr{float: right;}
+    .mt10{margin-top: 10px;}
+    .mt20{margin-top: 20px;}
+    .hide{display: none;}
+
+    .theme-des{margin: 15px 15px 0; font-wight: bold;}
+    .figure-top img{width: 100%; vertical-algin: top;}
+    .theme-box{background: #738cf6; border-radius: 20px; padding: 10px; margin: 15px 15px 0;}
+    .theme-tit{padding: 5px 0 10px; font-size: 16px;  line-height: 30px; color: #fff; background: url('/static/imgs/hd/topic-vote/bd-0.png') repeat-x left bottom;}
+    .theme-tit img{float: left; width: 25px; margin: 0 6px 0 0; }
+
+    .view-info-box{float: left; width: 100%;}
+    .view-info{margin: 0 0 0 55px; border-bottom: #B9C6FB solid 1px; padding: 0 0 6px;}
+    .view-one{padding: 10px 0;}
+    .view-avatar{float: left; width: 48px; margin: 0 0 0 -100%;}
+    .view-avatar div{border-radius: 45px; border: #fff solid 1px; overflow: hidden; background: #738cf6; padding: 3px;}
+    .view-avatar img{border-radius: 40px; width: 40px; height: 40px; vertical-align: top;}
+
+    .rules-box{background: #FB9F25;}
+    .theme-tit-rules{background-image: url('/static/imgs/hd/topic-vote/bd-1.png');}
+    .rules-box{position: relative; color: #fff; padding-bottom: 80px;}
+    .rules-one{border-bottom: #fdc67d solid 1px; line-height: 24px; padding: 10px 0;}
+    .rules-one i{font-size: 20px; color: #D7660A; margin: 0 6px 0 0;}
+    .rules-p{margin: 10px 0 0;}
+    .rules-present{position: absolute; bottom: -60px; right: -15px; width: 200px;}
+    .rules-present img{width: 100%}
+
+    .figure-footer{margin: 50px 0 0; border-bottom: #37A6ED solid 30px;}
+    .figure-footer img{width: 100%; vertical-align:top;}
+
+    .votes-name{color: #fff;}
+    .votes-num{font-size: 18px; color: #5066c4; font-weight: bold;}
+    .votes-counts{width: 50px; height: 24px; padding: 0 0 0 25px; line-height: 24px; background: url('/static/imgs/hd/topic-vote/love-normal.png') no-repeat left center; background-size: 20px auto; color: #fff548; position: relative;}
+    .votes-counts i{content: '+1'; opacity: 0; position: absolute; left: 2px; bottom: 0; color: #f00; font-weight: bold;}
+    .votes-counts.votes-add i{
+        -webkit-animation: votes-add .3s linear both;
+        animation: votes-add .3s linear both;
+    }
+    @-webkit-keyframes votes-add{
+        0%{opacity: 0; top: 0;}
+        10%{opacity: 1; top: -10px;}
+        70%{opacity: .8; top: -20px;}
+        100%{opacity: 0; top: -25px;}
+    }
+    @keyframes votes-add{
+        0%{opacity: 0; top: 0;}
+        10%{opacity: 1; top: -10px;}
+        70%{opacity: .8; top: -20px;}
+        100%{opacity: 0; top: -25px;}
+    }
+
+    .votes-selected{background-image: url('/static/imgs/hd/topic-vote/love-selected.png');}
+    .votes-des{margin: 2px 0 0;color: #e2f0fd; line-height: 20px;}
+    .votes-des2{margin: 2px 0 0; height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #d0d9ff;}
+    .votes-des2 img{width: 20px; vertical-align: top; margin: 0 4px 0 0;}
+
+    .close{ position: absolute; top: -12px; right: -12px; width: 25px; height: 25px;}
+    .close img{width: 100%;}
+    .promptbox{position: fixed; width: 80%; height: 30px; line-height: 30px; left: 50%; top: 50%; margin-left: -40%; margin-top: -15px; padding: 15px 0; background: rgba(10, 10, 10, .7); color: #fff; border-radius: 6px; text-align: center;}
+
+
+</style>
+</head>
+<body>
+
+<figure class="figure-top">
+    <img src="/static/imgs/hd/topic-vote/figure-top.png" alt="参与今日话题" >
+</figure>
+
+<p class="theme-des">参与今日话题讨论发表自己的观点就有机会获得流量大礼包啦！每周我们将选出5个最热观点！哪个观点才是你心目中的最佳观点,给他投个票吧！</p>
+
+<section id="theme-box" class="theme-box mt20">
+    <h1 class="theme-tit clearfix"> <img src="/static/imgs/hd/topic-vote/crown.png" alt="标记"><span>快来给你喜欢的观点投票吧</span></h1>
+
+    <ul id="view-lsit" class="view-list">
+    	<?php if(count($this->viewInfo)>0):?>
+			<?php foreach ($this->viewInfo as $key => $item):?>
+		        <li class="view-one clearfix">
+		            <div class="view-info-box">
+		                <div class="view-info">
+		                    <ul class="votes-list clearfix">
+		                        <li class="votes-name fl">
+		                            <i class="votes-num"><?php echo $key+1;?>.</i>
+		                            <span><?php echo $item['UserName']?></span>
+		                        </li>
+		                        <li class="votes-counts fr <?php if($item['IsVoted']==1):?> votes-selected <?php endif;?>"  data-id="<?php echo $item['ViewID']?>" <?php if($item['IsVoted']==1):?> data-selected=1 <?php endif;?> data-index="<?php echo $key; ?>" >
+		                            <span><?php echo $item['VoteCount']?></span>
+		                            <i>+1</i>
+		                        </li>
+
+		                    </ul>
+		                    <p class="votes-des"><?php echo $item['ViewContent']?></p>
+		                    <p class="votes-des2"><img src="/static/imgs/hd/topic-vote/topic.png" /><span><?php echo $item['TopicName'] ?></span></p>
+		                </div>
+		            </div>
+		            <div class="view-avatar">
+		                <div><img src="<?php echo $item['Avatar']; ?>" alt="头像" ></div>
+		            </div>
+		        </li>
+	        <?php endforeach;?>
+	    <?php else:?>无有效活动
+	    <?php endif;?>
+    </ul>
+</section>
+
+<section class="theme-box rules-box mt20">
+    <h2 class="theme-tit theme-tit-rules clearfix"> <img src="/static/imgs/hd/topic-vote/gift.png" alt="标记"><span>活动规则及奖品设置：</span></h2>
+    <ul class="rules-list">
+        <li class="rules-one"><i>1.</i>10月23日起至11月23日财猪将在每周五16：00从财猪今日话题中选出5个最热观点，财友们可以给5个观点进行投票，排名前三位的财友将获得流量礼包。流量礼包为: 第一名 50M、第二名 30M、第三名20M。</li>
+        <li class="rules-one"><i>2.</i>投票统计时间段为周五16:00起至周一16:00截止，周二早上10:00公布中奖名单。
+        </li>
+        <li class="rules-one"><i>3.</i>每个用户每日最多投票10次。
+        </li>
+        <li class="rules-one"><i>4.</i>获得的流量将于公布名单24小时内充值到财猪绑定的手机号中，流量当月有效，移动、联通、电信用户均可参与。
+        </li>
+        <li class="rules-one"><i>5.</i>请确保您的手机没有存在欠费、停机、黑名单、套餐流量不可叠加等现象，部分地区用户充值稍有延迟，以当地运营商情况为准。
+        </li>
+        <li class="rules-one"><i>6.</i>如有疑问请进入设置-关于财猪-帮助与反馈中写下建议，或咨询财猪客服400-681-2858。
+        </li>
+
+        <li class="rules-p">
+            ※本活动的最终解释权归杭州小麦金融信息服务有限公司所有。
+        </li>
+        <li class="rules-present"><img src="/static/imgs/hd/topic-vote/present.png" alt="礼物" ></li>
+
+    </ul>
+</section>
+
+<figure class="figure-footer"><img src="/static/imgs/hd/topic-vote/bottom.png" alt="bottom" ></figure>
+
+<section id="promptbox" class="promptbox hide">
+    <span id="close" class="close"><img src="/static/imgs/hd/topic-vote/close.png" alt="关闭"></span>
+    <span id="prompt"></span>
+</section>
+
+<script src="/static/js/web/zepto.min.js"></script>
+
+
+<script>
+
+    var voteData = [];
+
+    var hide = 'hide',
+            $close = $('#close'),
+            $prompt = $('#prompt'),
+            $promptBox = $('#promptbox');
+
+    $close.click(function(){
+        $promptBox.addClass(hide);
+    });
+
+
+    var $voteBox = $('#view-list'),
+            $voteOne = $('.view-one'),
+            $voteSelect = $('.votes-counts'),
+            selected = 'votes-selected';
+
+    valueOfData();
+
+    function valueOfData(){
+        var a, b;
+
+        for(var i=0,len=$voteOne.length; i<len; i++){
+            var obj={};
+            obj.valueOf = function(){
+                return this.votesCount;
+            };
+
+            a = $voteOne.eq(i);
+            b = a.find('.votes-counts');
+            obj.id = b.data('id');
+            obj.name = a.find('.votes-name span').text();
+            obj.avatar = a.find('.view-avatar img').attr('src');
+            obj.description = a.find('.votes-des').text();
+            obj.topic = a.find('.votes-des2 span').text();
+            obj.votesCount = parseInt(b.find('span').text());
+            obj.selected = b.data('selected') == 1 ? 1 : 0;
+
+            voteData.push(obj);
+        }
+
+    }
+
+     function addContent(){
+         var a, b, c,
+                 selected = 'votes-selected',
+                 voteSortData = voteData.sort(function(a, b){
+             return a < b ? 1 : -1;
+         });
+
+         voteData = voteSortData;
+
+         for(var i=0,len = voteSortData.length; i<len; i++){
+             a = voteSortData[i];
+             b = $voteOne.eq(i);
+             c = b.find('.votes-counts');
+             b.find('.view-avatar img').attr('src',a.avatar);
+             b.find('.votes-name span').text(a.name);
+             console.log('zx: '+a.id);
+             c.data('id', a.id);
+             c.data('index', i);
+             if(a.selected == 1){
+                 c.addClass(selected);
+             }else{
+                 c.removeClass(selected);
+             }
+             b.find('.votes-counts span').text(a.votesCount);
+             b.find('.votes-des').text(a.description);
+             b.find('.votes-des2 span').text(a.topic);
+
+         }
+
+     }
+
+//addContent();
+
+var period = <?php echo $this->period;?>;
+$voteSelect.on('click', function(){
+    var $this = $(this),
+            votesAdd = 'votes-add',
+            timeoutId;
+
+    $.ajax({
+        url: '/api/activity/vote',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            id: $this.data('id'),
+            period:period
+        },
+        success: function(d){
+
+            if(d.flag == 1){
+                var index = $this.data('index'),
+                data = voteData[index];
+                $this.addClass(selected);
+                $this.addClass(votesAdd);
+
+                data.votesCount++;
+                data.selected = 1;
+
+                addContent();
+
+                setTimeout(function(){
+                    $this.removeClass(votesAdd);
+                }, 600);
+            }else{
+                $prompt.text(d.msg);
+                $promptBox.removeClass(hide);
+            }
+
+        },
+        error: function(e){
+            $prompt.text('网络错误，请过一会儿再来试试吧');
+            $promptBox.removeClass(hide);
+        }
+    });
+});
+
+</script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+</body>
+</html>

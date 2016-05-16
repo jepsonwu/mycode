@@ -1,0 +1,643 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title><?php echo $this->columnInfo['Title'];?></title>
+<meta charset="utf-8" >
+<meta name="keywords" content="理财号主页" >
+<meta name="description" content="理财号主页" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=151225" >
+<link rel="stylesheet" href="/static/css/api/promotion.css" >
+<style>
+.bg-column{background: #f2f2f2;}
+
+.column-box{padding: 38px 0 0;}
+.column-tit{position: fixed; top: 53px; left: 0; width: 100%; border-top: #f2f2f2 solid 10px; height: 36px; line-height: 36px; background: #fff; border-bottom: #eee solid 1px;}
+.column-titone{float: left; width: 50%; text-align: center; font-size: 16px;}
+.column-titone span{display: inline-block; padding: 0 4px;  height: 33px; border-bottom: #fff solid 3px;}
+.column-titone.selected span{color: #FF8114; border-color: #ff8114;}
+.column-list-one{}
+
+.ca-one{padding: 10px 15px 10px; background: #fff; margin: 0 0 10px;}
+.ca-tit{font-size: 15px; font-weight: 100; color: #333;}
+.ca-one-box{ padding: 6px 0 0;}
+.ca-one-fir{float: left; width: 100%;}
+.ca-fir-info{padding: 0 0 0 75px;}
+.ca-fir-info p{height: 20px; line-height: 20px; color: #333; text-overflow: ellipsis; white-space: nowrap; padding: 0 0 4px;}
+.ca-fir-info .ca-one-last{color: #999;}
+.ca-fir-info .ca-fir-last{padding: 10px 0 0; color: #999; font-size: 12px;}
+.ca-member{color: #ff8114;}
+.ca-one-sec{float: left; margin-left: -100%; width: 65px; max-height: 86px;overflow: hidden;}
+.ca-one-sec img{width: 100%;}
+
+.ct-one-box{padding: 12px 15px; border-bottom: #eee solid 1px; background: #fff;}
+.ct-one-fir{float: left; width: 100%;}
+.ct-one-fir-box{padding: 0 90px 0 0;}
+.ct-one-sec{float: left; width: 78px; max-height: 52px; margin-left: -78px; overflow: hidden;}
+.ct-one-sec img{width: 100%;}
+.ct-one-fir-box p:nth-child(1){line-height: 20px; height: 40px; font-size: 15px; overflow: hidden; color: #333; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
+.ct-one-fir-box p:nth-child(2){font-size: 12px; color: #999; height: 20px; line-height: 24px; overflow: hidden;}
+
+
+</style>
+</head>
+<body class="bg-column">
+<img style="display: none;" alt="财猪" src="/static/imgs/web/view-detail-100x100.png">
+
+<input type="hidden" data-article-id="" data-activity-id="" id="vedio-poster" src="http://vpic.video.qq.com/39995468/b0172lx7rb1_ori_3.jpg">
+
+<section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="/static/imgs/web/wechat-arrow.png" alt="指示图">
+        </li>
+    </ul>
+</section>
+
+<section class="video-subscription">
+	<ul class="vs-list callcaizhu boxlink" data-url="http://caizhukeyjs-columnjump?id=<?php echo $this->columnID;?>">
+        <li class="vs-avatar">
+            <img src="<?php echo $this->columnInfo['Avatar'];?>" alt="avatar">
+        </li>
+        <li class="vs-info">
+            <strong><?php echo $this->columnInfo['Title'];?></strong>
+            <p><span>订阅&nbsp;<?php echo $this->columnInfo['SubscribeNum'];?></span> <span class="ml">文章&nbsp;<?php echo $this->columnInfo['ArticleNum'];?></span></p>
+        </li>
+        <li id="vs-dingyue" class="vs-dingyue" data-id="<?php echo $this->columnInfo['ColumnID'];?>">
+			<span class="vs-button <?php if($this->detailInfo['IsSubscribe'] == 1):?>selected<?php endif;?>"><span>订阅</span><span>已订阅</span></span>
+		</li>
+    </ul>
+</section>
+
+<ul id="column-tit" class="column-tit clearfix">
+    <li class="column-titone selected"><span>文章</span></li>
+    <li class="column-titone"><span>活动</span></li>
+</ul>
+
+<section class="column-box">
+	<div id="column-box" class="column-list-box">
+        <ul id="article-box" class="column-article-list">
+            <!--<li class="ct-one boxlink" data-url="http://caizhukeyjs-articlejump?id=333">
+                <ul class="ct-one-box clearfix">
+                    <li class="ct-one-fir">
+                        <div class="ct-one-fir-box">
+                            <p>思密达思密达，思密达思密达，思密达思密达，思密达思密达，思密达思密达</p>
+                            <p><span class="boxlink" data-url="http://caizhukeyjs-memberjump?id=111">财猪</span><span class="ml">10分钟前</span></p>
+                        </div>
+                    </li>
+                    <li class="ct-one-sec">
+                        <img src="http://img.caizhu.com/Fn29zoXrBaNVXN5RTMZCPwb9KT33" alt="描述" />
+                    </li>
+                </ul>
+            </li>
+            -->
+        </ul> <!-- column-article-list -->
+
+
+
+	    <ul id="activity-box" id="column-activity" class="column-activity-list hide">
+	        <!--
+            <li class="ca-one boxlink" data-url="http://caizhukeyjs-activityjump?id=333">
+                <p class="ca-tit">2015中国创客大会-点石成金</p>
+                <ul class="ca-one-box clearfix">
+                    <li class="ca-one-fir">
+                        <div class="ca-fir-info">
+                            <p>时间：10-25 08:30 至 10-25 11:00</p>
+                            <p>地点：广西 南宁</p>
+                            <p>报名：<span class="ca-member">2234</span>人</p>
+                            <p class="ca-fir-last"><span class="boxlink" data-url="http://caizhukeyjs-jump?id=333">财经天下</span><span class="ml">10分钟前</span></p>
+                        </div>
+                    </li>
+                    <li class="ca-one-sec">
+                        <img src="http://img.caizhu.com/Fn29zoXrBaNVXN5RTMZCPwb9KT33" alt="描述" />
+                    </li>
+                </ul>
+            </li>
+            -->
+        </ul> <!-- column-activity-list -->
+	</div>
+
+</section>
+
+<section id="prompt-box" class="m-prompt-box hide">
+    <div id="prompt" class="m-prompt">
+        <p>您的操作有错误</p>
+        <span>确定</span>
+    </div>
+</section>
+
+
+<ul id="api-loading" class="api-loading hide">
+    <li class="loading"></li>
+    <li class="nomore hide">已经没有更多了 ¯﹃¯ 。。。</li>
+</ul>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ、百度浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、UC、360浏览器等</p>
+</section>
+
+<section id="caizhu-open-down" class="caizhu-open hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="/static/imgs/web/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+            </p></li>
+        <li class="czo-three">
+            <a href="https://m.caizhu.com/down/down-caizhu" id="czo-open-down" >下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close-open" class="open-close">X</span>
+</section>
+
+<script src="/static/js/api/zepto.min.js"></script>
+<!--<script src="/static/js/api/basic.js"></script>-->
+
+<script>
+var currentId = '<?php echo $this->columnID;?>';
+
+var sharePic = $('.vs-avatar img');
+if(sharePic.length>0){
+    sharePic = sharePic[0].src
+}else{
+    sharePic = '';
+}
+var shareTitle = $('.vs-info strong').text(),
+    shareDes = '理财号主页',
+    shareLink = location.href;
+
+var UAgent = navigator.userAgent.toLowerCase();
+var caizhuAPP = function(){                                   //财猪app
+    var reg = /caizhuapp/i;
+    if(reg.test(UAgent)) {
+        return true;
+    } else {
+        return false;
+    }
+}();
+
+
+if(caizhuAPP){    // 财猪里执行动作
+    var basicJs = document.createElement('script');
+    basicJs.type = 'text/javascript';
+    basicJs.src = '/static/js/api/basic.js?date=151228';
+    basicJs.onload = function(){
+
+        caizhuAppRun();
+
+        var caizhukeyjsShare = new caizhuShare({
+            pic: sharePic,
+            title: replaceBlank(shareTitle),
+            description: replaceBlank(shareDes),
+            link: shareLink
+        });
+        caizhukeyjsShare.createUrlMeta();
+
+    }
+    document.body.appendChild(basicJs);
+
+}else{
+
+    var commonFunc = {};
+
+    var otherJs = document.createElement('script');
+    otherJs.type = 'text/javascript';
+    otherJs.src = '/static/js/api/app-running.js?date=151223';
+
+    otherJs.onload = function(){
+
+        var loadIframe = null;
+        commonFunc.createIframe = function(){
+            var iframe = document.createElement("iframe");
+            iframe.style.cssText = "display:none;width:0px;height:0px;";
+            document.body.appendChild(iframe);
+            loadIframe = iframe;
+        }
+        commonFunc.redirect = function(){
+            var rUa = navigator.userAgent;
+            isChrome =rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+            if(isChrome){
+                if(info.os.android){
+                    if(rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)){
+                        loadIframe.src="caizhu://caizhu/column?id="+currentId;
+                    }else{
+                        window.location.href = 'intent://caizhu/column?id=' + currentId + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                    }
+
+                }else{
+                    window.location.href = 'caizhu://caizhu/column?id=' + currentId;
+                }
+            }else{
+                if(safariBrowser){                  // ios6-plus, 只能用location跳转
+                    window.location.href = "caizhu://caizhu/column?id=" + currentId;
+                }else{
+                    loadIframe.src = "caizhu://caizhu/column?id=" + currentId;
+                }
+            }
+            var t = Date.now();
+            setTimeout(function(){
+                if(Date.now()-t < 600){
+                    //location.href="http://m.caizhu.com/down/down-caizhu";
+
+                    $('#caizhu-open-down').removeClass(hide);
+                }
+            },500)
+        };
+
+
+        // wechat share - start
+        $.ajax({
+            url: '/api/wechat/get-signature',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                url: location.href
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    var d = d.data;
+
+                    var wechatJs = document.createElement('script');
+                    wechatJs.type = 'text/javascript';
+                    wechatJs.src = 'https://fe.caizhu.com/public/js/callcaizhu/jweixin-1.0.0.js';
+                    wechatJs.onload = function(){
+                        wechatShare(d, {title: replaceBlank(shareTitle), des: replaceBlank(shareDes), pic: sharePic, link: shareLink});
+                    };
+                    document.body.appendChild(wechatJs);
+
+                }
+            }
+        });
+        // wechat share - end
+
+    }
+
+    document.body.appendChild(otherJs);
+
+}
+
+function caizhuAppRun(){
+    var dingyueO = document.getElementById('xxx-vs-dingyue');
+
+    if(dingyueO){
+        $(dingyueO).children().click(function(e){
+            var $this = $(this),
+                    id = $this.parent().data('id'),
+                    flag = $this.data('flag'),
+                    selected = 'selected';
+
+            if(flag) return false;
+
+            $this.data('flag', true);
+            setTimeout(function(){
+                $this.data('flag', '');
+            }, 800);
+
+
+            var url,
+                selectedFlag = $this.hasClass(selected);
+
+            if(selectedFlag) return ;
+
+            if(selectedFlag){
+                url = '/api/column/un-subscribe'
+            }else{
+                url = '/api/column/subscribe';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {columnID: id},
+                success: function(d){
+
+                    if(d.flag == 1){
+
+                        if(selectedFlag){
+                            $this.removeClass(selected);
+                            promptDo('show', d.msg);
+                        }else{
+                            $this.addClass(selected);
+                        }
+
+                    }else if(d.flag == '-100'){
+                        document.body.appendChild(document.createTextNode('bibibi'));
+                        //location.href = 'http://caizhukeyjs-loginjump?url=' + location.href;
+                        location.href = 'http://caizhukeyjs-loginjump';
+                        return;
+                    }else{
+                        promptDo('show', d.msg);
+                    }
+
+                },
+                error: function(err){
+                    promptDo('show', '网络错误,请过一会再试一试');
+                }
+            });
+
+            e.stopPropagation();
+            return false;
+
+        });
+        dingyueO.addEventListener('touchstart', function(e){
+            e.stopPropagation();
+        }, false);
+        dingyueO.addEventListener('touchend', function(e){
+            e.stopPropagation();
+        }, false);
+    }
+}
+
+</script>
+
+<script>
+
+// active伪状态
+var acTime, touchMove;
+
+$('body').delegate('.otherlink',{'touchstart': function(){
+    var touch = 'touch';
+    touchMove = false;
+    $('.otherlink').removeClass(touch);
+    acTime = new Date();
+    $(this).addClass(touch);
+
+},'touchmove': function(){
+     touchMove = true;
+},'touchend': function(){
+
+    var $this = $(this), url;
+
+    if(touchMove) {
+        touchMove = false;
+        return ;
+    }
+
+    $this.removeClass('touch');
+    if((new Date()) - acTime > 300){   // 触摸的时间超过130ms，不触发触摸效果 。。。
+        return ;
+    }
+
+    url = $this.data('url');
+    if(url) location.href = url;
+    return ;
+
+}});
+
+
+var hide = 'hide',
+    show = 'show',
+    selected = 'selected',
+    $promptBox = $('#prompt-box'),
+    $prompt = $('#prompt'),
+    $promptP = $prompt.children('p'),
+    $promptOk = $prompt.children('span');
+
+function promptDo(a, str){              //a, show | hide ;
+    if(!a) return ;
+
+    if(a == show){
+        $promptP.text(str);
+        $promptBox.removeClass(hide);
+    }else{
+        $promptBox.addClass(hide);
+    }
+
+}
+
+
+var columnId = <?php echo $this->columnInfo['SubscribeNum'];?> || '';
+
+var articleFlag = true;
+
+var hide = 'hide',
+    selected = 'selected',
+    $columnTit = $('#column-tit'),
+    $columnBox = $('#column-box'),
+    $columnArticle = $('#column-article'),
+    $columnActivity = $('#column-activity');
+
+$columnTit.delegate('li span', 'tap', function(){
+    var selectedFlag,
+        $this = $(this),
+        index= $this.parent().index();
+
+    selectedFlag = $this.hasClass(selected);
+    if(selectedFlag) return ;
+
+    $this.parent().siblings().removeClass(selected);
+    $this.parent().addClass(selected);
+    $columnBox.children().addClass(hide).eq(index).removeClass(hide);
+
+    if(index == 0){
+        articleFlag = true;
+    }else{
+        articleFlag = false;
+
+        var ajaxFlag = $this.data('ajax-flag');
+        if(ajaxFlag) return ;
+        getCommentList();
+        $this.data('ajax-flag', true);
+
+    }
+});
+
+var $loadBox = $('#api-loading'),
+    $loading = $('.loading '),
+    $nomore = $('.nomore'),
+
+    $articleBox = $('#article-box'),
+    $activityBox = $('#activity-box');
+
+var $hiddenInput = $('#vedio-poster');
+//var $vcList = $('#vc-list');
+
+getCommentList();
+
+var processor = {
+    timeoutId : null,
+    performProcessing: function(){
+
+        var winHeight = document.body.offsetHeight;
+        var pageTop = window.pageYOffset + window.innerHeight;
+        if(pageTop >= winHeight){
+            getCommentList();
+        }
+        return ;
+
+    },
+    process: function(){
+        clearTimeout(this.timeoutId);
+        var that = this;
+        this.timeId = setTimeout(function(){
+            that.performProcessing();
+        }, 100);
+    }
+}
+
+window.onscroll = function(){
+    processor.process();
+}
+
+
+function getCommentList(pageSize){
+
+    var flag, endFlag;
+    if(articleFlag){
+        flag = $articleBox.data('flag');
+        if(flag) return false;
+        $articleBox.data('flag', true);
+        setTimeout(function(){
+            $articleBox.data('flag', '');
+        }, 800);
+
+        endFlag = $articleBox.data('end-flag');
+    }else{
+        flag = $activityBox.data('flag');
+        if(flag) return false;
+        $activityBox.data('flag', true);
+        setTimeout(function(){
+            $activityBox.data('flag', '');
+        }, 800);
+
+        endFlag = $activityBox.data('end-flag');
+    }
+
+    if(endFlag) return ;
+
+
+    var url, lastId;
+    if(articleFlag){
+        url = '/api/public/get-article-list';
+        lastId = $articleBox.data('last-id');
+    }else{
+        url = '/api/public/get-activity-list';
+        lastId = $activityBox.data('last-id');
+    }
+
+    $.ajax({
+        url: url,
+        type: 'post',
+        dataType: 'json',
+        data: {
+            columnID: currentId,
+            lastID: lastId || '',
+            pagesize: pageSize || ''
+        },
+        success: function(d){
+
+            if(d.flag == 1){
+                if(articleFlag){
+                    valueOfArticle(d);
+                }else{
+                    valueOfActivity(d);
+                }
+            }else{
+                promptDo('show', d.msg);
+            }
+
+        },
+        error: function(err){
+            promptDo('show', '网络错误,请过一会再试一试');
+        },
+        beforeSend: function(){
+            $loading.removeClass(hide);
+            $nomore.addClass(hide);
+            $loadBox.removeClass(hide);
+        },
+        complete: function(){
+            $loadBox.addClass(hide);
+        }
+    });
+
+    function valueOfArticle(d){
+        if(!d) return ;
+
+        var a, b = '',
+            list = d.data.Rows,
+            length = list.length;
+        if(length>0){
+
+            for(var i=0; i<length; i++){
+                a = list[i];
+
+                b += '<li class="ct-one boxlink otherlink" data-url="/api/public/article-detail?articleID='+a.AID+'">';
+                b += '<ul id="article-box" class="ct-one-box clearfix">';
+                b += '<li class="ct-one-fir">';
+                b += '<div class="ct-one-fir-box">';
+                b += '<p>'+a.Title+'</p>';
+                b += '<p><span class="boxlink">'+a.UserName+'</span><span class="ml">'+a.PublishTime+'</span></p>';
+                b += '</div></li>';
+                b += '<li class="ct-one-sec">';
+                b += '<img src="'+a.Cover+'" alt="描述">';
+                b += '</li></ul></li>';
+
+
+
+            }
+$articleBox.append(b);
+            $articleBox.data('last-id', list[length-1].AID);
+
+        }else{
+            b += '<li class="ct-one boxlink" ><ul id="article-box" class="ct-one-box clearfix"><li class="ct-one-fir">没有更多了 ...</li></ul></li.';
+            $articleBox.append(b);
+            $articleBox.data('end-flag', true);
+        }
+
+    }
+
+    function valueOfActivity(d){
+        if(!d) return ;
+
+        var a, b = '',
+            list = d.data.Rows,
+            length = list.length;
+        if(length>0){
+
+            for(var i=0; i<length; i++){
+                a = list[i];
+
+                b += '<li class="ca-one boxlink otherlink" data-url="/api/public/activity-detail?activityID='+a.AID+'">';
+                b += '<p class="ca-tit">'+a.Title+'</p>';
+                b += '<ul class="ca-one-box clearfix">';
+                b += '<li class="ca-one-fir">';
+                b += '<div class="ca-fir-info">';
+                b += '<p>时间：'+a.StartTime+' 至 '+a.EndTime+'</p>';
+                b += '<p>地点：'+a.City+'</p>';
+                b += '<p>报名：<span class="ca-member">'+a.EnrollNum+'</span>人</p>';
+                b += '<p class="ca-one-last"><span class="boxlink">'+a.UserName+'</span><span class="ml">'+a.CreateTime+'</span></p>';
+                b += '</div></li>';
+                b += '<li class="ca-one-sec">';
+                b += '<img src="'+a.Cover+'" alt="描述">';
+                b += '</li></ul></li>';
+
+
+            }
+            $activityBox.append(b);
+
+            $activityBox.data('last-id', list[length-1].AID);
+
+        }else{
+            b += '<li class="ct-one boxlink" ><ul id="article-box" class="ct-one-box clearfix"><li class="ct-one-fir">没有更多了 ...</li></ul></li.';
+            $activityBox.append(b);
+            $activityBox.data('end-flag', true);
+        }
+    }
+
+}
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

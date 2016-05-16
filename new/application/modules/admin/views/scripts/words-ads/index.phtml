@@ -1,0 +1,177 @@
+<table id="wordsAds_list"></table>
+<div id="wordsAds_list_toolbar"></div>
+<div id="wordsAds_view_window"></div>
+<div id="wordsAds_list_searcher_container">
+<form action="" id="wordsAds_search_form">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="wordsAdsObj.editHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="wordsAdsObj.containerObj.edatagrid('reload');">刷新</a>
+    创建时间：<input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options="" />
+    &nbsp;
+    所属模块：
+    <select name="ShowType">
+        <option value="">---</option>
+        <?php if(isset($this->showType) && $this->showType) {
+                foreach ($this->showType as $key => $value) {
+                echo '<option value="'.$key.'">'.$value.'</option>';
+            }
+        }?>
+    </select>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchwordsAdsList()" iconCls="icon-search">搜索</a>
+</form>
+</div>
+<div id="wordsAds_add_window"></div>
+<script type="text/javascript">
+        $("#wordsAds_list_searcher_container input[name]").keydown(function(event){
+            if(event.keyCode == 13){
+                toSearchwordsAdsList();
+            }    
+        });
+        
+        $("#wordsAds_list_searcher_container select[name]").change(function(){
+            toSearchwordsAdsList();
+        });
+        
+        function toSearchwordsAdsList() {
+            wordsAdsObj.containerObj.datagrid('load', $('#wordsAds_search_form').serializeObject());
+        }
+
+        var wordsAdsObj = {
+            //数据加载url
+            'loadUrl':'<?php echo $this->url(array('controller'=>'words-ads','action'=>'list'));?>',
+            'deleteUrl':'<?php echo $this->url(array('controller'=>'words-ads','action'=>'remove'));?>',
+
+            'containerObj':$("#wordsAds_list"),
+            'addWindowObj':$("#wordsAds_add_window"),
+            'selfName':'wordsAdsObj',
+
+            'init':function(){
+                this.showData();
+            },
+
+            //添加或修改话题
+            'editHandler':function(id){
+                    var _THIS_ = this;
+                    if( id ) {
+                        var href = '<?php echo $this->url(array('controller'=>'words-ads','action'=>'add'));?>' + '?id=' + id;
+                        var title = '编辑广告';
+                    } else {
+                        var href = '<?php echo $this->url(array('controller'=>'words-ads','action'=>'add'));?>';
+                        var title = '添加广告';
+                    }
+                    _THIS_.addWindowObj.window({
+                        'href': href,
+                        'width': 400,
+                        'height': 260,
+                        'modal': true,
+                        'resizable': true,
+                        'title': title,
+                        'onLoad':function() {
+                            $('#wordsAds_add_form_save').on('click', function() {
+                                $("#wordsAds_add_form").submit();
+                            });
+
+                            $('#wordsAds_add_form_close').on('click', function() {
+                                _THIS_.addWindowObj.window('close');
+                            });
+                            
+                            $("#wordsAds_add_form").myForm(function(ret){
+                                if(ret.flag > 0){
+                                    _THIS_.addWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                } else {
+                                    $.messager.alert("提示信息", ret.msg, 'error');
+                                }
+                            });    
+                        }
+                    });
+                },
+
+            //删除
+            'delHandler':function(id){
+                            var _THIS_ = this;
+                            $.messager.confirm('删除','确认要删除吗？', function(d){
+                                if(d) {
+                                    $.ajax({
+                                            url:_THIS_.deleteUrl,
+                                            type: "POST",
+                                            data: {id:id},
+                                            dataType: 'json',
+                                            success: function(ret){
+                                                if(ret.flag > 0) {
+                                                    $.messager.alert("提示信息",'删除成功！','info');
+                                                    _THIS_.containerObj.datagrid('reload');
+                                                } else{
+                                                    $.messager.alert("提示信息",ret.msg,'error');
+                                                }
+                                            }
+                                    });
+                                }
+                            });
+                        },
+
+            //加载数据
+            'showData':function(){
+                var _THIS_ = this;
+                _THIS_.containerObj.datagrid({
+                        //是否条纹显示
+                        striped:true,
+                        //加载提示信息
+                        loadMsg:'正在加载...',
+                        //列是否自适应
+                        //fitColumns:true,
+                        rownumbers : true,
+                        fit:true, 
+                        //是否单行选择
+                        singleSelect:true,
+                        idField:'AID',
+                        url:_THIS_.loadUrl,
+                        toolbar: '#wordsAds_list_toolbar',
+            
+                        //设置列   
+                        columns:[[
+                            {field:'AID',title:'广告ID',width:80}, 
+                            {field:'Title',title:'广告标题',width:200}, 
+                            {field:'Link',title:'广告链接',width:200}, 
+                           
+                            {field:'ModuleType',title:'所属模块',width:120, formatter: function(value, rec, index) {
+                                var showType = {<?php if(isset($this->showType) && $this->showType) {
+                                    foreach ($this->showType as $key => $value) {
+                                        echo "\"{$key}\":\"{$value}\"";
+                                        $arr = array_keys($this->showType);
+                                        if( end($arr) !== $key ) {
+                                            echo ',';
+                                        }
+                                    }
+                                }
+                                ?>}
+                                if( typeof(showType[value]) != 'undefined' ) {
+                                    return showType[value];
+                                }
+                                return value;
+                            }},
+                            {field:'CreateTime',title:'创建时间',width:150}, 
+                            {field:'Sort',title:'排序',width:80},
+                            {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                 var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.AID+'\')">';
+                                     e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                 var d = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-remove" onclick="'+_THIS_.selfName+'.delHandler(\''+rec.AID+'\')">';
+                                     d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                                 return e+d;         
+                               }
+                            }
+
+                        ]],
+
+                        //分页信息
+                        pagination:true,
+                        // pagePosition:'both',
+                        pageList:[20,50,100,150,200],
+                        pageSize:50,
+                    });
+
+                $("#wordsAds_list_toolbar").append($("#wordsAds_list_searcher_container"));
+            },    
+    };
+    wordsAdsObj.init();
+</script>

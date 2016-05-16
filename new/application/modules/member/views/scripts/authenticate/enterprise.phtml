@@ -1,0 +1,696 @@
+<div class="header-nav">
+    <a href="/">财猪应用</a> > <a href="">企业认证</a>
+</div>
+
+<div class="main-box clearfix">
+
+    <div class="main-left fl">
+        <h2 class="type-tit">类型</h2>
+        <ul class="type-list">
+            <li class="type-one ">
+                <a href="/member/authenticate/person">自媒体</a>
+            </li>
+            <li class="type-one">
+                <a href="/member/authenticate/financial">理财师</a>
+            </li>
+            <li class="type-one selected">
+                <a href="/member/authenticate/enterprise">企业</a>
+            </li>
+            <li class="type-one">
+                <a href="/member/authenticate/organization">机构</a>
+            </li>
+        </ul>
+
+    </div> <!-- main-left -->
+
+    <div class="main-right fr">
+            <h2 class="content-tit">帐号主体信息</h2>
+            <div class="auth_pending hide">您的认证正在审核中，请耐心等待！</div>
+            <div class="auth_pass hide">认证已经通过，无需再次申请！</div>
+            <div class="form-prompt hide">
+                <span class="form-prompt-close">X</span>
+                <p></p>
+            </div>
+            <div class="renzheng-box">
+            <form id="renzheng-form" name="rezheng" method="post" action="<?php echo $this->url(array('controller'=>'authenticate','action'=>'enterprise'));?>" enctype="multipart/form-data">
+                <ul class="zheng-list">
+                    <li class="zheng-one clearfix valid-one" data-type="need">
+                        <div class="zheng-one00">企业名称<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>企业名称不能为空</span></div>
+                            <input id = "businessName" class="zheng-text" type="text" name="BusinessName" placeholder="请输入企业名称" value="" >
+                        </div>
+                        <div class="zheng-p02-box">
+                                <p class="zheng-p02">请确认所填写企业名称的准确性及完整性，一经审核不可修改</p>
+                        </div>
+                    </li>
+                    <li class="zheng-one clearfix valid-one" data-type="date">
+                        <div class="zheng-one00">成立时间<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>成立时间不能为空</span></div>
+                            <input id="select-date"　placeholder="请选择企业成立日期" class="zheng-text" name = "FoundedTime" onclick="laydate()" value="">
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="area">
+                        <div class="zheng-one00">企业地址<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请填写企业地址</span></div>
+                            <div class="zk-select-box">
+                                <select name="location-p" id="location-p" class="location-p">
+                                </select>
+                                <select name="location-c" id="location-c" class="location-c">
+                                </select>
+                                <input type="text" id="location-area" class="zk-select-area" name="Address" value="" />
+                            </div>
+
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="need">
+                        <div class="zheng-one00">营业执照注册号<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>营业执照不能为空</span></div>
+                            <input class="zheng-text" type="text" id = "businessLicenseNumber" name="BusinessLicenseNumber" placeholder="请输入营业执照注册号" value="">
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="pic01">
+                        <div class="zheng-one00">营业执照扫描件<span class="xing">*</span></div>
+                        <div class="zheng-one01 valid-one">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span></span>请上传营业执照扫描件</div>
+                            <ul class="clearfix">
+                                <li class="zm-pic zm-pic2 fl"><img id="show-pic01" src="/static/imgs/web/column/caizhu-170x107.png" alt="财猪"></li>
+                                <div class="zm-select fl">
+                                    <div class="zm-p01">
+                                        <p>请上传企业法人营业执照/法人证件扫描件</p>
+                                        <p>支持jpg、jpeg、png文件，最大5M</p>
+                                    </div>
+                                    <span id="select-btn01" class="select" value="点击上传">点击上传</span>
+                                    <input id="select-pic01" name="BusinessLicenseImage" type="hidden" class="select" value="">
+
+                                </div>
+                            </ul>
+
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+
+            <div class="renzheng-box">
+                <h2 class="content-tit">理财号运营者信息</h2>
+                <ul class="zheng-list">
+                    <li class="zheng-one clearfix valid-one" data-type="need">
+                        <div class="zheng-one00">真实姓名<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>姓名不能为空</span></div>
+                            <input id="form-name" class="zheng-text" type="OperatorName" name="OperatorName" placeholder="请输入真实姓名" value="<?php if($this->realName){ echo $this->realName;}elseif(!empty($this->authenticateInfo['OperatorName'])){ echo $this->authenticateInfo['OperatorName'];} ?>">
+                        </div>
+                    </li>
+                    <li class="zheng-one clearfix valid-one" data-type="identity">
+                        <div class="zheng-one00">身份证号码<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请输入有效的身份证号</span></div>
+                            <input id="form-identity" class="zheng-text" type="text" name="IDCard" placeholder="请输入身份证号码" value="<?php if($this->IDCard){ echo $this->IDCard;}elseif(!empty($this->authenticateInfo['IDCard'])){ echo $this->authenticateInfo['IDCard'];}?>" >
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="pic">
+                        <div class="zheng-one00">身份证照片<span class="xing">*</span></div>
+                        <div class="zheng-one01 valid-one">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span></span>请上传身份证照片</div>
+                            <ul class="clearfix">
+                                <li class="zm-pic fl"><img id="show-pic00" src="/static/imgs/web/column/pic-show-190x190.png" alt="财猪"></li>
+                                <li class="zm-select fl">
+                                    <p class="zm-p00">请确保身份证上的证件号码及其他信息清晰可见。照片需免冠，手持证件人的五官清晰可见上传内容信息真实有效，审核通过后无法进行修改</p>
+                                    <p class="zm-p01">支持jpg、jpeg、png文件，最大5M</p>
+
+                                    <span id="select-btn00" class="select" value="点击上传">点击上传</span>
+                                    <input name="IDPhoto" id="select-pic00" type="hidden" class="select" value="">
+
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    <li class="zheng-one clearfix valid-one" data-type="tel">
+                        <div class="zheng-one00">手机号<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请输入有效的手机号</span></div>
+                            <input id="form-tel" class="zheng-text" type="text" name="MobileNumber" placeholder="请输入手机号" value="<?php if(!empty($this->authenticateInfo['MobileNumber'])){ echo $this->authenticateInfo['MobileNumber'];}?>" >
+                        </div>
+                    </li>
+                    <li class="zheng-one clearfix valid-one" data-type="need">
+                        <div class="zheng-one00">手机验证码<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>验证码不能为空</span></div>
+                            <div class="zheng-code-box">
+                                <input id="form-code" class="zheng-text" type="text" name="code" placeholder="请输入验证码" >
+                                <div id="zheng-code" class="zheng-code">
+                                    <span id="zheng-get" class="zheng-code00">获取验证码</span>
+                                    <span id="zheng-reset" class="zheng-code01"><span id="zheng-num"></span>秒后重新获取</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="zheng-one clearfix valid-one" data-type="agree">
+                        <div class="zheng-one00"></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请阅读服务协议</span></div>
+
+                            <div class="zheng-agree"><input id="agree" checked="checked" type="checkbox" name="agree"><span>我已阅读并同意遵守</span><a href="/api/public/topic-publish" target="_new">《财猪帐号主体认证协议》</a></div>
+
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div>
+            <input type="hidden" name="AuthenticateType" value="3">
+        </form>
+        <li class="zheng-one clearfix">
+            <div class="zheng-one00"></div>
+            <div class="zheng-one01">
+                <span id="zheng-submit" class="zheng-submit">下一步</span>
+            </div>
+        </li>
+    </div> <!-- main-right -->
+
+</div>
+
+<script>
+$('.form-prompt-close').click(function(){
+    $(this).parent().addClass('hide');
+});
+</script>
+<script type="text/javascript">
+    var hide = 'hide',
+            $authPending = $('.auth_pending'),
+            $authPass = $('.auth_pass'),
+            $authFail = $('.form-prompt'),
+            $renzhengBox = $('.renzheng-box');
+
+    getInfo();
+    function getInfo(){
+        $.ajax({
+            url: '/member/authenticate/get-authenticate-info',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                AuthenticateType: 3,
+            },
+            success: function(d){
+                authInfo = d.data.AuthenticateInfo;
+                bestCount = d.data.BestCount;
+
+                valueOfView(authInfo);
+                best(bestCount);
+            },
+            error: function(err){
+                promptDo('show', '网络错误,请过一会再试一试');
+            }
+        });
+    }
+
+    function valueOfView(data)
+    {
+        if(data.Status==0){
+            $authPending.removeClass(hide);
+            $renzhengBox.addClass(hide);
+        }else if(data.Status==1){
+            $authPass.removeClass(hide);
+            $renzhengBox.addClass(hide);
+        }else if(data.Status==2){
+            $authFail.find('p').html('认证失败原因：'+data.Remark);
+            $authFail.removeClass(hide);
+        }
+
+        /*code -s*/
+
+
+        $('#form-name').val(data.OperatorName);
+        $('#form-identity').val(data.IDCard);
+        $('#form-tel').val(data.MobileNumber);
+        $('#businessName').val(data.BusinessName);
+        $('#select-date').val(data.FoundedTime);
+        initProvince(data.Province,data.City);
+        $('#location-area').val(data.Address);
+        $('#businessLicenseNumber').val(data.BusinessLicenseNumber);
+
+    }
+
+
+</script>
+<script>
+    var editor, editor2;
+
+    var hide = 'hide',
+            selected = 'selected',
+
+            $agree = $('#agree'),
+            $zhengText = $('.zheng-text'),
+            $zhengSubmit = $('#zheng-submit'),
+            $zhengForm = $('#renzheng-form'),
+
+            $validOne = $('.valid-one'),
+            $selectBtn00 = $('#select-btn00'),
+            $selectPic00 = $('#select-pic00'),
+            $selectBtn01 = $('#select-btn01'),
+            $selectPic01 = $('#select-pic01') 
+            $showPic00 = $('#show-pic00'),
+            $showPic01 = $('#show-pic01'),
+            
+            $zhengCode = $('#zheng-code'),
+            $zhengGet = $('#zheng-get'),
+            $zhengReset = $('#zheng-reset'),
+            $zhengNum = $('#zheng-num'),
+
+            $zhengQ01 = $('#zheng-q01'),
+            $zhengQdet01 = $('#zheng-qdet01'),
+
+            $selectType =$('#select-type'),
+            $selectDate = $('#select-date'),
+
+            $locationArea = $('#location-area'),
+
+            $formName= $('#form-name'),
+            $formIdentity = $('#form-identity'),
+            $formTel = $('#form-tel'),
+            $formCode = $('#form-code');
+
+    var $validText = $('#valid-text');
+
+    $validText.blur(function(){
+        var $this = $(this),
+                val = $this.val();
+
+        if(val){
+            $this.prev().addClass(hide);
+        }else{
+            $this.prev().removeClass(hide);
+        };
+    });
+
+    $zhengText.focus(function(){
+        var $this = $(this);
+        closeTiBox($this);
+    });
+
+    $locationArea.focus(function(){
+        var $this = $(this);
+        closeTiBox($this);
+    });
+
+    function closeTiBox(obj){
+        obj.parents('li').find('.ti-box').addClass(hide);
+    }
+
+    $zhengQ01.mouseover(function(){
+        $zhengQdet01.removeClass(hide);
+    }).mouseout(function(){
+        $zhengQdet01.addClass(hide);
+    });
+
+    $selectType.change(function(){
+        var $this = $(this), val = $this.val();
+        var $next = $this.next();
+        if(val == 0){
+            $next.removeClass(hide);
+        }else{
+            $next.addClass(hide);
+        }
+    });
+
+
+    $agree.click(function(){
+        var $this = $(this), flag, $tip;
+        $tip = $this.parents('li').find('.ti-box');
+        flag = $this[0].checked;
+        if(flag){
+            $tip.addClass(hide);
+        }else{
+            $tip.removeClass(hide);
+        }
+    });
+
+    var codeId,
+            codeT,
+            codeTAll= 60;
+    $zhengCode.click(function(){
+        var n,
+                $this = $(this),
+                flag = $this.hasClass(selected);
+
+        if(flag) return false;
+
+        var phone = $formTel.val();
+        var rep = /^[1-9]\d{10}$/;
+        if(!phone || !(rep.test(phone))){
+            $formTel.blur();
+            return ;
+        }
+
+        $.ajax({
+            url: '/member/authenticate/send-code',
+            type: 'post',
+            dataType: 'json',
+                        data: {
+                MobileNumber:phone,
+            },
+            success: function(){
+
+            },
+            error: function(){
+
+            }
+        })
+
+        codeT = codeTAll;
+        codeTAll.toString();
+
+        n = codeT.toString().length == 1 ? '0'+codeT : codeT;
+        $zhengNum.text(n);
+        $this.addClass(selected);
+
+        codeID = setInterval(function(){
+            if(codeT == 0){
+                clearInterval(codeID);
+                $this.removeClass(selected);
+            }else{
+                codeT--;
+                n = codeT.toString().length == 1 ? '0'+codeT : codeT;
+                $zhengNum.text(n);
+            }
+        }, 1000)
+
+
+    })
+
+    // $selectYear.change(function(){
+    //     $(this).parents('li').find('.ti-box').addClass(hide);
+    // });
+    // $selectMonth.change(function(){
+    //     $(this).parents('li').find('.ti-box').addClass(hide);
+    // });
+
+    $zhengText.blur(function(){
+        var $this = $(this), val, type, $tip,
+                $parents = $this.parents('li');
+
+        val = $this.val();
+        type = $parents.data('type');
+        $tip = $parents.find('.ti-box');
+
+        switch(type){
+            case 'need':
+                if(val){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+
+            case 'identity':
+                var exp = /^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/;
+                if(val && exp.test(val)){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+
+            case 'tel':console.log('md')
+                var exp = /^[1-9]\d{10}$/;
+                if(val && exp.test(val)){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+        }
+
+    })
+
+    $zhengSubmit.click(function(){
+        var flag = true,
+                i, d, val, type, $tip;
+
+        len = $validOne.length;
+
+        for(i=0; i<len; i++){
+            d = $validOne.eq(i);
+            type = d.data('type');
+            $tip = d.find('.ti-box');
+
+            switch(type){
+                case 'need':
+                    val = d.find('.zheng-text').val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                        flag = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+
+                case 'pic':
+                    val = $selectPic00.val();
+                    if(val){
+                        $tip.addClass(hide);
+                    }else{
+                        flag = false;
+                        $tip.removeClass(hide);
+                    }
+                    break;
+
+                case 'pic01':
+                    val = $selectPic01.val();
+                    if(val){
+                        $tip.addClass(hide);
+                    }else{
+                        flag = false;
+                        $tip.removeClass(hide);
+                    }
+                    break;
+
+                case 'identity':
+                    var exp = /^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/;
+                    val = d.find('.zheng-text').val();
+                    if(val && exp.test(val)){
+                        $tip.addClass(hide);
+                    }else{
+                        flag = false;
+                        $tip.removeClass(hide);
+                    }
+                    break;
+
+                case 'tel':
+                    var exp = /^[1-9]\d{10}$/;
+                    val = d.find('.zheng-text').val();
+                    if(val && exp.test(val)){
+                        $tip.addClass(hide);
+                    }else{
+                        flag = false;
+                        $tip.removeClass(hide);
+                    }
+                    break;
+
+                case 'agree':
+                    val = d.find('input')[0].checked;
+
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                        flag = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+
+                case 'date':
+                    val = $selectDate.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                        flag = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'area':
+                    val = $locationArea.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                        flag = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+            }
+
+        }
+
+
+        if(flag){
+
+            var dataClass = $('form').serialize();
+            dataClass = parseClass(dataClass);
+
+            $.ajax({
+                url: '/member/authenticate/add-auth',
+                type: 'post',
+                dataType: 'json',
+                /*data:{
+                    BusinessName:$("input[name='BusinessName']").val(),
+                    locationP:$("select[name='location-p'] option:selected").val(),
+                    locationC:$("select[name='location-c'] option:selected").val(),
+                    Address:$("#location-area").val(),
+                    BusinessLicenseNumber:$("input[name='BusinessLicenseNumber']").val(),
+                    BusinessLicenseImage:$("input[name='BusinessLicenseImage']").val(),
+                    OperatorName:$formName.val(),
+                    IDCard:$formIdentity.val(),
+                    IDPhoto: $selectPic00.val(),
+                    MobileNumber: $formTel.val(),
+                    code: $formCode.val(),
+                },*/
+                data: dataClass,
+                success: function(data){
+                    if(data.flag==1){
+                        if(data.data.columnStatus==0||data.data.columnStatus==1){
+                            $promptBox.find('#ppt-06').removeClass(hide);
+                            $promptBox.removeClass(hide);
+
+                            $('body').delegate('#ppt-06 .ppt-do span', 'click', function(){
+                                window.location.href = '/index';
+                            });
+                        }else{
+                            window.location.href='/web/column/add?authID='+data.data.authID+'&quaID='+data.data.quaID;   
+                        }
+                    }else{
+                        definedPrompt(data.msg);
+                    }
+                },
+            });
+        }
+    });
+
+function parseClass(str){
+
+    if(!str) return ;
+    var a, obj={}, arr=[];
+    arr = str.split('&');
+    for(var i=0,len=arr.length; i<len; i++){
+        a = arr[i].split('=');
+        obj[a[0]] = decodeURIComponent(a[1]);
+    }
+
+    return obj;
+
+}
+
+
+</script>
+
+<script>
+
+function initProvince(p,c){
+    // var initProvince ="<?php if(!empty($this->authenticateInfo['Province'])){echo $this->authenticateInfo['Province'];}?>";
+    // var initCity = "<?php if(!empty($this->authenticateInfo['City'])){echo $this->authenticateInfo['City'];}?>";
+    var areaCase = new PCAS('location-p', 'location-c', 'location-a', '', '', '');
+    if(p){
+        valueOfArea({Province: p, City: c});
+    }
+
+}
+
+function valueOfArea(d){
+    if(!d) return ;
+    var areaP = $('#location-p').find('option[value="'+d.Province+'"]')[0];
+
+    if(areaP) areaP.setAttribute('selected', 'selected');
+
+    var PI = areaCase.SelP.selectedIndex;
+    areaCase.SelC.length = 0;
+    if (areaCase.SelP.value && ShowT) {
+        areaCase.SelC.options.add(new Option(SCT, ""))
+    }
+    for (i = 1; i < PCAC[PI].length; i++) {
+        PCACT = PCACV = PCAC[PI][i];
+        if (PCACT == SCT) PCACV = "";
+        areaCase.SelC.options.add(new Option(PCACT, PCACV));
+        if (areaCase.DefC == PCACV) areaCase.SelC[PCA.SelP.value && ShowT ? i: i - 1].selected = true
+    }
+
+    var areaC = $('#location-c').find('option[value="'+d.City+'"]')[0];
+    if(areaC) areaC.setAttribute('selected', 'selected');
+}
+
+</script>
+
+
+<script>
+
+    KindEditor.ready(function(K) {
+
+        var uploadbutton = K.uploadbutton({
+            button : $selectBtn00[0],
+            fieldName : 'imgFile',
+            url : '/article/upload-file?limit=1',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                console.log('企业1: ' +data.data.url);
+                    $showPic00.attr('src', data.data.url);
+                    $selectPic00.val(data.data.url);
+                    $selectBtn00.parents('ul').prev().addClass('hide');
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton.fileBox.change(function(e) {
+            uploadbutton.submit();
+        });
+
+setTimeout(function(){
+        var uploadbutton2 = K.uploadbutton({
+            button : $selectBtn01[0],
+            fieldName : 'imgFile',
+            url : '/article/upload-file?limit=1',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                    $showPic01.attr('src', data.data.url);
+                    $selectPic01.val(data.data.url);
+                    $selectBtn01.parents('ul').prev().addClass('hide');
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton2.fileBox.change(function(e) {
+            uploadbutton2.submit();
+        });
+}, 300);
+
+    });
+
+</script>
+<script>
+
+function best(bestCount){
+    if(bestCount > 0){
+        $('.type-list .selected').siblings().addClass('disabled');
+
+        $('.type-list a').click(function(){
+            return false;
+        })
+    }
+}
+
+</script>

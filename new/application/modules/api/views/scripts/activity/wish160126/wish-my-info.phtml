@@ -1,0 +1,398 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<title>我的愿望</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="keywords" content="财猪">
+	<meta name="description" content="财猪">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main.css">
+	<link href="http://fe.caizhu.com/public/css/callcaizhu/prompt.css" rel="stylesheet">
+	<link href="/static/css/api/activity/wish160126/wish.css?5" rel="stylesheet">
+</head>
+<body class="body-bg01">
+
+<div id="init-pageshow">
+	<div class="init-pageshow" :class="{hide: pageshowflag}"></div>
+</div>
+
+<img class="hide" src="/static/images/api/activity/wish160126/share-pic.png" id="share-pic">
+
+<section id="app01" class={{hide: flag}}>
+
+	<div class="wish-do">
+		<span class="ip-t"></span>
+
+		<div class="ip-m wish-hot">
+			<h3><?php echo $this->wish_total_amount; ?>元可以买到多件最火商品陪你过新年</h3>
+		</div>
+		<div class="git-itme">
+			<div class="git-itme-log">
+				<?php if (!empty($this->my_wish_gift)) {
+					foreach ($this->my_wish_gift as $logo) {
+						?>
+						<img src="<?php echo 'http://img.caizhu.com/' . $logo; ?>"/>
+						<?php
+					}
+				} ?>
+			</div>
+		</div>
+		<span class="ip-b">
+			
+		</span>
+	</div>
+
+
+	<div class="wish-progressbox p-rela">
+		<p class="wish-tip">集满500只财猪可兑换豪礼,集满1000只就有机会实现愿望哦！</p>
+
+		<div class="wish-show">
+			<span class="wish-stit"></span>
+
+			<div class="wish-sdet">
+				<div class="wish-sdetshow" :style="{width:scorePercent}"></div>
+				<span class="wish-stext">{{scoreOne}}/{{scoreTotal}}</span>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="wish-tit"><img src="/static/imgs/api/activity/wish160126/wish-tit00.png" alt="title"></div>
+
+	<div class="wish-do">
+		<span class="ip-t"></span>
+
+		<div class="ip-m">
+			<ul class="wish-list">
+				<li class="wish-one">
+					<div>
+						活动页面抽取财猪可获得1-600只，集齐500只财猪，即可100%领取你想要商品的优惠券
+					</div>
+					<span @click="wishToGet">{{wishGet}}</span>
+				</li>
+				<li class="wish-one">
+					<div>
+						分享让小伙伴支持你的愿望，1人支持量最少可以获得15只财猪
+					</div>
+					<span style="cursor: pointer;" @click="wishToShare">{{wishShare}}</span>
+				</li>
+				<li class="wish-one">
+					<div>
+						活动期间在财猪APP签到，100%获得200-500只财猪
+					</div>
+					<?php echo $this->is_app==1?'<span class="boxapp" data-type="webview" data-mode="other" @click="wishToSignin" :class="{bggray: signinFlag}" >{{wishSignin}}</span>':'<span class="boxapp" data-type="webview" data-mode="other" @click="wishToSignin" :class="{bggray: signinFlag}" >{{wishSignin}}</span>';?>
+				
+				</li>
+			</ul>
+		</div>
+		<span class="ip-b"></span>
+	</div>
+
+	<div class="wish-tit"><img src="/static/imgs/api/activity/wish160126/wish-tit01.png" alt="title"></div>
+
+	<div class="wish-do">
+		<span class="ip-t"></span>
+
+		<div class="ip-m">
+			<ul class="wish-list">
+				<li class="wish-one">
+					<div style="line-height: 40px;">
+						我集满1000只财猪，实现愿望
+					</div>
+					<span :class="{bggray: cashFlag}" @click="doCash" id="cash">立即兑换</span>
+				</li>
+			</ul>
+		</div>
+		<span class="ip-b"></span>
+	</div>
+
+	<div class="wish-tit"><img src="/static/imgs/api/activity/wish160126/wish-tit02.png" alt="title"></div>
+
+	<div class="wish-do">
+		<span class="ip-t"></span>
+
+		<div class="ip-m">
+			<ul class="ip-faq" style="height: auto;"><li><strong>怎样去许愿？</strong><p>答：点击首页我要去许愿，就可以选择你心仪的商品。</p></li><li><strong>许完愿后怎么玩？</strong><p>答：每名小伙伴选完商品后，即可收集愿望财猪，帮助拿到奖品。</p></li><li><strong>如何实现心愿？</strong><p>答：集满500只财猪即可兑换所选商品的优惠券，集满1000只财猪即有机会免费将愿望车里的商品带回家。</p></li><li><strong>签到和分享能获得什么？</strong><p>答：通过页面抽奖可以随机获得1-600只财猪。<br>通过登录APP签到可获得200-500只财猪。<br>邀请小伙伴帮忙，每名小伙伴最低可以帮你获得20只财猪。</p></li><li><strong>其他你需要知道的：</strong><p>活动期间（2月2日-2月22日）若发现作弊行为，财猪有权取消作弊用户的奖励资格，免单机会将在2月22日元宵节进行开奖，财猪也会在第一时间联系获奖用户。<br>如有其他问题可以在app内询问财猪小秘书。<br>或直接拨打客服电话400-681-2858</p></li></ul>
+		</div>
+		<span class="ip-b"></span>
+	</div>
+
+</section>
+
+
+<div id="app-innerprompt">
+	<app-innerprompt :ipstr.sync="ipstr" :ipflag.sync="ipflag" :ipflag00.sync="ipflag00" :ipflag04.sync="ipflag04" :ipflag05.sync="ipflag05" :ipflag09.sync="ipflag09" :ipflag01.sync="ipflag01"
+	                 :ipflagrule.sync="ipflagrule" :ipflagtel.sync="ipflagtel" :ipflagform.sync="ipflagform"
+	                 :ipflagwish.sync="ipflagwish" :formtel.sync="formtel" :formname.sync="formname"
+	                 :formtel2.sync="formtel2" :formarea.sync="formarea"></app-innerprompt>
+</div>
+
+<div id="define-prompt">
+	<app-defineprompt :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt>
+</div>
+<div id="app-prompt">
+	<app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt>
+</div>
+<div id="yd" class="dilog" style="display: none;"></div>
+<script src="http://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="http://fe.caizhu.com/public/js/vue.min.js?3"></script>
+<script src="/static/js/api/activity/wish160126/vue.inner.prompt.js"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160108"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-common.js"></script>
+<script src="/static/js/api/activity/wish160126/h5-action-v3.js?160203"></script>
+
+<script>
+
+	var pIsLogin = '<?php echo $this->is_login?>',
+		pIsWish = '<?php echo $this->is_wish;?>',
+		pIphone = '<?php echo $this->phone?>',
+		pWishInfo = '<?php echo $this->wish_info;?>';
+	var isapp = false;
+	pWishInfo = eval('(' + pWishInfo + ')');
+	pIsWish = 1;
+
+	function initShareData() {
+		var opts = {},
+			sharePic = $('#share-pic');
+		if (sharePic.length > 0) {
+			sharePic = sharePic[0].src
+		} else {
+			sharePic = '';
+		}
+		opts.sharePic = 'http://img.haimi.com/Fixn0Lnw1uAUEW5ksn8L5NB1xdk3';
+		opts.shareTitle = '够朋友的就进来帮我完成心愿！再来一人，所有礼物带回家！';
+		opts.shareDes = '财猪心愿购物车和你快乐过新年!过来挑选你喜欢的商品,帮你免单哦！';
+		opts.shareLink =window.location.origin+'/api/activity-wish/wish-share/phone/'+pWishInfo.phone;
+
+		return opts;
+	}
+
+	var opts = {};
+
+	opts.caizhuRun = function () {
+		caizhuRun();
+	}
+	opts.otherRun = function () {
+		otherRun();
+	}
+	opts.commonRun = function () {
+		commonRun();
+	}
+
+	//opts.appDebug = true;
+	initAction(opts);
+
+	function caizhuRun() {
+		isapp = true;
+		if (pIsLogin == 2) {
+			location.href = 'http://caizhukeyjs-loginjump?url=' + location.href;
+		}
+	}
+
+	function otherRun() {
+		if(pIsLogin == 2){
+		location.href = '/api/activity-wish/wish-index';
+		}
+	}
+function isWeiXin(){ 
+		var ua = window.navigator.userAgent.toLowerCase(); 
+		if(ua.match(/MicroMessenger/i) == 'micromessenger'){ 
+		return true; 
+		}else{ 
+		return false; 
+	} 
+} 
+	function commonRun() {
+
+		if (pIsLogin == 2) {
+			VMIPOpenTel();
+		}
+
+		var app01 = new Vue({
+			el: '#app01',
+			data: {
+				wishGetFlag: '',
+				scoreOne: pWishInfo.pig,
+				scoreTotal: 1000
+			},
+			computed: {
+				scorePercent: function () {
+					debug(this.scoreOne);
+					var witsh = (this.scoreOne / this.scoreTotal * 100).toFixed() + '%';
+					if (this.scoreOne >= 1000) {
+						witsh = '100%'
+					}
+					return witsh;
+				},
+				wishGet: function () {
+					if (pWishInfo.privilege_status == 1) {
+						debug(111);
+						this.wishGetFlag = 1;
+						return '领取豪礼';
+					} else if (pWishInfo.privilege_status == 2) {
+						this.wishGetFlag = 2;
+						return '去查看礼券';
+					} else {
+						this.wishGetFlag = 3;
+						return '立即抽财猪';
+					}
+				},
+				wishShare: function () {
+					var a = pWishInfo.support_count;
+					if (a == 0) {
+						return '邀请小伙伴';
+					} else {
+						return a + '人已支持';
+					}
+				},
+				wishSignin: function () {
+					if (pWishInfo.is_sign == 1) {
+						return '已签到';
+					}else if(!isapp){
+						return '登录APP签到';
+					} else {
+						return '签到';
+					}
+				},
+				signinStr: function () {
+					;
+				},
+				signinFlag: function () {
+					if (pWishInfo.is_sign == 1) {
+						return true;
+					} else {
+						return false;
+					}
+					;
+				},
+				cashFlag: function () {
+					if ((this.scoreOne >= this.scoreTotal) && (pWishInfo.is_free == 0)) {
+						return false;
+					} else if (pWishInfo.is_free == 1) {
+						$('#cash').text('已经兑换');
+						return true;
+					}
+					else {
+						return true;
+					}
+					;
+				}
+			},
+			methods: {
+				doCash: function () {
+					var flag = this.cashFlag;
+					if (!flag) {
+						VMIPrompt('亲爱的你太厉害了，1000只财猪你都收集到啦，愿望是否能实现，就在2月22日元宵节！', function () {
+							$.ajax({
+								url: '/api/activity-wish/realize-wish',
+								data: {
+									type: 2
+								},
+								dataType: 'json',
+								success: function (d) {
+									if (d.flag == 1) {
+										location.href = '/api/activity-wish/my-wish/phone/'+pIphone;
+									} else {
+										VMIPrompt(d.msg);
+									}
+								},
+								error: function (err) {
+									VMIPrompt('网络错误');
+								}
+							})
+						});
+					} else {
+					}
+				},
+				wishToGet: function () {
+					var flag = this.wishGetFlag;
+					if (flag == 2) {
+						location.href = '/api/activity-wish/my-gift';
+					} else if (flag == 1) {
+						$.ajax({
+							url: '/api/activity-wish/realize-wish',
+							data: {
+								type: 1
+							},
+							dataType: 'json',
+							success: function (d) {
+								if (d.flag == 1) {
+									location.href = '/api/activity-wish/my-wish/phone/'+pIphone;
+								} else {
+									VMIPrompt(d.msg);
+								}
+							},
+							error: function (err) {
+								VMIPrompt('网络错误');
+							}
+						})
+					} else {
+						$.ajax({
+							url: '/api/activity-wish/augment-pig',
+							data: {
+								type: 1
+							},
+							dataType: 'json',
+							success: function (d) {
+								if (d.flag == 1) {
+									VMIPrompt('恭喜获得' + d.data.pig + '只财猪，现在可以领取豪礼啦！', function () {
+											location.href = '/api/activity-wish/my-wish/phone/'+pIphone})
+								} else {
+									VMIPrompt(d.msg);
+								}
+							}
+						})
+					}
+				},
+				wishToShare: function () {
+					var iswe=isWeiXin();
+					//console.log('iswe',iswe)
+					if((!iswe)&&(!isapp)){return false;}
+					$('#yd').css('display','block');
+					$('#yd').click(function(e){
+						$('#yd').css('display','none');
+					});
+				},
+				wishToSignin: function () {
+					if(!isapp){
+					location.href = 'caizhu://caizhu/webview?url=http%3A%2F%2Fcz.caizhu.com%2Fapi%2Factivity-wish%2Fmy-wish%2F';}
+//					caizhu://caizhu/webview?url=baidu.com
+					$.ajax({
+						url: '/api/activity-wish/augment-pig',
+						data: {
+							type: 3
+						},
+						dataType: 'json',
+						success: function (d) {
+							if (d.flag == 1) {
+								VMIPrompt('恭喜获得' + d.data.pig + '只财猪，现在可以领取豪礼啦！', function () {
+											location.href = '/api/activity-wish/my-wish/phone/'+pIphone})
+							} else {
+								VMIPrompt(d.msg);
+							}
+						},
+						error: function (err) {
+							VMIPrompt('网络错误');
+						}
+					})
+
+				}
+			},
+			compiled: function () {
+
+			}
+		});
+
+	}
+
+</script>
+
+<script src="http://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

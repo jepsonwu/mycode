@@ -1,0 +1,30 @@
+.bg-topman{background: #F6F6F6; color: #666; padding-bottom: 60px;}
+.topman-box{background: #fff; padding: 5px 15px;}
+.topman-bb{border-bottom: #e6e6e6 solid 1px;}
+
+.avatar-list{border-bottom: #e6e6e6 solid 1px; padding: 0 0 10px;}
+.avatar-list > li{float: left;}
+.avatar-info{width: 100%;}
+.avatar-det{margin-left: 80px;}
+.avatar-pic{width: 65px; height: 65px; overflow: hidden; margin-left: -100%;}
+.avatar-pic img{width: 65px; height: 65px; width: 100%;}
+.avatar-det h1{padding: 4px 0 0; font-size: 16px; color: #333; line-height: 30px; height: 30px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+.avatar-label{line-height: 26px; height: 26px; overflow: hidden;}
+.avatar-label li{float: left; margin: 0 10px 0 0;}
+.avatar-tit{font-size: 16px; color: #333; line-height: 30px; margin: 10px 0 0;}
+.avatar-des{line-height: 24px; word-break: break-all;}
+
+
+.label-list{height: 20px; line-height: 20px; padding: 12px; font-size: 16px;}
+.label-list > li{max-width: 50%; height: 20px; overflow: hidden;}
+.label-list li:nth-child(1){color: #333; }
+.label-list li:nth-child(1) img{width: 16px; height: 16px; margin: 0 0 0 6px; vertical-align: -3px;}
+.label-list li:nth-child(2) img{width: 6px; height: 12px; margin: 0 0 0 8px; vertical-align: -1px;}
+
+.topman-subscribe{position: fixed; width: 100%; height: 55px; background: #fff; bottom: 0;}
+.topman-subscribe span{color: #fff; display: block; margin: 8px 15px; line-height: 39px; text-align: center; font-size: 18px; background: #ff8b26; border-radius: 3px;}
+.topman-subscribe .hide{display: none;}
+.topman-subscribe .touch span{background: #FFAE68;}
+
+
+

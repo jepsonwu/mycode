@@ -1,0 +1,126 @@
+<!--内容部分-->
+<table id="lecture_video_list"></table>
+<div id="lecture_video_list_toolbar">
+	<a id="add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	图片水印：
+	<input type="text" value="" name="ImagTitle" size="20"/> &nbsp;&nbsp;
+
+	状态：
+	<select name="Status">
+		<option value="">所有</option>
+		<option value="0">无效</option>
+		<option value="1">有效</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options=""/>
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""/>
+	<a class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+
+<div id="lecture_video_view"></div>
+<div id="img_dialog" class="easyui-dialog" title="img" closed="true" data-options="resizable:'true'"
+     style="width: 400px;height: 400px;">
+</div>
+
+<script type="text/javascript">
+	var lecture_videoObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'lecture-video','action'=>'list'));?>',
+		'editUrl': '<?php echo $this->url(array('controller'=>'lecture-video','action'=>'edit'));?>',
+		'addUrl': '<?php echo $this->url(array('controller'=>'lecture-video','action'=>'add'));?>',
+
+		//审核专栏
+		'edit_feature': {
+			'width': 900,
+			'height': 600,
+			'title': '编辑'
+		},
+
+		'add_feature': {
+			'width': 900,
+			'height': 600,
+			'title': '新增'
+		},
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'VideoID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#lecture_video_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'VideoID', title: '视频ID', width: 40},
+					{field: 'LectureID', title: '讲堂ID', width: 40},
+					{
+						field: 'ImageUrl', title: '图片', width: 150, formatter: function (value, rec, index) {
+						return '<img src="' + value + '?imageView2/0/w/200/h/200"/>';
+					}
+					},
+					{field: 'ImagTitle', title: '标题', width: 150},
+					{field: 'VideoUrl', title: '视频连接', width: 150},
+					{field: 'Description', title: '视频描述', width: 200},
+					{field: 'CommentNum', title: '评论数量', width: 60},
+					{field: 'PraiseNum', title: '赞数量', width: 60},
+					{field: 'PlayNum', title: '播放数量', width: 60},
+					{
+						field: 'Status', title: '状态', width: 70, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '0':
+								status = '无效';
+								break;
+							case '1':
+								status = '有效';
+								break;
+						}
+						return status;
+					}
+					},
+					{field: 'CreateTime', title: '创建时间', width: 150},
+					{
+						field: 'opt', title: '操作', align: 'center', formatter: function (value, rec, index) {
+						var c = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+							'onclick="' + _THIS_.selfName + '.editHandler(\'?VideoID=' + rec.VideoID + '\')">';
+						c += '<span class="l-btn-left">编辑</span></a>';
+						return c;
+
+					}
+					}
+
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+
+		}
+	};
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	lecture_videoObj = contentCommon(lecture_videoObj, __CONTROLLER__);
+</script>

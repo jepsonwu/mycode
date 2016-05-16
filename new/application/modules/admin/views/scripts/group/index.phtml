@@ -1,0 +1,240 @@
+<table id="group_list"></table>
+<div id="Group_Members"></div>
+<div id="Group_MemberInfo"></div>
+<div id="Group_Announcement"></div>
+<div id="group_list_toolbar"></div>
+<div id="group_view_window"></div>
+<div id="group_list_searcher_container">
+    <form action="" id="group_search_form">
+        <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="groupObj.editHandler();">添加</a> 
+        <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="groupObj.containerObj.edatagrid('reload');">刷新</a>
+        <select name="searchType">
+              <option value="群组ID">群组ID</option>
+              <option value="群组名称">群组名称</option>
+              <option value="群主">群主</option>
+              <option value="群组所在地">群组所在地</option>
+              <option value="群标签">群标签</option>
+              <option value="群介绍">群介绍</option>
+        </select>
+        <input type="text" value="" name="keyWords" />
+        公开
+        <select name="isOpen">
+            <option value="">---</option>
+            <option value="1">是</option>
+            <option value="0">否</option>
+        </select>
+        创建时间：<input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+        至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options="" />
+        &nbsp;
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchgroupList()" iconCls="icon-search">搜索</a>
+    </form>
+</div>
+<div id="group_add_window"></div>
+<script type="text/javascript">
+    $("#group_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchgroupList();
+        }    
+    });
+    
+    $("#group_list_searcher_container select[name]").change(function(){
+        toSearchgroupList();
+    });
+    
+    function toSearchgroupList() {
+        groupObj.containerObj.datagrid('load', $('#group_search_form').serializeObject());
+    }
+
+    var groupObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'group','action'=>'list'));?>',
+        'deleteUrl':'<?php echo $this->url(array('controller'=>'group','action'=>'remove'));?>',
+        'adsLink':'<?php echo $this->url(array('controller'=>'group','action'=>'ads-link'));?>',
+
+        'containerObj':$("#group_list"),
+        'addWindowObj':$("#group_add_window"),
+        'selfName':'groupObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //添加或修改话题
+        'lockHandler':function(id) {
+            $.ajax({
+                url: '<?php echo $this->url(array('controller'=>'group','action'=>'lock'));?>',
+                type: 'GET',
+                dataType: 'json',
+                data: {id: id},
+            })
+            .done(function(ret) {
+                if(ret.flag > 0){
+                    _THIS_.addWindowObj.window('close');
+                    _THIS_.containerObj.datagrid('reload');
+                } else {
+                    $.messager.alert("提示信息", ret.msg, 'error');
+                }
+            })
+            .fail(function(error) {
+                console.log(error);
+            })
+        },
+
+        showMemberInfo: function(memberID) {
+            $('#Group_MemberInfo').window({
+                title: '查看用户资料',
+                width:200,
+                height:150,
+                modal:true,
+                href:'<?php echo $this->url(array('controller'=>'group','action'=>'member-info'));?>?id='+memberID
+            });
+        },
+
+        showMembers: function (groupID, pageIndex, pageSize) {
+            if( typeof pageIndex == 'undefined' ) {
+                pageIndex = 1;
+            } else {
+                pageIndex = parseInt(pageIndex, 10);
+            }
+            if( typeof pageSize == 'undefined' ) {
+                pageSize = 10;
+            } else {
+                pageSize = parseInt(pageSize, 10);
+            }
+            $('#Group_Members').window({
+                title: '查看群成员列表',
+                width:230,
+                height:300,
+                modal:true,
+                href:'<?php echo $this->url(array('controller'=>'group','action'=>'members'));?>?id='+groupID+'&pageIndex='+pageIndex+'&pageSize='+pageSize
+            });
+        },
+
+        showAnnouncement: function(groupID, pageIndex, pageSize) {
+            if( typeof pageIndex == 'undefined' ) {
+                pageIndex = 1;
+            } else {
+                pageIndex = parseInt(pageIndex, 10);
+            }
+            if( typeof pageSize == 'undefined' ) {
+                pageSize = 10;
+            } else {
+                pageSize = parseInt(pageSize, 10);
+            }
+            $('#Group_Announcement').window({
+                title: '查看群公告',
+                width:200,
+                height:300,
+                modal:true,
+                href:'<?php echo $this->url(array('controller'=>'group','action'=>'announcement'));?>?id='+groupID+'&pageIndex='+pageIndex+'&pageSize='+pageSize
+            });
+        },
+
+
+        //广告链接
+        adsHandler:function(id){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.adsLink+'?group_id='+id,
+                'width':500,
+                'height':150,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'复制链接',
+                'onLoad':function(){
+                    if ( window.clipboardData ) {  
+                        $('.copy_btn').click(function() {  
+                            var tempID = $(this).attr('data-value-id');
+                            window.clipboardData.setData("Text", $("#"+tempID).val());  
+                            alert('复制成功！');  
+                        });  
+                    } else {  
+                        $(".copy_btn").zclip({  
+                            path:'/static/js/ZeroClipboard.swf',  
+                            copy:function(){
+                                var tempID = $(this).attr('data-value-id');
+                                return $("input#"+tempID).val();
+                                //return $(this).prev('input').val();
+                            },  
+                            afterCopy:function(){alert('复制成功！');}  
+                        });  
+                    }              
+                }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+                    idField:'AdsID',
+                    url:_THIS_.loadUrl,
+                    toolbar: '#group_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'AID',title:'群组ID',width:50}, 
+                        {field:'GroupName',title:'群组名称',width:60},
+                        {field:'CreateTime',title:'创建时间',width:150}, 
+                        {field:'Where',title:'群组所在地',width:100, formatter:function(value,rec,index) {
+                            rec.Province = rec.Province ||　'未知';
+                            rec.City = rec.City ||　'未知';
+                            return rec.Province + '<br />' + rec.City;
+                        }},  
+                        {field:'OwnerName',title:'群主',width:50,formatter:function(value, rec, index) {
+                            return '<a style="color:#0000FF;" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.showMemberInfo(\''+rec.OwnerID+'\')">'+value+'</a>';
+                        }}, 
+                        {field:'NowUserCount',title:'群成员数',width:50,formatter:function(value, rec, index) {
+                            if( parseInt(value, 10) > 0 ) {
+                                return '<a style="color:#0000FF;" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.showMembers(\''+rec.GroupID+'\')">'+value+'</a>';
+                            } else {
+                                return value;
+                            }
+                        }}, 
+                        {field:'GroupTags',title:'群标签',width:100}, 
+                        {field:'Description',title:'群介绍',width:150},  
+                        {field:'AnnouncementNum',title:'群公告',width:150,formatter:function(value, rec, index) {
+                            if( value === null ) {
+                                return 0;
+                            }
+                            if( typeof value == 'string' ) {
+                                return '<a style="color:#0000FF;" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.showAnnouncement(\''+rec.GroupID+'\')">'+value.split(',').length+'</a>';
+                            } else {
+                                if(window.console) console.log(value);
+                            }
+                        }},  
+                        {field:'IsPublic',title:'是否公开群',width:50, formatter: function(value, rec, index) {
+                            return parseInt(value, 10) ? '是' : '否';
+                        }}, 
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index) {
+                                var e = '<a style="color:#0000FF;" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.lockHandler(\''+rec.AID+'\')">锁定</a>';
+                                var a= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.adsHandler(\''+rec.GroupID+'\')">';
+                                a += '<span class="l-btn-left">复制链接</span></a>';
+                                return e+a;
+                           }
+                        }
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    // pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+            $("#group_list_toolbar").append($("#group_list_searcher_container"));
+        },    
+    };
+    groupObj.init();
+</script>

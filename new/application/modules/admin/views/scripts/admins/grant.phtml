@@ -1,0 +1,27 @@
+<form id="admin_grant_form" method="post" action="">
+	<table class='form_table' align="center";>
+		<tr>
+			<td colspan='2'>
+				<table class='form_table'>
+					<tr>
+						<th>角色</th>
+						<th></th>
+					</tr>
+					<?php foreach($this->roleList as $item):?>
+					<tr>
+						<td><?php echo $item['Name'];?></td>
+						<td><input type="checkbox" name="roleCheck[<?php echo $item['RoleID'];?>]" <?php if($item['urState']) echo 'checked';?>/></td>
+					</tr>
+					<?php endforeach;?>
+				</table>			
+			</td>
+		</tr>
+		<tr>
+			<td colspan='2' class='footbar'>
+				<input type="hidden" name="admin_id" value="<?php echo $this->admin_id;?>"/>
+				<a href="javascript:void(0)" class="easyui-linkbutton" id="admin_grant_form_save">保存</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton" id="admin_grant_form_close">关闭</a>
+			</td>
+		</tr>
+	</table>
+</form>

@@ -1,0 +1,36 @@
+    <div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela running-nobd">
+            活动详情
+            <span class="article-tit-do">
+            <a href="/activity/detail?activityID=<?php echo $this->activityID;?>">基本信息</a><span class="at-separate">|</span>
+            <a class="selected" href="/activity/enroll-manage?activityID=<?php echo $this->activityID;?>">报名管理</a></span>
+            <span class="manage-baoming fr">已有<?php echo $this->total;?>人报名</span>
+        </h2>
+
+        <table class="enroll-table" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="ecell00">头像</th>
+                <th class="ecell01">财猪号</th>
+                <th class="ecell02">姓名</th>
+                <th class="ecell03">手机号</th>
+                <th class="ecell04">报名时间</th>
+                <th class="ecell05">活动名称</th>
+            </tr>
+			<?php foreach ($this->dataList as $value):?>
+            <tr>
+                <td class="ecellone ecell00"><div><img src="<?php echo $value['Avatar']?>" alt="头像" /></div></td>
+                <td class="ecellone ecell01">
+                    <div>
+                        <?php echo $value['UserName'];?>
+                        <?php if($value['IsSign'] == 1){echo "<img class='ml5' src='/static/imgs/web/column/icon-activity-ok.png' alt='签到'>";}?>
+                    </div>
+                </td>
+                <td class="ecellone ecell02"><div><?php echo $value['RealName'];?></div></td>
+                <td class="ecellone ecell03"><div><?php echo $value['Mobile'];?></div></td>
+                <td class="ecellone ecell04"><div><?php echo $value['CreateTime'];?></div></td>
+                <td class="ecellone ecell05"><div><?php echo $value['activityName'];?></div></td>
+            </tr>
+            <?php endforeach;?> 
+
+        </table>
+    </div> <!-- main-right -->

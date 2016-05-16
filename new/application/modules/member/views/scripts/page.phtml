@@ -1,0 +1,22 @@
+<div class="fl page">
+	<ul class="page-unit">
+	  <li><span class="fl"><?=$this->translate("member.tpl.page.perpage")?></span></li>
+	  <? foreach(array(10, 20, 50, 100) as $p): ?>
+	  <li<? if($p == $this->itemCountPerPage): ?> class="selected"<? endif;?>><a rel='<?=$p?>'  href="javascript:void(0)" ><?=$p?></a></li>
+	  <? endforeach; ?>
+	</ul>
+</div>
+<div class="page fr">
+  <ul class="page-iter">
+	<li><span><?=$this->totalItemCount?> <?=$this->translate("member.tpl.page.item",$this->totalItemCount)?>  <?=$this->current?>/<?=$this->last?> <?=$this->translate("member.tpl.page.page",$this->last)?></span></li>
+	<li><a  rel='1' href="javascript:void(0)"><?=$this->translate("member.tpl.page.first")?></a></li>
+	<li><a rel='<?=(isset($this->previous) ? $this->previous : 1)?>' href="javascript:void(0)"><?=$this->translate("member.tpl.page.last")?></a></li>
+	<? foreach ($this->pagesInRange as $page): ?>
+	  <li <? if ($page == $this->current): ?>class="selected"<? endif; ?>><a rel='<?=$page?>' href="javascript:void(0)"><?=$page?></a></li>
+	<? endforeach; ?>
+	<li><a rel='<?= (isset($this->next) ? $this->next : $this->last)?>' href="javascript:void(0)"><?=$this->translate("member.tpl.page.next")?></a></li>
+	<li><a  rel='<?=$this->last?>'href="javascript:void(0)"><?=$this->translate("member.tpl.page.end")?></a></li>
+  </ul>
+  <input type='hidden' name='rowcount' value='<?=$this->totalItemCount?>'>
+</div>
+

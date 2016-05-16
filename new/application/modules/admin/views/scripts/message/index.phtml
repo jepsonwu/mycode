@@ -1,0 +1,240 @@
+<table id="message_list"></table>
+<div id="message_list_toolbar">
+</div>
+<div id="message_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="messageObj.addHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="messageObj.containerObj.edatagrid('reload');">刷新</a> 
+        标题：
+        <input type="text" name="Title" size="15" />
+        消息类型:    
+        <select name="MessageType" >
+                <option value="" >所有</option>
+                <option value="公告" >公告</option>
+                <option value="活动" >活动</option>
+                <option value="活动" >客服</option>
+        </select>
+        发布者:    
+        <select name="Sender" >
+                <option value="" >所有</option>
+                <option value="客服" >客服</option>
+        </select>  
+        时间:
+        <input  class="easyui-datebox" type="text" name="start_date" value="" data-options="onSelect:toSearch" size="13"></input>
+        至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options="onSelect:toSearch" size="13"></input>
+        
+        <input class="easyui-linkbutton" type="button" name="searchbtn" onclick="javascript:toSearchMessage()"value="搜索"/>
+        
+</div>
+<div id="message_add_window"></div>
+<div id="message_edit_window"></div>
+<script type="text/javascript">
+
+    //回车查询
+    $("#message_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchMessage();
+        }    
+    });
+    
+    $("#message_list_searcher_container select[name]").change(function(){
+        toSearchMessage();
+    });
+    
+    //执行查询
+    function toSearchMessage()
+    {
+        var Title       = $("#message_list_searcher_container input[name='Title']").val();
+        var MessageType = $("#message_list_searcher_container select[name='MessageType']").val();
+        var Sender      = $("#message_list_searcher_container select[name='Sender']").val();
+        var start_date  = $("#message_list_searcher_container input[name='start_date']").val();
+        var end_date    = $("#message_list_searcher_container input[name='end_date']").val();
+    
+        messageObj.containerObj.datagrid('load', {   
+                Title:Title,
+                MessageType:MessageType, 
+                Sender:Sender,                                                   
+                start_date: start_date, 
+                end_date: end_date,
+
+            });
+    }    
+
+    var edit1 = null;
+    var messageObj = {
+
+        deleteUrl:'<?php echo $this->url(array('controller'=>'message','action'=>'del'));?>',
+        addUrl:'<?php echo $this->url(array('controller'=>'message','action'=>'add'));?>',
+        editUrl:'<?php echo $this->url(array('controller'=>'message','action'=>'edit'));?>',
+           
+        containerObj:$("#message_list"),
+        addWindowObj:$("#message_add_window"),
+        editWindowObj:$("#message_edit_window"),
+        'selfName':'messageObj',
+        'init':function(){
+            this.showData();
+        },
+        
+        //添加消息
+        addHandler:function(){
+            var _THIS_ = this;
+            if(edit1 != null){
+                edit1.destroy();
+            }
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':1000,
+                'height':650,
+                'modal':true,
+                'resizable':false,
+                'title':'添加',
+                'onClose':function(){
+                    _THIS_.addWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#message_add_form_save").off().on('click',function(){
+                         edit1.sync(); 
+                         $("#message_add_form").attr('action',_THIS_.addUrl).submit();
+                         _THIS_.addWindowObj.window('destroy');
+                    });
+
+                    $("#message_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('destroy');
+                    });
+                    $("#message_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+        
+        //编辑消息
+        editHandler:function(message_id){
+            var _THIS_ = this;
+            if(edit1 != null){
+                edit1.destroy();
+            }
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.editUrl+'?edit_id='+message_id,
+                'width':1000,
+                'height':650,
+                'modal':true,
+                'resizable':false,
+                'title':'编辑',
+                
+                'onLoad':function(){
+                    $("#message_edit_form_save").off().on('click',function(){
+                        edit1.sync(); 
+                        $("#message_edit_form").attr('action',_THIS_.editUrl).submit();
+                        _THIS_.editWindowObj.window('close');
+                    });
+
+                    $("#message_edit_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('close');
+                    });
+                    
+                    $("#message_edit_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.editWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    }
+            });
+        },
+        //删除消息
+        deleteHandler:function(message_id){
+            var _THIS_ = this;
+            var tip = message_id;
+               var mes = confirm("确定要删除ID为 "+tip+" 的文章吗？");
+                if(mes==true){
+                    $.ajax({
+                            url:_THIS_.deleteUrl,
+                            type:"POST",
+                            data:{message_id:message_id},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            }
+                    });
+                }
+        },
+        
+        
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+
+                //是否分页
+                pagination:true,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                fitColumns:true,
+                rownumbers : true,
+                fit:true,
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'MessageId',
+
+                //数据加载url
+                url:'<?php echo $this->url(array('controller'=>'message','action'=>'list'));?>',
+                toolbar:'#message_list_toolbar',
+
+                //设置列
+                columns:[[
+                    {field:'MessageId',title:'ID',width:30},
+                    {field:'Title',title:'标题',width:100},
+                    {field:'Content',title:'内容',width:300},
+                    {field:'UpdateTime',title:'更新时间',width:100},
+                    {field:'Sender',title:'发布者', width:50},
+                    {field:'MessageType',title:'消息类型', width:50},
+                    {field:'StartDate',title:'开始时间', width:80},
+                    {field:'EndDate',title:'结束时间', width:80},
+                    {field:'MemberID',title:'反馈用户ID', width:50},
+                    {field:'DeviceNo',title:'反馈设备号', width:100},
+                    {field:'opt',title:'操作',width:100,align:'center',formatter:function(value,rec,index){
+                        var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.MessageId+'\',1)">';
+                        e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                        var d= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.deleteHandler(\''+rec.MessageId+'\')">';
+                        d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                        return  e+'&nbsp;&nbsp;'+ d;
+                       }
+                    }
+                ]],
+                
+            });
+
+
+
+            var pager = _THIS_.containerObj.datagrid('getPager');
+            pager.pagination({
+                pageList:[10,50,100,150,200],
+                pageSize:50,
+                beforePageText:'第',
+                afterPageText:'页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+            });
+
+            $.messager.defaults={ok:"确定",cancel:"取消"};
+            $("#message_list_toolbar").append($("#message_list_searcher_container"));
+
+
+           },
+};
+messageObj.init();
+</script> 

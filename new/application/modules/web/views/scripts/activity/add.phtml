@@ -1,0 +1,722 @@
+<script>
+initArea = <?php if(!empty($this->info)):?> 1 <?php else:?> 0 <?php endif;?>;
+if(initArea){
+    initProvince = "<?php echo $this->info['Province'];?>";
+    initCity = "<?php echo $this->info['City'];?>";
+}
+</script>
+
+<div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            创建活动 <span class="article-tit-do">
+            <!--<a href="/article/add">文章</a><span class="at-separate">|</span>
+            <a class="selected" href="/activity/add">活动</a></span>-->
+            <a id="read-draft" class="article-todo">读取草稿</a>
+        </h2>
+
+        <div class="manage-box">
+            <form id="article-form" name="article" method="post" action="">
+                <input type="hidden" id="activity-id" name="activity-id"  value="<?php if(!empty($this->info)):?><?php echo $this->info['AID'];?><?php endif;?>"/>
+                <ul class="manage-list">
+
+                    <li class="manage-one clearfix valid-one" data-type="need">
+                        <div class="manage-one03">活动名称<span class="xing">*</span></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>活动名称不能为空</span></div>
+                            <input id="valid-text" class="maa-text" type="text" name="title" placeholder="请输入活动名称" value="<?php if(!empty($this->info)):?><?php echo $this->info['Title'];?><?php endif;?>">
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one maa-zx-10" data-type="date00">
+                        <div class="manage-one03">活动时间<span class="xing">*</span></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>活动时间不能为空</span></div>
+                            <div class="maa-tit clearfix">
+                                <span class="maa-tit-00">开始时间：</span>
+                                <span class="maa-tit-01">结束时间：</span>
+                            </div>
+                            <div class="maa-date clearfix p-rela">
+                                <input id="maa-data0" name="start-time" class="maa-show-00 fl change-v2-maa" type="text"  value="<?php if(!empty($this->info)):?><?php echo $this->info['StartTime'];?><?php endif;?>" />
+                                <input id="maa-data2" class="maa-show-01 fl hide" value="00:00" type="text"  />
+                                <span class="maa-show-02 fl">至</span>
+                                <input id="maa-data1" name="endtime" class="maa-show-00 fl change-v2-maa" type="text" value="<?php if(!empty($this->info)):?><?php echo $this->info['EndTime'];?><?php endif;?>" />
+                                <input id="maa-data3" class="maa-show-01 fl hide" type="text" value="00:00" />
+                                <ul id="maa-timebox00" class="maa-timebox p-abso hide">
+                                    <li data-val="00">00:00</li>
+                                    <li data-val="00">01:00</li>
+                                    <li data-val="00">02:00</li>
+                                    <li data-val="00">03:00</li>
+                                    <li data-val="00">04:00</li>
+                                    <li data-val="00">05:00</li>
+                                    <li data-val="00">23:00</li>
+                                </ul>
+                                <ul id="maa-timebox01" class="maa-timebox maa-timesec p-abso hide">
+                                    <li data-val="00">00:00</li>
+                                    <li data-val="00">01:00</li>
+                                    <li data-val="00">02:00</li>
+                                    <li data-val="00">03:00</li>
+                                    <li data-val="00">04:00</li>
+                                    <li data-val="00">05:00</li>
+                                    <li data-val="00">23:00</li>
+                                </ul>
+
+                            </div>
+
+
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one maa-zx-09" data-type="area">
+                        <div class="manage-one03">活动地点<span class="xing">*</span></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>活动地点不能为空</span></div>
+                            <div class="maa-select-box">
+                                <select name="location-p" id="location-p" class="location-p">
+                                </select>
+                                <select name="location-c" id="location-c" class="location-c">
+                                </select>
+                                <input id="maa-area" type="text" name="address" placeholder="请输入活动地点"  value="<?php if(!empty($this->info)):?><?php echo $this->info['DetailAdress'];?><?php endif;?>"/>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one" data-type="number">
+                        <div class="manage-one03">人数上限<span class="xing">*</span></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请填写有效的人数上限</span></div>
+                            <input id="maa-member-limit" class="maa-text" type="text" name="title" placeholder="请输入有效的人数上限" value="<?php if(!empty($this->info)):?><?php echo $this->info['LimitNum'];?><?php endif;?>">
+                        </div>
+                    </li>
+
+
+                    <li class="manage-one clearfix valid-one" data-type="pic">
+                        <div class="manage-one03">封面<span class="xing">*</span></div>
+                        <div class="manage-one04 valid-one">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span></span>封面不能为空</span></div>
+                            <ul class="manage-cover clearfix">
+                                <li class="mac-pic fl"><img id="select-pic" src="<?php if(!empty($this->info)):?><?php echo $this->info['Cover'];?><?php else:?>/static/imgs/web/column/pic106x160.png<?php endif;?>" alt="财猪" ></li>
+                                <li class="mac-select fl">
+
+                                    <span id="select-btn" class="select" value="选择文件" >选择文件</span>
+                                    <input type="hidden" id="select-text" class="select" value="<?php if(!empty($this->info)):?><?php echo $this->info['Cover'];?><?php endif;?>" />
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+                    </li>
+
+                    <li class="manage-one clearfix valid-one" data-type="editor">
+                        <div class="manage-one03">正文<span class="xing">*</span></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>正文不能为空</span></div>
+                            <textarea name="content" id="mac-content"><?php if(!empty($this->info)):?><?php echo $this->info['Content'];?><?php endif;?></textarea>
+
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one maa-zx-10" data-type="date01">
+                        <div class="manage-one03">报名截止时间<span class="xing">*</span></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>报名截止时间不能为空</span></div>
+                            <div class="maa-date clearfix p-rela">
+                                <input id="maa-data5" class="maa-show-00 fl change-v2-maa" type="text" value="<?php if(!empty($this->info)):?><?php echo $this->info['LimitTime'];?><?php endif;?>" />
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix maa-zx-09">
+                        <div class="manage-one03">报名填写信息</div>
+                        <div class="manage-one04">
+                            <ul class="maa-user-need">
+                                <li class="maa-un-name">姓名</li>
+                                <li class="maa-un-tel">手机</li>
+                            </ul>
+
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one" data-type="agree">
+                        <div class="manage-one03"></div>
+                        <div class="manage-one04">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请阅读服务协议</span></div>
+
+                            <div class="mac-agree"><input data-zx="zxzx" id="agree" type="checkbox" checked ="check" name="agree" /><span>同意</span><a href="/api/user/topic-issue" target="_new">《财猪内容发布规范》</a></div>
+
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix">
+                        <div class="manage-one03"></div>
+                        <div class="manage-one04">
+                            <input type="hidden" name="submit-type" id="submit-type" />
+                            <div class="mac-do clearfix">
+                                <span class="mac-submit fl">立即发表</span>
+                                <span class="mac-draft fr">保存草稿</span>
+                                <span class="mac-view fr">手机预览</span>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </form>
+        </div>
+
+
+    </div> <!-- main-right -->
+
+</div>
+
+<div id="kuang-box" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <div id="kuang-draft" class="kuang-draft hide">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">读取草稿</strong>
+            <span class="kuang-close fr"></span>
+        </div>
+        <ul id="kuang-list" class="kuang-list">
+        <?php foreach ($this->draftInfo as $value):?>
+            <li class="kuang-one clearfix">
+                <a data-id="<?php echo $value['AID'];?>"><?php echo $value['Title'];?></a>
+                <span><?php echo $value['CreateTime'];?></span>
+            </li>
+        <?php endforeach;?>
+        </ul>
+    </div>
+
+    <div id="kuang-code" class="kuang-code hide">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">手机预览</strong>
+            <span id="kuang-close" class="kuang-close fr"></span>
+        </div>
+        <div class="kuang-code-pic">
+            <img id="code-pic" src="/static/images/web/column/pic160x160.png" alt="二维码" />
+        </div>
+        <p class="kuang-code-p">使用财猪手机版扫描二维码</p>
+    </div>
+
+</div>
+
+<script src="/static/js/web/column/common.js"></script>
+
+<script src="/static/js/web/column/jquery-ui.min.js"></script>
+<script src="/static/js/web/column/jquery-ui-timepicker-addon.js"></script>
+<script src="/static/js/web/column/region_select.js"></script>
+
+<script src="/static/plugin/kingeditor/kindeditor-min.js"></script>
+<script src="/static/plugin/kingeditor/lang/zh-CN.js"></script>
+
+<script>
+
+    var editor, editor2;
+
+    var hide = 'hide',
+            selected = 'selected',
+
+            $kuangBox = $('#kuang-box'),
+            $kuangClose = $('.kuang-close'),
+            $kuangCode = $('#kuang-code'),
+            $kuangDraft = $('#kuang-draft'),
+
+
+            $readDraft = $('#read-draft'),
+            $macSubmit = $('.mac-submit'),
+            $macDraft = $('.mac-draft'),
+            $macView = $('.mac-view'),
+            $articleForm = $('#article-form'),
+
+            $validOne = $('.valid-one'),
+            $selectText = $('#select-text'),
+            $selectPic = $('#select-pic'),
+            $submitType = $('#submit-type'),
+
+            $activityId = $("#activity-id"),
+
+            $maaData0 = $('#maa-data0'),
+            $maaData1 = $('#maa-data1'),
+            $maaData2 = $('#maa-data2'),
+            $maaData3 = $('#maa-data3'),
+            $maaTimebox0 = $('#maa-timebox00'),
+            $maaTimebox1 = $('#maa-timebox01'),
+
+            $maaData5 = $('#maa-data5'),
+            $maaData6 = $('#maa-data6'),
+            $maaTimebox6 = $('#maa-timebox06'),
+            $maaArea = $('#maa-area'),
+            $locationP = $('#location-p'),
+            $locationC = $('#location-c'),
+            $maaMemberLimit = $('#maa-member-limit'),
+
+            $agree = $('#agree'),
+
+            $macTextare = $('#mac-content'),
+
+            $codePic = $('#code-pic'),
+
+            $kuangList = $('#kuang-list');
+
+    var $validText = $('#valid-text');
+
+    $kuangClose.click(function(){
+        $kuangBox.children().eq(0).siblings().addClass(hide);
+        $kuangBox.addClass(hide);
+    });
+
+/*
+    $macView.click(function(){
+        $kuangBox.children().eq(0).siblings().addClass(hide);
+        $kuangCode.removeClass(hide);
+        $kuangBox.removeClass(hide);
+    });
+*/
+
+    $readDraft.click(function(){
+        $kuangBox.children().eq(0).siblings().addClass(hide);
+        $kuangDraft.removeClass(hide);
+        $kuangBox.removeClass(hide);
+    });
+
+
+
+    $validText.blur(function(){
+        var $this = $(this),
+                val = $this.val();
+
+        if(val){
+            $this.prev().addClass(hide);
+        }else{
+            $this.prev().removeClass(hide);
+        };
+    });
+
+    $macSubmit.click(function(){
+
+        var $this = $(this), flag;
+        flag = $this.data('flag');
+        if(flag){return ;}
+
+        formSubmit(1);
+    });
+
+    $macDraft.click(function(){
+
+        var $this = $(this), flag;
+        flag = $this.data('flag');
+        if(flag){return ;}
+
+        formSubmit(2);
+    });
+
+
+    $macView.click(function(){
+
+        var $this = $(this), flag;
+        flag = $this.data('flag');
+        if(flag){return ;}
+
+        formSubmit(3);
+    });
+
+    function formSubmit(formType){
+        var isSubmit = true,
+                i, d, val, type;
+        len = $validOne.length;
+
+        for(i=0; i<len; i++){
+            d = $validOne.eq(i);
+            type = d.data('type');
+
+            switch(type){
+                case 'pic':
+                    val = $selectText.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'need':
+                    val = $validText.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'editor':
+                    val = editor2.html();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'agree':
+                    val = d.find('input')[0].checked;
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'date00':
+                    val = $maaData0.val();
+                        var val2 = $maaData1.val();
+                    if(val && val2){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'date01':
+                    val = $maaData5.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'area':
+                    val = d.find('input').val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'number':
+                    val = d.find('input').val();
+                    var reg = /^[1-9]\d*$/;
+
+                    if(val && reg.test(val)){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+            }
+
+        }
+
+
+        if(isSubmit){
+
+            $submitType.val(formType);
+
+            $.ajax({
+                url: '/activity/create',
+                type: 'post',
+                data: {
+                	activityID: $activityId.val() || 0,
+                    formType: formType,                  // 1，提交发布 2，保存草稿  3，手机预览
+                    title: $validText.val(),
+                    startTime: $maaData0.val(),
+                    endTime: $maaData1.val(),
+                    province: $locationP.val(),
+                    city: $locationC.val(),
+                    area: $maaArea.val(),
+                    limitMember: $maaMemberLimit.val(),
+                    cover: $selectText.val(),
+                    content: editor2.html(),
+                    limitTime: $maaData5.val()
+                },
+                dataType: 'json',
+                success: function(d){
+                    if(d.flag == 1){
+                        $activityId.val(d.data.activityID);
+                        if(formType == 1){
+                            location.href = '/activity/index';    //文章列表
+                        }else if(formType == 2){
+                            location.href = '/draft/activity';    //草稿列表
+                        }else if(formType == 3){
+                            $codePic.attr('src', d.data.qrcodeUrl);
+
+                            $kuangBox.children().eq(0).siblings().addClass(hide);
+                            $kuangCode.removeClass(hide);
+                            $kuangBox.removeClass(hide);
+
+                        }else{
+                        }
+                    }else{
+                        definedPrompt(d.msg);
+                    }
+                },
+                error: function(err){
+                    definedPrompt('网络错误');
+                },
+                beforeSend: function(){
+                    $sigle01.removeClass(hide);
+
+                    if(formType == 1 ){
+                        $macSubmit.data('flag', 'true');
+                    }else if(formType == 2){
+                        $macDraft.data('flag', 'true');
+                    }else{
+                        $macView.data('flag', 'true');
+                    }
+                },
+                complete: function(){
+                    $sigle01.addClass(hide);
+
+                    if(formType == 1 ){
+                        $macSubmit.data('flag', '');
+                    }else if(formType == 2){
+                        $macDraft.data('flag', '');
+                    }else{
+                        $macView.data('flag', '');
+                    }
+
+                }
+            });
+        }
+
+    }
+
+    /* view-draft - Action*/
+        $kuangList.delegate('.kuang-one', 'click', function(){
+            var d,
+                id = $(this).children().eq(0).data('id'),
+                url = '/activity/get-activity-info?activityID=' + id;
+
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            success: function(d){
+                if(d.flag == 1){
+
+                    d = d.data;
+
+                    $activityId.val(d.AID);
+                    $validText.val(d.Title);
+                    $maaData0.val(d.StartTime);
+                    $maaData1.val(d.EndTime);
+                    $maaMemberLimit.val(d.LimitNum);
+                    $selectText.val(d.Cover); 
+                    $selectPic.attr('src', d.Cover);
+                    editor2.html(d.Content);
+                    $maaData5.val(d.LimitTime);
+
+                    valueOfArea(d);
+                    //$locationP.val(d.Province);
+                    //$locationC.val(d.City);
+
+                    $maaArea.val(d.DetailAdress);
+                    $kuangBox.children().eq(0).siblings().addClass(hide);
+                    $kuangBox.addClass(hide);
+
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(){
+                definedPrompt('网络错误，过会儿再试试吧');
+            }
+        });
+
+    });
+
+    function valueOfArea(d){
+        if(!d) return ;
+        //$('#location-p').children().attr('selected', false);
+        $('#location-p').children().remove();
+        for (i = 0; i < PCAP.length; i++) {
+            PCAPT = PCAPV = PCAP[i];
+            if (PCAPT == SPT) PCAPV = "";
+            areaCase.SelP.options.add(new Option(PCAPT, PCAPV));
+            if (areaCase.DefP == PCAPV) areaCase.SelP[i].selected = true
+        }
+
+        //PCAS.SetC(PCA)
+
+        var areaP = $('#location-p').find('option[value="'+d.Province+'"]')[0];
+
+        if(areaP) areaP.setAttribute('selected', 'selected');
+
+        var PI = areaCase.SelP.selectedIndex;
+        areaCase.SelC.length = 0;
+        if (areaCase.SelP.value && ShowT) {
+            areaCase.SelC.options.add(new Option(SCT, ""))
+        }
+        for (i = 1; i < PCAC[PI].length; i++) {
+            PCACT = PCACV = PCAC[PI][i];
+            if (PCACT == SCT) PCACV = "";
+            areaCase.SelC.options.add(new Option(PCACT, PCACV));
+            if (areaCase.DefC == PCACV) areaCase.SelC[PCA.SelP.value && ShowT ? i: i - 1].selected = true
+        }
+
+        var areaC = $('#location-c').find('option[value="'+d.City+'"]')[0];
+        if(areaC) areaC.setAttribute('selected', 'selected');
+
+
+    }
+
+    /* 时间 */
+    $maaTimebox0.children().click(function(){
+        var $this = $(this), val = $this.data('val');
+        $maaData2.val(val);
+        $maaTimebox0.addClass(hide);
+    });
+    $maaData2.focus(function(){
+        var $this = $(this);
+        $this.blur();
+        $maaTimebox0.removeClass(hide);
+    });
+
+    $maaTimebox1.children().click(function(){
+        var $this = $(this), val = $this.data('val');
+        $maaData3.val(val);
+        $maaTimebox1.addClass(hide);
+    });
+    $maaData3.focus(function(){
+        var $this = $(this);
+        $this.blur();
+        $maaTimebox1.removeClass(hide);
+    });
+
+    $maaTimebox6.children().click(function(){
+        var $this = $(this), val = $this.data('val');
+        $maaData6.val(val);
+        $maaTimebox6.addClass(hide);
+    });
+    $maaData6.focus(function(){
+        var $this = $(this);
+        $this.blur();
+        $maaTimebox6.removeClass(hide);
+    });
+
+    $maaData0.focus(function(){
+        var $this = $(this);
+        maaCloseTip($this);
+    });
+    $maaData1.focus(function(){
+        var $this = $(this);
+        maaCloseTip($this);
+    });
+    function maaCloseTip(obj){
+        obj.parent().prev().prev().addClass(hide);
+    }
+    $maaArea.focus(function(){
+        $(this).parent().prev().addClass(hide);
+    })
+
+    $maaTimebox0.children().click(function(){
+        var $this = $(this), val = $this.data('val');
+        $maaData2.val(val);
+        $maaTimebox0.addClass(hide);
+    });
+    $maaData2.focus(function(){
+        var $this = $(this);
+        $this.blur();
+        $maaTimebox0.removeClass(hide);
+    });
+
+    $maaMemberLimit.focus(function(){
+        $(this).prev().addClass(hide);
+    });
+
+    $maaData5.focus(function(){
+        $(this).parent().prev().addClass(hide);
+    });
+
+    $validText.focus(function(){
+        $(this).prev().addClass(hide);
+    });
+
+    $agree.click(function(){
+        var $this = $(this), flag, $tip;
+        $tip = $this.parents('li').find('.ti-box');
+        flag = $this[0].checked;
+        if(flag){
+            $tip.addClass(hide);
+        }else{
+            $tip.removeClass(hide);
+        }
+    });
+    
+    /* 有用的信息 */
+
+    $maaData0.datetimepicker({
+        dateFormat: "yy/mm/dd",
+        sliderAccessArgs: { touchonly: false }
+    });
+    $maaData1.datetimepicker({
+        dateFormat: "yy/mm/dd",
+        sliderAccessArgs: { touchonly: false }
+    });
+
+    $maaData5.datetimepicker({
+            dateFormat: "yy/mm/dd",
+            sliderAccessArgs: { touchonly: false }
+        });
+
+
+</script>
+
+<script>
+    var areaCase = new PCAS('location-p', 'location-c', 'location-a', '', '', '');
+
+    if(initArea){
+        valueOfArea({Province: initProvince, City: initCity});
+    }
+</script>
+
+<script>
+
+    KindEditor.ready(function(K) {
+        editor2 = K.create('#mac-content', {
+            resizeType : 1,
+            pasteType: 1,
+            height: 240,
+            width: '99%',
+            pasteType: 1,
+            allowPreviewEmoticons : false,
+            allowImageUpload : true,
+            uploadJson:'/upload/upload_json',
+            items : [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'image', 'link','table']
+        });
+
+
+        /* 一号K示例 */
+        var $selectBtn = $('#select-btn');
+        var uploadbutton = K.uploadbutton({
+            button : $selectBtn[0],
+            fieldName : 'imgFile',
+            dataType:'json',
+            url : '/article/upload-file',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                	$selectPic.parents('li').find('.ti-box').addClass(hide);
+                	$selectText.val(data.data.url);
+                	$selectPic.attr('src', data.data.url);
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton.fileBox.change(function(e) {
+            uploadbutton.submit();
+        });
+
+
+    });
+</script>
+
+<script>
+savaDraft('您编辑的活动尚未保存，离开会使内容丢失。<br>您可以选择保存草稿后，再离开此页面');
+</script>

@@ -1,0 +1,243 @@
+<table id="lesson_list"></table>
+<div id="lesson_list_toolbar"></div>
+<div id="lesson_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="lesson_Obj.addHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="lesson_Obj.containerObj.edatagrid('reload');">刷新</a> 
+    课堂模块：
+    <select name="ModuleID">
+        <option value="-1">所有</option>
+        <?php foreach ($this->moduleList as $item):?>
+            <option value="<?php echo $item['ModuleID']; ?>"><?php echo $item['ModuleName'];?></option>
+        <?php endforeach;?>
+    </select>&nbsp;&nbsp;
+    
+    课程标题：<input type="text" value="" name="LessonTitle" size="20"/> &nbsp;&nbsp;
+    
+    课程类型：
+    <select name="LessonType">
+        <option value="-1">所有</option>
+        <option value="1">图文</option>
+        <option value="2">视频</option>
+    </select>&nbsp;&nbsp;
+
+    显示状态：
+    <select name="Status">
+        <option value="-1">所有</option>
+        <option value="0">隐藏</option>
+        <option value="1">显示</option>
+    </select>&nbsp;&nbsp;
+  
+    创建时间：
+    <input class="easyui-datebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchLessonList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="lesson_add_window"></div>
+<div id="lesson_edit_window"></div>
+
+<script type="text/javascript">
+    isSubmit = 0;
+    $("#lesson_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchLessonList();
+        }    
+    });
+    
+    $("#lesson_list_searcher_container select[name]").change(function(){
+        toSearchLessonList();
+    });
+    
+    function toSearchLessonList()
+    {
+        var ModuleID = $("#lesson_list_searcher_container select[name='ModuleID']").val();
+        var LessonTitle = $("#lesson_list_searcher_container input[name='LessonTitle']").val();
+        var LessonType = $("#lesson_list_searcher_container select[name='LessonType']").val();
+        var Status = $("#lesson_list_searcher_container select[name='Status']").val();
+        var start_date = $("#lesson_list_searcher_container input[name='start_date']").val();
+        var end_date = $("#lesson_list_searcher_container input[name='end_date']").val();
+        
+        lesson_Obj.containerObj.datagrid('load', {
+            ModuleID:ModuleID,
+            LessonTitle:LessonTitle,
+            LessonType:LessonType,
+            Status:Status,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var lesson_Obj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'lesson','action'=>'list'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'lesson','action'=>'add'));?>',
+        'editUrl':'<?php echo $this->url(array('controller'=>'lesson','action'=>'edit'));?>',
+
+        'containerObj':$("#lesson_list"),
+        'addWindowObj':$("#lesson_add_window"),
+        'editWindowObj':$("#lesson_edit_window"),
+        
+        'selfName':'lesson_Obj',
+
+        'init':function(){
+            this.showData();
+        },
+       
+        //添加课程
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':600,
+                'height':450,
+                'modal':true,
+                'resizable':false,
+                'title':'添加课程',
+                'onClose':function(){
+                    _THIS_.addWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#lesson_add_form_save").off().on('click',function(){
+                        if($("#lesson_add_form input[name='LessonTitle']").val()==""){
+                            $.messager.alert("提示信息",'课程标题不能为空!','error');return false;
+                        }
+                        if($("#lesson_add_form textarea[name='LessonDes']").val()==""){
+                            $.messager.alert("提示信息",'课程简介不能为空!','error');return false;
+                        }
+                        
+                        if(isSubmit==0){
+                            isSubmit = 1;
+                            $("#lesson_add_form").attr('action',_THIS_.addUrl).submit();
+                        }
+                    });
+
+                    $("#lesson_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('destroy');
+                    });
+                    $("#lesson_add_form").myForm(function(ret){
+                        isSubmit = 0;
+                        if(ret.flag == 1){
+                            _THIS_.addWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //编辑课程
+        'editHandler':function(LessonID){
+            var _THIS_ = this;
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.editUrl+'?LessonID='+LessonID,
+                'width':600,
+                'height':450,
+                'modal':true,
+                'resizable':false,
+                'title':'编辑课程',
+                'onLoad':function(){
+                    $("#lesson_edit_form_save").off().on('click',function(){
+                        $("#lesson_edit_form").attr('action',_THIS_.editUrl).submit();
+                    });
+
+                    $("#lesson_edit_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('close');
+                    });
+
+                    $("#lesson_edit_form").myForm(function(ret){
+                        if(ret.flag){
+                            $.messager.alert("提示信息",'修改成功！','info');
+                            _THIS_.editWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });    
+                }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'LessonID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#lesson_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'LessonID',title:'课程ID',width:100}, 
+                        {field:'LessonTitle',title:'课程标题',width:200},
+                        {field:'LessonPic',title:'课程图片',width:150,formatter:function(value,rec,index){
+                                return '<img src="'+value+'?imageView2/0/w/100/h/100"/>';
+                            }
+                        },
+                        {field:'ModuleName',title:'课堂模块名称',width:100},
+                        {field:'LessonType',title:'课程类型',width:80,formatter:function(value,rec,index){
+                                var LessonType = '---';
+                                switch(value){
+                                    case '1':
+                                        LessonType = '图文';
+                                        break;
+                                    case '2':
+                                        LessonType = '视频';
+                                        break;
+                                }
+                                return LessonType;
+                            }
+                        }, 
+                        {field:'Status',title:'状态',width:70,formatter:function(value,rec,index){
+                                var status = '---';
+                                switch(value){
+                                    case '0':
+                                        status = "<p style='color:red'>隐藏</p>";
+                                        break;
+                                    case '1':
+                                        status = '显示';
+                                        break;
+                                }
+                                return status;
+                            }
+                        },
+                        {field:'ViewCount',title:'阅读数',width:80},
+                        {field:'LessonClassCount',title:'课时数',width:80}, 
+                        {field:'LessonDes',title:'课程简介',width:200},
+                        {field:'AddTime',title:'添加时间',width:150},  
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.LessonID+'\')">';
+                                    e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                return e;          
+                           }
+                        }
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#lesson_list_toolbar").append($("#lesson_list_searcher_container"));
+            },    
+};
+lesson_Obj.init();
+</script>

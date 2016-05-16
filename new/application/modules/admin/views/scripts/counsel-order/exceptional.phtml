@@ -1,0 +1,104 @@
+<table id="counsel_order_exceptional_list"></table>
+<div id="counsel_order_exceptional_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	订单ID：
+	<input type="text" name="OID"/>&nbsp;&nbsp;
+	客服ID：
+	<input type="text" name="AdminID"/>&nbsp;&nbsp;
+	异常类型：
+	<select name="Type">
+		<option value="">所有</option>
+		<option value="1">赴约异常</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options="" size="25">
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""
+	              size="25">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+<div id="counsel_order_exceptional_view"></div>
+<script type="text/javascript">
+	var counsel_order_exceptionalObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'counsel-order','action'=>'exceptional-list'));?>',
+		'exceptionalCloseUrl': '<?php echo $this->url(array('controller'=>'counsel-order','action'=>'exceptional-close'));?>',
+		'selfName': 'counsel_order_exceptionalObj',
+//		exceptional_close: function (eid) {
+//			getAjax(this.exceptionalCloseUrl + "?eid=" + eid, this);
+//		},
+		'exceptionalClose_feature': {
+			'width': 400,
+			'height': 200,
+			'title': '关闭订单'
+		},
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: false,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'EID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#counsel_order_exceptional_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'EID', title: '异常ID', width: 70},
+					{field: 'OID', title: '订单ID', width: 70},
+					{field: 'AdminID', title: '管理员ID', width: 70},
+					{
+						field: 'Type',
+						title: '异常类型',
+						width: 110,
+						formatter: function (value, rec, index) {
+							var status = '';
+							switch (rec.Type) {
+								case '1':
+									status = "赴约异常";
+									break;
+							}
+							return status;
+						}
+					},
+					{field: 'CreateTime', title: '创建时间', width: 130},
+					{
+						field: 'Operate', title: '操作', width: 200, formatter: function (value, rec, index) {
+						var opt = "";
+						opt += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" ' +
+							'onclick="' + _THIS_.selfName + '.exceptionalCloseHandler(\'?eid=' + rec.EID + '\')">' +
+							'<span class="l-btn-left">关闭订单</span></a>';
+						return opt;
+					}
+					}
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+		}
+	};
+
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = 'counsel_order_exceptional';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	orderObj = contentCommon(counsel_order_exceptionalObj, __CONTROLLER__);
+</script>

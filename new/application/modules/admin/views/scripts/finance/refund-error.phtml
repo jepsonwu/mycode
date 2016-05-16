@@ -1,0 +1,48 @@
+<?php $error = $this->Error; ?>
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:5px 0 5px 5px;align:center;">
+        <table class='form_table'>				
+            <tr>
+                <td colspan="2">
+                    <strong>错误类型:</strong><?php echo $error['ErrorType'];?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>添加时间:</strong><?php echo $error['AddTime'];?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>错误编码:</strong><?php echo $error['ErrorCode'];?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>错误信息:</strong>
+                    <textarea rows="5" cols="40" name="remark"><?php echo $error['ErrorMsg'];?></textarea>
+                </td>
+            </tr>
+        </table>
+	</div>
+	
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="refund_error_close">关闭</a>
+    </div>
+	
+</div>

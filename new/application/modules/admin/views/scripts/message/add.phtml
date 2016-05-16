@@ -1,0 +1,58 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 10px;align:center;">
+        <form id="message_add_form" method="post" action="">
+            <table class='form_table'>                
+                <tr>
+                    <th width="11%">消息类型：</th>
+                    <td width="89%">
+                        <select name="ret[MessageType]" class="easyui-validatebox" data-options="required:true">
+                            <option value="公告" >公告</option>
+                            <option value="活动" >活动</option>       
+                            <option value="客服" >客服</option>
+                        </select>
+                    </td>
+              </tr>
+                 <tr>
+                    <th width="11%">标题：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="text"  data-options="required:true" name="ret[Title]" size="80"></td>
+              </tr>
+                <tr>
+                    <th>内容：</th>
+                    <td>
+                        <textarea id="add_content" name="ret[Content]" class="myEditor"   rows='20' cols='100'></textarea>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_config.js"></script>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_all_min.js"></script>
+    <script type="text/javascript" >
+        var edit1 = new UE.ui.Editor({
+            initialContent : '',
+            initialFrameWidth : 800
+        });
+        edit1.render("add_content");
+    </script>
+                    </td>
+                </tr>
+                <tr>
+                    <th>开始日期：</th>
+                    <td>
+                        <input  class="easyui-datebox" type="text" name="ret[StartDate]" value="" size="50" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>结束日期：</th>
+                    <td>
+                        <input  class="easyui-datebox" type="text" name="ret[EndDate]" value="" size="50" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    </td>
+                </tr>
+            </table>
+        </form>
+            <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="message_add_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="message_add_form_close">关闭</a>
+    </div>
+    </div>
+</div>

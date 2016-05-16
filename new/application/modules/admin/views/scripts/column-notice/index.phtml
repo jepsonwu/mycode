@@ -1,0 +1,219 @@
+<table id="column_notice_list"></table>
+<div id="column_notice_list_toolbar"></div>
+<div id="column_notice_view_window"></div>
+<div id="column_notice_list_searcher_container">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true"
+	   onclick="columnNoticeObj.addHandler();">添加</a>
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true"
+	   onclick="columnNoticeObj.containerObj.edatagrid('reload');">刷新</a>
+	公告标题：
+	<input type="text" value="" name="Title" size="20"/> &nbsp;&nbsp;
+
+	状态：
+	<select name="Status">
+		<option value="">所有</option>
+		<option value="0">无效</option>
+		<option value="1">有效</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options=""/>
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""/>
+	<a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchViewList()"
+	   iconCls="icon-search">搜索</a>
+</div>
+<div id="column_notice_window"></div>
+<!--<div id="column_edit_window"></div>-->
+
+<script type="text/javascript">
+	$("#column_notice_list_searcher_container input[name]").keydown(function (event) {
+		if (event.keyCode == 13) {
+			toSearchViewList();
+		}
+	});
+
+	$("#column_notice_list_searcher_container select[name]").change(function () {
+		toSearchViewList();
+	});
+
+	function toSearchViewList(flag) {
+		var Title = $("#column_notice_list_searcher_container input[name='Title']").val();
+		var Status = $("#column_notice_list_searcher_container select[name='Status']").val();
+		var Start_CreateTime = $("#column_notice_list_searcher_container input[name='Start_CreateTime']").val();
+		var End_CreateTime = $("#column_notice_list_searcher_container input[name='End_CreateTime']").val();
+
+		columnNoticeObj.containerObj.datagrid('load', {
+			Title: Title,
+			Status: Status,
+			Start_CreateTime: Start_CreateTime,
+			End_CreateTime: End_CreateTime
+		});
+	}
+
+	var columnNoticeObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'column-notice','action'=>'list'));?>',
+		'editUrl': '<?php echo $this->url(array('controller'=>'column-notice','action'=>'edit'));?>',
+		'addUrl': '<?php echo $this->url(array('controller'=>'column-notice','action'=>'add'));?>',
+
+		'containerObj': $("#column_notice_list"),
+		'editWindowObj': $("#column_notice_window"),
+
+		'selfName': 'columnNoticeObj',
+
+		'init': function () {
+			this.showData();
+		},
+
+
+      	//添加公告
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':900,
+                'height':600,
+                'modal':true,
+                'resizable':false,
+                'title':'添加公告',
+                'onClose':function(){
+                    _THIS_.editWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#column_notice_add_form_save").off().on('click',function(){
+                         $("#column_notice_add_form").attr('action',_THIS_.addUrl).submit();
+                        // _THIS_.addWindowObj.window('destroy');
+                    });
+
+                    $("#column_notice_add_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('destroy');
+                    });
+                    $("#column_notice_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                        	$.messager.alert("提示信息", '添加成功！', 'info');
+                            _THIS_.editWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+		//编辑话题
+		'editHandler': function (id) {
+			var _THIS_ = this;
+			_THIS_.editWindowObj.window({
+				'href': _THIS_.editUrl + '?NoticeID=' + id,
+				'width': 900,
+				'height': 600,
+				'modal': true,
+				'resizable': false,
+				'title': '编辑公告',
+				'onLoad': function () {
+
+					$("#column_notice_edit_form_save").off().on('click', function () {
+						$("#column_notice_edit_form").attr('action', _THIS_.editUrl).submit();
+					});
+
+					$("#column_notice_edit_form_close").on('click', function () {
+						_THIS_.editWindowObj.window('close');
+					});
+
+					$("#column_notice_edit_form").myForm(function (ret) {
+						if (ret.flag) {
+							$.messager.alert("提示信息", '修改成功！', 'info');
+							_THIS_.editWindowObj.window('close');
+							_THIS_.containerObj.datagrid('reload');
+						} else {
+							$.messager.alert("提示信息", ret.msg, 'error');
+						}
+					});
+				}
+			});
+		},
+
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'NoticeID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#column_notice_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'NoticeID', title: '专栏ID', width: 40},
+					{field: 'UserName', title: '会员名称', width: 60},
+					{field: 'Title', title: '专栏名称', width: 150},
+					{field: 'Content', title: '详细内容', width: 200},
+					{
+						field: 'Type', title: '类型', width: 70, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '1':
+								status = '公告';
+								break;
+							case '2':
+								status = '通知';
+								break;
+						}
+						return status;
+					}
+					},
+					{
+						field: 'Status', title: '状态', width: 70, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '0':
+								status = '失效';
+								break;
+							case '1':
+								status = '有效';
+								break;
+						}
+						return status;
+					}
+					},
+					{field: 'CreateTime', title: '创建时间', width: 150},
+					{
+						field: 'opt', title: '操作', align: 'center', formatter: function (value, rec, index) {
+						var c = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+							'onclick="' + _THIS_.selfName + '.editHandler(\'' + rec.NoticeID + '\')">';
+						c += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+
+						return c;
+
+					}
+					}
+
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+
+
+			$("#column_notice_list_toolbar").append($("#column_notice_list_searcher_container"));
+		}
+	};
+	columnNoticeObj.init();
+</script>

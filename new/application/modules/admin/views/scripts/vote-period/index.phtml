@@ -1,0 +1,250 @@
+<table id="vote_period_list"></table>
+<div id="vote_period_list_toolbar"></div>
+<div id="vote_period_view_window"></div>
+<div id="vote_period_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="voteperiodObj.addHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="voteperiodObj.containerObj.edatagrid('reload');">刷新</a>
+</div>
+<div id="vote_period_window"></div>
+
+<script type="text/javascript">
+    $("#vote_period_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchViewList();
+        }    
+    });
+    
+    $("#vote_period_list_searcher_container select[name]").change(function(){
+        toSearchViewList();
+    });
+    
+    function toSearchViewList(flag)
+    {
+        var searchType       = $("#view_list_searcher_container select[name='searchType']").val();
+        var searchTypeValue  = $("#view_list_searcher_container input[name='searchTypeValue']").val();
+        var CheckStatus      = $("#view_list_searcher_container select[name='CheckStatus']").val();
+        var ReportNum        = $("#view_list_searcher_container select[name='ReportNum']").val();
+        var start_date       = $("#view_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#view_list_searcher_container input[name='end_date']").val();
+        
+        viewObj.containerObj.datagrid('load', {
+            searchType:searchType,
+            searchTypeValue:searchTypeValue,
+            CheckStatus:CheckStatus,
+            ReportNum:ReportNum,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var voteperiodObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'vote-period','action'=>'list'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'vote-period','action'=>'add'));?>',
+        'editUrl':'<?php echo $this->url(array('controller'=>'vote-period','action'=>'edit'));?>',
+        'statusUrl':'<?php echo $this->url(array('controller'=>'vote-period','action'=>'status'));?>',
+        // 'viewUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'view-list'));?>',
+        // 'reportUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'report-list'));?>',
+        // 'adsLink':'<?php echo $this->url(array('controller'=>'view','action'=>'ads-link'));?>',
+
+        'containerObj':$("#vote_period_list"),
+        'viewWindowObj':$("#vote_period_window"),
+        
+        'selfName':'voteperiodObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //添加期数
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':450,
+                'height':350,
+                'modal':true,
+                'resizable':false,
+                'title':'添加期数',
+                'onClose':function(){
+                    _THIS_.viewWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#vote_period_add_form_save").off().on('click',function(){
+                         $("#vote_period_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#vote_period_add_form_close").off().on('click',function(){
+                        _THIS_.viewWindowObj.window('destroy');
+                    });
+                    $("#vote_period_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.viewWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //修改期数
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.viewWindowObj.window({
+                        'href':_THIS_.editUrl+'?period_id='+id,
+                        'width':450,
+                        'height':350,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑期数',
+                        'onLoad':function(){
+
+                            $("#vote_period_edit_form_save").off().on('click',function(){
+                                $("#vote_period_edit_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $("#vote_period_edit_form_close").off().on('click',function(){
+                                _THIS_.viewWindowObj.window('close');
+                            });
+                            
+                            $("#vote_period_edit_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.viewWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+
+        //激活期数
+        statusHandler:function(id){
+            var _THIS_ = this;
+            $.messager.confirm('激活本期','确定要激活吗？',function(d){
+                if(d){
+                    $.ajax({
+                            url:_THIS_.statusUrl,
+                            type:"POST",
+                            data:{'id':id},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    // $.messager.alert("提示信息",ret.msg,'info');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            },
+                            error:function(){
+                                $.messager.alert("提示信息",'出错啦','error');
+                            }
+                    });
+                }
+            }); 
+        },
+
+
+
+        //查看违规记录
+        'viewHandler':function(member_id){
+            var _THIS_ = this;
+            _THIS_.viewWindowObj.window({
+                'href':_THIS_.viewUrl+'?member_id='+member_id,
+                'width':500,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'违规记录',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'PeriodID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#vote_period_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'PeriodID',title:'期数ID',width:60}, 
+                        {field:'PeriodName',title:'期数名称',width:100}, 
+                        {field:'Introduction',title:'引言',width:400},
+                        {field:'Image',title:'顶部图片',width:100,formatter:function(value,rec,index){
+                                return '<img src="'+value+'?imageView2/0/w/200/h/200"/>';
+                            }
+                        },
+                        {field:'TopicName',title:'本期话题',width:150},
+                        {field:'Reward',title:'本期奖励',width:150}, 
+                        {field:'StartTime',title:'开始时间',width:150},                       
+                        {field:'EendTime',title:'结束时间',width:150},
+                        {field:'ViewContent',title:'获奖观点',width:150},
+                        {field:'Status',title:'状态',width:60,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '非当前期';
+                                        break;
+                                    case '1':
+                                        status = '<span style="color:red" >当前期</span>';
+                                        break;
+                                }
+                                return status;
+                            }
+                        }, 
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                            var c= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.statusHandler(\''+rec.PeriodID+'\')">';
+                                c += '<span class="l-btn-left">激活</span></a>';
+                                var a= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.PeriodID+'\')">';
+                                a += '<span class="l-btn-left">编辑</span></a>';
+                                if(rec.Status == 1){
+                                    return a;
+                                }else{
+                                    return c + a;
+                                }
+
+                                
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[10,20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#vote_period_list_toolbar").append($("#vote_period_list_searcher_container"));
+            },    
+};
+voteperiodObj.init();
+</script>

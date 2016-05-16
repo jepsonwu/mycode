@@ -1,0 +1,101 @@
+
+.video-subscription{background: #fff; height: 62px;}
+.vs-list{ display: -webkit-box; display: box; padding: 10px 0; height: 42px; background: #fff; position: fixed; top: 0; left: 0; width: 100%; border-bottom: #eee solid 1px;}
+.vs-avatar{ width: 40px; padding: 0 0 0 15px; }
+.vs-info{-webkit-box-flex: 1; box-flex: 1; padding: 0 6px 0 10px;
+}
+.vs-dingyue{width: 60px; padding: 0 15px 0 0;}
+.vs-avatar img{width: 40px; height: 40px; border-radius: 5px;}
+.vs-info strong{line-height: 22px; color: #333;}
+.vs-info p{font-size: 12px; color: #666; height: 20px; line-height: 20px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.vs-button{display: block; width: 60px; margin: 4px 0 0; line-height: 30px; color: #FF8114; border: #FFD2AA solid 1px; border-radius: 5px; text-align: center;}
+.vs-button.selected{color: #999; border-color: #ccc;}
+.vs-button span:nth-child(2){display: none;}
+.vs-button.selected span:nth-child(1){display: none;}
+.vs-button.selected span:nth-child(2){display: block;}
+
+.article-box{padding: 20px 15px 10px; color: #000;}
+.article-tit{line-height: 26px; font-size: 20px; font-weight: 100;}
+.article-minor{margin: 20px 0 0;}
+.article-minor2{margin: 10px 0 0;}
+.article-minor span{margin: 0 0 0 8px; color: #999;}
+.article-minor span:nth-child(1){color: #576b95; margin: 0;}
+.article-det{margin: 20px 0 0; width: 100%; overflow: hidden; word-break: break-all; line-height: 22px;}
+.article-det img{max-width: 100%; vertical-align: top;}
+.article-det video{width: 100%; box-sizing: border-box; border: #aaa solid 1px;}
+.article-votes-box{margin: 30px 0 20px; text-align: center;}
+.article-votes{width: 50px; height: 75px; cursor: pointer; display: inline-block; text-align: center; vertical-align: top;}
+.article-votes span{display: inline-block; width: 48px; height: 48px; border: #999 solid 1px; border-radius: 50px; background: url('/static/imgs/api/totle_bt_praise_normal.png') no-repeat center center ; background-size: 30px 30px;
+    -webkit-transition: all .3s linear; transition: all .3s linear;
+}
+.article-votes p{width: 50px; text-align: center; font-size: 12px; color: #999; height: 20px; overflow: hidden;}
+.article-votes.selected span{background-color: #FF8114; background-image: url('/static/imgs/api/totle_bt_praise_white.png'); border-color: #FF8114;}
+.article-votes.selected p{color: #ff8114;}
+
+/* activity - detail */
+.bg-activity{background: #F2F2F2;}
+.activity-aside{padding: 20px 15px; background: #F2F2F2; color: #000;}
+.activity-tit{font-size: 20px; font-weight: 100; }
+.activity-list{margin: 10px 0 0; line-height: 22px; color: #333;}
+.activity-list li{margin:6px 0 0; padding: 0 0 0 18px; background-repeat: no-repeat; background-position: 2px 5px; background-size: 12px;}
+.al-time{background-image: url('/static/imgs/api/activity-time.png');}
+.al-area{background-image: url('/static/imgs/api/activity-area.png');}
+.al-member{background-image: url('/static/imgs/api/activity-member.png');}
+.al-time strong{color: #ff8b26; font-size: 12px; padding: 2px 2px; border: #ff8b26 solid 1px; border-radius: 3px; font-weight: 100; margin: 0 0 0 2px;}
+
+.activity-box{width: 100%; overflow: hidden; word-break: break-all;}
+.activity-det{padding: 10px 15px 10px; background: #fff;}
+.activity-det img, .activity-det video{max-width: 100%; vertical-align: top;}
+.activity-votes-box{margin: 0; padding: 20px 15px 20px; background: #fff;}
+
+.article-author-list{ display: -webkit-box; display: box; padding: 10px 0; background: #fff; margin: 10px 0;}
+.au-avatar{ width: 40px; padding: 0 0 0 15px; }
+.au-info{-webkit-box-flex: 1; box-flex: 1; padding: 0 6px 0 10px;
+}
+.au-author{width: 60px; padding: 0 30px 0 0; line-height: 40px; height: 40px; color: #666; background: url('/static/imgs/api/activity-arrow-right.png') no-repeat 60px 14px; background-size: 6px 12px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.au-avatar img{width: 40px; height: 40px; border-radius: 5px;}
+.au-info strong{display: block; color: #333; line-height: 40px;}
+.auto-author strong{line-height: 40px;}
+
+.activity-enroll{position: fixed; left: 0; bottom: 0; width: 100%; border-top: #b2b2b2 solid 1px; background: #f2f2f2; height: 20px; line-height: 20px; padding: 15px 0; text-align: center; color: #FF8B26;}
+.activity-enroll.selected{background: #dedede}
+.ae-enroll{display: inline-block; font-size: 16px; background: url('/static/imgs/api/activity-selected.png') no-repeat 0 1px; padding: 0 0 0 25px; background-size: 16px 16px;}
+.ae-enroll i{font-style: normal;}
+.ae-enroll.selected{background-image: url('/static/imgs/api/activity.png');color: #999;}
+/*
+.ae-enroll i:nth-child(2){display: none;}
+.ae-enroll.selected i:nth-child(1){display: none;}
+.ae-enroll.selected i:nth-child(2){display: inline;}
+*/
+
+.article-origin{margin: 20px 0 0;}
+.article-origin a{color: #576b95; padding: 5px 0;}
+
+
+/* 个别字体做适配 */
+/* ios6(Plus) - h736 */
+@media(max-height: 740px){
+    .activity-tit{font-weight: bold;}
+    .article-tit{font-weight: bold;}
+}
+
+/* ios6 .0- h667 */
+@media(max-height: 670px){
+    .activity-tit{font-weight: bold;}
+    .article-tit{font-weight: bold;}
+
+    .al-time strong{font-weight: bold;}
+}
+
+/* ios5 - h568 */
+@media(max-height: 570px){
+    .activity-tit{font-weight: 100;}
+    .article-tit{font-weight: 100;}
+
+    .al-time strong{font-weight: 100;}
+}
+
+/* ios4 - h480 */
+@media(max-height: 480px){
+
+}

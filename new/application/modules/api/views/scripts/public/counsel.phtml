@@ -1,0 +1,247 @@
+<!DOCTYPE html >
+<html>
+<head>
+<title></title>
+<meta charset="utf-8" >
+<meta name="keywords" content="问财" >
+<meta name="description" content="财猪-问财" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta content="telephone=no" name="format-detection" >
+<meta name="member" content="<?php echo $this->detailInfo['MemberID'];?>" >
+<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0412" >
+
+<style>
+body{padding: 0 0 50px; background: #f2f2f2;}
+.cs-footer{position: fixed; width: 100%; bottom: 0; height: 50px; line-height: 50px; background: #FF8B26; text-align: center; font-size: 16px; color: #fff; font-weight: bold;}
+
+.cs-header{height: 130px; background: url('/static/imgs/api/counsel/icon-bg.png') no-repeat; background-size: 100% 100%; padding: 20px 15px 10px; color: #fff;}
+.cs-info{display: -webkit-box; display: box; }
+.cs-avatar{width: 50px; height: 50px; border-radius: 5px;}
+.cs-info > li:nth-child(1){width: 50px; height: 50px;}
+.cs-info > li:nth-child(2){-webkit-box-flex: 1; webkit-box-flex: 1; margin: 0 0 0 10px;}
+.cs-minor{position: absolute; bottom: 0; left: 0; background: rgba(255, 255, 255, .2); width: 100%; height: 40px; line-height: 40px; padding: 0 10px; box-sizing: border-box;}
+.cs-minor > span:nth-of-type(even){padding: 0 8px;}
+.cs-name{font-size: 16px; margin: 0 10px 0 0;}
+.cs-area{padding: 0 0 0 16px; background: url('/static/imgs/api/counsel/icon-area.png') no-repeat left center; background-size: 11px auto;}
+.cs-qua{margin: 2px 0 0;}
+.cs-qua > span{float:left; border: solid 1px; line-height: 14px; padding:2px 3px; border-radius: 2px; margin: 4px 6px 0 0; font-size: 12px;}
+
+.clist-counsel, .clist-comment{background: #fff;}
+.icon-list, .icon-star, .icon-clock{display: inline-block; padding: 0 0 0 20px; background: no-repeat left center; background-size: 16px auto;}
+.icon-list{background-image: url('/static/imgs/api/counsel/icon-list.png'); background-size: 14px auto;}
+.icon-star{background-image: url('/static/imgs/api/counsel/icon-star.png'); }
+.icon-clock{background-image: url('/static/imgs/api/counsel/icon-clock.png');}
+.counsel-one{line-height: 36px; padding: 2px 15px; border-bottom: #e6e6e6 solid 1px;}
+.co-tit{border-bottom: #e6e6e6 solid 1px; font-weight: bold;}
+.co-text{padding: 4px 0 0; line-height: 24px; color: #999;}
+.co-list{display: inline-block; margin: 0 10px 0 0; background: url('/static/imgs/api/counsel/icon-list-on.png') no-repeat left center; padding: 0 0 0 20px; background-size: 16px auto;}
+.co-star{display: inline-block; width: 100px; height: 15px; vertical-align: -2px; background: url('/static/imgs/api/counsel/icon-level.png') repeat-x left center; background-size: 20px auto; margin: 0 6px 0 0; overflow: hidden;}
+.co-star i{display: block; height: 15px; background: url('/static/imgs/api/counsel/icon-level-on.png') repeat-x left center; background-size: 20px auto;}
+.cs-more{line-height: 40px; font-size: 15px; font-weight: bold; color: #ff8d2a; text-align: center; background: #fff;}
+
+.clist-comment{background: #fff;}
+.clist-comment dt{line-height: 36px; color: #999; padding: 0 15px; border-bottom: #e6e6e6 solid 1px;}
+.comment-one{margin: 2px 15px 0; border-bottom: #e6e6e6 solid 1px;}
+.cm-info{line-height: 36px; }
+.cm-info > span:nth-child(1){float: left; color: #333;}
+.cm-info > span:nth-child(2){float: right; color: #999; font-size: 12px;}
+.cm-text{padding: 4px 0 0; line-height: 24px; color: #999;}
+.cm-minor{line-height: 40px;}
+
+
+@media (max-width: 360px){
+    .cs-minor > span:nth-of-type(even){padding: 0;}
+}
+</style>
+
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<section id="app00">
+
+    <header class="cs-header p-rela">
+        <ul class="cs-info">
+            <li><img class="cs-avatar" alt="avatar" :src="avatar | filterAvatar"></li>
+            <li>
+                <span class="cs-name">{{*name}}</span><span class="cs-area">{{*area}}</span>
+                <p class="cs-qua clearfix"><span v-for="one in quaArr">{{one}}</span></p>
+
+            </li>
+        </ul>
+
+        <div class="cs-minor">
+            <span class="icon-list">{{*consultNum}}人咨询</span>
+            <span>|</span>
+            <span class="icon-star">{{*commentNum}}人评价</span>
+            <span>|</span>
+            <span class="icon-clock">平均{{*receiveAverageTime}}小时接单</span>
+
+        </div>
+    </header>
+
+    <ul class="clist-counsel">
+        <li class="counsel-one" v-for="one in counsel">
+            <div class="co-tit">{{one.Title}}</div>
+            <p class="co-text">{{{one.Desc}}}</p>
+            <div class="co-info">
+                <span class="co-list">{{one.ConsultTotal}}人咨询</span>
+                <span class="co-star">
+                    <i style="width: {{one.Score*10}}px"></i>
+                </span>{{*one.Score}}分
+            </div>
+
+        </li>
+    </ul>
+    <div class="cs-more boxapp boxcaizhu" :class="{hide: counselFlag}" data-type="counsel" data-id="{{currentId}}" data-mode="other">查看更多主题</div>
+
+    <dl class="clist-comment mt">
+        <dt>评论（{{*commentListNum}}条）</dt>
+        <dd class="comment-one" v-for="one in comments">
+            <div class="cm-info clearfix">
+                <span>{{*one.UserName}}</span>
+                <span>{{*one.CreateTime | filterYear}}</span>
+            </div>
+            <p class="cm-text">{{{one.Comment | filterEmoji}}}</p>
+            <div class="cm-minor">
+                <span class="co-star"><i style="width: {{one.Score*10}}px"></i></span>{{*one.Score}}分
+            </div>
+
+        </dd>
+    </dl>
+    <div class="cs-more boxapp boxcaizhu" :class="{hide: commentFlag}" data-type="counsel" data-id="{{currentId}}" data-mode="other" data-mode="other">查看更多评价</div>
+
+    <footer class="cs-footer boxapp boxcaizhu" data-type="counsel" data-id="{{currentId}}" data-mode="other">立即约见</footer>
+
+</section>
+
+<div id="define-prompt"><app-defineprompt :pmodeflag.sync="pmodeflag" :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160422"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=16042215"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160405"></script>
+
+
+<script>
+
+var originId = location.href.match(/counselid\/(\d{1,10})/i);
+if(!originId){
+    originId = '';
+}else{
+    originId = originId[1]
+}
+var currentId = parseUrl('counselid') || originId;
+
+var pageInfo = getPageInfo('/api/counsel/get-financial-info', 'member_id', currentId);
+if(!pageInfo.getInfoFlag){location.href = '/api/public/empty'}
+
+document.getElementsByTagName('title')[0].innerHTML = pageInfo.RealName;
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('#share-pic');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = $('.cs-name').text();
+        opts.shareDes = '询财主页';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){
+
+        var version241 = detectAppVersion('2.4.1');
+
+        $('.boxcaizhu').click(function(){
+            if(version241){
+                location.href = 'caizhu://caizhu/counsel?id=' + currentId;
+            }else{
+                VMPrompt('您的版本不支持此操作, 赶紧去升级吧!!!', function(){
+                    location.href = 'http://m.caizhu.com';
+                }, true);
+            }
+        });
+
+    }
+
+    function otherRun(){}
+
+    function commonRun() {
+
+        var thisYear = new Date().getFullYear();
+        thisYear += '-';
+
+        Vue.filter('filterYear', function(a){
+            if(!a) return '';
+            var reg = new RegExp(thisYear, 'g');
+            return a.replace(reg, '');
+        });
+
+        var app00 = new Vue({
+            el: '#app00',
+            data: {
+                currentId: currentId,
+
+                avatar: pageInfo.Photo,
+                name: pageInfo.RealName,
+                area: pageInfo.City,
+                qualificationStr: pageInfo.Qualification,
+                consultNum: pageInfo.ConsultNum,
+                commentNum: pageInfo.CommentNum,
+                commentListNum: pageInfo.CommentListNum,
+                counselListNum: pageInfo.CounselListNum,
+                receiveAverageTime: pageInfo.ReceiveAverageTime,
+                counsel: pageInfo.Counsel.slice(0, 5),      // A
+                comments: pageInfo.Comments.slice(0, 2)      // A
+            },
+            computed:{
+                quaArr: function(){
+                    var arr;
+                    arr = this.qualificationStr.split(',');
+                    return arr;
+                },
+                counselFlag: function(){
+                    if(pageInfo.CounselListNum > 5) return false;
+                    return true;
+                },
+                commentFlag: function(){
+                if(pageInfo.CommentListNum > 2) return false;
+                    return true;
+                }
+            }
+        });
+
+
+    }
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

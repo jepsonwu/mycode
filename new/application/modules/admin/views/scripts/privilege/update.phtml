@@ -1,0 +1,31 @@
+<div class="easyui-panel" title="" style="border:0px;">
+	<div style="padding:10px 0 10px 60px;align:center;">
+		<form id="privilege_update_form" method="POST">
+			<table>
+					<tr>
+						<td>权限描述:</td>
+						<td><input class="easyui-validatebox" type="text" name="describe" data-options="required:true" value="<?php echo $this->privilege->Describe;?>"></input></td>
+					</tr>
+					<tr>
+						<td>主标识:</td>
+						<td><input class="easyui-validatebox" type="text" readonly name="main_sign" data-options="required:true" value="<?php echo $this->privilege->MainSign;?>"></input>(不可更改)</td>
+					</tr>
+					<tr>
+						<td>副标识:</td>
+						<td><input class="easyui-validatebox" type="text" readonly name="sub_sign" data-options="required:true" value="<?php echo $this->privilege->SubSign;?>"></input>(不可更改)</td>
+					</tr>
+					<tr>
+						<td colspan='2' class='footbar'>
+							<input type="hidden" name="privilege_id" value="<?php echo $this->privilege->PrivilegeID;?>"></input>
+						</td>
+					</tr>
+			</table>
+		</form>
+	</div>
+	
+	<div style="text-align:center;padding:5px">
+    	<a href="javascript:void(0)" class="easyui-linkbutton" id="privilege_update_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="privilege_update_form_close">关闭</a>
+    </div>
+	    
+</div>

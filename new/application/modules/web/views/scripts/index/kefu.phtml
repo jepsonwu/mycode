@@ -1,0 +1,44 @@
+<div class="banner">
+</div>
+<!-- 客服 -->
+<div class="main">
+	<div class="wrap">
+		<div class="tit">
+			<h2>客服</h2>
+			<span style="left:125px;">ABOUT CAIZHU</span>
+		</div>
+		<div class="tab">
+			<ul>
+				<li class="hover">通知</li>
+				<li>账号</li>
+				<li>记账</li>
+				<li>数据</li>
+				<div class="clear"></div>
+			</ul>
+		</div>
+		<div class="tab-content">
+			<div class="list news-list">
+				<ul>
+					<?php foreach ($this->data_list as $value):?>
+						<li>
+							<div class="news-date news-date-sm">
+								<span class="mon"><?php echo $value['month'];?></span>
+								<span class="day"><?php echo $value['day'];?></span>
+							</div>
+							<div class="news-info">
+								<h3><a href="news-detail.html"><?php echo $value['Title']?></a></h3>
+								<p><?php echo $value['Contents']?></p>
+							</div>
+						</li>
+					<?php endforeach;?>
+					<div class="clear"></div>
+				</ul>
+			</div>
+	
+		</div>
+		<div class="page">
+            <?=$this->paginationControl($this->data_list, 'Sliding', 'page.phtml')?>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>

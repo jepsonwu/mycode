@@ -1,0 +1,210 @@
+<!--内容部分-->
+<table id="column_article_list"></table>
+<div id="column_article_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	标题：
+	<input type="text" value="" name="Title" size="20"/> &nbsp;&nbsp;
+
+	状态：
+	<select name="Status">
+		<option value="">所有</option>
+		<option value="0">删除</option>
+		<option value="1">发表</option>
+		<option value="2">保存草稿</option>
+		<option value="3">暂存预览</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options=""/>
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""/>
+	<a class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+
+<div id="column_article_view"></div>
+<div id="img_dialog" class="easyui-dialog" title="img" closed="true" data-options="resizable:'true'"
+     style="width: 400px;height: 400px;">
+</div>
+
+<script type="text/javascript">
+	var column_articleObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'column-article','action'=>'list'));?>',
+		'editUrl': '<?php echo $this->url(array('controller'=>'column-article','action'=>'edit'));?>',
+		'adsLink': '<?php echo $this->url(array('controller'=>'column-article','action'=>'ads-link'));?>',
+		'joinSpecial':'<?php echo $this->url(array('controller'=>'column-article','action'=>'join-special'));?>',
+
+		//审核专栏
+		'edit_feature': {
+			'width': 300,
+			'height': 80,
+			'title': '编辑状态'
+		},
+
+		//广告链接
+		adsHandler: function (id) {
+			var _THIS_ = this;
+			_THIS_.view.window({
+				'href': _THIS_.adsLink + '?AID=' + id,
+				'width': 500,
+				'height': 150,
+				'modal': true,
+				'resizable': false,
+				'cache': false,
+				'title': '复制链接',
+				'onLoad': function () {
+					if (window.clipboardData) {
+						$('.copy_btn').click(function () {
+							var tempID = $(this).attr('data-value-id');
+							window.clipboardData.setData("Text", $("#" + tempID).val());
+							alert('复制成功！');
+						});
+					} else {
+						$(".copy_btn").zclip({
+							path: '/static/js/ZeroClipboard.swf',
+							copy: function () {
+								var tempID = $(this).attr('data-value-id');
+								return $("input#" + tempID).val();
+								//return $(this).prev('input').val();
+							},
+							afterCopy: function () {
+								alert('复制成功！');
+							}
+						});
+					}
+				}
+			});
+		},
+
+        //加入财猪日报
+        joinSpecialHandler: function (id) {
+            var _THIS_ = this;
+            $.messager.confirm('', '确定要加入吗?', function (d) {
+                if (d) {
+                    $.ajax({
+                        url: _THIS_.joinSpecial,
+                        type: 'POST',
+                        data: {article_id: id},
+                        dataType: 'json',
+                        success: function (ret) {
+                            if (ret.flag) {
+                                _THIS_.container.datagrid('reload');
+                            } else {
+                                $.messager.alert("提示信息", ret.msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        },
+
+
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'AID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#column_article_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'AID', title: '文章ID', width: 40},
+					{field: 'UserName', title: '会员名称', width: 60},
+					{field: 'ColumnID', title: '专栏ID', width: 40},
+					{field: 'Title', title: '标题', width: 150},
+					{field: 'Author', title: '作者', width: 50},
+					{field: 'Cover', title: '封面', width: 150},
+					{field: 'ArticleLink', title: '原文连接', width: 80},
+					{field: 'Content', title: '内容', width: 150},
+					{
+						field: 'Type', title: '类型', width: 70, formatter: function (value, rec, index) {
+						var type = '';
+						switch (value) {
+							case '1':
+								type = '原创';
+								break;
+							case '2':
+								type = '转载';
+								break;
+						}
+						return type;
+					}
+					},
+					{field: 'ReadNum', title: '阅读数量', width: 60},
+					{field: 'PraiseNum', title: '赞数量', width: 60},
+					{field: 'ShareNum', title: '分享数量', width: 60},
+					{
+						field: 'Status', title: '状态', width: 70, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '0':
+								status = '删除';
+								break;
+							case '1':
+								status = '发表';
+								break;
+							case '2':
+								status = '草稿';
+								break;
+							case '3':
+								status = '预览';
+								break;
+						}
+						return status;
+					}
+					},
+					{field: 'CreateTime', title: '创建时间', width: 150},
+					{field: 'PublishTime', title: '发布时间', width: 150},
+					{field: 'LiveNess', title: '活跃度', width: 80},
+					{field: 'QrcodeUrl', title: '二维码', width: 80},
+					{
+						field: 'opt', title: '操作', align: 'center', formatter: function (value, rec, index) {
+							var c = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+								'onclick="' + _THIS_.selfName + '.editHandler(\'?AID=' + rec.AID + '&Status=' + rec.Status + '\')">';
+							c += '<span class="l-btn-left">编辑</span></a>';
+							c += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="' + _THIS_.selfName + '.adsHandler(\'' + rec.AID + '\')">';
+							c += '<span class="l-btn-left">复制链接</span></a>';
+
+	                    	var j= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.joinSpecialHandler(\''+rec.AID+'\')">';
+	                    	j+= '<span class="l-btn-left">加入财猪日报</span></a>';
+	                    	if(rec.HasJoin){
+	                    		return c;
+	                    	}else{
+	                    		return c + j;
+	                    	}
+						}
+					}
+
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+
+		}
+	};
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	column_articleObj = contentCommon(column_articleObj, __CONTROLLER__);
+</script>

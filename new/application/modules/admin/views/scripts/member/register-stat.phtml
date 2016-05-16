@@ -1,0 +1,83 @@
+<table id="register_stat_list"></table>
+<div id="register_stat_list_toolbar"></div>
+<div id="register_stat_view_window"></div>
+<div id="register_stat_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="registerStat.containerObj.edatagrid('reload');">刷新</a>
+    时间：
+    <input class="easyui-datebox" type="text" name="start_date" value="<?php echo date('Y-m-d',strtotime('-1 week')); ?>" data-options=""></input>
+    至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="<?php echo date('Y-m-d',time());?>" data-options=""></input> 
+    &nbsp;&nbsp;<a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toRegisterStatViewList(1)" iconCls="icon-search">搜索</a>
+</div>
+<div id="register_stat_window"></div>
+
+<script type="text/javascript">
+    $("#register_stat_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+        	toRegisterStatViewList(1);
+        }    
+    });
+    
+    function toRegisterStatViewList(flag)
+    {
+        var start_date       = $("#register_stat_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#register_stat_list_searcher_container input[name='end_date']").val();
+
+	        registerStat.containerObj.datagrid('load', {
+	            start_date:start_date,
+	            end_date:end_date
+	       });
+    }
+
+var registerStat = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'member','action'=>'register-stat'));?>',
+        'containerObj':$("#register_stat_list"),
+        'viewWindowObj':$("#register_stat_window"),
+        
+        'selfName':'registerStat',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'RegisterTime',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#register_stat_list_toolbar',
+                    //设置列   
+                    columns:[[
+	                    {field:'RegisterTime',title:'日期',width:200},
+	                    {field:'RegisterCount',title:'注册量',width:150}
+                      
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#register_stat_list_toolbar").append($("#register_stat_list_searcher_container"));
+            },    
+};
+registerStat.init();
+</script>

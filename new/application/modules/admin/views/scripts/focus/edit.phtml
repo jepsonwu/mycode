@@ -1,0 +1,48 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="focus_edit_form" method="post" enctype="multipart/form-data" action="">
+           <table class='form_table'>                
+                <tr>
+                    <th width="20%">关注点：</th>
+                    <td width="80%"><input class="easyui-validatebox" type="text" name="FocusName" value = "<?php echo $this->focus['FocusName'];?>" data-options="required:true" size="50" /></td>
+                </tr>
+                <tr>
+                    <th>标签类型：</th>
+                    <td>
+                        <input  type="checkbox" name="focusType[]" value = "IsBeforeRegisterFocus" <?php if($this->focus['IsBeforeRegisterFocus']==1):?> checked = "checked" <?php endif;?>/> 注册前关注点&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input  type="checkbox" name="focusType[]" value = "IsRegistedFocus" <?php if($this->focus['IsRegistedFocus']==1):?> checked = "checked" <?php endif;?>/> 注册后关注点&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input  type="checkbox" name="focusType[]" value = "IsGroupFocus" <?php if($this->focus['IsGroupFocus']==1):?> checked = "checked" <?php endif;?> /> 群标签&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input  type="checkbox" name="focusType[]" value = "IsTopicFocus" <?php if($this->focus['IsTopicFocus']==1):?> checked = "checked" <?php endif;?>/> 话题标签
+                    </td>
+                </tr>
+                <tr>
+                    <th>图片：</th>
+                    <td>
+                        <image width="50" height="50" src="<?php echo $this->focus['FocusImg'].'?imageView2/0/w/200/h/200' ?>" />
+                        <input name = "image"  type="file"/>
+                    </td>
+                </tr>   
+                <tr>
+                    <th>所属频道：</th>
+                    <td>
+                        <?php if( isset($this->channels) && $this->channels): ?>
+                            <?php  foreach ($this->channels as $item): ?>                                  
+                                <label><input type="checkbox" <?php if(in_array($item['ChannelID'], $this->channelIDArr)) :?>checked="checked"<?php endif;?> name="ChannelID[]" value="<?=$item['ChannelID'];?>" />&nbsp;<?=$item['ChannelName'];?></label>&nbsp;&nbsp;&nbsp;                        
+                            <?php endforeach;?>
+                        <?php endif;?>
+                    </td>
+                </tr>               
+                <tr>
+                    <td colspan='2' class='footbar'>
+                        <input type="hidden" name="FocusID" value="<?php echo $this->focus['FocusID']?>" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="focus_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="focus_edit_form_close">关闭</a>
+    </div>
+</div>

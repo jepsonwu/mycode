@@ -1,0 +1,122 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="lesson_class_add_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table' cellspacing="15">
+                <tr>
+                    <th width="20%">课堂模块：</th>
+                    <td width="80%">
+                        <select name="ModuleID">
+                            <option value="0">请选择课堂模块</option>
+                            <?php foreach ($this->moduleList as $item):?>
+                                <option value="<?php echo $item['ModuleID']?>"><?php echo $item['ModuleName'];?></option>
+                            <?php endforeach;?>
+                            
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">课程：</th>
+                    <td width="80%">
+                        <select name="LessonID">
+                            <option value="0" lessonType="0">请选择课程</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">课时标题：</th>
+                    <td width="80%"><input class="easyui-validatebox" type="text" name="ClassTitle" data-options="required:true" size="50" /></td>
+                </tr>
+                <tr>
+                    <th>课时图片：</th>
+                    <td>
+                        <input name = "image"  type="file" value='请选择图片'/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>状态：</th>
+                    <td>
+                        <input name="Status" type="radio" value="0" />隐藏
+                        <input name="Status" checked="checked" type="radio" value="1" />显示
+                    </td>
+                </tr>
+                <tr name='lessonType_2' style="display: none;">
+                    <th width="20%">视频链接：</th>
+                    <td width="80%">
+                        <input type="text" name="VideoLink" class="easyui-validatebox" data-options="required:true" size="50" />
+                    </td>
+                </tr>
+                <tr name='lessonType_1'  style="display: none;">
+                    <th width="20%">页面类型：</th>
+                    <td width="80%">
+                        <input name="IsNative" checked="checked" type="radio" value="0" />H5
+                        <input name="IsNative" type="radio" value="1" />原生
+                    </td>
+                </tr>
+                <tr name='lessonType_1_link' style="display: none;">
+                    <th width="20%">链接：</th>
+                    <td width="80%">
+                        <input type="text" name="ClassLink" class="easyui-validatebox" data-options="required:true" size="50" />
+                    </td>
+                </tr>
+            </table>
+            <input type='hidden' name='lessonType'/>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_class_add_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_class_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#lesson_class_add_form select[name="ModuleID"]').change(function(){
+            getLessonList($(this).val());
+            $('#lesson_class_add_form tr[name="lessonType_2"]').hide();
+            $('#lesson_class_add_form tr[name="lessonType_1"],tr[name="lessonType_1_link"]').hide();
+        })
+        
+        $('#lesson_class_add_form select[name="LessonID"]').bind('change',function(){
+            var lessonType = $('#lesson_class_add_form select[name="LessonID"]').find("option:selected").attr('lessonType');
+            if(lessonType==1){
+                $('#lesson_class_add_form tr[name="lessonType_2"]').hide();
+                $('#lesson_class_add_form tr[name="lessonType_1"]').show();
+                if($('#lesson_class_add_form input[name="IsNative"]:checked').val()==0){
+                    $('#lesson_class_add_form tr[name="lessonType_1_link"]').show();
+                }else{
+                    $('#lesson_class_add_form tr[name="lessonType_1_link"]').hide();
+                }
+            }else{
+                $('#lesson_class_add_form tr[name="lessonType_2"]').show();
+                $('#lesson_class_add_form tr[name="lessonType_1"],tr[name="lessonType_1_link"]').hide();
+            }
+            $('#lesson_class_add_form input[name="lessonType"]').val(lessonType);
+        })
+        
+        $('#lesson_class_add_form input[name="IsNative"]').click(function(){
+            if($(this).val()==0){
+                $('#lesson_class_add_form tr[name="lessonType_1_link"]').show();
+            }else{
+                $('#lesson_class_add_form tr[name="lessonType_1_link"]').hide();
+            }
+        })
+        function getLessonList(ModuleID){
+            $.ajax({
+                url : '/admin/lesson/get-lesson-list-by-module',
+                type:"post",
+                data:{ModuleID:ModuleID},
+                dataType: 'json',
+                success: function(data){
+                    var option_html = '<option value="0" lessonType="0">请选择课程</option>';
+                    for(var i=0;i<data.list.length;i++){
+                        option_html += '<option value="'+data.list[i].LessonID+'" lessonType="'+data.list[i].LessonType+'">'+data.list[i].LessonTitle+'</option>' 
+                    }
+                    $('#lesson_class_add_form select[name="LessonID"]').html(option_html);
+                },
+                error: function (){
+
+                }
+            });
+        }
+    })
+</script>

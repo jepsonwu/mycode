@@ -1,0 +1,218 @@
+<!--内容部分-->
+<table id="best_list"></table>
+<div id="best_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	<a id="undo" class="easyui-linkbutton" iconCls="icon-undo" plain="true">撤销头衔</a>
+	会员名：
+	<input type="text" value="" name="UserName" size="20"/> &nbsp;&nbsp;
+	状态：
+	<select name="Status">
+		<option value="">所有</option>
+		<option value="0">失效</option>
+		<option value="1">待认证</option>
+		<option value="2">有效</option>
+		<option value="3">待取消</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options=""/>
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""/>
+	<a class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+
+<div id="best_view"></div>
+<div id="img_dialog" class="easyui-dialog" title="img" closed="true" data-options="resizable:'true'"
+     style="width: 400px;height: 400px;">
+</div>
+
+<script type="text/javascript">
+	var bestObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'best','action'=>'list'));?>',
+		'approve_linkRul': '<?php echo $this->url(array('controller'=>'best','action'=>'approve-link'));?>',
+		'repeat_inviteRul': '<?php echo $this->url(array('controller'=>'best','action'=>'repeat-invite'));?>',
+		'cancelUrl': '<?php echo $this->url(array('controller'=>'best','action'=>'cancel'));?>',
+		//重新发送链接
+		repeat_inviteHandler: function (id) {
+			var _THIS_ = this;
+			if (typeof id != 'undefined') {
+				$.ajax({
+					type: 'GET',
+					url: _THIS_.repeat_inviteRul + "?BID=" + id,
+					dataType: 'json',
+					success: function (data) {
+						if (data.flag == 0) {
+							alert(data.msg);
+						} else {
+							alert("邀请成功");
+							_THIS_.container.datagrid('reload');
+						}
+					},
+					error: function (msg) {
+						alert("邀请失败");
+					}
+				});
+			}
+		},
+
+		cancelHandler: function (id) {
+			var _THIS_ = this;
+			if (typeof id != 'undefined') {
+				$.ajax({
+					type: 'GET',
+					url: _THIS_.cancelUrl + "?BID=" + id,
+					dataType: 'json',
+					success: function (data) {
+						if (data.flag == 0) {
+							alert(data.msg);
+						} else {
+							alert("取消成功");
+							_THIS_.container.datagrid('reload');
+						}
+					},
+					error: function (msg) {
+						alert("取消失败");
+					}
+				});
+			}
+		},
+
+		//广告链接
+		approveHandler: function (id) {
+			var _THIS_ = this;
+			_THIS_.view.window({
+				'href': _THIS_.approve_linkRul + '?BID=' + id,
+				'width': 600,
+				'height': 100,
+				'modal': true,
+				'resizable': false,
+				'cache': false,
+				'title': '复制链接',
+				'onLoad': function () {
+					if (window.clipboardData) {
+						$('.copy_btn').click(function () {
+							var tempID = $(this).attr('data-value-id');
+							window.clipboardData.setData("Text", $("#" + tempID).val());
+							alert('复制成功！');
+						});
+					} else {
+						$(".copy_btn").zclip({
+							path: '/static/js/ZeroClipboard.swf',
+							copy: function () {
+								var tempID = $(this).attr('data-value-id');
+								return $("input#" + tempID).val();
+								//return $(this).prev('input').val();
+							},
+							afterCopy: function () {
+								alert('复制成功！');
+							}
+						});
+					}
+				}
+			});
+		},
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitbests:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: false,
+
+				idField: 'BID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#best_list_toolbar',
+				frozenColumns: [[
+					{field: 'ck', checkbox: true},
+					{field: 'BID', title: 'ID', width: 60}
+				]],
+				//设置列
+				columns: [[
+					{field: 'UserName', title: '会员名', width: 150},
+					{field: 'InviteCode', title: '邀请码', width: 60},
+					{field: 'TitleName', title: '头衔', width: 150},
+					{
+						field: 'Status', title: '状态', width: 70, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '0':
+								status = '失效';
+								break;
+							case '1':
+								status = '待认证';
+								break;
+							case '2':
+								status = '有效';
+								break;
+							case '3':
+								status = '待撤销';
+								break;
+						}
+						return status;
+					}
+					},
+					{field: 'CreateTime', title: '创建时间', width: 150},
+					{field: 'UpdateTime', title: '修改时间', width: 150},
+					{
+						field: 'opt', title: '操作', align: 'center', formatter: function (value, rec, index) {
+						var timestamp = new Date().getTime();
+						var c = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="' + _THIS_.selfName + '.approveHandler(\'' + rec.BID + '\')">';
+						c += '<span class="l-btn-left">认证链接</span></a>';
+						if (rec.Status == 1) {
+							c += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="' + _THIS_.selfName + '.repeat_inviteHandler(\'' + rec.BID + '\')">';
+							c += '<span class="l-btn-left">再次邀请</span></a>';
+						} else if (rec.Status == 2) {
+							c += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="' + _THIS_.selfName + '.cancelHandler(\'' + rec.BID + '&type=1\')">';
+							c += '<span class="l-btn-left">取消头衔</span></a>';
+						} else if (rec.Status == 3 && (timestamp / 1000 - rec.update_time >= 86400)) {
+							c += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="' + _THIS_.selfName + '.cancelHandler(\'' + rec.BID + '&type=2\')">';
+							c += '<span class="l-btn-left">再次取消</span></a>';
+						}
+						return c;
+					}
+					}
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+
+		}
+	};
+
+	//批量undo
+	$("#undo").click(function () {
+		var ids = "";
+		var rows = $('#best_list').datagrid('getSelections');
+
+		if (rows == '') {
+			alert("请选择头衔");
+		} else {
+			for (var i = 0; i < rows.length; i++) {
+				ids += rows[i].BID + ",";
+			}
+
+			bestObj.cancelHandler(ids + "&type=1");
+		}
+	});
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	bestObj = contentCommon(bestObj, __CONTROLLER__);
+</script>

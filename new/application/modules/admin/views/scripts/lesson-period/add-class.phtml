@@ -1,0 +1,144 @@
+<link rel="stylesheet" type="text/css" href="/static/css/admin/jquery.bigcolorpicker.css" />
+<style>
+.window .form_table {
+    width: 100%;
+    border:1px solid #e6e6e6;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+.window .form_table tr {
+    border:1px dashed #e6e6e6;
+    height: 60px;
+    vertical-align: middle;
+
+}
+.window .form_table1 {
+    width: 100%;
+    padding: 20px 20px;
+    margin-top: 13px;
+    
+}
+.window .bold {
+    font-weight: bold;
+}
+.window .ml15 {
+    margin-left: 15px;
+}
+
+/* 重写颜色选择器位置 */
+#bigpicker{
+    position: fixed;
+    left: 50% !important;
+    top: 50% !important;
+    width: 230px !important;
+    height: 160px !important;
+    margin-left: 63px !important;
+    margin-top: -80px !important;
+
+}
+
+</style>
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding: 10px 30px;align:center; margin:0 auto;">
+        <form id="lesson_class_add_form" method="post" action="" enctype="multipart/form-data">
+            <table class="form_table form_table1" class_detail_type="2" class_detail_num='1'>
+                <tr>
+                    <th colspan="1"><span class="ml15 bold">图片：</span></th>
+                    <td colspan="3">
+                        <input name = "image1"  type="file"/>
+                    </td>
+                    <td colspan="1"><a href="javascript:;" name="del_detail_div">删除</a></td>
+                </tr>
+            </table>
+            <table class="form_table" cellspacing="15" class_detail_type="1" class_detail_num='2'>
+                <tr>
+                    <th colspan="1"><span class="ml15 bold">内容：</span></th>
+                    <td colspan="3">
+                        <textarea class="easyui-validatebox" rows="4" cols="50" name="Detail_Content2"></textarea>
+                    </td>
+                    <td colspan="1"></td>
+                    <td colspan="1" rowspan="3" style="border-left: 1px dashed #e6e6e6;text-align: center;"><a href="javascript:;" name="del_detail_div">删除</a></td>
+                </tr>
+                <tr>
+                    <th colspan="1"><span class="ml15 bold">是否加粗：</span></th>
+                    <td colspan="3"><input name="WordIsBold2" checked="checked" type="radio" value="0" />不加粗
+                     <input name="WordIsBold2" type="radio" value="1" />加粗</td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                </tr>
+                <tr>
+                    <th colspan="1"><span class="ml15 bold">字体颜色：</span></th>
+                    <td colspan="3">
+                        <input type='text' name='detail_color2' value=""/>
+                    </td>
+                    <td colspan="1"></td>
+                    <td colspan="1"></td>
+                </tr>
+            </table>
+            <input type="hidden" name="max_num" value="2"/>
+            <input type="hidden" name="class_detail_order" value="image-1,Detail_Content-2,"/>
+            <input type="hidden" name="Class_ID" value="<?php echo $this->class_id; ?>"/>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="class_detail_add_img">添加图片</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="class_detail_add_word">添加文字</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_class_add_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="class_detail_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/static/js/jquery.bigcolorpicker.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#class_detail_add_word').click(function(){
+            var max_num = parseInt($('#lesson_class_add_form input[name="max_num"]').val());
+            var num = max_num+1;
+            $('#lesson_class_add_form input[name="class_detail_order"]').val($('#lesson_class_add_form input[name="class_detail_order"]').val()+'Detail_Content-'+num+',');
+            $('#lesson_class_add_form input[name="max_num"]').val(num);
+            var html = '<table class="form_table" cellspacing="15" class_detail_type="1" class_detail_num="'+num+'"><tr><th colspan="1"><span class="ml15 bold">内容：</span></th><td colspan="3">'+
+                        '<textarea class="easyui-validatebox" name="Detail_Content'+num+'" rows="4" cols="50"></textarea>'+
+                        '</td><td colspan="1"></td><td colspan="1" rowspan="3" style="border-left: 1px dashed #e6e6e6;text-align: center;"><a href="javascript:;" name="del_detail_div">删除</a></td>'+
+                        '</tr><tr><th colspan="1"><span class="ml15 bold">是否加粗：</span></th><td colspan="3"><input name="WordIsBold'+num+'" checked="checked" type="radio" value="0" />不加粗'+
+                        '<input name="WordIsBold'+num+'" type="radio" value="1" />显示</td><td colspan="1"></td><td colspan="1"></td>'+
+                        '</tr><tr><th colspan="1"><span class="ml15 bold">字体颜色：</span></th><td colspan="3"><input type="text" name="detail_color'+num+'"/></td><td colspan="1"></td><td colspan="1"></td></tr></table>';
+            $('#lesson_class_add_form').append(html);
+            //resetColorpicker('detail_color'+num);
+            var objName = 'detail_color'+num;
+            $("input[name='"+objName+"']").bigColorpicker(function(el, color) {
+                $(el).val(color);
+            });
+        });
+        $('#class_detail_add_img').click(function(){
+            var max_num = parseInt($('#lesson_class_add_form input[name="max_num"]').val());
+            var num = max_num+1;
+            $('#lesson_class_add_form input[name="class_detail_order"]').val($('#lesson_class_add_form input[name="class_detail_order"]').val()+'image-'+num+',');
+            $('#lesson_class_add_form input[name="max_num"]').val(num);
+            var html = '<table class="form_table form_table1"  class_detail_type="2" class_detail_num="'+num+'"><tr><th colspan="1"><span class="ml15 bold">图片：</span></th><td colspan="3"><input name = "image'+num+'"  type="file"/></td><td colspan="1"><a href="javascript:;" name="del_detail_div">删除</a></td></tr></table>';
+            $('#lesson_class_add_form').append(html);
+        });
+        $('.easyui-panel').delegate('a[name="del_detail_div"]','click',function(){
+            var tableObj = $(this).parents('table');
+            var class_detail_order = $('#lesson_class_add_form input[name="class_detail_order"]').val();
+            var class_detail_type = tableObj.attr('class_detail_type');
+            if(class_detail_type==1){
+                var str = 'Detail_Content-'+tableObj.attr('class_detail_num');
+            }else{
+                var str = 'image-'+tableObj.attr('class_detail_num');
+            }
+            $('#lesson_class_add_form input[name="class_detail_order"]').val(class_detail_order.replace(str+',',""));
+            tableObj.remove();
+        })
+        
+        //resetColorpicker('detail_color2');
+        $("input[name='detail_color2']").bigColorpicker(function(el, color) {
+            $(el).val(color);
+        });
+        
+        function resetColorpicker(objName){
+            $("input[name='"+objName+"']").bigColorpicker(function(el, color) {
+                $(el).val(color);
+            });
+        }
+    })
+</script>

@@ -1,0 +1,24 @@
+   <div class="main-right fr">
+        <h2 class="content-tit">消息通知</h2>
+
+        <ul class="notice-list">
+         <?php foreach ($this->noticeInfo as $value):?>
+            <li class="notice-one clearfix">
+           
+                <div class="notice-left fl">
+                    <span><?php echo $value['date'];?></span>
+                    <span><?php echo $value['time'];?></span>
+                </div>
+                
+                <div class="notice-right fr">
+                    <p>系统公告</p>
+                    <a href="/column/notice-detail?noticeID=<?php echo $value['NoticeID']?>" class="notice-des"><?php echo $value['Title'];?></a>
+                </div>
+            </li>
+            <?php endforeach;?>
+
+        </ul>
+
+        <?=$this->paginationControl($this->noticeInfo, 'Sliding', 'page.phtml')?>
+
+    </div> 

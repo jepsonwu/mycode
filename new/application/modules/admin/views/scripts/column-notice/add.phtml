@@ -1,0 +1,46 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 30px;align:center;">
+
+		<form id="column_notice_add_form" method="post" enctype="multipart/form-data">
+			<table class='form_table'>
+				<tr>
+					<th width="20%">公告标题：</th>
+					<td width="80%"><input class="easyui-validatebox" type="text" name="Title"
+					                       value=""
+					                       data-options="required:true"
+					                       size="50"/></td>
+				</tr>
+				<tr>
+					<th width="20%">公告内容：</th>
+					<td width="80%">
+						<textarea style="width: 350px;height: 300px;" class="easyui-validatebox" name="Content"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>类型：</th>
+					<td>
+						<select name="Type">
+							<option value="1" >公告</option>
+							<option value="2">通知</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>状态：</th>
+					<td>
+						<select name="Status">
+							<option value="0">无效</option>
+							<option value="1" selected="selected">有效</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="column_notice_add_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="column_notice_add_form_close">关闭</a>
+	</div>
+
+</div>

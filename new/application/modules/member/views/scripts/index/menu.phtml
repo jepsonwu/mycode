@@ -1,0 +1,46 @@
+       <div class="m-side">
+            <dl>
+                <dt><?=$this->translate('view.member.menu.trade')?><i class='m-side-dt-icon'></i></dt> 
+                <dd>
+                    <a href="/member/escrow/start"<? if($this->activeMenuTab=='escrow-start'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.trade.new')?></a>
+                </dd>
+                <dd>
+                    <a href="/member/escrow/list"<? if($this->activeMenuTab=='escrow-list'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.trade.unfinish')?></a>
+                </dd>
+<dd>
+                    <a href="/member/escrow/history"<? if($this->activeMenuTab=='escrow-history'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.trade.history')?></a>
+                </dd>
+            </dl> 
+            <dl>
+                <dt><?=$this->translate('view.member.menu.finance')?><i class='m-side-dt-icon'></i></dt>
+                <dd>
+                    <a href="/member/finance/deposit"<? if($this->activeMenuTab=='finance-deposit'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.finance.deposit')?></a>
+                </dd>
+                <dd>
+                    <a href="/member/finance/withdrawal"<? if($this->activeMenuTab=='finance-withdrawal'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.finance.widthdrawal')?></a>
+                </dd>
+<dd>
+                    <a href="/member/finance/exchange"<? if($this->activeMenuTab=='finance-exchange'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.finance.exchange')?></a>
+                </dd>
+                <dd>
+                    <a href="/member/finance/record"<? if($this->activeMenuTab=='finance-record'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.finance.record')?></a>
+                </dd>
+            </dl>
+            <dl>
+                <dt><?=$this->translate('view.member.menu.account')?><i class='m-side-dt-icon'></i></dt>
+                <dd>
+                    <a href="/member/account/bank"<? if($this->activeMenuTab=='account-bank'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.account.bank')?></a>
+                </dd>
+<dd>
+                    <a href="/member/account/activate"<? if($this->activeMenuTab=='account-activate'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.account.activate')?></a>
+                </dd>
+                <dd>
+                    <a href="/member/account/profile"<? if($this->activeMenuTab=='account-profile'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.account.profile')?></a>
+                </dd>
+              
+                <dd>
+                    <a href="/member/account/change-password" <? if($this->activeMenuTab=='account-change-password'):?> class="curr"<?php endif;?>><?=$this->translate('view.member.menu.account.change.password')?></a>
+                </dd>
+                
+            </dl>
+        </div>

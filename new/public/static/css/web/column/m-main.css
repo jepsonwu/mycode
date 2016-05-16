@@ -1,0 +1,212 @@
+@charset"utf-8";
+/**
+*   三思 2012.7.1
+*   Made by 492831343@qq.com
+**/
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+img {
+    border: none;
+    vertical-align: middle;
+}
+
+ul,ol,li {
+    list-style: none;
+}
+
+section,article,aside,header,footer,nav,dialog,figure {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+html,body {
+    font: 14px/1.5 helvetica,arial,"Microsoft YaHei","微软雅黑",sans-serif;
+    -webkit-tap-highlight-color: rgba(255,0,0,0);
+}
+
+.fl,.f_left {
+    float: left;
+}
+
+.fr,.f_right {
+    float: right;
+}
+
+.clearfix:after {
+	content: '';display:block;height:0;clear:both;
+}
+
+a {
+    outline: none;
+}
+
+a:link,a:visited,a:active {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffa640;
+    text-decoration: none;
+}
+
+.mt {
+    margin-top: 10px;
+}
+
+.mr {
+    margin-right: 10px;
+}
+
+.mb {
+    margin-bottom: 10px;
+}
+
+.ml {
+    margin-left: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mr20 {
+    margin-right: 20px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.f_clear {
+    clear: both;
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+.p-rela, .p-relative {
+    position: relative;
+}
+
+.p-abso, .p-absolute {
+    position: absolute;
+}
+
+.fc-000 {
+    color: #000;
+}
+
+.fc-fff {
+    color: #fff;
+}
+
+.fc-333 {
+    color: #333;
+}
+
+.fc-666 {
+    color: #666;
+}
+
+.fc-999 {
+    color: #999;
+}
+
+.fc-ccc {
+    color: #ccc;
+}
+
+.fc_f00 {
+    color: #f00;
+}
+
+.fc-c00 {
+    color: #c00;
+}
+
+.fc-green {
+    color: #009901;
+}
+
+.fc-cheng {
+    color: #FF7800;
+}
+
+.fc-bigred {
+    color: #C00;
+}
+
+.fm-heit {
+    font-family: "SimHei","STHei";
+}
+
+.fm-song {
+    font-family: "SimSun","STSong";
+}
+
+.fm-weir {
+    font-family: "Microsoft YaHei","微软雅黑";
+}
+
+.fs-12 {
+    font-size: 12px;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+
+.fs-16 {
+    font-size: 16px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.fs-20 {
+    font-size: 20px;
+}
+
+.fs-22 {
+    font-size: 22px;
+}
+
+.fw-thin,.fw-normal {
+	font-weight: normal;
+}
+
+.fw-bold {
+	font-weight: bold;
+}
+
+.cursor-default {
+	cursor: default;
+}
+
+.cursor-point {
+	cursor: point;
+}

@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<title>财猪心愿购物车</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="keywords" content="财猪">
+	<meta name="description" content="财猪">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main.css">
+	<link href="http://fe.caizhu.com/public/css/callcaizhu/prompt.css" rel="stylesheet">
+	<link href="/static/css/api/activity/wish160126/wish.css?5" rel="stylesheet">
+</head>
+<body>
+
+<div id="init-pageshow">
+	<div class="init-pageshow" :class="{hide: pageshowflag}"></div>
+</div>
+
+<img class="hide" src="/static/images/api/activity/wish160126/share-pic.png" id="share-pic">
+
+<figure class="top-show">
+	<img src="/static/images/api/activity/wish160126/index-00.png" alt="show">
+	<img src="/static/images/api/activity/wish160126/index-01.png" alt="show">
+</figure>
+
+<section id="app00">
+	<div class="index-info clearfix">
+		<span class="fl hide" @click="doCoupon">我的礼券：{{*couponNum}}</span>
+		<span class="fr" @click="openRule">活动规则</span>
+	</div>
+</section>
+
+<section id="app01">
+	<div class="index-inner">
+
+		<div class="index-preface p-rela">
+			<span></span>
+
+			<p>{{*indexPreface}}</p>
+
+			<div class="make-wish p-abso" @click="toWish">
+				<span>我要<br>去许愿</span>
+			</div>
+		</div>
+
+		<ul class="list">
+			<?php
+			if (!empty($this->wish_list)) {
+
+				for ($j = 0; $j < $this->wish_list_count; $j++) {
+					for ($i = 0; $i < count($this->wish_list); $i++) {
+						$wish =& $this->wish_list[$i];
+						$gid =& $wish['GID'][$j];
+						if (isset($gid)) { ?>
+							<li class="list-onebox">
+								<div class="list-one">
+									<img
+										src="<?php echo empty($wish['Avatar']) ? 'http://img.caizhu.com/default.png' : $wish['Avatar']; ?>">
+
+									<div class="list-info clearfix">
+										<div class="name"><?php
+											$phone = substr($wish['Phone'], 0, 3) . '****' . substr($wish['Phone'], -4);
+											echo $this->is_app ? ($wish['MemberID'] > 0 ? $wish['UserName'] : $phone) : $phone; ?></div>
+										<div class="gift"><?php echo "领到了" . $this->gift_list[$gid]; ?></div>
+									</div>
+								</div>
+							</li>
+							<?php
+						}
+					}
+				}
+			}
+			?>
+		</ul>
+	</div>
+</section>
+
+<div id="app-innerprompt">
+	<app-innerprompt v-bind:ipstr.sync="ipstr" :ipflag.sync="ipflag" :ipflag00.sync="ipflag00" :ipflag01.sync="ipflag01"
+	                 :ipflag04.sync="ipflag04" :ipflag05.sync="ipflag05" :ipflag09.sync="ipflag09"
+	                 :ipflagrule.sync="ipflagrule" :ipflagtel.sync="ipflagtel" :ipflagform.sync="ipflagform"
+	                 :ipflagwish.sync="ipflagwish" :formtel.sync="formtel" :formname.sync="formname"
+	                 :formtel2.sync="formtel2" :formarea.sync="formarea"></app-innerprompt>
+</div>
+
+<div id="define-prompt">
+	<app-defineprompt :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt>
+</div>
+<div id="app-prompt">
+	<app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt>
+</div>
+
+<script src="http://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="http://fe.caizhu.com/public/js/vue.min.js?4"></script>
+<script src="/static/js/api/activity/wish160126/vue.inner.prompt.js?v=111"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160108"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-common.js"></script>
+<script src="/static/js/api/activity/wish160126/h5-action-v3.js?date=160203"></script>
+<script>
+
+	var pIsLogin = '<?php echo $this->is_login?>',
+		pIsWish = '<?php echo $this->is_wish;?>',
+		pIsApp = '<?php echo $this->is_app?>',
+		pIphone = '<?php echo $this->phone?>',
+		pIsPrivilege = '<?php echo $this->is_privilege;?>',
+		pWishCount = '<?php echo $this->wish_count;?>';
+	function initShareData() {
+		var opts = {},
+			sharePic = $('#share-pic');
+		if (sharePic.length > 0) {
+			sharePic = sharePic[0].src
+		} else {
+			sharePic = '';
+		}
+		opts.sharePic = 'http://img.haimi.com/Fixn0Lnw1uAUEW5ksn8L5NB1xdk3';
+		opts.shareTitle = '够朋友的就进来帮我完成心愿！再来一人，所有礼物带回家！';
+		opts.shareDes = '财猪心愿购物车和你快乐过新年!过来挑选你喜欢的商品,帮你免单哦~！';
+		opts.shareLink = location.href;
+
+		return opts;
+	}
+	var opts = {};
+
+	opts.caizhuRun = function () {
+		caizhuRun();
+	}
+	opts.otherRun = function () {
+		otherRun();
+	}
+	opts.commonRun = function () {
+		commonRun();
+	}
+
+		opts.appDebug = true;
+	initAction(opts);
+
+	function caizhuRun() {
+		var VM00 = new Vue({
+			el: '#app00',
+			data: {
+				couponNum: pWishCount
+			},
+			methods: {
+				doCoupon: function () {
+					if (pIsWish == 0 && this.couponNum == 0) {
+						VMIPrompt('您还没有获得礼券，请先去许愿吧~', function () {
+							//location.href = '/api/activity-wish/gift-list';
+						});
+					} else if (pIsWish == 1 && this.couponNum == 0) {
+//						VMIPrompt('还没有获得券，参与活动分享给小伙伴，券就能到手啦~', function () {
+						location.href = '/api/activity-wish/my-wish/phone/'+pIphone;
+//						});
+					} else if (pIsWish == 1 && this.couponNum == 0 && pIsPrivilege == 0) {
+//						VMIPrompt('您有未领取的豪礼，现在就去领取吧~', function () {
+						location.href = '/api/activity-wish/my-wish/phone/'+pIphone;
+//						});
+//					if (this.couponNum == 0) {
+//						VMIPrompt('你还没有获得礼券，快去许愿吧！', function () {
+////							location.href = '/api/activity-wish/my-wish';
+//						});
+					} else {
+						location.href = '/api/activity-wish/my-gift';
+					}
+					;
+				},
+				openRule: function () {
+					VMIP.ipflagrule = false;
+					VMIP.ipflag = false;
+				}
+			},
+			compiled: function () {
+				$(this.$el).find('span').eq(0).removeClass(hide);
+			}
+		})
+	}
+
+	function otherRun() {
+		var VM00 = new Vue({
+			el: '#app00',
+			methods: {
+				openRule: function () {
+					VMIP.ipflagrule = false;
+					VMIP.ipflag = false;
+				}
+			}
+		});
+
+		// login action
+//		if(pIsLogin != 1){
+//		    VMIPOpenTel();
+//		}
+	}
+
+	function commonRun() {
+
+		var VM01 = new Vue({
+			el: '#app01',
+			data: {
+				indexPreface: '据说2016春节拼手速许心愿就能实现！少年，你准备好了吗？来许愿，财猪送你猴年新年礼！梦想成真，就趁现在！'
+			},
+			methods: {
+				openRule: function () {
+					VMIP.ipFlagRule = false;
+					VMIP.ipFlag = false;
+				},
+				toWish: function () {
+					if (pIsLogin == 2) {
+						if (pIsApp == 1) {
+							location.href = 'http://caizhukeyjs-loginjump?url=' + location.href;
+						} else {
+							VMIPOpenTel();
+						}
+
+					} else if (pIsLogin == 3) {
+						VMIPrompt('您还没有绑定手机号，请去app我-设置-帐号与安全 中绑定手机！', function () {
+//							location.href = '/api/activity-wish/my-wish';
+						});
+					} else if (pIsWish != 1) {
+						location.href = '/api/activity-wish/gift-list';
+					}
+					else if (pIsWish == 1) {
+						VMIPrompt('亲爱的你已经许过愿望啦！<br>现在就努力实现吧！', function () {
+							location.href = '/api/activity-wish/my-wish/phone/'+pIphone;
+						});
+					}
+
+				}
+			}
+		})
+
+		recordScroll();
+
+		var $record = $('.list');
+
+		function recordScroll() {
+
+			var _this = arguments.callee;
+			setTimeout(function () {
+
+				var $last;
+				$last = $record.children().last();
+				$last.removeClass(selected);
+				$record.prepend($last);
+				$last.addClass(selected);
+
+				_this();
+
+			}, 2200)
+
+		}
+
+
+	}
+
+</script>
+
+<script src="http://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

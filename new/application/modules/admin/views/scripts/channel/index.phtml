@@ -1,0 +1,199 @@
+<table id="channel_list"></table>
+<div id="channel_list_toolbar"></div>
+<div id="channel_view_window"></div>
+<div id="channel_list_searcher_container">
+    <form id="channel_list_search">
+        <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="typeObj.addHandler();">添加</a> 
+        <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="typeObj.containerObj.edatagrid('reload');">刷新</a> 
+        频道名称：<input type="text" name="ChannelName" />
+        创建时间：<input class="easyui-datebox" type="text" name="type_start_date" value="" data-options="" />
+        至&nbsp;<input class="easyui-datebox" type="text" name="type_end_date" value="" data-options="" />
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchTypeList()" iconCls="icon-search">搜索</a>
+    </form>
+</div>
+<div id="channel_add_window"></div>
+<div id="channel_edit_window"></div>
+
+<script type="text/javascript">
+
+    $("#type_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchChannelList();
+        }    
+    });
+    
+    $("#type_list_searcher_container select[name]").change(function(){
+        toSearchChannelList();
+    });
+    
+    function toSearchChannelList(flag)
+    {
+        var ChannelName     = $("#channel_list_searcher_container input[name='ChannelName']").val();
+        var start_date      = $("#channel_list_searcher_container input[name='start_date']").val();
+        var end_date        = $("#channel_list_searcher_container input[name='end_date']").val();
+        
+        typeObj.containerObj.datagrid('load', {
+            ChannelName:ChannelName,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var typeObj = {
+        //数据加载url
+        'loadUrl':   '<?php echo $this->url(array('controller'=>'channel','action'=>'list'));?>',
+        'addUrl':    '<?php echo $this->url(array('controller'=>'channel','action'=>'add'));?>',
+        'editUrl':   '<?php echo $this->url(array('controller'=>'channel','action'=>'edit'));?>',
+        'deleteUrl': '<?php echo $this->url(array('controller'=>'channel','action'=>'remove'));?>',
+
+        'containerObj':$("#channel_list"),
+        'addWindowObj':$("#channel_add_window"),
+        'editWindowObj':$("#channel_edit_window"),
+        
+        'selfName':'typeObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //添加频道
+        addHandler:function() {
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':500,
+                'height':300,
+                'modal':true,
+                'resizable':true,
+                'title':'添加频道',
+                'onClose':function() {
+                    _THIS_.addWindowObj.window('destroy');
+                },
+                'onLoad':function() {
+                    $("#channel_add_form_save").off().on('click',function(){
+                         $("#channel_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#channel_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('destroy');
+                    });
+                    $("#channel_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.addWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        } else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //编辑频道
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.editWindowObj.window({
+                        'href':_THIS_.editUrl+'?channel_id='+id,
+                        'width':500,
+                        'height':300,
+                        'modal':true,
+                        'resizable':true,
+                        'title':'编辑频道',
+                        'onLoad':function() {
+                            $('#channel_edit_form_save').on('click', function() {
+                                $("#channel_edit_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $('#channel_edit_form_close').on('click', function() {
+                                _THIS_.editWindowObj.window('destroy');
+                            });
+                            
+                            $("#channel_edit_form").myForm(function(ret){
+                                if(ret.flag==1){
+                                    _THIS_.editWindowObj.window('destroy');
+                                    _THIS_.containerObj.datagrid('reload');
+                                } else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+
+        //删除
+        'delHandler':function(id) {
+                        var _THIS_ = this;
+                        $.messager.confirm('删除类型','确认要删除吗？',function(d){
+                            if(d){
+                                $.ajax({
+                                        url:_THIS_.deleteUrl + '?id=' + id,
+                                        type:"POST",
+                                        data:{id:id},
+                                        dataType:'json',
+                                        success:function(ret){
+                                            console.log(ret.flag);
+                                            if(ret.flag > 0){
+                                                $.messager.alert("提示信息",'删除成功！','info');
+                                                _THIS_.containerObj.datagrid('reload');
+                                            } else{
+                                                $.messager.alert("提示信息",ret.msg,'error');
+                                            }
+                                        }
+                                });
+                            }
+                        });
+                    },
+
+        //加载数据
+        'showData': function() {
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'ChannelID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#channel_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'ChannelID',title:'频道ID',width:80}, 
+                        {field:'ChannelName',title:'频道名称',width:150},  
+                        {field:'FocusName',title:'标签',width:350},                     
+                        {field:'CreateTime',title:'创建时间',width:150}, 
+                        {field:'Sort',title:'排序',width:100},  
+                        {field:'opt',title:'操作',align:'center',
+                            formatter:function(value,rec,index) {
+                             var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.ChannelID+'\')">';
+                                 e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                             var d = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-remove" onclick="'+_THIS_.selfName+'.delHandler(\''+rec.ChannelID+'\')">';
+                                 d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                            return e+d;         
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+            $("#channel_list_toolbar").append($("#channel_list_searcher_container"));
+        },    
+};
+typeObj.init();
+</script>

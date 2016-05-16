@@ -1,0 +1,76 @@
+    <div class="main-right fr">
+        <h2 class="content-tit clearfix">
+            活动详情 <span class="article-tit-do">
+            <a class="selected" href="detail?activityID=<?php echo $this->dataList['AID'];?>">基本信息</a><span class="at-separate">|</span>
+            <a href="enroll-manage?activityID=<?php echo $this->dataList['AID'];?>">管理报名</a></span>
+        </h2>
+
+        <div class="activity-basic clearfix">
+            <div class="acb-pic fl"><img src="<?php echo $this->dataList['Cover'].'?imageView2/0/w/140/h/175';?>" alt="" /></div>
+            <div class="acb-info fr">
+                <h1 class="acb-inof-tit"><?php echo $this->dataList['Title'];?></h1>
+                <div class="acb-minor clearfix">
+                    <div class="am-data fl">
+                        <span class="icon-article-edit"><?php echo $this->dataList['EnrollNum'];?></span>
+                        <span class="icon-article-view acb-icon-ml"><?php echo $this->dataList['ReadNum'];?></span>
+                        <span class="icon-article-share"><?php echo $this->dataList['ShareNum'];?></span>
+                    </div>
+                    <div class="am-info fr">
+                        <span>发表时间：<?php echo $this->dataList['CreateTime'];?></span>
+                        <span class="ml20">发表者：<?php echo $this->dataList['UserName'];?></span>
+                    </div>
+                </div>
+                <ul class="acb-det-list">
+                    <li class="acb-det-one">活动时间：<?php echo $this->dataList['StartTime'];?>~<?php echo $this->dataList['EndTime'];?>(<?php echo $this->dataList['LimitTime'];?>报名截止)</li>
+                    <li class="acb-det-one">活动地点：<?php echo $this->dataList['Province'];?> <?php echo $this->dataList['City'];?><?php echo $this->dataList['DetailAdress'];?></li>
+                    <li class="acb-det-one">报名信息：<?php if($this->dataList['IsUsername'] == 1):?>姓名<?php endif;?><?php if($this->dataList['IsMobile'] == 1):?>手机<?php endif;?></li>
+                </ul>
+            </div>
+        </div> <!-- activity-basic -->
+
+        <div class="activity-basic-det">
+         <?php echo $this->dataList['Content'];?>
+        </div>
+
+        <div class="activity-basic-do clearfix">
+            <a class="abd-code fl" href="<?php echo $this->dataList['SignQrcode'].'?attname=hd'.date('Ymd').'.png';?>">下载二维码</a>
+            <a id="activity-del" class="abd-del fr" >删除活动</a>
+        </div>
+
+
+    </div> <!-- main-right -->
+<script>
+var activityID = '<?php echo $this->dataList['AID'];?>';
+
+var $activityDel = $('#activity-del');
+
+$activityDel.click(function(){
+
+	$promptBox.find('#ppt-11').removeClass(hide);
+    $promptBox.removeClass(hide);
+
+    $('body').delegate('#ppt-11 .ppt-do span', 'click', function(){
+    	$.ajax({
+            url: '/activity/delete',
+            type: 'post',
+            dataType :'json',
+            data:{
+           	 activityID: activityID,                  // 1，提交发布 2，保存草稿  3，手机预览
+            },
+            dataType: 'json',
+            success: function(d){
+                if(d.flag == 1){
+                	window.location.href = '/activity/index';
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(){
+                definedPrompt('网络错误');
+            }
+
+        });
+    });
+	 
+});
+</script>

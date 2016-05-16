@@ -1,0 +1,200 @@
+<table id="freeze_list_all" style="width:800px;height:600px"></table>
+
+<div id="freeze_toolbar"></div>
+<div id="freeze_toolbar_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="freezeManageObj.addFreezeHandler();">新增冻结款</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="freezeManageObj.containerObj.edatagrid('reload');">刷新</a>
+	会员编号：<input type="text" value="" name="member_id" size="10" />
+	冻结金额：
+		<input type="text" name="start_amount" size="8"/>
+		至&nbsp;<input type="text" name="end_amount" size="8"/>
+    冻结类型：<select name="refundStatusName">
+    		<option value="0">所有</option>
+            <option value="2">会员申请提现</option>
+    	</select>
+	时间：
+		<input class="easyui-datebox" type="text" name="start_date" value="2016-01-01" data-options="onSelect:toSearchFreezeList" size="20"></input>
+		至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="<?php echo date('Y-m-d');?>" data-options="onSelect:toSearchFreezeList" size="20"></input>
+
+	<a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchFreezeList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="freeze_add_window"></div>
+<script type="text/javascript">
+    $("#freeze_toolbar_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchFreezeList();
+        }
+    });
+
+    $("#freeze_toolbar_container select[name]").change(function(){
+        toSearchFreezeList();
+    });
+
+    function toSearchFreezeList()
+    {
+        var member_id = $("#freeze_toolbar_container input[name='member_id']").val();
+        var start_date = $("#freeze_toolbar_container input[name='start_date']").val();
+        var end_date = $("#freeze_toolbar_container input[name='end_date']").val();
+        var start_amount = $("#freeze_toolbar_container input[name='start_amount']").val();
+        var end_amount = $("#freeze_toolbar_container input[name='end_amount']").val();
+
+        var relation_type = $("#freeze_toolbar_container select[name='refundStatusName']").val();
+
+        freezeManageObj.containerObj.datagrid('load', {
+                                                member_id:member_id,
+                                                start_amount:start_amount,
+                                                end_amount:end_amount,
+                                                start_date:start_date,
+                                                end_date:end_date,
+                                                relation_type:relation_type
+        });
+    }
+    
+    var freezeManageObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'freeze-list'));?>',
+		'addFreezeUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'add-freeze'));?>',
+		'unFreezeUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'unfreeze'));?>',
+		
+		'containerObj':$("#freeze_list_all"),
+		'addWindowObj':$("#freeze_add_window"),
+				
+		'selfName':'freezeManageObj',
+
+		'init':function(){
+			this.showData();
+		},
+
+		//新增冻结
+		addFreezeHandler:function(){
+			var _THIS_ = this;
+			_THIS_.addWindowObj.window({
+                'href':_THIS_.addFreezeUrl,
+                'width':430,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'新增冻结款',
+                'onLoad':function(){
+                    $("#freeze_add_form_save").off().click(function(){
+                        if($("#freeze_add_form input[name='member_id']").val()==""){
+                            $.messager.alert("提示信息",'会员编号不能为空!','error');return false;
+                        }
+                        if($("#freeze_add_form input[name='amount']").val()==""){
+                            $.messager.alert("提示信息",'金额不能为空!','error');return false;
+                        }
+                        $("#freeze_add_form").attr('action',_THIS_.addFreezeUrl).submit();
+                    });
+
+                    $("#freeze_add_form_close").off().click(function(){
+                        _THIS_.addWindowObj.window('close');
+                    });
+
+                    $("#freeze_add_form").myForm(function(data){
+                        if(data.flag == 1){
+                            _THIS_.addWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                }
+			});
+		},
+
+		//解除冻结
+		unFreezeHandler:function(freeze_id,member_id,type){
+			var _THIS_ = this;
+			if(freeze_id){
+				$.messager.confirm('解除冻结','确认要解除冻结吗？',function(d){
+					if(d){
+						$.ajax({
+                            url:_THIS_.unFreezeUrl,
+                            type:"POST",
+                            data:{freeze_id:freeze_id,member_id:member_id,relation_type:type},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    $.messager.alert("提示信息",'解除冻结成功！','info');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            }
+						});
+					}
+				});
+			}
+		},
+		
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+                //是否分页
+                pagination:true,
+                pageSize: 50,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                //fitColumns:true,
+                fit:true, 
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'FreezeID',
+
+                url:_THIS_.loadUrl,
+                toolbar:"#freeze_toolbar",
+                //设置列   
+                columns:[[   
+                    {field:'FreezeID',title:'编号',width:50},   
+                    {field:'FreezeTime',title:'冻结时间',width:180},
+                    {field:'MemberID',title:'会员',width:100},
+                    {field:'Email',title:'邮箱',width:200},
+                    {field:'RelationType',title:'冻结类型',width:150,formatter:function(value,rowData,index){
+                            var type = '';
+                            switch(value){
+                                case '2':
+                                    type = '会员申请提现';
+                                    break;
+                                case '3':
+                                    type = '临时冻结';
+                                    break;
+                                case '3':
+                                    type = '问财咨询服务';
+                                    break;
+                            }
+                            return type;
+                        }
+                    },
+                    {field:'Amount',title:'金额',align:'right',width:120,formatter:addCurrencyUnit},
+                    {field:'Status',title:'状态',width:120,formatter:tansFreezeStatus},
+                    {field:'unFreezeTime',title:'解冻时间',width:180},
+                    {field:'Remark',title:'备注',width:300},
+                    {field:'op',title:'操作',width:300,formatter:function(value,rowData,index){
+                            if(rowData.Status == '1' && rowData.RelationType!='2'){
+                                return '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.unFreezeHandler(\''+rowData.FreezeID+'\',\''+rowData.MemberID+'\',\''+rowData.RelationType+'\')">解除冻结</a>';
+                            }
+                        }
+                    }
+                ]],
+            });
+            
+            //设置分页
+            var pager = _THIS_.containerObj.datagrid('getPager');
+            pager.pagination({
+                pageList:[10,50,100,150,200],
+                pageSize:50,
+                beforePageText:'第',
+                afterPageText:'页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+            });
+            $("#freeze_toolbar").append($("#freeze_toolbar_container"));
+		},	
+    };
+    freezeManageObj.init();
+</script>

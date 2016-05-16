@@ -1,0 +1,302 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<title>财猪心愿购物车</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="keywords" content="财猪">
+	<meta name="description" content="财猪">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main.css">
+	<link href="http://fe.caizhu.com/public/css/callcaizhu/prompt.css" rel="stylesheet">
+	<link href="/static/css/api/activity/wish160126/wish.css?3" rel="stylesheet">
+</head>
+<body class="body-bg01">
+
+<div id="init-pageshow">
+	<div class="init-pageshow" :class="{hide: pageshowflag}"></div>
+</div>
+
+<img class="hide" src="/static/images/api/activity/wish160126/share-pic.png" id="share-pic">
+
+<section id="app01" class="product-box">
+	<div class="pd-tit"><?php echo $this->wish_total_amount;?>元如何过好年</div>
+	<div class="pd-alotbox">
+		<span @click="doAlot">{{money}}</span>
+	</div>
+
+	<ul class="pd-list">
+
+		<li class="pd-one" v-for="one in productList" track-by="$index">
+			<span class="ip-t"></span>
+
+			<div class="ip-m">
+				<div class="pd-box">
+					<img :src="one.Logo | filterAvatar">
+
+					<div class="pd-info">
+						<h3>{{one.Name}}</h3>
+
+						<p>{{one.Desc}}</p>
+
+						<div class="pd-more">
+							<span class="pd-price">价格：{{one.Amount | filterYuan}}</span>
+							<span v-if="one.Count>0" class="pd-select" :class="{selected: one.flag}"
+							      @click="getOne($index, one.index, one.flag)">
+							      <span>想要 </span><span>已选</span>
+							</span>
+							<span v-else class="pd-select nosock">
+							      <span>已抢光 </span>
+							</span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<span class="ip-b"></span>
+		</li>
+
+	</ul>
+
+	<section class="pd-count">
+		<div>已选择<i id="cont">{{count}}</i>件商品，还剩<a id="moncont">{{remainMoney}}</a>元</div>
+		<span @click="toWish">去许下心愿</span>
+	</section>
+
+</section>
+
+<div id="app-innerprompt">
+	<app-innerprompt :ipstr.sync="ipstr" :ipflag.sync="ipflag" :ipflag00.sync="ipflag00" :ipflag04.sync="ipflag04" :ipflag05.sync="ipflag05" :ipflag09.sync="ipflag09" :ipflag01.sync="ipflag01"
+	                 :ipflagrule.sync="ipflagrule" :ipflagtel.sync="ipflagtel" :ipflagform.sync="ipflagform"
+	                 :ipflagwish.sync="ipflagwish" :formtel.sync="formtel" :formname.sync="formname"
+	                 :formtel2.sync="formtel2" :formarea.sync="formarea"></app-innerprompt>
+</div>
+
+<div id="define-prompt">
+	<app-defineprompt :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt>
+</div>
+<div id="app-prompt">
+	<app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt>
+</div>
+
+<script src="http://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="http://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="/static/js/api/activity/wish160126/vue.inner.prompt.js?3"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160108"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-common.js"></script>
+<script src="/static/js/api/activity/wish160126/h5-action-v3.js?date=160203"></script>
+
+<script>
+
+	var pIsLogin = '<?php echo $this->is_login;?>',
+		pIsWish = '<?php echo $this->is_wish;?>'
+		pWishTotalAmount = '<?php echo $this->wish_total_amount;?>',
+		pGiftList = '<?php echo $this->gift_list;?>';
+
+	pGiftList = convertList(pGiftList);
+	function convertList(a) {
+		if (!a) return [];
+		a = eval('(' + a + ')');
+		for (var i = 0, len = a.length; i < len; i++) {
+			a[i].flag = false;
+			a[i].index = i;
+		}
+		return a;
+	}
+
+	function initShareData() {
+		var opts = {},
+			sharePic = $('#share-pic');
+		if (sharePic.length > 0) {
+			sharePic = sharePic[0].src
+		} else {
+			sharePic = '';
+		}
+		opts.sharePic = 'http://img.haimi.com/Fixn0Lnw1uAUEW5ksn8L5NB1xdk3';
+		opts.shareTitle = '够朋友的就进来帮我完成心愿！再来一人，所有礼物带回家！';
+		opts.shareDes = '财猪心愿购物车和你快乐过新年!过来挑选你喜欢的商品,帮你免单哦~！';
+		opts.shareLink = window.location.origin+'/api/activity-wish/wish-index';
+
+		return opts;
+	}
+
+	var opts = {};
+
+	opts.caizhuRun = function () {
+		caizhuRun();
+	}
+	opts.otherRun = function () {
+		otherRun();
+	}
+	opts.commonRun = function () {
+		commonRun();
+	}
+
+	//opts.appDebug = true;
+	initAction(opts);
+
+	function caizhuRun() {
+		if(pIsLogin==2){
+		location.href = 'http://caizhukeyjs-loginjump?url=' + location.href;
+	}
+	}
+
+	function otherRun() {
+		if(pIsLogin ==2){
+		location.href = '/api/activity-wish/wish-index';
+		}
+	}
+
+	function commonRun() {
+		var onIndex = 0;
+		var app01 = new Vue({
+			el: '#app01',
+			data: {
+				productList: '',
+				productList2: pGiftList,
+				moneyAll: pWishTotalAmount,
+				count: 0,
+				remainMoney: 0
+			},
+			methods: {
+				getOne: function (index, indexG, flag) {
+					if (flag == true) {
+						this.productList[index].flag = false
+						//this.productList2[index].flag = false
+					} else {
+						this.productList[index].flag = true;
+						//this.productList2[index].flag = true;
+					}
+
+					this.getInfo(indexG);
+
+				},
+				getInfo: function (index) {
+//					console.log('index',index);
+					var d, n = 0, num = 0, falg = true;
+					for (var i = 0, len = this.productList2.length; i < len; i++) {
+						d = this.productList2[i];
+						d2 =this.productList2[index];
+						if (d.flag == true) {
+//							console.log('d',d);
+//							console.log('num1',num);
+//							console.log('num2',parseInt((d.Amount / 100).toFixed()));
+							num +=parseInt((d.Amount / 100).toFixed());
+							if (num > this.moneyAll) {
+//								console.log('num3',parseInt((d2.Amount / 100).toFixed()));
+//								console.log('num4',num);
+								num -= parseInt((d2.Amount / 100).toFixed());
+
+								this.productList2[index].flag = false;
+
+								VMIPrompt('已经超出'+this.moneyAll+'元额度啦');
+							}else{
+								//num += parseInt((d.Amount / 100).toFixed());
+								n++;
+							}
+						}
+					}
+					//debug(num);
+//					console.log('this.remainMoney',this.remainMoney);
+					this.count = n;
+					this.remainMoney = this.moneyAll - num;
+				},
+				doAlot: function () {
+					var arr = [];
+					var len = this.productList2.length, 
+						dur = 3;
+					for (var j = 0; j < dur && onIndex <= len; j++) {
+						if (onIndex == len) {
+							
+							onIndex = 0;
+							break;
+						} else if (onIndex > len) {
+							onIndex = 0;
+							break;
+						} else {
+							arr.push(this.productList2[onIndex]);
+							if(onIndex==(len-1)){
+								onIndex=0;
+							}else{
+								onIndex++
+							}
+
+						}
+					};
+					this.productList = [];
+					this.productList = arr;
+				},
+				toWish: function () {
+					
+					if (pIsLogin ==2) {
+						VMIPOpenTel();
+						return false;
+					}
+					var gids = [];
+					for (var d, i = 0, len = this.productList2.length; i < len; i++) {
+						d = this.productList2[i];
+
+						if (d.flag == true) {
+							gids.push(d.GID);
+						}
+					}
+					if (gids.length == 0) {
+						VMIPrompt('您还没有选择商品');
+						return false;
+					}
+					VMIPgitpt('亲爱的许下愿望后，将不能再改愿望啦！是否确认许下这个愿望？',function () {
+						$.ajax({
+						url: '/api/activity-wish/wish',
+						data: {
+							gids: gids.join(',')
+						},
+						dataType: 'json',
+						success: function (d) {
+							if (d.flag == 1) {
+								location.href = '/api/activity-wish/my-wish/phone/'+pIphone;
+							} else {
+								VMIPrompt(d.msg);
+							}
+						},
+						error: function (err) {
+							VMIPrompt('网络错误');
+						}
+					})
+					},function () {
+						gids=[];
+						//location.href = '/api/activity-wish/gift-list';
+						for(i in app01.productList){
+							app01.productList[i].flag=false;
+						}
+						for(i in app01.productList2){
+							app01.productList2[i].flag=false;
+						}
+						//$('.pd-select').removeClass('selected');
+//						console.log('app01.productList2',app01.productList2);
+//						console.log('app01.productList',app01.productList);
+						//app01.productList='';
+						app01.count=0;
+						app01.remainMoney=pWishTotalAmount;
+						//$('#cont').text('0');
+						//$('#moncont').text(pWishTotalAmount);
+					});
+
+				}
+			},
+			compiled: function () {
+				this.doAlot();
+				this.getInfo();
+			}
+		});
+	}
+
+</script>
+
+<script src="http://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 30px;align:center;">
+		<form id="lecture_video_add_form" action="" method="post" enctype="multipart/form-data" >
+			<table class='form_table'>
+				<tr>
+					<th width="20%">图片：</th>
+					<td width="80%">
+						<input type="file" name="ImageUrl"/>
+						<!--<input class="easyui-validatebox" type="text" name="ImageUrl"
+						       value=""
+						       data-options="required:true" size="50"/>-->
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">标题：</th>
+					<td width="80%">
+						<input class="easyui-validatebox" type="text" name="ImagTitle"
+						       value=""
+						       data-options="required:true" size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">视频连接：</th>
+					<td width="80%">
+						<input class="easyui-validatebox" type="text" name="VideoUrl"
+						       value=""
+						       data-options="required:true" size="50"/>
+					</td>
+				</tr>
+				<tr>
+					<th width="20%">视频描述：</th>
+					<td width="80%">
+						<textarea style="width: 350px;height: 300px;" class="easyui-validatebox" name="Description"
+						          data-options="required:true">
+						</textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>状态：</th>
+					<td>
+						<select name="Status">
+							<option
+								value="0">
+								无效
+							</option>
+							<option
+								value="1">
+								有效
+							</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div style="text-align:center;padding:5px">
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="lecture_video_add_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="lecture_video_add_form_close">关闭</a>
+	</div>
+</div>

@@ -1,0 +1,141 @@
+<!--内容部分-->
+<table id="column_list"></table>
+<div id="column_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	标题：
+	<input type="text" value="" name="Title" size="20"/> &nbsp;&nbsp;
+
+	状态：
+	<select name="CheckStatus">
+		<option value="">所有</option>
+		<option value="0">待审核</option>
+		<option value="1">审核成功</option>
+		<option value="2">审核失败</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options=""/>
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""/>
+	<a class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+
+<div id="column_view"></div>
+<div id="img_dialog" class="easyui-dialog" title="img" closed="true" data-options="resizable:'true'"
+     style="width: 400px;height: 400px;">
+</div>
+
+<script type="text/javascript">
+	var columnObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'column','action'=>'list'));?>',
+		'checkUrl': '<?php echo $this->url(array('controller'=>'column','action'=>'check'));?>',
+		'addUrl': '<?php echo $this->url(array('controller'=>'column','action'=>'add'));?>',
+
+		//审核专栏
+		'check_feature': {
+			'width': 400,
+			'height': 200,
+			'title': '审核专栏'
+		},
+
+		'add_feature': {
+			'width': 900,
+			'height': 600,
+			'title': '新增公告'
+		},
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'ColumnID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#column_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'ColumnID', title: '专栏ID', width: 40},
+					{field: 'UserName', title: '会员名称', width: 60},
+					{field: 'Title', title: '专栏名称', width: 150},
+					{
+						field: 'Avatar', title: '头像', width: 60, formatter: function (value, rec, index) {
+						return '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+							'onclick="' + _THIS_.selfName + '.showImg(\'' + rec.Avatar + '\')' + '">查看头像</a>';
+					}
+
+					},
+					{field: 'Description', title: '简介', width: 200},
+					{field: 'SubscribeNum', title: '订阅数量', width: 60},
+					{field: 'ArticleNum', title: '文章数量', width: 60},
+					{field: 'ReadNum', title: '阅读数量', width: 60},
+					{field: 'QrcodeUrl', title: '二维码', width: 80},
+					{
+						field: 'CheckStatus', title: '审核状态', width: 70, formatter: function (value, rec, index) {
+						var status = '';
+						switch (value) {
+							case '0':
+								status = '待审核';
+								break;
+							case '1':
+								status = '成功';
+								break;
+							case '2':
+								status = '失败';
+								break;
+						}
+						return status;
+					}
+					},
+					{field: 'CheckRemark', title: '审核备注', width: 150},
+					{field: 'CreateTime', title: '创建时间', width: 150},
+					{field: 'CheckTime', title: '审核时间', width: 150},
+					{field: 'LiveNess', title: '活跃度', width: 80},
+					{
+						field: 'opt', title: '操作', align: 'center', formatter: function (value, rec, index) {
+						var c = "";
+						if (rec.CheckStatus == 0) {
+							c = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+								'onclick="' + _THIS_.selfName + '.checkHandler(\'?ColumnID=' + rec.ColumnID + '&status=' + rec.CheckStatus + '&member_id=' + rec.MemberID + '\')">';
+							c += '<span class="l-btn-left">审核</span></a>';
+						}
+
+						c += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+							'onclick="' + _THIS_.selfName + '.addHandler(\'?member_id=' + rec.MemberID + '\')">';
+						c += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">新增公告</span></span></a>';
+						return c;
+
+					}
+					}
+
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+
+		}
+	};
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	columnObj = contentCommon(columnObj, __CONTROLLER__);
+</script>

@@ -1,0 +1,44 @@
+
+
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 60px;align:center;">
+    
+        <form id="articlecategory_edit_form" method="post" action="">
+            <table class='form_table'>
+                    <tr>
+                    <th>上级分类：</th>
+                    <td><select name="ret[PID]" class="easyui-validatebox" data-options="required:true">
+                    <option value="0">请选择</option>
+                    <? foreach($this->cate as $item):?>
+                    <?php if($this->detail['CategoryID'] == $item['CategoryID']):?><?php else:?>
+                    <option value="<?=$item['CategoryID']?>" <?php if($this->detail['PID'] == $item['CategoryID'])echo 'selected';?>><?=$item['Name']?></option>
+                    <?php endif;?>
+                    <?endforeach;?>
+                    </select></td>
+                    </tr>
+                <tr>            
+                    <th>名称:</th>
+                    <td><input class="easyui-validatebox" type="text" name="ret[Name]" value='<?=$this->detail['Name']?>' data-options="required:true" size="26"></input></td>
+                </tr>
+                
+                <tr>            
+                    <th>名称[英文]:</th>
+                    <td><input class="easyui-validatebox" type="text" name="ret[NameEn]" value='<?=$this->detail['NameEn']?>' data-options="required:true" size="26"></input></td>
+                </tr>
+                
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    <input type="hidden" name='ret[CategoryID]' value='<?=$this->detail['CategoryID']?>' >
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="articlecategory_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="articlecategory_edit_form_close">关闭</a>
+    </div>
+    
+</div>

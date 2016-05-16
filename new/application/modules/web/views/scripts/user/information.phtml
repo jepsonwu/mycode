@@ -1,0 +1,336 @@
+<link rel="stylesheet" href="/static/plugin/kingeditor/themes/default/default.css" />
+<script src="/static/plugin/kingeditor/kindeditor-min.js"></script>
+<script src="/static/plugin/kingeditor/lang/zh-CN.js"></script>
+
+<div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            设置
+            <span class="article-tit-do">
+            <a href="/user/set">理财号</a>
+            <span class="at-separate">|</span>
+            <a href="/user/account-detail">账号主题</a>
+            <span class="at-separate">|</span>
+            <a class="selected" href="/user/information">理财师资料</a>
+        </h2>
+
+        <div class="manage-info">
+            <h2 class="manage-info-tit">个人信息</h2>
+            <form id="form" name="form" data-url="/user/edit-financial-information" data-goto="" data-draft-goto="">
+            <ul class="mi-list">
+                <li class="mi-one mi-oneinfo clearfix validone" data-type="image" data-origin-id="select-pic00">
+                    <div class="mi-one00">形象照<span class="fc-f00">*</span></div>
+                    <div class="mi-one01">
+                        <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请选择形象照片</span></div>
+                        <ul class="manage-cover clearfix">
+                            <li class="mac-pic mi-pic fl"><img id="show-pic00" src="/static/imgs/web/column/pic106x160.png" alt="财猪"></li>
+                            <li class="mac-select fl">
+                                <p class="mi-pic-p">&nbsp;</p>
+                                <!--<p class="mi-pic-p">一个月只能申请修改一次</p>-->
+                                <div id="avatar-dobox" class="">
+                                <span id="select-btn00" class="select" value="选择文件">选择文件</span>
+                                <input type="hidden" name="Photo" id="select-pic00" class="select" value="">
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix validone" data-type="city">
+                    <div class="mi-one00">常驻城市<span class="fc-f00">*</span></div>
+                    <div class="mi-one01">
+                        <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请选择常驻城市</span></div>
+                        <div class="mi-det mi-infodet">
+                            <input id="add-city-str"  type="hidden" name="City" placeholder>
+                            <div id="add-city" class="cadd-citylist">
+                                <!--<span><i>x</i></span>-->
+                            </div>
+                            <span id="add-btn" data-limit="1" class="cadd-btn fm-song">+</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">个人爱好</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><input name="Hobby" id="Hobby" placeholder="请输入个人爱好、如运动、健身..." value=""></div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">性格特点</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><input name="Character" id ="Character" placeholder="请输入性格特点，如内向、开朗、健谈" value=""></div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">擅长领域</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><input name="Speciality" id="Speciality" placeholder="请输入擅长领域" value=""></div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">个人介绍</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><textarea name="Profiles" id="Profiles" placeholder="请输入个人介绍" value=""></textarea></div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">相关链接</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><input name="Link" id="Link" placeholder="请输入微博或者个人博客" value=""></div>
+                    </div>
+                </li>
+
+            </ul>
+
+            <h2 class="manage-info-tit mt40">工作信息</h2>
+            <ul class="mi-list">
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">任职机构</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><input name="Institution" id = "Institution" placeholder="请输入任职机构" value=""></div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">职位</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet"><input name="Job" id="Job" placeholder="请输入职位" value=""></div>
+                    </div>
+                </li>
+                <li class="mi-one mi-oneinfo clearfix">
+                    <div class="mi-one00">工作年限</div>
+                    <div class="mi-one01">
+                        <div class="mi-det mi-infodet">
+                            <select name="Seniority" id="Seniority">
+                                <option value="0">请选择工作年限</option>
+                                <option value="1">一年</option>
+                                <option value="2">两年</option>
+                                <option value="3">三年</option>
+                                <option value="4">四年</option>
+                                <option value="5">五年</option>
+                                <option value="6">六年</option>
+                                <option value="7">七年</option>
+                                <option value="8">八年</option>
+                                <option value="9">九年</option>
+                                <option value="10">九年以上</option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="manage-one clearfix">
+                <input type="hidden" name="submit-type" id="submit-type">
+                <div class="mac-do clearfix">
+                    <span class="mac-submit fl">保存</span>
+                </div>
+            </div>
+
+            </form>
+        </div>
+    </div>
+<script src="/static/js/web/column/common.js"></script>
+<script src="/static/js/web/column/city-list.js"></script>
+<script src="/static/js/web/column/counsel.js"></script>
+
+<script>
+var go = 'go',
+    goFlag = parseUrl('flag');
+
+    if(goFlag == go){
+        definedPrompt('为了提高接单率，请您尽量完善所有信息，<span style="color: #f00;">*</span>是必填项哦');
+    }
+
+
+var $selectBtn00 = $('#select-btn00'),
+    $selectPic00 = $('#select-pic00'),
+    $showPic00 = $('#show-pic00');
+
+
+    KindEditor.ready(function(K) {
+
+        var uploadbutton = K.uploadbutton({
+            button : $selectBtn00[0],
+            fieldName : 'imgFile',
+            url : '/article/upload-file?limit=1',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                    //alert(data.url);
+                    $showPic00.attr('src', data.data.url);
+                    $selectPic00.val(data.data.url);
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton.fileBox.change(function(e) {
+            uploadbutton.submit();
+        });
+
+    });
+
+</script>
+
+<script>
+/* 下面是是页面执行代码 - 可分离 */
+
+/* application - counsel + user/information */
+
+CityList.init('add-btn');
+
+var $cityBox = $('.citybox'),
+    $cityClose = $('.city-close'),
+    $addCity = $('#add-city'),
+    $addBtn = $('#add-btn'),
+    $addCityStr = $('#add-city-str'),
+
+    cityLimit = $addBtn.data('limit') || 1;
+
+on = 'on',
+    hide = 'hide',
+    selected = 'selected';
+
+
+$cityClose.click(function(){
+    $cityBox.addClass(hide);
+});
+
+$addBtn.click(function(){
+    $cityBox.removeClass(hide);
+    return false;
+});
+
+$addCity.delegate('i', 'click', function(){
+    var $this = $(this), code;
+    code = $this.parent().data('code');
+
+    $cityBox.find('.citytab a[data-code="'+ code +'"]').click();
+
+})
+
+$cityBox.delegate('.hottab a', 'click', function(){
+    var $this = $(this), code;
+    code = $this.data('code');
+
+    $cityBox.find('.citytab a[data-code="'+ code +'"]').click();
+
+});
+
+$cityBox.delegate('.citytab a', 'click', function(){
+    var $this = $(this),
+        flag = false;
+
+    //CityList.setPos();
+
+    var oneType, oneId, oneName;
+
+    if($this.hasClass(selected)){
+        oneType = 'del';
+        flag = true;
+        $this.removeClass(selected);
+        $cityBox.find('.hottab a[data-code="'+ $this.data('code') +'"]').removeClass(selected);
+    }else{
+        var len;
+        len = $cityBox.find('.citytab .selected').length;
+        if(len >= cityLimit){
+            definedPrompt('最多只能选'+ cityLimit +'个城市', function(){
+                //setTimeout(function(){
+                $cityBox.removeClass('hide');
+            });
+            //});
+        }else{
+            oneType = 'add';
+            flag = true;
+            $this.addClass(selected);
+            $cityBox.find('.hottab a[data-code="'+ $this.data('code') +'"]').addClass(selected);
+        }
+    }
+
+    if(!flag) return false;
+
+    oneId = $this.data('code');
+    oneName = $this.html();
+    doValue(oneType, oneId, oneName);
+
+});
+
+$cityBox.delegate('li', 'click', function(){
+    var $this = $(this);
+
+    $this.addClass(on).siblings().removeClass(on);
+    var $hotCity = $cityBox.find('.hotcity');
+    $hotCity.children().eq($this.index()).removeClass(hide).siblings().addClass(hide);
+
+});
+
+
+function doValue(type, id, name){     // type, add / del
+    //debug(type+': '+id+': '+name);
+
+    var str='';
+    $citytab = $cityBox.find('.citytab');
+
+    $addCity.empty();
+    $addCityStr.val(str);
+    $citytab.find('.selected').each(function(){
+        var $iThis = $(this);
+        str += $iThis.data('code');
+        str += ',';
+        $addCityStr.val(str);
+        $addCity.append('<span data-code="'+ $iThis.data('code') +'">'+ $iThis.html() +'<i>x</i></span>');
+    })
+
+}
+
+$cityBox.click(function(){
+    return false;
+});
+$('body').click(function(){
+    $cityBox.addClass(hide);
+})
+</script>
+
+<script>
+
+    getInfo();
+    function getInfo(){
+        $.ajax({
+            url: '/web/user/get-financial-information',
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            success: function(d){
+                info = d.data;
+                valueOfView(info);
+            },
+            error: function(err){
+                promptDo('show', '网络错误,请过一会再试一试');
+            }
+        });
+    }
+
+    function valueOfView(data)
+    {
+        if(typeof(data.Photo)=="undefined"){
+            return ;
+        }
+        if(data.Photo ==''){
+            data.Photo ='/static/imgs/web/column/pic106x160.png';
+        }else{
+            $('#select-pic00').val(data.Photo);
+        }
+        $('#show-pic00').attr('src',data.Photo);
+        var cityCode = data.City;
+        $cityBox.find('.citytab a[data-code="'+ cityCode +'"]').click();   // 选中城市
+        $('#Hobby').val(data.Hobby);
+        $('#Character').val(data.Character);
+        $('#Hobby').val(data.Hobby);
+        $('#Character').val(data.Character);
+        $('#Speciality').val(data.Speciality);
+        $('#Profiles').val(data.Profiles);
+        $('#Link').val(data.Link);
+        $('#Institution').val(data.Institution);
+        $('#Job').val(data.Job);
+        $('#Seniority').val(data.Seniority);
+    }
+</script>

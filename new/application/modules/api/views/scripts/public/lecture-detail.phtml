@@ -1,0 +1,641 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>讲堂详情</title>
+<meta charset="utf-8" >
+<meta name="keywords" content="财猪-讲堂详情" >
+<meta name="description" content="财猪-讲堂详情" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=151225" >
+<link rel="stylesheet" href="/static/css/api/jiangtang.css" >
+<script>
+    (function(){
+        var href = location.href,
+                protocol = location.protocol;
+        if(protocol == 'https:'){
+            href = href.replace(/^https:\/\//, 'http://');
+            location.href = href;
+        }
+    })();
+</script>
+</head>
+<body class="body-video">
+<img id="video-poster" class="hide" src="<?php echo $this->videoDetail['ImageUrl'];?>" />
+
+<section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="/static/imgs/web/wechat-arrow.png" alt="指示图">
+        </li>
+    </ul>
+</section>
+
+<input type="hidden" data-video-id="273" id="vedio-poster" src="<?php echo $this->videoDetail['ImageUrl'];?>">
+<section class="video-box">
+
+    <section>
+        <iframe id="iframe" class="hide" frameborder="0" height="180" width="100%" src="<?php echo $this->videoDetail['VideoUrl'];?>" allowfullscreen></iframe>
+    </section>
+
+    <h1 class="video-tit"><?php echo $this->videoDetail['ImagTitle'];?></h1>
+    <p class="video-minor"><span class="boxlink" data-url="http://caizhukeyjs-memberjump?id=8527">财猪</span><span><?php echo $this->videoDetail['CreateTime'];?></span></p>
+    <ul class="video-info clearfix" data-id="333">
+        <li id="video-count" class="video-count callcaizhu fl"><?php echo $this->videoDetail['PlayNum'];?></li>
+        <li id="video-replay" class="video-reply callcaizhu fr"><?php echo $this->videoDetail['CommentNum'];?></li>
+        <li id="video-vote" class="video-vote callcaizhu fr <?php if($this->videoDetail['IsPraise']==1):?>selected <?php endif;?>"><?php echo $this->videoDetail['PraiseNum'];?></li>
+    </ul>
+</section>
+
+<section class="video-commnet">
+    <h1 class="vc-tit">最新评论</h1>
+    <ul id="vc-list" class="vc-list">
+        <!--
+        <li class="vc-one boxlink" data-id="111">
+            <span class="vc-report hide">举报</span>
+            <div class="vc-avatar"><img src="/static/images/pic80x80.png" alt="avatar" ></div>
+            <div class="vc-info">
+                <p class="vc-name clearfix">
+                    <span>一休看世界</span>
+                    <span>10分钟前</span>
+                </p>
+                <p class="vc-det">不要打扰我,我想静静 不要打扰我,我想静静 不要打扰我,我想静静 不要打扰我,我想静静 不要打扰我,我想静静</p>
+            </div>
+        </li>
+
+        <li class="vc-one boxlink" data-id="222">
+            <span class="vc-report hide">举报</span>
+            <div class="vc-avatar"><img src="/static/images/pic80x80.png" alt="avatar" ></div>
+            <div class="vc-info">
+                <p class="vc-name clearfix">
+                    <span>aaa看世界</span>
+                    <span>100分钟前</span>
+                </p>
+                <p class="vc-det">不要打扰我,我想静静 不要打扰我,我想静静 不要打扰我,我想静静 不要打扰我,我想静静 不要打扰我,我想静静</p>
+            </div>
+        </li>
+        -->
+    </ul>
+    <ul id="api-loading" class="api-loading">
+        <li class="loading hide"></li>
+        <li class="nomore hide">已经没有更多了 ¯﹃¯ 。。。</li>
+    </ul>
+
+</section>
+
+<section id="prompt-box" class="m-prompt-box hide">
+    <div id="prompt" class="m-prompt">
+        <p>您的操作有错误</p>
+        <span>确定</span>
+    </div>
+</section>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ、百度浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、UC、360浏览器等</p>
+</section>
+
+<section id="caizhu-open-down" class="caizhu-open hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="/static/imgs/web/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+            </p></li>
+        <li class="czo-three">
+            <a href="https://m.caizhu.com/down/down-caizhu" id="czo-open-down" >下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close-open" class="open-close">X</span>
+</section>
+
+
+<script src="/static/js/api/zepto.min.js"></script>
+<!--<script src="/static/js/api/basic.js"></script>-->
+<script src="/static/js/api/emoji.js"></script>
+
+<!--<script>
+(function(){
+var $iframe = $('#iframe'),
+    iSrc = $iframe.data('src');
+
+    iSrc = iSrc.replace(/^http:\/\//, 'https://');
+    $iframe.attr('src', iSrc);
+
+})();
+</script>-->
+
+<script>
+
+var currentId = '<?php echo $this->videoDetail['videoID'];?>';
+
+var sharePic = $('#video-poster');
+if(sharePic.length>0){
+    sharePic = sharePic[0].src
+}else{
+    sharePic = '';
+}
+var shareTitle = $('.video-tit').text(),
+    shareDes = '财猪讲堂',
+    shareLink = location.href;
+
+
+    var show = 'show',
+            hide = 'hide',
+            $promptBox = $('#prompt-box'),
+            $prompt = $('#prompt'),
+            $promptP = $prompt.children('p'),
+            $promptOk = $prompt.children('span');
+
+    var $vcList = $('#vc-list');
+
+    $promptOk.tap(function(){
+        $promptBox.addClass(hide);
+    });
+
+    function promptDo(a, str){              //a, show | hide ;
+        if(!a) return ;
+
+        if(a == show){
+            $promptP.text(str);
+            $promptBox.removeClass(hide);
+        }else{
+            $promptBox.addClass(hide);
+        }
+
+    }
+
+
+var UAgent = navigator.userAgent.toLowerCase();
+var caizhuAPP = function(){                                   //财猪app
+    var reg = /caizhuapp/i;
+    if(reg.test(UAgent)) {
+        return true;
+    } else {
+        return false;
+    }
+}();
+
+if(caizhuAPP){    // 财猪里执行动作
+    var basicJs = document.createElement('script');
+    basicJs.type = 'text/javascript';
+    basicJs.src = '/static/js/api/basic.js?date=151228';
+    basicJs.onload = function(){
+        caizhuAppRun();
+
+        var caizhukeyjsShare = new caizhuShare({
+            pic: sharePic,
+            title: replaceBlank(shareTitle),
+            description: shareDes,
+            link: location.href
+        });
+        caizhukeyjsShare.createUrlMeta();
+    }
+    document.body.appendChild(basicJs);
+
+}else{
+
+    var commonFunc = {};
+
+    var otherJs = document.createElement('script');
+    otherJs.type = 'text/javascript';
+    otherJs.src = '/static/js/api/app-running.js?date=151223';
+
+    otherJs.onload = function(){
+
+        var loadIframe = null;
+        commonFunc.createIframe = function(){
+            var iframe = document.createElement("iframe");
+            iframe.style.cssText = "display:none;width:0px;height:0px;";
+            document.body.appendChild(iframe);
+            loadIframe = iframe;
+        }
+        commonFunc.redirect = function(){
+            var rUa = navigator.userAgent;
+            isChrome =rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+            if(isChrome){
+                if(info.os.android){
+                    if(rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)){
+                        loadIframe.src="caizhu://caizhu/lecture?id="+currentId;
+                    }else{
+                        window.location.href = 'intent://caizhu/lecture?id=' + currentId + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+                    }
+
+                }else{
+                    window.location.href = 'caizhu://caizhu/lecture?id=' + currentId;
+                }
+            }else{
+                if(safariBrowser){                  // ios6-plus, 只能用location跳转
+                    window.location.href = "caizhu://caizhu/lecture?id=" + currentId;
+                }else{
+                    loadIframe.src = "caizhu://caizhu/lecture?id=" + currentId;
+                }
+            }
+            var t = Date.now();
+            setTimeout(function(){
+                if(Date.now()-t < 600){
+                    //location.href="http://m.caizhu.com/down/down-caizhu";
+
+                    $('#caizhu-open-down').removeClass(hide);
+                }
+            },500)
+        };
+
+        // wechat share - start
+        $.ajax({
+            url: '/api/wechat/get-signature',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                url: location.href
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    var d = d.data;
+
+                    var wechatJs = document.createElement('script');
+                    wechatJs.type = 'text/javascript';
+                    wechatJs.src = 'https://fe.caizhu.com/public/js/callcaizhu/jweixin-1.0.0.js';
+                    wechatJs.onload = function(){
+                        wechatShare(d, {title: shareTitle, des: shareDes, pic: sharePic, link: shareLink});
+                    };
+                    document.body.appendChild(wechatJs);
+
+                }
+            }
+        });
+        // wechat share - end
+
+    }
+
+    document.body.appendChild(otherJs);
+
+}
+
+
+function caizhuAppRun(){
+
+    var hide = 'hide',
+            touch = 'touch',
+            report = 'vc-report',
+            selected = 'selected',
+            $report = $('.vc-report'),
+            $boxlink = $('.boxlink'),
+            $body = $('body');
+
+/*
+    $body.delegate('.boxlink', 'longTap', function(){
+        $report.addClass(hide);
+        $(this).find('.'+ report).removeClass(hide);
+        return false;
+    });
+*/
+
+    $body.tap(function(){
+        $('.vc-report').addClass(hide);
+    });
+
+    $body.delegate('.vc-report', 'tap',function(){ return false;
+        var $this = $(this),
+                flag = $this.data('flag'),
+                selected = 'selected';
+
+        if(flag) return false;
+
+        if($this.hasClass(selected)){
+            return false;
+        }
+
+        $this.data('flag', true);
+        setTimeout(function(){
+            $this.data('flag', '');
+        }, 800);
+
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {id: 'id'},
+            success: function(d){
+                // nothing
+            },
+            error: function(err){
+                promptDo('show', '网络错误,请过一会再试一试');
+            }
+        });
+    });
+
+/*
+    $('#vs-dingyue').tap(function(){
+        var $this = $(this),
+                id = $this.data('id'),
+                flag = $this.data('flag'),
+                selected = 'selected';
+
+        if(flag) return false;
+
+        if($this.hasClass(selected)){
+            return false;
+        }
+
+        $this.data('flag', true);
+        setTimeout(function(){
+            $this.data('flag', '');
+        }, 800);
+
+        $.ajax({
+            url: 'http://baidu.com',
+            type: 'post',
+            data: {id: id},
+            success: function(d){
+                $this.addClass(selected);
+
+            },
+            error: function(err){
+                promptDo('show', '网络错误,请过一会再试一试');
+            }
+        });
+    });
+*/
+
+    var $videoCount = $('#video-count'),
+            $videoVote = $('#video-vote'),
+            $videoReplay = $('#video-replay');
+
+    $videoVote.tap(function(){
+        var $this = $(this),
+                flag = $this.data('flag');
+
+        if(flag) return false;
+
+        var url,
+            selectedFlag = $this.hasClass(selected)
+
+        if(selectedFlag){
+            url = '/api/lecture/un-praise';
+        }else{
+            url = '/api/lecture/praise'
+        }
+
+        $this.data('flag', true);
+        setTimeout(function(){
+            $this.data('flag', '');
+        }, 800);
+
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {videoID: currentId},
+            success: function(d){
+
+                if(d.flag == 1){
+                    if(selectedFlag){
+                        var num = parseInt($this.text());
+                        num--;
+                        if(num < 0) num = 0;
+                        $this.text(num);
+                        $this.removeClass(selected);
+                    }else{
+                        var num = parseInt($this.text());
+                        num++;
+                        $this.text(num);
+                        $this.addClass(selected);
+                    }
+
+                }else if(d.flag == '-100'){
+                     location.href = 'http://caizhukeyjs-loginjump?url=' + location.href;
+                     return;
+                 }else{
+                    promptDo('show', d.msg || 'xx');
+                }
+
+            },
+            error: function(err){
+                promptDo('show', '网络错误,请过一会再试一试');
+            }
+        });
+    });
+
+    // add comment;
+
+    $videoReplay[0].onclick = function(){
+        try{
+            //location.href = 'callcaizhu?key='+javascript:window.caizhu.comment();
+            location.href = 'http://caizhukeyjs-comment';
+        }catch(err){}
+    };
+
+
+
+
+}
+
+</script>
+<script>
+var $videoCount = $('#video-count'),
+    $videoVote = $('#video-vote'),
+    $videoReplay = $('#video-replay');
+
+    function addComment(str){
+        if(!str) return ;
+
+        str = matchEmoji(str);
+
+        var a,
+            id = $videoReplay.parent().data('id');
+
+            a = parseInt($videoReplay.text());
+
+        $.ajax({                            // 返回  {avatar: '/static/images/pic80x80.png', name: '名字', date: '就在刚刚'}
+            url: '/api/lecture/lecture-comment',
+            type: 'post',
+            dataType: 'json',
+            data: {videoID: currentId, content: str},
+            success: function(d){
+
+                //d = eval('('+ '{"flag":1,"msg":"\u8bc4\u8bba\u6210\u529f","data":{"Avater":"434445","UserName":"231\u6765","CreateTime":"2015-10-30 14:06:46"},"extra":{}}' + ')');
+
+                if(d.flag == 1){
+
+                    var b = '';
+                    b += '<li class="vc-one boxlink" data-id="'+ id +'">';
+                    b += '<span class="vc-report hide">举报</span>';
+                    b += '<div class="vc-avatar"><img src="'+ d.data.Avater +'" alt="avatar"></div>';
+                    b += '<div class="vc-info"><p class="vc-name clearfix">';
+                    b += '<span>'+ d.data.UserName +'</span><span>'+ d.data.CreateTime +'</span>';
+                    b += '</p>';
+                    b += '<p class="vc-det">'+ str +'</p>';
+                    b += '</div></li>';
+
+                    $vcList.prepend(b);
+
+                    a = parseInt($videoReplay.text());
+                    $videoReplay.text(++a);
+                }else{
+                    promptDo('show', d.msg);
+                }
+
+            },
+            error: function(err){
+                promptDo('show', '网络错误,请过一会再试一试');
+            }
+        });
+
+    }
+
+    function matchEmoji(a){
+
+        if(!a) return ;
+
+        var path = emojiObj.path,
+            data = emojiObj.data;
+
+        var m, i, len, key, key2, exp;
+        for(i=0,len=data.length; i<len; i++){
+            m = data[i];
+            for(key in m){
+            console.log(key);
+            key2 = key.replace(/[\[\]]/gi, '');
+                exp = new RegExp('\\['+key2+ '\\]', 'g');
+
+                a = a.replace(exp, '<img width=22 height=22 src="'+emojiObj.path + m[key]+'" />');
+            }
+        }
+
+        return a;
+    }
+
+</script>
+<script>
+
+var hide = 'hide',
+    $loadBox = $('#api-loading'),
+    $loading = $('.loading '),
+    $nomore = $('.nomore');
+
+var $hiddenInput = $('#vedio-poster');
+var $vcList = $('#vc-list');
+
+getCommentList();
+
+var processor = {
+    timeoutId : null,
+    performProcessing: function(){
+
+        var winHeight = document.body.offsetHeight;
+        var pageTop = window.pageYOffset + window.innerHeight;
+        if(pageTop >= winHeight){
+            var lastId = $vcList.data('last-id');
+            getCommentList(lastId);
+        }
+        return ;
+
+    },
+    process: function(){
+        clearTimeout(this.timeoutId);
+        var that = this;
+        this.timeoutId = setTimeout(function(){
+            that.performProcessing();
+        }, 100);
+    }
+}
+
+window.onscroll = function(){
+    processor.process();
+}
+
+function getCommentList(lastId, pageSize){
+    var videoId = $hiddenInput.data('video-id');
+    if(!videoId) return false;
+
+    var flag = $vcList.data('flag');
+    if(flag) return false;
+
+    /*
+    $vcList.data('flag', true);
+    setTimeout(function(){
+        $vcList.data('flag', '');
+    }, 800);
+    */
+
+    $.ajax({
+        url: '/api/public/comment-list',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            videoID: currentId,
+            lastID: lastId || '',
+            pagesize: pageSize || ''
+        },
+        success: function(d){
+
+            if(d.flag == 1){
+
+                var a, b='',
+                    list = d.data.Rows,
+                    length = list.length;
+
+                if(length>0){
+
+                    for(var i=0; i<length; i++){
+                        a = list[i];
+                        b += '<li class="vc-one boxlink" data-id="'+ a.CommentID +'">';
+                        b += '<span class="vc-report hide">举报</span>';
+                        b += '<div class="vc-avatar"><img src="'+ a.Avater +'" alt="avatar"></div>';
+                        b += '<div class="vc-info"><p class="vc-name clearfix">';
+                        b += '<span>'+ a.UserName +'</span><span>'+ a.CreateTime +'</span>';
+                        b += '</p>';
+                        b += '<p class="vc-det">'+ a.Content +'</p>';
+                        b += '</div></li>';
+
+                    }
+
+                    $vcList.append(b);
+
+                    $vcList.data('last-id', list[length-1].CommentID);
+
+                }else{
+                    b += '<li class="ml">没有更多回复了 ...</li>';
+                    $vcList.data('flag', true).append(b);
+                }
+
+
+            }else{
+                promptDo('show', d.msg);
+            }
+
+        },
+        error: function(err){
+            promptDo('show', '网络错误,请过一会再试一试');
+        },
+        beforeSend: function(){
+            $loading.removeClass(hide);
+            $nomore.addClass(hide);
+            $loadBox.removeClass(hide);
+        },
+        complete: function(){
+            $loadBox.addClass(hide);
+        }
+
+    });
+}
+
+</script>
+
+<script>
+setTimeout(function(){
+    var $vIframe = $('#iframe');
+    $vIframe.removeClass('hide');
+    $vIframe.parent().addClass('selected');
+}, 88);
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

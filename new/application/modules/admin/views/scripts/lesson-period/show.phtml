@@ -1,0 +1,221 @@
+<?php $list = $this->list; ?>
+<link rel="stylesheet" type="text/css" href="/static/css/admin/jquery.bigcolorpicker.css" />
+<style>
+.window #detail_edit {
+   width: 333px;
+   padding: 20px;
+   margin: 0 auto;
+   background: #fefefe;
+   position: absolute;
+   z-index: 50;
+   left: 50%;
+   top: 40%;
+   margin-left: -150px;
+   box-shadow: 0px 0px 1px 1px #95B8E7;
+   border: 1px solid #DCDCDC;
+  }
+.window .editor-text {
+  height: 154px;
+  width: 290px;
+  max-height: 80px;
+  max-width: 300px;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 14px;
+  display: inline-block;
+}
+.window .detail_img,
+.window .detail_word_row1 {
+  display: table;
+  white-space: -1px;
+  line-height: 20px;
+  font-size: 14px;
+  color: #565656;
+}
+.window .btn-init {
+  display: inline-block;
+  width: 78px;
+  line-height: 26px;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 5px;
+  background: #00aaee;
+  border: none;
+}
+   .window .datagrid-btable td {
+   text-align: center;
+   padding:10px 5px;
+   vertical-align: middle;
+   font-weight: normal;
+  }
+.window .detail_word_row2 {
+  line-height: 40px;
+}
+.window .file {
+  display: inline-block;
+  width: 148px;
+  vertical-align: top;
+  margin-left: 27px;
+}
+/* 重写颜色选择器位置 */
+#bigpicker{
+    position: absolute;
+    left: 50% !important;
+    top: 50% !important;
+    width: 230px !important;
+    height: 160px !important;
+    margin-left: -115px !important;
+    margin-top: -80px !important;
+}
+
+
+</style>
+<!--列表详情-->
+<div class="datagrid-body" style="width: 800px; margin-top: 0px;">
+ 
+    <table class="datagrid-btable" cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;">
+        <tbody>
+            <tr id="" datagrid-row-index="0" class="datagrid-row1">
+                <td style='width: 100px;'>类型</td>
+                <td style='width: 200px;'>内容/链接</td>
+                <td style='width: 100px;'>字体颜色</td>
+                <td style='width: 80px;'>是否加粗</td>
+                <td style='width: 150px;'>图片尺寸</td>
+                <td style='width: 100px;'>操作</td>
+            </tr>
+            <?php if(empty($list)) { ?>
+            <tr id="" datagrid-row-index="0" class="datagrid-row1">
+                <td colspan="6" style='width: 470px; text-align: center;'>
+                    <div style=";height:auto;" class="datagrid-cell datagrid-cell-c11-MemberID">暂无领取记录</div>
+                </td>
+            </tr>
+            <?php }else{ ?>
+            <?php foreach($list as $row) { ?>
+            <tr datagrid-row-index="0" class="datagrid-row1" class_detail_id='<?php echo $row['DetailID']; ?>'>
+                <td>
+                    <?php echo $row['DetailType']==1?'文字':'图片'; ?>
+                </td>
+                <td>
+                    <?php if($row['DetailType']==1){ echo "<p style='color:".$row['FontColor'].';'.($row['IsBold']?"font-weight:bold;":'')."'>".$row['Content'].'</p>';}else{ ?>
+                    <image width="80" height="100" src="<?php echo $row['Content'].'?imageView2/0/w/100/h/100' ?>" /><?php } ?>
+                </td>
+                <td>
+                    <?php echo $row['DetailType']==1?$row['FontColor']:'--'; ?>
+                </td>
+                <td>
+                    <?php echo $row['DetailType']==1?($row['IsBold']?'是':'否'):'--'; ?>
+                </td>
+                <td>
+                    <?php echo $row['DetailType']==2?($row['ImgWidth'].'/'.$row['ImgHeight']):'--'; ?>
+                </td>
+                <td>
+                    <a href='javascript:;' name='DeleteClassDetail' detail_id='<?php echo $row['DetailID']; ?>'>删除</a>
+                    <a href='javascript:;' name='EditClassDetail' detail_id='<?php echo $row['DetailID']; ?>' DetailType='<?php echo $row['DetailType']; ?>'>编辑</a>
+                </td>
+            <?php }} ?>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div id='detail_edit' style="display: none;">
+    <form id="edit_class_detail_form" method="post" action="" enctype="multipart/form-data">
+        <div id='detail_img' style="display: none;"><span style="font-weight: bold;vertical-align:top;display:inline-block;">图片：</span><img width="80" height="100" src="" style="display: inline-block;" /><input class="file" name='image' type='file'/></div>
+        <div id='detail_word' style="display: none;"><p class="detail_word_row1"><span style="font-weight: bold;vertical-align:top; display: inline-block;">内容：</span><textarea class="editor-text" name='detail_content'></textarea></p>
+             <p class="detail_word_row2">是否加粗：<input class="no-bold btn-font" name="detail_edit_bold" type="radio" value="0" />不加粗<input class="yes-bold btn-font" name="detail_edit_bold" type="radio" value="1" />加粗 </p>
+             <p class="detail_word_row2">颜色：<input  type='text' name='detail_edit_color' id='detail_edit_color'/></p>
+        </div>
+        <input type="hidden" name='DetailID'/>
+        <input type="hidden" name='DetailType'/>
+        <div style="margin-top: 40px;text-align: center;"><input type='button' name='save_class_detail_div' class="btn-init" value='保存'/><input class="btn-init" style="margin-left: 20px;" name='close_class_detail_div'  type='button' value='关闭'/></div>
+    </form>
+</div>
+<script type="text/javascript" src="/static/js/jquery.bigcolorpicker.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('a[name="DeleteClassDetail"]').bind('click',function(){
+        var DetailID = $(this).attr('detail_id');
+        var thisObj = $(this);
+        $.ajax({
+            url : '/admin/lesson-period/del-class-detail',
+            type:"post",
+            data:{DetailID:DetailID},
+            dataType: 'json',
+            success: function(data){
+                if(data.flag){
+                    $.messager.alert("提示信息",'删除成功','info');
+                    thisObj.parent().parent().remove();
+                }else{
+                    $.messager.alert("提示信息",data.msg,'error');
+                }
+            },
+            error: function (){
+
+            }
+        });
+    })
+    
+    $('input[name="close_class_detail_div"]').click(function(){
+        $('#detail_edit').hide();
+    })
+    
+    $('input[name="save_class_detail_div"]').click(function(){
+        $("#edit_class_detail_form").attr('action','/admin/lesson-period/save-class-detail').submit();
+    })
+    
+    $("#edit_class_detail_form").myForm(function(ret){
+        if(ret.data.code==1){
+            var trObj = $('tr[class_detail_id="'+ret.data.DetailID+'"]');
+            if(ret.data.DetailType==1){
+                trObj.find('img').attr('src',ret.data.Content);
+                $('tr[class_detail_id="'+ret.data.DetailID+'"] td:nth-child(2)').html("<p style='color:"+ret.data.FontColor+';'+((ret.data.IsBold==1 || ret.data.IsBold=='1')?"font-weight:bold;":'')+"'>"+ret.data.Content+"</p>");
+                $('tr[class_detail_id="'+ret.data.DetailID+'"] td:nth-child(3)').html(ret.data.FontColor);
+                $('tr[class_detail_id="'+ret.data.DetailID+'"] td:nth-child(4)').html((ret.data.IsBold==1 || ret.data.IsBold=='1')?"是":'否');
+            }else{
+                trObj.find('img').attr('src',ret.data.Content+'?imageView2/0/w/100/h/100');
+                $('tr[class_detail_id="'+ret.data.DetailID+'"] td:nth-child(5)').html(ret.data.ImgWidth+'/'+ret.data.ImgHeight);
+            }
+            $.messager.alert("提示信息",'编辑成功！','info');
+            $('#detail_edit').hide();
+        }else{
+            $.messager.alert("提示信息",ret.msg,'error');
+        }
+    });
+    
+    $('a[name="EditClassDetail"]').bind('click',function(){
+        var DetailID = $(this).attr('detail_id');
+        var DetailType = $(this).attr('DetailType');
+        var n = 0;
+
+        $('#detail_edit').show();
+        if(DetailType==1){
+            $('#detail_word').show();
+            $('#detail_img').hide();
+        }else{
+            $('#detail_word').hide();
+            $('#detail_img').show();
+        }
+        $('#edit_class_detail_form input[name="DetailID"]').val(DetailID);
+        $('#edit_class_detail_form input[name="DetailType"]').val(DetailType);
+        $(this).parent().parent().find('td').each(function(){
+            if(DetailType==1){
+                if(n==1){
+                    $('#detail_word').find('textarea').text($(this).find('p').html());
+                }else if(n==2){
+                    $('#detail_word input[name="detail_edit_color"]').val($.trim($(this).html()));
+                }else if(n==3){
+                    var detail_edit_bold = ($(this).html()=='是')?1:0;
+                    $(':radio[name="detail_edit_bold"][value='+detail_edit_bold+']').attr("checked",true);
+                }
+            }else{
+                if(n==1){
+                    $('#detail_img').find('img').attr('src',$(this).find('img').attr('src'));
+                }
+            }
+            n++;
+        });
+    })
+    
+    $('#detail_edit_color').bigColorpicker("detail_edit_color");
+})
+</script>

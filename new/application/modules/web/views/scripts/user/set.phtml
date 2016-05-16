@@ -1,0 +1,893 @@
+<link rel="stylesheet" href="/static/plugin/kingeditor/themes/default/default.css" />
+<script src="/static/plugin/kingeditor/kindeditor-min.js"></script>
+<script src="/static/plugin/kingeditor/lang/zh-CN.js"></script>
+
+<div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            设置
+            <span class="article-tit-do">
+            <a class="selected" href="/user/set">理财号</a>
+            <span class="at-separate">|</span>
+            <a href="/user/account-detail">账号主题</a>
+            <span class="at-separate">|</span>
+            <a href="/user/information">理财师资料</a>
+        </h2>
+
+        <div class="manage-info">
+            <h2 class="manage-info-tit">理财号信息</h2>
+
+            <ul class="mi-list">
+                <li class="mi-one clearfix">
+                    <div class="mi-one00 mi-one00-top">头像</div>
+                    <div class="mi-one01">
+                        <ul class="manage-cover clearfix">
+                            <li class="mac-pic mi-pic fl"><img id="show-pic00" src="<?php if(!empty($this->columnInfo['Avatar'])){ echo $this->columnInfo['Avatar'].'?imageView2/0/w/106/h/106';}else{echo '/static/images/web/column/pic180x180.png';}?>" alt="财猪"></li>
+                            <li class="mac-select fl">
+                                <p class="mi-pic-p">一个月只能申请修改一次</p>
+                                <div id="avatar-dobox" class="hide">
+                                <span id="select-btn00" class="select" value="选择文件">选择文件</span>
+                                <input type="hidden" id="select-pic00" class="select" value="">
+                                <input type="hidden" id="columnID" value="<?php if(!empty($this->columnInfo['ColumnID'])){echo $this->columnInfo['ColumnID'];} ?>" />
+                                <span class="manage-upload" id="update_avatar">确定上传</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00 mi-one00-top">二维码</div>
+                    <div class="mi-one01">
+                        <div class="mi-code">
+                            <img src="/static/images/web/column/pic160x160.png" alt="二维码" />
+                        </div>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">名称</div>
+                    <div class="mi-one01">
+                        <div class="mi-det"><?php if(!empty($this->columnInfo['Title'])){echo $this->columnInfo['Title'];}?></div>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">标签</div>
+                    <div class="mi-one01">
+                        <div class="mi-det">
+                            <?php if(!empty($this->focus)):?>
+                                <?php foreach ($this->focus as $item):?>
+                                    <span class="mr"><?php echo $item['FocusName'];?></span>
+                                <?php endforeach;?>
+                            <?php endif;?>
+                        </div>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">简介</div>
+                    <div class="mi-one01 p-rela">
+                        <div id="brief-text" class="mi-det"><?php if(!empty($this->columnInfo['Description'])){echo $this->columnInfo['Description'];}?></div>
+
+                        <span class="mi-det-mod p-abso">修改</span>
+                        <span class="mi-det-tip p-abso">一个月只能申请修改一次</span>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">帐号主体</div>
+                    <div class="mi-one01 p-rela">
+                        <div class="mi-det">
+                            <?php if(!empty($this->Subject)){echo $this->Subject;}?>
+                        </div>
+                        <a class="mi-zhudet" href="/web/user/account-detail">详情</a>
+                    </div>
+                </li>
+                <?php if($this->AuthenticateType==2):?>
+                    <li class="mi-one clearfix">
+                        <input type="hidden" id="mi-zheng-text" data-limit="3">
+                        <div class="mi-one00 maa-zx-10">
+                            <div class="mi-zizhi clearfix">
+                                <span id="kz-q00" class="mi-q00 p-rela">
+                                    <div id="kz-qdet00" class="mi-qdet hide">
+                                        <span class="mi-arrow"></span>
+                                        <div class="mi-zizhi-tit">资质说明</div>
+                                        <p>帐号主体依法享有由本帐号资质所带来的权利和收益，也对本帐号的所有行为承担全部责任。帐号资质认证信息来源于帐号主体向小麦金融提交的资质文件等证明，并由帐号主体确保其真实、准确、合法。小麦金融已进行合理及必要的甄别和核实。
+                                        </p>
+                                    </div>
+                                </span>
+                                <span>资质</span>
+                            </div>
+                        </div>
+                        <div class="mi-one01 p-rela maa-zx-09">
+                            <a class="mi-zhudet mi-zhudet02" >设置</a>
+                            <ul id="zheng-list" class="mi-zheng-list clearfix" data-limit="3">
+                                <?php if(!empty($this->qualificationArr)):?>
+                                    <?php foreach ($this->qualificationArr as $item):?>
+                                        <li data-url="yhao.png"><?php echo $item['FinancialQualificationType']?></li>
+                                    <?php endforeach;?>
+                                        <li id="mi-last" class="mi-last">+</li>
+                                <?php endif;?>
+                            </ul>
+                        </div>
+                    </li>
+                <?php endif;?>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">原始ID</div>
+                    <div class="mi-one01">
+                        <div class="mi-det"><?php if(!empty($this->columnInfo['ColumnID'])){echo $this->columnInfo['ColumnID'];} ?></div>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">
+                        <span>创建时间</span>
+                        <span></span>
+                    </div>
+                    <div class="mi-one01">
+                        <div class="mi-det"><?php if(!empty($this->columnInfo['CreateTime'])){echo $this->columnInfo['CreateTime'];} ?></div>
+                    </div>
+                </li>
+            </ul>
+
+            <h2 class="manage-info-tit mt40">创建者信息</h2>
+            <ul class="mi-list">
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">
+                        <span>财猪号</span>
+                        <span></span>
+                    </div>
+                    <div class="mi-one01">
+                        <div class="mi-det"><?php if(!empty($this->UserName)){echo $this->UserName;}?></div>
+                    </div>
+                </li>
+                <li class="mi-one clearfix">
+                    <div class="mi-one00">
+                        <span>手机号</span>
+                        <span></span>
+                    </div>
+                    <div class="mi-one01">
+                        <div class="mi-det"><?php if(!empty($this->MobileNumber)){echo $this->MobileNumber;}?></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+<div id="kuang-box" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <div id="kuang-zheng" class="kuang-zheng">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">添加资质</strong>
+            <span id="kuang-close" class="kuang-close fr"></span>
+        </div>
+
+        <div id="" class="kuang-zheng-show">
+            <img id="kuang-zheng-show" class="" src="" />
+        </div>
+        <div class="kz-one">
+            <!--<span id="zheng-add" class="kuang-zheng-add">添加图片</span>-->
+            <span id="kuang-zheng-btn" class="select" value="选择文件">选择文件</span>
+            <input id="kuang-zheng-pic" name="FinancialQualificationImage" type="hidden" value="" />
+
+        </div>
+
+        <div class="kz-one">
+            <select id="select-type" name="FinancialQualificationType">
+                <option value="">选择证书</option>
+                <option value="金融理财师">金融理财师</option>
+                <option value="国际金融理财师">国际金融理财师</option>
+                <option value="助理理财规划师">助理理财规划师</option>
+                <option value="国家理财规划师">国家理财规划师</option>
+                <option value="国家高级理财规划师">国家高级理财规划师</option>
+                <option value="助理金融分析师">助理金融分析师</option>
+                <option value="金融分析师">金融分析师</option>
+                <option value="高级金融分析师">高级金融分析师</option>
+                <option value="注册金融分析师">注册金融分析师</option>
+                <option value="助理投资咨询师">助理投资咨询师</option>
+                <option value="中级投资咨询师">中级投资咨询师</option>
+                <option value="高级投资咨询师">高级投资咨询师</option>
+                <option value="证券从业者">证券从业者</option>
+                <option value="证券分析师">证券分析师</option>
+                <option value="注册国际投资分析师">注册国际投资分析师</option>
+                <option value="银行从业者">银行从业者</option>
+                <option value="保险代理人">保险代理人</option>
+                <option value="保险经纪人">保险经纪人</option>
+                <option value="保险公估人">保险公估人</option>
+                <option value="寿险管理师">寿险管理师</option>
+                <option value="寿险理财规划师">寿险理财规划师</option>
+                <option value="员工福利规划师">员工福利规划师</option>
+                <option value="精算师">精算师</option>
+                <option value="期货从业者">期货从业者</option>
+                <option value="期货分析师">期货分析师</option>
+                <option value="注册资产评估师">注册资产评估师</option>
+                <option value="注册房地产估价师">注册房地产估价师</option>
+                <option value="注册房土地估价师">注册房土地估价师</option>
+                <option value="custom">自定义</option>
+            </select>
+        </div>
+
+        <div id="zheng-defined" class="kz-one kz-one-hidden hid"><input type="" name="customType" placeholder="请输入自定义名称" /></div>
+
+        <div class="kz-one clearfix p-rela">
+            <input id="kz-select01" class="kz-select01" placeholder="年" />
+            <div id="yearpicker-box" class="yearpicker-box hide">
+                <ul class="yearpicker-tit clearfix">
+                    <li id="yt-prev" class="yt-one yt-prev">&lt;&lt;</li>
+                    <li class="yt-one yt-text">
+                        <input type="text" id="yt-input">
+                    </li>
+                    <li id="yt-next" class="yt-one yt-next">&gt;&gt;</li>
+                </ul>
+                <ul id="yp-list" class="yp-list"></ul>
+            </div>
+
+            <select id="kz-select02" class="kz-select02">
+
+                <option value="">月</option>
+                <option value="1">1月</option>
+                <option value="2">2月</option>
+                <option value="3">3月</option>
+                <option value="4">4月</option>
+                <option value="5">5月</option>
+                <option value="6">6月</option>
+                <option value="7">7月</option>
+                <option value="8">8月</option>
+                <option value="9">9月</option>
+                <option value="10">10月</option>
+                <option value="11">11月</option>
+                <option value="12">12月</option>
+            </select>
+            <span id="kz-q01" class="kz-q p-rela">
+                <div id="kz-qdet01" class="kz-q-det hide">
+                    <span></span>
+                    <p>填写时间请与资格证上的时间保持一致</p>
+                </div>
+            </span>
+        </div>
+
+        <div class="kz-one">
+            <ul class="kz-do">
+                <input id = "authId" type="hidden" value="<?php echo $this->AuthenticateID;?>" />
+                <li class="kz-ok">确定</li>
+                <li class="kz-no">取消</li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="kuang-box02" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <div id="kuang-zheng02" class="kuang-zheng kuang-zheng02">
+        <div class="kuang-draft-tit kuang-draft-tit02 clearfix">
+            <b>修改简介</b>
+            <span id="kuang-close02" class="kuang-close fr"></span>
+        </div>
+        <div class="box02-form">
+            <input type="text" name="description" value="<?php if(!empty($this->columnInfo['Description'])){echo $this->columnInfo['Description'];}?>">
+            <p>可填写专注方向、行业背景、过往经历、个人感悟等，要求内容完整通顺，无特殊符号，10-50个字，请勿添加联系方式，一个月只可修改一次</p>
+        </div>
+
+
+        <div class="kz-do02">
+            <span class="kz-ok02">确定</span>
+        </div>
+
+
+    </div>
+</div>
+
+<div id="kuang-box03" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <div id="kuang-zheng03" class="kuang-zheng kuang-zheng02">
+        <div class="kuang-draft-tit kuang-draft-tit02 clearfix">
+            <b>设置资质</b>
+            <span id="kuang-close03" class="kuang-close fr"></span>
+        </div>
+        <div class="box03-form">
+            <input id="box03" type="hidden" >
+            <ul class="box03-list clearfix">
+                <?php if(!empty($this->qualificationArr)):?>
+                    <?php foreach ($this->qualificationArr as $item):?>
+                        <li data-id="<?php echo $item['FinancialQualificationID']?>" <?php if($item['IsDisplayInPersonalProfile']==1){echo "class = 'selected'";}?>><?php echo $item['FinancialQualificationType']?></li>
+                    <?php endforeach;?>
+                <?php endif;?>
+            </ul>
+            <div class="box03-tip">您可以在资质中选择一个用于显示在自己的资料页中
+                <span id="kz-q03" class="mi-q00 mi-q03 p-rela">
+                    <img src="/static/imgs/web/column/icon-demo00.png" class="hide" width="100" height="100" alt="show">
+                </span>
+            </div>
+        </div>
+
+
+        <div class="kz-do02">
+            <span class="kz-ok03">确定</span>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+var avatarEditable = '<?php echo $this->avatarEditable;?>';
+var descriptionEditable = '<?php echo $this->descriptionEditable;?>';
+var isSet = '<?php echo $this->isset;?>';
+
+
+    var  hide = 'hide',
+            selected = 'selected';
+
+    var editor, editor2;
+
+    var     $selectBtn00 = $('#select-btn00'),
+            $selectPic00 = $('#select-pic00'),
+            $showPic00 = $('#show-pic00'),
+
+            $miLast = $('#mi-last'),
+            $zhengList = $('#zheng-list'),
+
+            $selectZheng = $('#select-zheng'),
+            $selectType = $('#select-type'),
+
+            $kuangBox = $('#kuang-box'),
+            $kuangClose = $('#kuang-close'),
+
+            $kzQ00 = $('#kz-q00'),
+            $kzQdet00 = $('#kz-qdet00'),
+            $kzQ01 = $('#kz-q01'),
+            $kzQdet01 = $('#kz-qdet01'),
+
+            $kuangZhengShow = $('#kuang-zheng-show'),
+            $kuangZhengPic = $('#kuang-zheng-pic'),
+            $kuangZhengBtn = $('#kuang-zheng-btn'),
+
+            $zhengDefined = $('#zheng-defined'),
+
+            $zhengYear = $('#kz-select01'),
+            $zhengMonth = $('#kz-select02'),
+
+            $kzOk = $('.kz-ok'),
+            $kzNo = $('.kz-no');
+
+
+    $kuangClose.click(function(){
+        $kuangBox.addClass(hide);
+    });
+
+    $selectType.change(function(){
+        var $this = $(this), val = $this.val();
+        var $next = $this.parent().next();
+        if(val == 'custom'){
+            $next.removeClass(hide);
+        }else{
+            $next.addClass(hide);
+        }
+    });
+
+    $kzQ00.mouseover(function(){
+        $kzQdet00.removeClass(hide);
+    }).mouseout(function(){
+        $kzQdet00.addClass(hide);
+    });
+
+    $kzQ01.mouseover(function(){
+        $kzQdet01.removeClass(hide);
+    }).mouseout(function(){
+        $kzQdet01.addClass(hide);
+    });
+    $('#update_avatar').click(function(){
+
+        var avatar = $selectPic00.val(),
+            columnID= $('#columnID').val();
+
+        if(!avatar){
+            definedPrompt('请上传要修改的头像');
+            return ;
+
+        }
+
+        $.ajax({
+            url: '/web/user/update-avatar',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                columnID:columnID,
+                avatar: avatar
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    definedPrompt(d.msg);
+                    //$miLast.before('<li>'+ d.name +'</li>');
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(err){
+                definedPrompt('网络错误，过一会儿再试试吧...');
+            }
+        });
+    });
+
+    $kzOk.click(function(){
+
+        var pic = $kuangZhengPic.val(),
+            type = $selectType.val(),
+            defined = $zhengDefined.children().eq(0).val(),
+            year = $zhengYear.val(),
+            month = $zhengMonth.val();
+            authId= $('#authId').val();
+
+        if(!pic || !year || !month || !(type || defined)){
+            definedPrompt('请填写全信息!');
+            return ;
+
+        }
+
+        $.ajax({
+            url: '/web/user/add-qualification',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                authId:authId,
+                pic: pic,
+                type: type,
+                defined: defined,
+                year: year,
+                month: month
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    //$miLast.before('<li>'+ d.data +'</li>');
+                    $kuangBox.addClass(hide);
+                    definedPrompt(d.msg);
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(err){
+                definedPrompt('网络错误，过一会儿再试试吧...');
+            }
+        });
+    });
+
+
+</script>
+
+<script>
+var hide = 'hide',
+    $ypList = $('#yp-list'),
+    $zkYear = $('#kz-select01'),
+    $yearPickerBox = $('#yearpicker-box');
+
+    function CreateYear(prevId, nextId, textId){
+        if(!prevId || !nextId) return ;
+        this.prevElem = document.getElementById(prevId);
+        this.nextElem = document.getElementById(nextId);
+        this.textElem = document.getElementById(textId);
+        this.maxYear = (new Date()).getFullYear();
+
+        this.prevYear = 2000;
+        this.nextYear = 2000;
+        this.flip = 30;
+        this.init();
+
+        this.yearSelect();
+
+    }
+
+    CreateYear.prototype = {
+        init: function(){
+            var _this = this;
+
+            this.createOne(2, this.nextYear);
+
+            this.prevElem.onclick = function(){_this.prevDo()};
+            this.nextElem.onclick = function(){_this.nextDo()};
+            this.textElem.onkeydown = function(e){
+                if(!_this.validKey(e)) return false;
+            }
+
+            this.textElem.onchange = function(e){
+                _this.validValue();
+            }
+
+            this.textElem.onkeyup = function(e){
+                _this.validValue();
+            }
+
+        },
+        yearSelect: function(e){
+            $ypList.delegate('span', 'click', function(){
+                $zkYear.val($(this).text());
+                $yearPickerBox.addClass(hide);
+            });
+
+
+        },
+        validValue: function(){
+            var a,
+                $textElem = $(this.textElem),
+                str = $textElem.val();
+
+            if(str.length>4){
+                str = str.replace(/^0/, '');
+                str = str.substr(0, 4);
+                $textElem.val(str);
+            }
+
+            $zkYear.val(str);
+
+
+        },
+        validKey: function(e){
+            var e = e || window.event;
+            var valid = [
+                8,        // backspace
+                9,        // tab
+                13,       // enter
+                27,       // escape
+                35,       // end
+                36,       // home
+                37,       // left arrow
+                39,       // right arrow
+                46,       // delete
+                48, 96,   // 0
+                49, 97,   // 1
+                50, 98,   // 2
+                51, 99,   // 3
+                52, 100,  // 4
+                53, 101,  // 5
+                54, 102,  // 6
+                55, 103,  // 7
+                56, 104,  // 8
+                57, 105,  // 9
+            ];
+
+            for(var i=0,c; c=valid[i]; i++){
+                if(e.keyCode == c) return true;
+            }
+
+            return false;
+
+        },
+        getShowDom: function(){
+            var $show = $ypList.find('.selected');
+            return $show;
+        },
+        delSelected: function(){
+            $ypList.children().removeClass('selected');
+        },
+        prevDo: function(){
+
+            var selected = 'selected';
+
+            var $show = this.getShowDom();
+            var prevE = $show[0].previousSibling;
+
+            if(prevE){
+                $ypList.children().removeClass(selected);
+                $(prevE).addClass(selected);
+            }else{
+                this.prevYear -= this.flip;
+                this.delSelected();
+                this.createOne(1, this.prevYear);
+            }
+        },
+        nextDo: function(){
+            var selected = 'selected';
+
+            var $show = this.getShowDom();
+            var nextE = $show[0].nextSibling;
+            if(nextE){
+                $ypList.children().removeClass(selected);
+                $(nextE).addClass(selected);
+            }else{
+                this.createOne(2, this.nextYear);
+            }
+        },
+        createOne: function(type, iYear){
+
+
+            if(type == 1){
+                var pageS = '';
+
+                pageS += '<li class="yp-one selected" >'
+                for(var i=0; i<this.flip; i++){
+                    pageS += '<span>'+ iYear +'</span>';
+                    iYear++;
+                }
+                pageS += '</li>';
+                $ypList.prepend(pageS);
+
+            }
+
+
+            if(type == 2){
+                var pageS = '';
+                if(iYear >= this.maxYear){ definedPrompt('没有更多年份了'); return ; };
+                var length = this.flip;
+
+                pageS += '<li class="yp-one selected" >'
+                for(var i=0; i<length; i++){
+                    pageS += '<span>'+ iYear +'</span>';
+
+                    if(iYear >= this.maxYear){
+                        //alert('没有更多了');
+                        break;
+                    }else{
+                        iYear++;
+                    }
+                }
+
+                this.nextYear = iYear;
+
+                pageS += '</li>';
+                $ypList.append(pageS);
+
+            }
+
+
+
+        }
+    }
+
+    var yearCase = new CreateYear('yt-prev', 'yt-next', 'yt-input');
+    $zkYear.focus(function(){
+        $(this).blur();
+        $yearPickerBox.removeClass(hide);
+        return false;
+    });
+     $zkYear.click(function(){
+        return false;
+     });
+
+    $('body').click(function(){
+        $yearPickerBox.addClass(hide);
+    });
+
+    $yearPickerBox.click(function(){
+        return false;
+    });
+
+</script>
+
+
+<script>
+
+    KindEditor.ready(function(K) {
+
+        var uploadbutton = K.uploadbutton({
+            button : $selectBtn00[0],
+            fieldName : 'imgFile',
+            url : '/article/upload-file?limit=1',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                    //alert(data.url);
+                    $showPic00.attr('src', data.data.url);
+                    $selectPic00.val(data.data.url);
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton.fileBox.change(function(e) {
+            uploadbutton.submit();
+        });
+
+function cEditor2(){
+
+        var flag = $kuangZhengBtn.attr('flag');
+        if(flag) return ;
+        $kuangZhengBtn.attr('flag', true);
+
+        var uploadbutton2 = K.uploadbutton({
+            button : $kuangZhengBtn[0],
+            fieldName : 'imgFile',
+            url : '/article/upload-file?limit=1',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                    //alert(data.url);
+                    $kuangZhengShow.attr('src', data.data.url);
+                    $kuangZhengPic.val(data.data.url);
+                    $kuangZhengShow.removeClass(hide);
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton2.fileBox.change(function(e) {
+            uploadbutton2.submit();
+        });
+        }
+
+            $miLast.click(function(){
+                /*var limit = parseInt($zhengList.data('limit'));
+                var flag = $zhengList.children().length - 1;
+                if(flag >= limit){
+                    definedPrompt('最多可以上传'+limit+'个证书');
+                    return ;
+                }
+                */
+
+                $kuangBox.removeClass(hide);
+                clearOpen();
+            });
+            $kzNo.click(function(){
+                $kuangBox.addClass(hide);
+                clearOpen();
+            });
+            function clearOpen(){
+                $kuangZhengShow.addClass(hide);
+                $selectType.children().eq(0).attr('selected', 'selected');
+                $zhengDefined.addClass(hide);
+                $zhengDefined.find('input').val('');
+                $zhengYear.val('');
+                $zhengMonth.children().eq(0).attr('selected', 'selected');
+                cEditor2();
+            }
+
+    });
+
+</script>
+
+<script>
+// 修改简介
+
+var $kuangBox02 = $('#kuang-box02'),
+    $brief = $('.mi-det-mod'),
+    $close02 = $('#kuang-close02'),
+    $ok02 = $('.kz-ok02'),
+    $briefInput = $('.box02-form input'),
+    $briefText = $('#brief-text');
+
+    $brief.click(function(){
+        var $this = $(this), flag;
+        flag = $this.hasClass(selected);
+        if(flag){
+            //definedPrompt('一个月只能修改一次');
+            return false;
+        }
+        $kuangBox02.removeClass(hide);
+    })
+    $close02.click(function(){
+        $kuangBox02.addClass(hide);
+    })
+    $ok02.click(function(){
+        var val = $briefInput.val(),
+            str = '请填写10-50个字符简介描述';
+        if(!val || val.length < 10 || val.length > 50){
+            definedPrompt(str);
+            return false;
+        }
+
+        modBrief(val);
+    })
+
+function modBrief(str){
+
+    columnID= $('#columnID').val();
+    $.ajax({
+        url: '/web/user/update-description',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            description: str,
+            columnID:columnID
+        },
+        success: function(data){
+            if(data.flag==1){
+                $briefText.text(str);
+                $kuangBox02.addClass(hide);
+            }else{
+                definedPrompt(data.msg);
+            }
+        },
+        error: function(err){
+            definedPrompt('网络错误!');
+        }
+    });
+}
+
+function parseClass(str){
+
+    if(!str) return ;
+    var a, obj={}, arr=[];
+    arr = str.split('&');
+    for(var i=0,len=arr.length; i<len; i++){
+        a = arr[i].split('=');
+        obj[a[0]] = decodeURIComponent(a[1]);
+    }
+    return obj;
+}
+
+
+// 设置资质
+
+var $setup03 = $('.mi-zhudet02'),
+    $kuangBox03 = $('#kuang-box03'),
+    $ok03 = $('.kz-ok03'),
+    $setupText = $('#box03'),
+    $close03 = $('#kuang-close03'),
+    $box03List = $('.box03-list'),
+    $kzQ03 = $('#kz-q03');
+
+$setup03.click(function(){
+    if(isSet == 0){
+        $setupText.val('');
+    }else{
+        //var id = $box03List.find('.selected').data('id') || '';
+        $setupText.val(isSet);
+        $box03List.children().removeClass(selected);
+        $box03List.find('[data-id="'+ isSet + '"]').addClass(selected);
+
+    }
+
+    $kuangBox03.removeClass(hide);
+})
+$close03.click(function(){
+    $kuangBox03.addClass(hide);
+})
+$box03List.delegate('li', 'click', function(){
+    var self = $(this),
+        //selected = 'selected',
+        id = self.data('id');
+
+        $setupText.val(id);
+        self.addClass(selected).siblings().removeClass(selected);
+})
+
+if(avatarEditable == 1){
+    $('#avatar-dobox').removeClass(hide);
+}
+if(descriptionEditable == 0){
+    $brief.addClass(selected);
+}
+
+$ok03.click(function(){
+
+    var val = $setupText.val(),
+        str = '请选择资质';
+    if(val == 0){
+        definedPrompt(str);
+        return false;
+    }
+
+    modSetup();
+
+});
+
+$kzQ03.mouseover(function(){
+    $(this).children().removeClass(hide);
+}).mouseout(function(){
+    $(this).children().addClass(hide);
+})
+
+function modSetup(){
+    var val =  $setupText.val();
+    $.ajax({
+        url: '/web/user/set-qualification',
+        type: 'post',
+        dataType: 'json',
+        data: {qualificationID: val},
+        success: function(data){
+            if(data.flag==1){
+                isSet = val;
+                $kuangBox03.addClass(hide);
+            }else{
+                definedPrompt(data.msg);
+            }
+        },
+        error: function(err){
+            definedPrompt('网络错误!');
+        }
+    });
+}
+
+</script>

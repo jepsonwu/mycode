@@ -1,0 +1,69 @@
+    <div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            帐号主体
+            <span class="article-tit-do">
+            <a href="/user/set">理财号</a>
+            <span class="at-separate">|</span>
+            <a class="selected" href="/user/account-detail">账号主题</a>
+            <span class="at-separate">|</span>
+            <a href="/user/information">理财师资料</a>
+        </h2>
+
+        <ul class="info-person">
+            <?php if(!empty($this->accountDetail)):?>
+                <li class="infop-one">
+                    <p class="infop-tit icon-infop-renzheng">财猪认证说明</p>
+                    <p class="infop-des"><?php echo $this->accountDetail['Direction'];?></p>
+                </li>
+                <?php if($this->accountDetail['AuthenticateType']==1||$this->accountDetail['AuthenticateType']==2):?>
+                    <li class="infop-one">
+                        <p class="infop-tit icon-infop-list">姓名</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['OperatorName']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">身份证</p>
+                        <p class="infop-des"><?php echo substr_replace($this->accountDetail['IDCard'],'*************',3,13);?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">认证时间</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['DataTime']?></p>
+                    </li>
+                <?php elseif($this->accountDetail['AuthenticateType']==3):?>
+                    <li class="infop-one">
+                        <p class="infop-tit icon-infop-list">企业名称</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['BusinessName']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">营业执照注册号</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['BusinessLicenseNumber']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">成立日期</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['FoundedTime']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">认证日期</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['DataTime']?></p>
+                    </li>
+                <?php elseif($this->accountDetail['AuthenticateType']==4):?>
+                    <li class="infop-one">
+                        <p class="infop-tit icon-infop-list">机构名称</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['OrganizationName']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">机构代码</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['OrganizationCode']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">成立日期</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['FoundedTime']?></p>
+                    </li>
+                    <li class="infop-one">
+                        <p class="infop-tit">认证日期</p>
+                        <p class="infop-des"><?php echo $this->accountDetail['DataTime']?></p>
+                    </li>
+                <?php endif;?>
+            <?php endif;?>
+        </ul>
+    </div> <!-- main-right -->
+</div>

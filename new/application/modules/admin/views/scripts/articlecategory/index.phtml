@@ -1,0 +1,211 @@
+<table id="articlecategory_list"></table>
+<div id="articlecategory_add_window"></div>
+<div id="articlecategory_edit_window"></div>
+<script type="text/javascript">
+
+    var articlecategoryObj = {
+
+        deleteUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'delete'));?>',
+        addUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'add'));?>',
+        editUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'edit'));?>',
+        upUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'up'));?>',
+        downUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'down'));?>',
+        pushUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'push'));?>',
+        nopushUrl:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'nopush'));?>',
+           
+        containerObj:$("#articlecategory_list"),
+        addWindowObj:$("#articlecategory_add_window"),
+        editWindowObj:$("#articlecategory_edit_window"),
+        'selfName':'articlecategoryObj',
+        'init':function(){
+            this.showData();
+        },
+        
+        //添加分类
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':380,
+                'height':250,
+                'modal':true,
+                'resizable':false,
+                'title':'添加',
+                'onLoad':function(){
+                    $("#articlecategory_add_form_save").off().on('click',function(){
+                        $("#articlecategory_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#articlecategory_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('close');
+                    });
+                    
+                    $("#articlecategory_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.addWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                        
+                    }
+            });
+        },
+        
+        //修改分类
+        editHandler:function(articlecategory_id){
+            var _THIS_ = this;
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.editUrl+'?EditID='+articlecategory_id,
+                'width':380,
+                'height':220,
+                'modal':true,
+                'resizable':false,
+                'title':'修改',
+                'onLoad':function(){
+                    $("#articlecategory_edit_form_save").off().on('click',function(){
+                        $("#articlecategory_edit_form").attr('action',_THIS_.editUrl).submit();
+                    });
+
+                    $("#articlecategory_edit_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('close');
+                    });
+                    
+                    $("#articlecategory_edit_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.editWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    }
+            });
+        },
+        //删除分类
+        deleteHandler:function(articlecategory_id,status){
+            var _THIS_ = this;
+            var tip = articlecategory_id;
+            var mes = confirm("确定要删除ID为 "+tip+" 的分类吗？");
+            if(mes==true){
+                    $.ajax({
+                            url:_THIS_.deleteUrl,
+                            type:"POST",
+                            data:{category_id:articlecategory_id},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            }
+                    });
+            }
+        },
+
+        //上移
+        upHandler:function(articlecategory_id,status){
+            var _THIS_ = this;
+            var tip = articlecategory_id;
+                    $.ajax({
+                            url:_THIS_.upUrl,
+                            type:"POST",
+                            data:{category_id:articlecategory_id},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            }
+                    });
+        },
+        //下移
+        downHandler:function(articlecategory_id,status){
+            var _THIS_ = this;
+            var tip = articlecategory_id;
+                    $.ajax({
+                            url:_THIS_.downUrl,
+                            type:"POST",
+                            data:{category_id:articlecategory_id},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            }
+                    });
+        },
+        
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+
+                //是否分页
+                pagination:false,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                fitColumns:true,
+                fit:true,
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'CategoryID',
+
+                //数据加载url
+                url:'<?php echo $this->url(array('controller'=>'articlecategory','action'=>'list'));?>',
+
+                //设置列
+                columns:[[
+                    {field:'CategoryID',title:'ID',width:50},
+                    {field:'Name',title:'类型',width:200},
+                    {field:'NameEn',title:'类型[英文]',width:200},
+                    {field:'ord',title:'排序',width:200,align:'center',formatter:function(value,rec,index){
+                        var a = '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.upHandler(\''+rec.CategoryID+'\')">上移</a>';
+                        var b = '<a href="javascript:void(0);" onclick="'+_THIS_.selfName+'.downHandler(\''+rec.CategoryID+'\')">下移</a>';
+                        return  a+'&nbsp;&nbsp;' + b ;
+                       }
+                    },
+                    {field:'opt',title:'操作',width:150,align:'center',formatter:function(value,rec,index){
+                        var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.CategoryID+'\')">';
+                            e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                        var d= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.deleteHandler(\''+rec.CategoryID+'\')">';
+                            d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                            return  e+'&nbsp;&nbsp;' + d ;
+                       }
+                    }
+                ]],
+
+                //工具栏
+                toolbar :[{
+                    text:'刷新',
+                    iconCls:'icon-reload',
+                    handler:function(){_THIS_.containerObj.edatagrid('reload');}
+                },{
+                    text:'添加',
+                    iconCls:'icon-add',
+                    handler:function(){
+                        _THIS_.addHandler();
+                    },
+                }]
+            });
+
+
+
+            $.messager.defaults={ok:"确定",cancel:"取消"};
+
+
+
+           },
+};
+articlecategoryObj.init();
+</script>

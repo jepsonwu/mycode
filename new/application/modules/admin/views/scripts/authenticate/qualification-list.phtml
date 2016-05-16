@@ -1,0 +1,123 @@
+<div id="qualification_dialog" >
+    <img id ="q_image"　src="" />
+</div>
+<div  title="资质列表" style="padding:10px" >          
+    <table id="qualification" class="easyui-datagrid" 
+            data-options="url:'<?php echo $this->url(array('controller'=>'authenticate','action'=>'qualification-list','authenticate_id'=>$this->authenticate_id));?>',mehtod:'post',fitColumns:true,singleSelect:true,pagination:true,pageSize:10,">
+        <thead>
+            <tr>
+                <th data-options="field:'FinancialQualificationID',width:40">序号</th>
+                <th data-options="field:'FinancialQualificationType',width:40,align:'right'">理财师类型</th>
+                <th data-options="field:'FinancialQualificationImage',width:100,formatter:function(value,rec,index){
+                                        return '<a href=\''+rec.FinancialQualificationImage+'\' target=\'_blank\' >查看资质图片</a>';
+                                }">理财师图片</th>
+                <th data-options="field:'QualificationGetTime',width:100">获得时间</th>
+                <th data-options="field:'CheckStatus',width:60,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '待审核';
+                                        break;
+                                    case '1':
+                                        status = '已通过';
+                                        break;
+                                    case '2':
+                                        status = '已拒绝';
+                                        break;
+
+                                }
+                                return status;
+                            }">状态</th>
+                <th data-options="field:'opt',width:60,formatter:function(value,rec,index){
+                            var p= '<a href=\'javascript:void(0);\' onclick=\'pass('+rec.FinancialQualificationID+',1)\'><span class=\'l-btn-left\'>通过</span></a>';
+                            var r= '<a href=\'javascript:void(0);\' onclick=\'refuse('+rec.FinancialQualificationID+',2)\'><span class=\'l-btn-left\'>拒绝</span></a>';
+                            if(rec.CheckStatus==0){
+                                return p+'&nbsp;&nbsp;'+r;
+                            }else if(rec.CheckStatus==2){
+                                return p;
+                            }
+                                
+                           }">操作</th>
+                            
+                            
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<script type="text/javascript">
+    
+function pass(id,status){
+    //var tip=status==1?'通过':'拒绝';
+    $.messager.confirm('资质审核','确定要通过吗？',function(d){
+        if(d){
+            $.ajax({
+                    url:'/admin/authenticate/check-qualification',
+                    type:"POST",
+                    data:{'id':id,'status':status},
+                    dataType:'json',
+                    async:false,
+                    success:function(ret){
+                        if(ret.flag == 1){
+                            // $.messager.alert("提示信息",ret.msg,'info');
+                            $('#qualification').datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    },
+                    error:function(){
+                        $.messager.alert("提示信息",'出错啦','error');
+                    }
+            });
+        }
+    }); 
+
+}
+
+function refuse(id,status){
+    //var tip=status==1?'通过':'拒绝';
+    $.messager.prompt('资质审核','请输入拒绝理由',function(d){
+        if(d){
+            $.ajax({
+                    url:'/admin/authenticate/check-qualification',
+                    type:"POST",
+                    data:{'id':id,'status':status,'remark':d},
+                    dataType:'json',
+                    async:false,
+                    success:function(ret){
+                        if(ret.flag == 1){
+                            // $.messager.alert("提示信息",ret.msg,'info');
+                            $('#qualification').datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    },
+                    error:function(){
+                        $.messager.alert("提示信息",'出错啦','error');
+                    }
+            });
+        }
+    }); 
+
+}
+
+
+// $('#qualification').datagrid({  
+//     onDblClickRow: function (rowIndex, rowData) {
+//         //alert(rowData.FinancialQualificationImage);
+//         //var qDialog = document.getElementById("qualification_dialog");
+//         //var img = document.createElement("img");
+//         var img = document.getElementById("q_image");
+//         img.setAttribute("src", rowData.FinancialQualificationImage);
+//         //qDialog.appendChild(img);
+//         $('#qualification_dialog').dialog({
+//             title: 'My Dialog',
+//             width: 700,
+//             height: 500,
+//             closed: false,
+//             cache: false,
+//             modal: true
+//         });
+//       }
+//   });  
+</script>

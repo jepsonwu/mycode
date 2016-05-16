@@ -1,0 +1,237 @@
+<table id="ads_list"></table>
+<div id="ads_list_toolbar"></div>
+<div id="ads_view_window"></div>
+<div id="ads_list_searcher_container">
+<form action="" id="ads_search_form">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="adsObj.editHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="adsObj.containerObj.edatagrid('reload');">刷新</a> 
+    广告标题：<input type="text" name="adsTitle" />
+    广告创建时间：<input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input> 
+    显示类型
+    <select name="showType">
+        <option value="">---</option>
+        <?php if(isset($this->showType) && $this->showType) {
+                foreach ($this->showType as $key => $value) {
+                echo '<option value="'.$key.'">'.$value.'</option>';
+            }
+        }?>
+    </select>
+    显示状态
+    <select name="status">
+        <option value="">---</option>
+        <?php if(isset($this->status) && $this->status) {
+                foreach ($this->status as $key => $value) {
+                echo '<option value="'.$key.'">'.$value.'</option>';
+            }
+        }?>
+    </select>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchAdsList()" iconCls="icon-search">搜索</a>
+</form>
+</div>
+<div id="ads_add_window"></div>
+<script type="text/javascript">
+    $('#intention_search').serializeObject();
+        $("#ads_list_searcher_container input[name]").keydown(function(event){
+            if(event.keyCode == 13){
+                toSearchAdsList();
+            }    
+        });
+        
+        $("#ads_list_searcher_container select[name]").change(function(){
+            toSearchAdsList();
+        });
+        
+        function toSearchAdsList() {
+            adsObj.containerObj.datagrid('load', $('#ads_search_form').serializeObject());
+        }
+
+        var adsObj = {
+            //数据加载url
+            'loadUrl':'<?php echo $this->url(array('controller'=>'ads','action'=>'list'));?>',
+            'deleteUrl':'<?php echo $this->url(array('controller'=>'ads','action'=>'remove'));?>',
+
+            'containerObj':$("#ads_list"),
+            'addWindowObj':$("#ads_add_window"),
+            'selfName':'adsObj',
+
+            'init':function(){
+                this.showData();
+            },
+
+            //添加或修改话题
+            'editHandler':function(id){
+                    var _THIS_ = this;
+                    if( id ) {
+                        var href = '<?php echo $this->url(array('controller'=>'ads','action'=>'add'));?>' + '?id=' + id;
+                        var title = '编辑广告';
+                    } else {
+                        var href = '<?php echo $this->url(array('controller'=>'ads','action'=>'add'));?>';
+                        var title = '添加广告';
+                    }
+                    _THIS_.addWindowObj.window({
+                        'href': href,
+                        'width': 600,
+                        'height':450,
+                        'modal': true,
+                        'resizable': true,
+                        'title': title,
+                        'onLoad':function() {
+                            $('#ads_add_form_save').on('click', function() {
+                                $("#ads_add_form").submit();
+                            });
+
+                            $('#ads_add_form_close').on('click', function() {
+                                _THIS_.addWindowObj.window('close');
+                            });
+                            
+                            $("#ads_add_form").myForm(function(ret){
+                                if(ret.flag > 0){
+                                    _THIS_.addWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                } else {
+                                    $.messager.alert("提示信息", ret.msg, 'error');
+                                }
+                            });    
+                        }
+                    });
+                },
+
+            //删除
+            'delHandler':function(id){
+                            var _THIS_ = this;
+                            $.messager.confirm('删除','确认要删除吗？', function(d){
+                                if(d) {
+                                    $.ajax({
+                                            url:_THIS_.deleteUrl,
+                                            type: "POST",
+                                            data: {id:id},
+                                            dataType: 'json',
+                                            success: function(ret){
+                                                if(ret.flag > 0) {
+                                                    $.messager.alert("提示信息",'删除成功！','info');
+                                                    _THIS_.containerObj.datagrid('reload');
+                                                } else{
+                                                    $.messager.alert("提示信息",ret.msg,'error');
+                                                }
+                                            }
+                                    });
+                                }
+                            });
+                        },
+
+            //加载数据
+            'showData':function(){
+                var _THIS_ = this;
+                _THIS_.containerObj.datagrid({
+                        
+                        //是否条纹显示
+                        striped:true,
+                        //加载提示信息
+                        loadMsg:'正在加载...',
+                        //列是否自适应
+                        //fitColumns:true,
+                        rownumbers : true,
+                        fit:true, 
+                        //是否单行选择
+                        singleSelect:true,
+        
+                        idField:'AdsID',
+        
+                        url:_THIS_.loadUrl,
+
+                        toolbar: '#ads_list_toolbar',
+            
+                        //设置列   
+                        columns:[[
+                            {field:'AdsID',title:'广告ID',width:80}, 
+                            {field:'BarNum',title:'广告位',width:50},   
+                            {field:'ShowType',title:'类型',width:60, formatter: function(value, rec, index) {
+                            	var showType = {<?php if(isset($this->showType) && $this->showType) {
+                            	    foreach ($this->showType as $key => $value) {
+                            	         echo "\"{$key}\":\"{$value}\"";
+                            	         $arr = array_keys($this->showType);
+                            	         if( end($arr) !== $key ) {
+                            	             echo ',';
+                            	         }
+                            	    }
+                            	}
+                            	?>}
+                                if( typeof(showType[value]) != 'undefined' ) {
+                                    return showType[value];
+                                }
+                                return value;
+                            }},
+                            {field:'Name',title:'名称',width:80}, 
+                            {field:'Logo',title:'Logo',width:150,formatter:function(value,rec,index){
+                                    return '<img src="'+value+'?imageView2/0/w/200/h/200"/>';
+                                }},                      
+                            {field:'AdsImg',title:'图片',width:200,formatter:function(value,rec,index){
+                                    return '<img src="'+value+'?imageView2/0/w/200/h/200"/>';
+                                }
+                            },  
+                            {field:'AdsTitle',title:'摘要',width:150},  
+                            {field:'AdsLink',title:'链接',width:250},
+                            {field:'ImgWidth',title:'宽度',width:50},  
+                            {field:'ImgHeight',title:'高度',width:50},  
+                            {field:'CreateTime',title:'创建时间',width:150}, 
+                            {field:'Status',title:'状态',width:50, formatter: function(value, rec, index) {
+                            	var status = {<?php if(isset($this->status) && $this->status) {
+                            	    foreach ($this->status as $key => $value) {
+                            	        echo "\"{$key}\":\"{$value}\"";
+                            	        $arr = array_keys($this->status);
+                            	        if( end($arr) !== $key ) {
+                            	            echo ',';
+                            	        }
+                            	    }
+                            	}
+                            	?>}
+                                if( typeof(status[value]) != 'undefined' ) {
+                                    return status[value];
+                                }
+                                return value;
+                            }},  
+                            {field:'Valid',title:'有效期',width:150,formatter: function (value, rec, index) {
+                                return rec['ValidFrom'] + '<br />' + rec['ValidEnd'];
+                            }}, 
+                            {field:'Platform',title:'适用平台',width:50,formatter:function(value,rec,index){
+                            	var status = {<?php if(isset($this->platform) && $this->platform) {
+                            	    foreach ($this->platform as $key => $value) {
+                            	        echo "\"{$key}\":\"{$value}\"";
+                            	        $arr = array_keys($this->platform);
+                            	        if( end($arr) !== $key ) {
+                            	            echo ',';
+                            	        }
+                            	    }
+                            	}
+                            	?>}
+                                if( typeof(status[value]) != 'undefined' ) {
+                                    return status[value];
+                                }
+                                return value;
+                            }
+                        },     
+                            {field:'MemberID',title:'用户ID',width:50},           
+                            {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                 var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.AdsID+'\')">';
+                                     e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                 var d = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-remove" onclick="'+_THIS_.selfName+'.delHandler(\''+rec.AdsID+'\')">';
+                                     d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                                 return e+d;         
+                               }
+                            }
+
+                        ]],
+
+                        //分页信息
+                        pagination:true,
+                        // pagePosition:'both',
+                        pageList:[20,50,100,150,200],
+                        pageSize:50,
+                    });
+
+                $("#ads_list_toolbar").append($("#ads_list_searcher_container"));
+            },    
+    };
+    adsObj.init();
+</script>

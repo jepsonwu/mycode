@@ -1,0 +1,106 @@
+<!DOCTYPE html >
+<html>
+<head>
+    <title>理财号介绍</title>
+    <meta charset="utf-8" >
+    <meta name="keywords" content="理财号介绍" >
+    <meta name="description" content="理财号介绍" >
+    <meta content="telephone=no, address=no" name="format-detection" />
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0328" >
+<style>
+.column-box{margin: 20px 15px 0;}
+.column-one{margin: 20px 0 0;}
+.column-tit{line-height: 30px; background: no-repeat 0 4px; background-size: 20px auto; padding: 0 0 0 30px; font-weight: bold; color: #333; font-size: 16px; }
+.column-det{color: #666; padding: 0 0 0 30px;}
+.column-one:nth-child(1) > div{background-image: url('/static/imgs/api/icon-column-financial.png');}
+.column-one:nth-child(2) > div{background-image: url('/static/imgs/api/icon-column-func.png');}
+.column-one:nth-child(3) > div{background-image: url('/static/imgs/api/icon-column-class.png');}
+.column-footer{line-height: 30px; margin: 10px 10px 20px; text-align: center; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<section id="app00">
+    <ul class="column-box">
+        <li class="column-one" v-for="one in columnList">
+            <div class="column-tit">{{*one.title}}</div>
+            <p class="column-det">{{{*one.des}}}</p>
+        </li>
+    </ul>
+
+    <footer class="column-footer">搜索“财猪网”前往创建自己的理财号吧！</footer>
+</section>
+
+<div id="define-prompt"><app-defineprompt :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=160405"></script>
+
+
+<script>
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('#share-pic');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = '';
+        opts.shareDes = '';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){}
+
+    function otherRun(){}
+
+    function commonRun() {
+        var app00 = new Vue({
+            el: '#app00',
+            data: {
+                columnList: [
+                    {title: '什么是理财号', des: '为金融财经行业的自媒体、理财师、企业和机构提供一个精确的传播平台，搭起一座用户沟通的桥梁，致力于帮助用户在互联网时代抢占先机并实现个人营销，打造强力的专属品牌，拓展信息服务范围，逐步提升自身影响力和竞争力。'},
+                    {title: '理财号功能', des: '财猪理财号为您搭建一个理财领域的专属平台，在这里您可以建立自己的主页，发表理财的心得，传播独到的金融理念，全面实现线上畅快沟通，线下零距离互动。'},
+                    {title: '理财号分类', des: '1、自媒体：<br>面向金融财经行业从业者，提供以文字、图片创作为主的内容管理平台、打造自己专属媒体。<br>2、理财师：<br>面向拥有金融类从业资格证或高端国际证书的理财师，提供强大的业务服务与内容管理能力，帮助理财师打造自己强力个人品牌。<br>3、企业<br>面向金融财经行业类的企业，为企业与用户提供一种新的咨询传播方式，同时帮助企业实现的营销目标，增加企业对外竞争力。<br>4、机构：<br>面向金融财经行业类具有官方资质的独立机构及团体。提供多种信息服务搭建机构与用户之间的桥梁，同时也逐步提升自身影响力。'}
+                ]
+            }
+        });
+    }
+
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

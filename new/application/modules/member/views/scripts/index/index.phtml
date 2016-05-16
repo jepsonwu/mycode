@@ -1,0 +1,19 @@
+<?$this->headTitle($this->translate('view.member.home.title'))?>
+<!-- E postion -->
+    <div class="wrap memberContent">
+        <?php echo $this->render('index/menu.phtml')?>
+        <div class="m-main member">
+            <div class="loginInfo clearfix">
+                <dl>
+                    <dd><?=$this->translate('view.member.index.welcome', $this->self->Name ? $this->self->Name : $this->self->Email, $this->self->MemberID)?></dd>
+                    <dd><em><?=$this->translate('view.member.index.lastlogin', $this->self->LastLoginIp, $this->self->LastLoginDate)?></em></dd>
+                    <dd></dd>
+                </dl>
+                <div class="finance clearfix">
+                    <?php echo $this->render('finance/balance.phtml')?>
+                  </div>
+                <p> <a href="/member/escrow/start" class="linkBtn"><?=$this->translate('view.member.menu.trade.new')?></a>  <a href="/member/finance/exchange" class="linkBtn" style="margin-left:8px;"><?=$this->translate('view.member.menu.finance.exchange')?></a></p>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>

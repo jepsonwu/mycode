@@ -1,0 +1,167 @@
+<?php if(isset($this)){ $activityConf = $this->activityConf;}else{$activityConf = array();} ?>
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>今日明星</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="财猪,今日明星" >
+<meta name="description" content="今日明星" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="/hd/<?php echo $activityConf['Path']; ?>/css/m-main.css" >
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+img {
+    border: none;
+    vertical-align: middle;
+}
+
+ul,ol,li {
+    list-style: none;
+}
+
+section,article,aside,header,footer,nav,dialog,figure {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+html,body {
+    font: 14px/1.5 helvetica,arial,"Microsoft YaHei","微软雅黑",sans-serif;
+    -webkit-tap-highlight-color: rgba(255,0,0,0);
+}
+
+.fl,.f_left {
+    float: left;
+}
+
+.fr,.f_right {
+    float: right;
+}
+
+.clearfix:after {
+    content: '';display:block;height:0;clear:both;
+}
+
+a {
+    outline: none;
+}
+
+a:link,a:visited,a:active {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffa640;
+    text-decoration: none;
+}
+
+body{background: #303459;}
+header img{vertical-align: top; width: 100%;}
+.s00{margin: 20px 20px 0; padding: 20px; background: #212445; border-radius: 15px; color: #A8ACCE;}
+    .s00-tit li{float: left; height: 36px; line-height: 36px; overflow: hidden;}
+
+    .st-00{width: 50px;}
+    .st-00 img{width: 36px; height: 36px; vertical-align: top;}
+    .st-01{font-size: 19px; color: #fff;}
+    .st-02{font-size: 16px; margin: 0 0 0 8px; }
+    footer{font-size: 12px; color: #606E91; line-height: 20px; padding: 10px 10px 12px; text-align: center;}
+    .s01{min-height: 120px; background-image: url("/hd/<?php echo $activityConf['Path']; ?>/imgs/section-bb.png"); background-repeat: no-repeat;
+        background-position: right bottom; background-size: 80px auto;}
+    .s00 p{margin: 20px 0 0;}
+    .s01 p{margin: 2px 0 0; color: #C7890C;}
+    .st-box{margin: 2px 0 10px;}
+    .st-do{margin: 20px 0 0; text-align: right;}
+    .st-do span{background: #FDAF05; color: #292846; padding: 7px 10px; border-radius: 3px;}
+
+</style>
+</head>
+<body>
+<?php if(isset($this)){ $activityConf = $this->activityConf;}else{$activityConf = array();} ?>
+<header><img src="/hd/<?php echo $activityConf['Path']; ?>/imgs/top.png"></header>
+<section class="s00">
+<ul class="s00-tit clearfix">
+    <li class="st-00 boxlink" data-url="caizhu://caizhu/userInfo?id=<?php echo (isset($activityConf['memberId']) && !empty($activityConf['memberId']))?$activityConf['memberId']:'14893'; ?>"><img src="<?php $path = '/hd/'.$activityConf['Path'].'/imgs/avatar.png';echo (isset($activityConf['Avatar']) && !empty($activityConf['Avatar']))?$activityConf['Avatar']:$path; ?>"></li>
+    <li class="st-01 boxlink" data-url="caizhu://caizhu/userInfo?id=<?php echo (isset($activityConf['memberId']) && !empty($activityConf['memberId']))?$activityConf['memberId']:'14893'; ?>"><?php echo (isset($activityConf['account']) && !empty($activityConf['account']))?$activityConf['account']:"方腾正"; ?></li>
+</ul>
+    <p><?php if(isset($activityConf['depict']) && !empty($activityConf['depict'])){ echo $activityConf['depict'];}else{ ?>理财界搅屎棍，保单贩子，ETF基金死忠，大公司又爱又恨的理财师。</br></br>
+    因为出生在银行的大院里，本来按计划是读完金融工程到银行工作的，结果是考取了理财规划师的证书后又放弃了银行的offer进入了理财的行业。</br></br>
+    曾对这个行业唯利是图对产品的过度包装失望过，但又依依不舍，本来打算写下文章留下一点信息以无憾的心情离开，却又因为接地气讲实话受到读者用户的喜爱。最终选择与读者站在一起的姿态，回归到这个行业。<?php } ?></p>
+    <div class="st-do">
+        <span class="boxlink" data-url="caizhu://caizhu/groupInfo?id=1446184330879">财友说</span>
+    </div>
+</section>
+
+<section class="s00 s01">
+    <h1>为您推荐</h1>
+    <div class="st-box">
+        <p class="st-p boxlink" data-url="<?php echo (isset($activityConf['article_link']) && !empty($activityConf['article_link']))?$activityConf['article_link']:'http://cz.caizhu.com/api/public/article-detail?articleID=2'; ?>"><?php echo (isset($activityConf['abstract']) && !empty($activityConf['abstract']))?$activityConf['abstract']:'从如何给不懂金融的人解释“降息降准”说去，这件事对你影响更大！'; ?>
+        </p>
+    </div>
+    <!--
+    <h1 class="mt20">理财优选</h1>
+    <div class="st-box">
+        <p class="st-p">其他理财师文章理财师文章</p>
+    </div>
+    -->
+</section>
+<footer>投资有风险，理财需谨慎</footer>
+
+<script src="/hd/<?php echo $activityConf['Path']; ?>/js/zepto.min.js"></script>
+
+<script>
+// active伪状态
+var acTime, touchMove;
+
+$('body').delegate('.boxlink',{'touchstart': function(){
+    var touch = 'touch';
+    var $this = $(this);
+    touchMove = false;
+    $('.boxlink').removeClass(touch);
+    acTime = new Date();
+    $this.addClass(touch);
+    touchElem = $this;
+
+},'touchmove': function(){
+    touchMove = true;
+},'touchend': function(){
+
+    var $this = $(this), url;
+
+    if(touchMove) {
+    touchMove = false;
+    return ;
+    }
+
+
+    $this.removeClass('touch');
+    if((new Date()) - acTime > 300){   // 触摸的时间超过130ms，不触发触摸效果 。。。
+        return ;
+    }
+
+    url = $this.data('url');
+    if(url) location.href = url;
+    return ;
+
+}});
+
+</script>
+
+</body>
+</html>

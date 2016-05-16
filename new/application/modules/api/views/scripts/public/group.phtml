@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<title>群组资料</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="财猪-群组资料" >
+<meta name="description" content="财猪-群组资料" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/api/m-main.css" >
+<link rel="stylesheet" href="/static/css/api/app-person-group-v2.css?date=151130" >
+<title><?php echo $this->groupInfo['GroupName'];?></title>
+<style>
+/*
+header{
+    background-image: url();
+}
+*/
+
+.qqbrowser{
+    position: fixed;
+    width: 80%;
+    height: 45px;
+    line-height: 24px;
+    left: 50%;
+    top: 50%;
+    margin-left: -40%;
+    margin-top: -15px;
+    padding: 15px 0;
+    background: rgba(10, 10, 10, .7);
+    color: #fff;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+}
+.qqbclose{
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    line-height: 26px;
+    background: #aaa;
+    border-radius: 25px;
+}
+</style>
+
+<script src="/static/js/web/zepto.min.js"></script>
+
+<script>
+var groupID = "<?php echo $this->groupID;?>";
+
+var UAgent = navigator.userAgent.toLowerCase();
+var caizhuAPP = function(){                                   //财猪app
+    var reg = /caizhuapp/i;
+    if(reg.test(UAgent)) {
+        return true;
+    } else {
+        return false;
+    }
+}();
+
+</script>
+
+<body class="hide">
+
+<section id="pull-wechat-box" class="pull-wechat-box">
+    <ul class="pull-wechat clearfix">
+        <li class="pw-info fl">
+            <p>点击右上角菜单</p>
+            <p>在默认浏览器中打开并安装应用</p>
+        </li>
+        <li class="pw-arrow fr">
+            <img src="/static/imgs/web/wechat-arrow.png" alt="指示图" >
+        </li>
+    </ul>
+</section>
+
+<section id="caizhu-open" class="caizhu-open caizhu-open-down hide">
+    <ul class="czo-list">
+        <li class="czo-one logo">
+            <img src="/static/imgs/web/view-detail-100x100.png">
+        </li>
+        <li class="czo-two">
+            <strong>财猪</strong>
+            <p>理财社交平台
+        </p></li>
+        <li class="czo-three">
+            <a href="https://m.caizhu.com/down/down-caizhu" id="czo-open">下载</a>
+        </li><li>
+    </li></ul>
+    <span id="open-close" class="open-close">X</span>
+</section>
+
+<header class="info-header p-rela">
+    <div class="info-bg"></div>
+    <span class="info-goback"></span>
+    <ul class="info-avatar-box">
+        <!-- <li class="info-avatar"><img src="<?php echo empty($this->groupInfo['GroupAvatar']) ? 'http://img.caizhu.com/default_tx.png' : $this->groupInfo['GroupAvatar'].'?imageView2/0/w/200/h/200';?>" alt="头像"></li> -->
+
+        <li id="info-avatar2" class="info-avatar info-avatar2"><div></div></li>
+
+        <li class="info-des">
+            <div>
+                <span class="share-title"><?php echo $this->groupInfo['GroupName'];?></span>
+                <?php if(!empty($this->groupInfo['Province']) || !empty($this->groupInfo['City'])):?><span class="info-area"><?php echo $this->groupInfo['Province'].' '.$this->groupInfo['City'];?></span><?php endif;?>
+            </div>
+            <p>群组号：<?php echo $this->groupInfo['AID'];?></p>
+        </li>
+    </ul>
+</header>
+<div class="avatar-blank"></div>
+
+<section class="group-box mt bg-white">
+    <div class="group-title clearfix">
+        <span class="fl">群成员</span>
+        <span class="fr"><?php echo $this->groupInfo['NowUserCount'];?></span>
+    </div>
+    <div class="group-member-box mt">
+        <ul id="group-member" class="group-member clearfix">
+        <?php foreach($this->gMembers as $item):?>
+        <li><img src="<?php echo empty($item['Avatar']) ? 'http://img.caizhu.com/default_tx.png' : $item['Avatar'].'?imageView2/0/w/200/h/200';?>" alt="<?php echo $item['UserName'];?>" ></li>
+        <?php endforeach;?>
+        </ul>
+    </div>
+</section>
+
+<ul class="des-list bg-white mt">
+    <li class="clearfix">
+        <span class="fl">群标签</span>
+        <p class="fr">
+            
+            <?php foreach($this->groupInfo['Focus'] as $item):?>
+            <span><?php echo $item['FocusName'];?></span>
+            <?php endforeach;?>
+            
+        </p>
+    </li>
+    <li class="clearfix">
+        <span class="fl">群介绍</span>
+        <p class="share-des fr"><?php echo $this->groupInfo['Description'];?></p>
+    </li>
+</ul>
+
+<footer>
+    <span class="icon-add"></span>
+    <span>加群组</span>
+</footer>
+
+<section id="mqqb-prompt" class="mqqb-prompt hide">
+    <div>手机QQ浏览器禁止启动APP客户端</div>
+    <span>X</span>
+</section>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+    <span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ、百度浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、UC、360浏览器等</p>
+</section>
+
+<div id="os-android" class="hide"><span class="os-close">X</span></div>
+<div id="os-ios" class="hide"><span class="os-close">X</span></div>
+
+<script>
+$(function(){
+    var $infoAvatar2 = $('#info-avatar2'),
+        $groupMember = $('#group-member');
+
+valueOfAvatar();
+
+    function valueOfAvatar(){
+        var info2 = 'info-avatar2';
+
+        var $member = $groupMember.children();
+        length = $member.length;
+        if(length == 0){
+
+            var def = 'http://img.caizhu.com/default_tx.png';
+            var str = '<img src="'+ def +'" alt="默认头像" >';
+            $infoAvatar2.removeClass(info2);
+            $infoAvatar2.children().append(str);
+
+        }else if(length > 9){console.log('md');
+
+            var str = '', src;
+            for(var i=0; i<9; i++){
+                src = $member.eq(i).children().attr('src');
+                console.log('src: '+ src);
+                str += '<img src="'+ src +'" alt="头像" >';
+            }
+            $infoAvatar2.children().append(str);
+
+        }else{
+
+            var str = '', src;
+            for(var i=0; i<length; i++){
+                src = $member.eq(i).children().attr('src');
+                str += '<img src="'+ src +'" alt="头像" >';
+            }
+            $infoAvatar2.children().append(str);
+
+        }
+    }
+});
+</script>
+
+<script src="/static/js/api/app-group.js?date=15122316"></script>
+
+<script src="/static/js/api/wechat-share.js"></script>
+<script>
+var sharePic = $('.info-avatar img');
+if(sharePic.length>0){
+    sharePic = sharePic[0].src
+}else{
+    sharePic = '';
+}
+var shareTitle = $('.share-title').text(),
+    shareDes = $('.share-des').text(),
+    shareLink = location.href;
+
+$.ajax({
+    url: '/api/wechat/get-signature',
+    type: 'post',
+    dataType: 'json',
+    data: {
+        url: location.href
+    },
+    success: function(d){
+        if(d.flag == 1){
+            var d = d.data;
+        }
+        var wechatJs = document.createElement('script');
+        wechatJs.type = 'text/javascript';
+        wechatJs.src = 'https://fe.caizhu.com/public/js/callcaizhu/jweixin-1.0.0.js';
+        wechatJs.onload = function(){
+            wechatShare(d, {title: replaceBlank(shareTitle), des: replaceBlank(shareDes), pic: sharePic, link: shareLink});
+        };
+        document.body.appendChild(wechatJs);
+    }
+});
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

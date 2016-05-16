@@ -1,0 +1,62 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 10px;align:center;">
+    
+        <form id="message_edit_form" method="post" action="/admin/message/edit">
+            <table class='form_table'>                
+                <tr>
+                    <th width="11%">分类：</th>
+                    <td width="89%">
+                        <select name="ret[MessageType]" class="easyui-validatebox" data-options="required:true">
+                            <option value="公告" <?php if($this->message['MessageType']=='公告'){ echo 'selected';} ?> >公告</option>
+                            <option value="活动" <?php if($this->message['MessageType']=='活动'){ echo 'selected';} ?> >活动</option>
+                            <option value="客服" <?php if($this->message['MessageType']=='客服'){ echo 'selected';} ?> >客服</option>
+                        </select>
+                    </td>
+              </tr>
+                 <tr>
+                    <th width="11%">标题：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="text"  data-options="required:true" size="80" name="ret[Title]" value="<?=$this->message['Title']?>"></td>
+              </tr>
+                <tr>
+                    <th>内容：</th>
+                    <td>
+                            <textarea id="edit_content" name="ret[Content]"    rows='20' cols='100'><?=$this->message['Content']?></textarea>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_config.js"></script>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_all_min.js"></script>
+    <script type="text/javascript" >
+        var edit1 = new UE.ui.Editor({
+            initialContent : '',
+            initialFrameWidth : 800
+        });
+        edit1.render("edit_content");
+    </script></td>
+                </tr>
+                    <tr>
+                    <th>开始日期：</th>
+                    <td>
+                        <input  class="easyui-datebox" type="text" name="ret[StartDate]" value="<?=$this->message['StartDate']?>" size="50" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>结束日期：</th>
+                    <td>
+                        <input  class="easyui-datebox" type="text" name="ret[EndDate]" value="<?=$this->message['EndDate']?>" size="50" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    <input type="hidden" name="ret[MessageId]"  value="<?=$this->message['MessageId']?>">
+                    </td>
+                </tr>
+            </table> 
+        </form>
+       
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="message_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="message_edit_form_close">关闭</a>
+    </div>
+     
+</div>

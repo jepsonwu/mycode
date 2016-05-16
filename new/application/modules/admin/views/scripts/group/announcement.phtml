@@ -1,0 +1,15 @@
+ <?php if( isset($this->error) && $this->error ):?>
+ 	<?php echo $this->error;?>
+ <?php else:?>
+<table style="width:185px;border-collapse:collapse;">
+<?php if( isset($this->announcements) && $this->announcements ) {
+	foreach ($this->announcements as $k => $announcement) {?>
+	<tr style="border: 1px solid #f0f0f0;">
+		<td><?php echo ($this->pageIndex - 1) * $this->pageSize + $k + 1;?></td>
+		<td><?php echo $announcement['Content'];?></td>
+	</tr>
+	<?php }
+	}?>
+</table>
+ <p align="center"><?php if($this->pageIndex > 1):?><a href="javascript:groupObj.showAnnouncement(<?php echo $this->groupID;?>, <?php echo $this->pageIndex-1;?>)">上一页</a><?php endif;?><?php if($this->total > ($this->pageIndex * $this->pageSize)):?> | <a href="javascript:groupObj.showAnnouncement(<?php echo $this->groupID;?>, <?php echo $this->pageIndex+1;?>)">下一页</a><?php endif;?></p>
+<?php endif;?>

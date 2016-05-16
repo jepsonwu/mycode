@@ -1,0 +1,30 @@
+   <div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            草稿箱<span class="article-tit-do"><a href="/draft/article">文章(<?php echo $this->draftNum['articleNum'];?>)</a><span class="at-separate">|</span>
+                <a class="selected" href="/draft/activity">活动(<?php echo $this->draftNum['activityNum'];?>)</a><span class="at-separate">|</span>
+                <a href="/draft/counsel">询财服务(<?php echo $this->draftNum['counselNum'];?>)</a>    
+            </span>
+        </h2>
+
+        <table class="activity-table" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="cell00">活动标题</th>
+                <th class="cell01">开始时间</th>
+                <th class="cell02">活动地点</th>
+                <th class="cell03">报名上限</th>
+                <th class="cell04">操作</th>
+
+            </tr>
+  <?php foreach ($this->dataList as $value):?>
+            <tr>
+                <td class="cellone cell00"><div><?php echo $value['Title'];?></div></td>
+                <td class="cellone cell01"><div><?php echo $value['StartTime'];?></div></td>
+                <td class="cellone cell02"><div><?php echo $value['Province'];?> <?php echo $value['City'];?></div></td>
+                <td class="cellone cell03"><div><?php echo $value['LimitNum'];?></div></td>
+                <td class="cellone cell04"><div><a href="/activity/add?activityID=<?php echo $value['AID'];?>">编辑</a></div></td>
+            </tr>
+  <?php endforeach;?>          
+
+        </table>
+<?=$this->paginationControl($this->dataList, 'Sliding', 'page.phtml')?>
+    </div> <!-- main-right -->

@@ -1,0 +1,84 @@
+
+<div id="bonusTrend" style="width:1200px; height:450px;"></div>
+	<div id="Total"></div>
+    <input type="hidden" id='memberId' value='<?php echo $this->memberId; ?>' />
+    <input type="hidden" id='unit' value='<?php echo $this->unit; ?>' />
+    <input type="hidden" id='start_date' value='<?php echo $this->start_date; ?>' />
+    <input type="hidden" id='end_date' value='<?php echo $this->end_date; ?>' />
+<script type="text/javascript">
+	var option; // 全局变量
+	var ac_url = '<?php echo $this->url(array('controller' => 'bonus', 'action' => 'trend'))?>';
+	$(document).ready(function() {
+		option = {
+			chart: {
+				renderTo: 'bonusTrend',
+				type: 'spline'
+			},
+			title: {
+				text: '红包概况走势图'
+			},
+			xAxis: {
+				categories: ['a1','a2','a3','a4','a5','a6','a7','a8','a9','a10','a11']
+			},
+			yAxis: {
+				title: {
+				   text: '单位：元'
+				}
+			},
+            tooltip: {
+                crosshairs: true,
+                shared: true
+            },
+			credits:{
+				enabled:false
+			}
+		};
+		getData(ac_url);
+   });
+
+	function getData(ac_url){
+		$.ajax({
+			url : ac_url,
+            type:"post",
+			data:{memberId:$('#memberId').val(), unit:$('#unit').val(), start_date:$('#start_date').val(), end_date:$('#end_date').val()},
+			dataType: 'json',
+			success: function(data){
+                var categories = [];
+                var send = [];
+                var receive = [];
+                var sendTotal = receiveTotal = 0;
+                for(var i=0;i<data.rows.length;i++){
+                    if($('#unit').val()==1){
+                        categories[i] = data.rows[i].DateTime.substr(data.rows[i].DateTime.length-5);
+                    }else{
+                        categories[i] = data.rows[i].DateTime;
+                    }
+                    send[i] = parseFloat(data.rows[i].SendBonusAmount);
+                    receive[i] = parseFloat(data.rows[i].ReceiveAmount);
+                    sendTotal += send[i];
+                    receiveTotal += receive[i];
+                }
+                option.xAxis.categories = categories;
+                option.series = [{
+                    name: '发放金额',
+                    marker: {
+                        symbol: 'square'
+                    },
+                    data: send
+
+                }, {
+                    name: '领取金额',
+                    marker: {
+                        symbol: 'diamond'
+                    },
+                    data: receive
+                }];
+                new Highcharts.Chart(option);
+                $("#Total").html('<div style="padding-left:460px;"><font style="font-weight:bold;">总发放金额</font>&nbsp;&nbsp;&nbsp;&nbsp;￥'+sendTotal+'&nbsp;&nbsp;&nbsp;&nbsp;<font style="font-weight:bold;">总领取金额</font>&nbsp;&nbsp;&nbsp;&nbsp;￥'+receiveTotal+'<br/><br/></div>');
+			},
+			error: function (){
+
+			}
+		});
+	}
+</script>

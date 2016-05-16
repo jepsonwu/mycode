@@ -1,0 +1,133 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>财猪</title>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<meta content="no-cache,must-revalidate" http-equiv="Cache-Control" />
+	<meta content="no-cache" http-equiv="pragma" />
+	<meta content="0" http-equiv="expires" />
+	<meta content="telephone=no, address=no" name="format-detection" />
+	<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+</head>
+<style type="text/css">
+    html{
+    	height: 100%;
+    }
+	body {
+		background: #ddd;
+		font-family: arial,'微软雅黑',sans-serif;
+       width: 100%;
+       height: 100%;
+       min-height: 100%;
+       line-height: 1.428;
+		margin:0;
+	}
+	#main {
+		padding-top: 130px;
+		max-width: 480px;
+		min-width: 320px;
+		margin: 0 auto;
+		min-height: 100%;
+		background-color: #3ebbfb;
+		background-image: url('/static/images/web/weixin_bg.png?9999');
+		background-size: 320px;
+		background-position: center top; 
+		background-repeat: no-repeat;
+		box-sizing: border-box;
+	}
+	.mask{
+		position: fixed;
+		top: 0;
+		width: 100%;
+		background: #000;
+		filter: alpha(opacity=40);  
+	    -khtml-opacity: 0.4;
+	      -moz-opacity: 0.4;
+	           opacity: 0.4;
+	}
+	.wx{
+		display: none;
+		position: fixed;
+		top: 0;
+		padding: 0 5px 10px 5px;
+		background: #fff;
+		width: 100%;
+		max-width: 480px;
+		min-width: 320px;
+		box-sizing: border-box;
+	}
+	.down-btn{
+		display: block;
+		width: 130px;
+		height: 36px;
+		background-image: url('/static/images/web/ios_down.png');
+		background-size: 130px;
+		background-position: center top; 
+		background-repeat: no-repeat;
+		margin: 0 auto ;
+	}
+</style>
+
+<body>
+	<div id="main">
+		<a href="javascript:void(0)" class="down-btn"></a>
+		<div class="mask"></div>
+		<div class="wx">
+			<img src="/static/images/web/wx_header.jpg" width="100%">
+		</div>
+	</div>
+<script language="javascript" type="text/javascript">
+	$(document).ready(function() {
+		var btn = $('.down-btn');
+		var b = getBrowser() ;
+		if(b == 'Android'){
+			btn.css('backgroundImage',"url('/static/images/web/android_down.png')");
+		}
+
+		btn.click(function(){
+			if(is_weixin()){
+				$('.mask').height($(window).height());
+				$('.wx').show();
+			}else if(b == 'iOS'){
+				window.location.replace("<?php echo $this->downloadurl['ios']['biz']['url']?>");
+			}else if(b == 'Android'){
+				window.location.replace("<?php echo $this->downloadurl['android']['url']?>");
+			}
+		})
+
+		function is_weixin(){
+			var ua = navigator.userAgent.toLowerCase();
+			if(ua.match(/MicroMessenger/i)=="micromessenger") {
+				return true;
+		 	} else {
+				return false;
+			}
+		}
+
+		function getBrowser() {
+		    var browser = {
+		        versions: function() {
+		            var u = navigator.userAgent,
+		                app = navigator.appVersion;
+		            return {
+		                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+		                iPhone: u.indexOf('iPhone') > -1,
+		                iPad: u.indexOf('iPad') > -1,
+		                iPod: u.indexOf('iPod') > -1,
+		            };
+		        }(),
+		        language: (navigator.browserLanguage || navigator.language).toLowerCase()
+		    }
+		    if (browser.versions.iPhone || browser.versions.iPad || browser.versions.iPod) {
+		        return 'iOS';
+		    } else if (browser.versions.android) {
+		        return 'Android';
+		    }
+		}
+
+	})
+</script>
+</body>
+</html>

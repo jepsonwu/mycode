@@ -1,0 +1,435 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+	<title>达人邀请</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="财猪-达人邀请">
+	<meta name="description" content="财猪-达人邀请">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+	<link rel="stylesheet" href="/static/css/api/m-main-schema.css?date=151225" >
+</head>
+<body class="body-topman">
+
+<img id="user-cover" style="display: none;" alt="财猪" src="<?php echo $this->detailInfo['Cover']; ?>">
+
+<section id="pull-wechat-box" class="pull-wechat-box">
+	<ul class="pull-wechat clearfix">
+		<li class="pw-info fl">
+			<p>点击右上角菜单</p>
+
+			<p>在默认浏览器中打开并安装应用</p>
+		</li>
+		<li class="pw-arrow fr">
+			<img src="/static/imgs/web/wechat-arrow.png" alt="指示图">
+		</li>
+	</ul>
+</section>
+
+<!-- content area -start -->
+
+<style>
+	.body-topman {
+		background: #f6f6f6;
+		padding: 0 0 70px;
+	}
+
+	.topman-top {
+		padding: 10px 15px;
+		background: #fff;
+	}
+
+	.topman-top h1, .topman-det h2 {
+		color: #333;
+		font-weight: 100;
+	}
+
+	.topman-list li {
+		display: inline-block;
+		line-height: 30px;
+		padding: 0 10px;
+		color: #ff8b26;
+		border: #ff8b26 solid 1px;
+		border-radius: 3px;
+		margin: 0 2px 0 0;
+	}
+
+	.topman-det {
+		background: #fff;
+		padding: 10px 15px;
+		color: #666;
+	}
+
+	.topman-do {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 40px;
+		padding: 8px 0;
+		background: #fff;
+	}
+
+	.ti-00 {
+		width: 50%;
+		overflow: hidden;
+		float: left;
+	}
+
+	.ti-00 span {
+		display: block;
+		height;
+		38px;
+		line-height: 38px;
+		border: #e6e6e6 solid 1px;
+		font-size: 18px;
+		margin: 0 7px 0 15px;
+		text-align: center;
+		border-radius: 3px;
+		background: #f9f9f9;
+		-webkit-transition: all .2s linear;
+		transition: all .2s linear;
+	}
+
+	.ti-02 span {
+		margin: 0 15px 0 7px;
+		background: #ff8b26;
+		color: #fff;
+		border-color: #ff8b26;
+	}
+
+	.ti-01 .touch {
+		background: #f0f0f0;
+	}
+
+	.ti-02 .touch {
+		background: #FFAE68;
+	}
+
+	.do-stat {
+		display: block;
+		height: 40px;
+		line-height: 40px;
+		font-size: 18px;
+		text-align: center;
+	}
+
+
+</style>
+<header class="topman-top">
+	<h1>邀请你成为</h1>
+	<ul id="topman-list" class="topman-list mt">
+		<!--<li>股票达人</li>-->
+	</ul>
+</header>
+
+<section class="topman-det mt">
+	<h2>达人头衔说明</h2>
+
+	<div class="td-det mt">
+		财猪达人是财猪对在理财领域有突出才能的人的激励。通过财猪达人审核后，将获得财猪达人标示。除此之外，还会有一系列线上线下特权活动，将优先邀请财猪达人参与。
+	</div>
+
+</section>
+
+<ul class="topman-do mt">
+	<li id="topman-init" class="clearfix">
+		<div class="ti-00 ti-01">
+			<span id="do-refuse" data-type="0" class="boxlink callcaizhu">拒绝</span>
+		</div>
+		<div class="ti-00 ti-02">
+			<span id="do-accept" data-type="1" class="boxlink callcaizhu">接受</span>
+		</div>
+	</li>
+	<li id="topman-refuse" class="hide">
+		<span class="do-stat">已接受</span>
+	</li>
+	<li id="topman-accept" class="hide">
+		<span class="do-stat">已拒绝</span>
+	</li>
+</ul>
+
+<!-- content area -end -->
+
+<section id="prompt-box" class="m-prompt-box hide">
+	<div id="prompt" class="m-prompt">
+		<p>您的操作有错误</p>
+		<span>确定</span>
+	</div>
+</section>
+
+<section id="qqbrowser" class="qqbrowser p-rela hide">
+	<span id="qqbclose" class="qqbclose">X</span>
+    <p>QQ、百度浏览器不支持启动App</p>
+    <p>建议使用: 欧朋、UC、360浏览器等</p>
+</section>
+
+<section id="caizhu-open-down" class="caizhu-open hide">
+	<ul class="czo-list">
+		<li class="czo-one logo">
+			<img src="/static/imgs/web/view-detail-100x100.png">
+		</li>
+		<li class="czo-two">
+			<strong>财猪</strong>
+
+			<p>理财社交平台
+			</p></li>
+		<li class="czo-three">
+			<a href="https://m.caizhu.com/down/down-caizhu" id="czo-open-down">下载</a>
+		</li>
+		<li>
+		</li>
+	</ul>
+	<span id="open-close-open" class="open-close">X</span>
+</section>
+
+
+<script src="/static/js/api/zepto.min.js"></script>
+<script src="/static/js/api/image-show.js?date=15120216"></script>
+
+<script>
+	var STATUS = '<?php echo $this->best_status;?>';
+
+	var currentId = '<?php echo $this->detailInfo['AID'];?>';
+
+	var sharePic = $('#user-cover');
+	if (sharePic.length > 0) {
+		sharePic = sharePic[0].src
+	} else {
+		sharePic = '';
+	}
+	var shareTitle = $('.article-tit').text(),
+		shareDes = $('.td-det').text(),
+		shareLink = location.href;
+
+	var UAgent = navigator.userAgent.toLowerCase();
+	var caizhuAPP = function () {                                   //财猪app
+		var reg = /caizhuapp/i;
+		if (reg.test(UAgent)) {
+			return true;
+		} else {
+			return false;
+		}
+	}();
+
+	if (caizhuAPP) {    // 财猪里执行动作
+		var basicJs = document.createElement('script');
+		basicJs.type = 'text/javascript';
+		basicJs.src = '/static/js/api/basic.js?date=151228';
+		basicJs.onload = function () {
+			caizhuAppRun();
+			addLabel();
+
+			var caizhukeyjsShare = new caizhuShare({
+				pic: sharePic,
+				title: replaceBlank(shareTitle),
+				description: replaceBlank(shareDes),
+				link: shareLink
+			});
+			caizhukeyjsShare.createUrlMeta();
+
+		}
+		document.body.appendChild(basicJs);
+
+	} else {
+
+		var commonFunc = {};
+
+		var otherJs = document.createElement('script');
+		otherJs.type = 'text/javascript';
+		otherJs.src = '/static/js/api/app-running.js?date=151223';
+
+		otherJs.onload = function () {
+
+			addLabel();
+
+			var loadIframe = null;
+			commonFunc.createIframe = function () {
+				var iframe = document.createElement("iframe");
+				iframe.style.cssText = "display:none;width:0px;height:0px;";
+				document.body.appendChild(iframe);
+				loadIframe = iframe;
+			}
+			commonFunc.redirect = function () {
+				var rUa = navigator.userAgent;
+				isChrome = rUa.match(/Chrome\/([\d.]+)/) || rUa.match(/CriOS\/([\d.]+)/);
+				if (isChrome) {
+					if (info.os.android) {
+						if (rUa.match(/360\s{0,10}aphone\s{0,10}browser/i)) {
+							loadIframe.src = "caizhu://caizhu/article?id=" + currentId;
+						} else {
+							window.location.href = 'intent://caizhu/article?id=' + currentId + '#Intent;scheme=caizhu;package=com.caizhu.caizhu;end';
+						}
+
+					} else {
+						window.location.href = 'caizhu://caizhu/article?id=' + currentId;
+					}
+				} else {
+					if (safariBrowser) {                  // ios6-plus, 只能用location跳转
+						window.location.href = "caizhu://caizhu/article?id=" + currentId;
+					} else {
+						loadIframe.src = "caizhu://caizhu/article?id=" + currentId;
+					}
+				}
+				var t = Date.now();
+				setTimeout(function () {
+					if (Date.now() - t < 600) {
+						//location.href="http://m.caizhu.com/down/down-caizhu";
+
+						$('#caizhu-open-down').removeClass(hide);
+					}
+				}, 500)
+			};
+
+			// wechat share - start
+			$.ajax({
+				url: '/api/wechat/get-signature',
+				type: 'post',
+				dataType: 'json',
+				data: {
+					url: location.href
+				},
+				success: function (d) {
+					if (d.flag == 1) {
+						var d = d.data;
+
+						var wechatJs = document.createElement('script');
+						wechatJs.type = 'text/javascript';
+						wechatJs.src = 'https://fe.caizhu.com/public/js/callcaizhu/jweixin-1.0.0.js';
+						wechatJs.onload = function () {
+							wechatShare(d, {
+								title: replaceBlank(shareTitle),
+								des: replaceBlank(shareDes),
+								pic: sharePic,
+								link: shareLink
+							});
+						};
+						document.body.appendChild(wechatJs);
+
+					}
+				}
+			});
+			// wechat share - end
+
+		}
+
+		document.body.appendChild(otherJs);
+
+	}
+
+	function caizhuAppRun() {
+
+		var hide = 'hide',
+			show = 'show',
+			selected = 'selected',
+			$promptBox = $('#prompt-box'),
+			$prompt = $('#prompt'),
+			$promptP = $prompt.children('p'),
+			$promptOk = $prompt.children('span');
+
+		var $vote = $('#vote-btn');
+
+		$promptOk.tap(function () {
+			$promptBox.addClass(hide);
+		});
+
+		function promptDo(a, str) {              //a, show | hide ;
+			if (!a) return;
+
+			if (a == show) {
+				$promptP.text(str);
+				$promptBox.removeClass(hide);
+			} else {
+				$promptBox.addClass(hide);
+			}
+
+		}
+
+
+		// url?bID=1&info=hash&tID=1&tName=str
+
+		valueOfTopman();
+
+		function valueOfTopman() {
+			var bId = parseUrl('bid'),
+				info = parseUrl('info'),
+				tId = parseUrl('tid'),
+				name = parseUrl('tname'),
+				status = parseUrl('status');
+
+			var $topmanDo = $('.topman-do');
+
+			parseUrl();
+			if (name) {
+				var str = '<li>' + name + '</li>';
+				$('#topman-list').empty().append(str);
+			}
+
+			if (STATUS == 2 || STATUS == 3) {
+				$topmanDo.children().eq(1).removeClass(hide).siblings().addClass(hide);
+			} else if (STATUS == 0) {
+				$topmanDo.children().eq(2).removeClass(hide).siblings().addClass(hide);
+			} else if (STATUS == 1) {
+				$topmanDo.children().eq(0).removeClass(hide).siblings().addClass(hide);
+
+				$('.ti-00').click(function () {
+					var $this = $(this),
+						flag = $this.children().data('type');
+
+					$.ajax({
+						url: '/api/best/apply-title',
+						type: 'post',
+						dataType: 'json',
+						data: {
+							bID: bId,
+							info: info,
+							tID: tId,
+							status: flag
+						},
+						success: function (d) {
+							if (d.flag == 1) {
+								if (flag) {
+									$topmanDo.children().eq(1).removeClass(hide).siblings().addClass(hide);
+									;
+								} else {
+									$topmanDo.children().eq(2).removeClass(hide).siblings().addClass(hide);
+									;
+								}
+
+							} else {
+								promptDo('show', d.msg);
+							}
+						},
+						error: function (err) {
+							promptDo('show', '网络错误,请过一会再试一试');
+						}
+
+					});
+
+				});
+
+			}
+
+		}
+
+	}
+
+	function addLabel() {
+
+		var str = '', tname = parseUrl('tname');
+		if (tname) {
+			var nameArr = tname.split(',');
+			for (var i = 0, len = nameArr.length; i < len; i++) {
+				str += '<li>' + nameArr[i] + '</li>';
+			}
+			$('#topman-list').empty().append(str);
+		}
+	}
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>

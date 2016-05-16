@@ -1,0 +1,172 @@
+<table id="role_list" style="width:800px;height:600px"></table>
+<div id="role_add_window"></div>
+<div id="role_edit_window"></div>
+<script type="text/javascript">
+
+var roleManageObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'role','action'=>'list'));?>',
+		'saveUrl':'<?php echo $this->url(array('controller'=>'role','action'=>'add'));?>',
+		'destroyUrl':'<?php echo $this->url(array('controller'=>'role','action'=>'remove'));?>',
+		'updateUrl': '<?php echo $this->url(array('controller'=>'role','action'=>'update'));?>',
+		
+		'containerObj':$("#role_list"),
+		'addWindowObj':$("#role_add_window"),
+		'editWindowObj':$("#role_edit_window"),
+		
+		'selfName':'roleManageObj',
+
+		//删除
+		'delHandler':function(id){
+						var _THIS_ = this;
+						//var selected = _THIS_.containerObj.datagrid('getSelected');
+						if(id){
+							$.messager.confirm('删除','确认要删除吗？',function(d){
+								if(d){
+									$.ajax({
+											url:_THIS_.destroyUrl,
+											type:"POST",
+											data:{id:id},
+											dataType:'json',
+											success:function(ret){
+												if(ret.flag == 1){
+													$.messager.alert("提示信息",'删除成功！','info');
+													_THIS_.containerObj.datagrid('reload');
+												}else{
+													$.messager.alert("提示信息",ret.msg,'error');
+												}
+											}
+									});
+								}
+							});
+						}
+					},
+		//添加
+		'addHandler':function(){
+				var _THIS_ = this;
+				_THIS_.addWindowObj.window({
+						'href':_THIS_.saveUrl,
+						'width':400,
+						'height':300,
+						'modal':true,
+						'resizable':false,
+						'cache':false,
+						'title':'添加角色',
+						'onLoad':function(){
+
+								$("#role_add_form_save").off().on('click',function(){
+									$("#role_add_form").attr('action',_THIS_.saveUrl).submit();
+								});
+
+								$("#role_add_form_close").off().on('click',function(){
+									_THIS_.addWindowObj.window('close');
+								});
+								
+								$("#role_add_form").myForm(function(data){
+									if(data.flag == 1){
+										_THIS_.addWindowObj.window('close');
+										_THIS_.containerObj.datagrid('reload');
+									}else{
+										$.messager.alert("提示信息",data.msg,'error');
+									}
+								});
+							}
+					});
+			},
+			
+		//修改
+		'editHandler':function(id){
+				var _THIS_ = this;
+				_THIS_.editWindowObj.window({
+						'href':_THIS_.updateUrl+'?id='+id,
+						'width':400,
+						'height':300,
+						'modal':true,
+						'resizable':false,
+						'title':'修改角色',
+						'onLoad':function(){
+
+							$("#role_update_form_save").off().on('click',function(){
+								$("#role_update_form").attr('action',_THIS_.updateUrl).submit();
+							});
+
+
+							$("#role_update_form_close").off().on('click',function(){
+								_THIS_.editWindowObj.window('close');
+							});
+							
+							$("#role_update_form").myForm(function(data){
+								if(data.flag == 1){	
+									_THIS_.editWindowObj.window('close');
+									_THIS_.containerObj.datagrid('reload');
+								}else{
+									$.messager.alert("提示信息",data.msg,'error');
+								}
+								
+							});	
+						}
+					});
+			},
+
+		'init':function(){
+			this.showData();
+		},
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:true,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+					idField:'RoleID',
+	
+				    url:_THIS_.loadUrl,
+		
+				    //设置列   
+				    columns:[[   
+				        {field:'RoleID',title:'ID',width:80},   
+				        {field:'Name',title:'角色名称',width:150},
+				        {field:'opt',title:'操作',width:100,align:'center',formatter:function(value,rec,index){
+	                        var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.RoleID+'\')">';
+                            e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                            var d= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.delHandler(\''+rec.RoleID+'\')">';
+                            d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+							return e+d;
+					       }
+					    }   
+				           
+				    ]],
+					  //工具栏
+				    toolbar :[{
+						text:'添加',
+						iconCls:'icon-add',
+						handler:function(){
+							_THIS_.addHandler();
+						},
+					}],
+				});
+	
+				
+				//设置分页
+				var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+			},	
+};
+roleManageObj.init();
+</script>

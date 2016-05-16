@@ -1,0 +1,170 @@
+<table id="privilege_list" style="width:800px;height:600px">
+</table>
+<div id="privilege_add_window"></div>
+<div id="privilege_edit_window"></div>
+<script type="text/javascript">
+
+var privilegeObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'privilege','action'=>'list'));?>',
+		'saveUrl':'<?php echo $this->url(array('controller'=>'privilege','action'=>'add'));?>',
+		'destroyUrl':'<?php echo $this->url(array('controller'=>'privilege','action'=>'remove'));?>',
+		'updateUrl': '<?php echo $this->url(array('controller'=>'privilege','action'=>'update'));?>',
+		
+		'containerObj':$("#privilege_list"),
+		'addWindowObj':$("#privilege_add_window"),
+		'editWindowObj':$("#privilege_edit_window"),
+		
+		'selfName':'privilegeObj',
+
+		//删除
+		'delHandler':function(id){
+						var _THIS_ = this;
+						//var selected = _THIS_.containerObj.datagrid('getSelected');
+						//if(selected){
+							$.messager.confirm('删除','确认要删除吗？',function(d){
+								if(d){
+									$.ajax({
+											url:_THIS_.destroyUrl,
+											type:"POST",
+											data:{id:id},
+											dataType:'json',
+											success:function(ret){
+												if(ret.flag){
+													$.messager.alert("提示信息",'删除成功！','info');
+													//_THIS_.containerObj.datagrid('deleteRow',index);
+													_THIS_.containerObj.datagrid('reload');
+												}else{
+													$.messager.alert("提示信息",ret.msg,'error');
+												}
+											}
+									});
+								}
+							});
+						//}
+					},
+		//添加
+		'addHandler':function(){
+				var _THIS_ = this;
+				_THIS_.addWindowObj.window({
+						'href':_THIS_.saveUrl,
+						'width':450,
+						'height':250,
+						'modal':true,
+						'resizable':false,
+						'title':'添加权限',
+						'onLoad':function(){
+
+								$("#privilege_add_form_save").off().on('click',function(){
+									$("#privilege_add_form").attr('action',_THIS_.saveUrl).submit();
+								});
+
+								$("#privilege_add_form_close").off().on('click',function(){
+									_THIS_.addWindowObj.window('close');
+								});
+								
+								$("#privilege_add_form").myForm(function(ret){
+									if(ret.flag == 1){
+										_THIS_.addWindowObj.window('close');
+										_THIS_.containerObj.datagrid('reload');
+									}else{
+										$.messager.alert("提示信息",ret.msg,'error');
+									}
+								});
+							}
+					});
+			},
+			
+		//修改
+		'editHandler':function(id){
+				var _THIS_ = this;
+				_THIS_.editWindowObj.window({
+						'href':_THIS_.updateUrl+'?id='+id,
+						'width':400,
+						'height':200,
+						'modal':true,
+						'resizable':false,
+						'title':'修改权限',
+						'onLoad':function(){
+
+							$("#privilege_update_form_save").off().on('click',function(){
+								$("#privilege_update_form").attr('action',_THIS_.updateUrl).submit();
+							});
+
+							$("#privilege_update_form_close").off().on('click',function(){
+								_THIS_.editWindowObj.window('close');
+							});
+							
+							$("#privilege_update_form").myForm(function(ret){
+								if(ret.flag){
+									_THIS_.editWindowObj.window('close');
+									_THIS_.containerObj.datagrid('reload');
+									//$("#privilege_update_form").clearForm();
+								}else{
+									$.messager.alert("提示信息",ret.msg,'error');
+								}
+							});	
+						}
+					});
+			},
+			
+		'init':function(){
+			this.showData();
+		},
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:true,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+					idField:'PrivilegeID',
+	
+				    url:_THIS_.loadUrl,
+		
+				    //设置列   
+				    columns:[[   
+				        {field:'PrivilegeID',title:'ID',width:80},   
+				        {field:'Describe',title:'权限描述',width:150},
+				        {field:'MainSign',title:'主标识',width:150},
+				        {field:'SubSign',title:'副标识',width:150},
+				        {field:'opt',title:'操作',width:100,align:'center',formatter:function(value,rec,index){
+				        	 var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.PrivilegeID+'\')">';
+	                            e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+	                            var d= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.delHandler(\''+rec.PrivilegeID+'\')">';
+	                            d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+								return e+d;
+					       }
+					    }   
+				           
+				    ]],
+					  //工具栏
+				    toolbar :[{
+						text:'添加',
+						iconCls:'icon-add',
+						handler:function(){
+							_THIS_.addHandler();
+						},
+					}],
+
+					//设置分页
+	                pagination:true,
+	                //pagePosition:'both',
+	                pageList:[20,50,100,150,200],
+	                pageSize:50,
+				});
+	
+			},	
+};
+privilegeObj.init();
+</script>

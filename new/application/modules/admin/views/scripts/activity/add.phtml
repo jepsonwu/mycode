@@ -1,0 +1,128 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="activity_add_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table'>
+                <tr>
+                    <td colspan='2'>是否使用模板：&nbsp;&nbsp;<input type="radio" name="useTemplate" value="0" checked />不使用&nbsp;&nbsp;<input type="radio" name="useTemplate" value="1"/>使用
+                    </td>
+                </tr>
+                <tr>
+                    <th width="80%" colspan='2'>    
+                        该活动对应的相关配置信息
+                    </th>
+                </tr>
+                <tr class="use">
+                    <td colspan='2'>选择模板系列：&nbsp;&nbsp;<select name="templateType" style="width: 100px;">
+                                                        <option value="0">模板系列</option>
+                                                        <?php if(isset($this->TemplateTypeList) && !empty($this->TemplateTypeList)){  foreach ($this->TemplateTypeList as $row){ ?>
+                                                        <option value="<?php echo $row['Tid']; ?>"><?php echo $row['TemplateName']; ?></option>
+                                                        <?php }} ?>
+                                                    </select>&nbsp;&nbsp;
+                    选择模板：&nbsp;&nbsp;<select name="template">
+                                                    <option value="0">请选择模板</option>
+                                                </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2'>    
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;活动名称：&nbsp;&nbsp;<input type="text" name="activityName" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                 <tr class="unuse">
+                    <td colspan='2'>    
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;活动链接：&nbsp;&nbsp;<input type="text" name="activityLink" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="1" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;主讲人账号：&nbsp;&nbsp;<input type="text" name="speakerAccount" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="1" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;主讲人描述：&nbsp;&nbsp;<textarea name="describe" cols="40" rows="5" style="margin: 0px; width: 269px; height: 83px;"></textarea>
+                    </td>
+                </tr>
+                <tr templateType="1" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;头部图片：&nbsp;&nbsp;<input name = "image"  type="file" accept="image/png"/>
+                    </td>
+                </tr>
+                <tr templateType="1" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;标题：&nbsp;&nbsp;<input type="text" name="title" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="1" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;期刊号：&nbsp;&nbsp;<input type="text" name="journal" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="1" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日期：&nbsp;&nbsp;<input type="text" name="datetime" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="2" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明星账号：&nbsp;&nbsp;<input type="text" name="star" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="2" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账号描述：&nbsp;&nbsp;<textarea name="depict" cols="40" rows="5" style="margin: 0px; width: 269px; height: 83px;"></textarea>
+                    </td>
+                </tr>
+                <tr templateType="2" style="display: none;" class="use">
+                    <td colspan='2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;推荐文章：&nbsp;&nbsp;<input type="text" name="abstract" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr templateType="2" style="display: none;" class="use">
+                    <td colspan='2'>推荐文章链接：&nbsp;&nbsp;<input type="text" name="article_link" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px ">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="activity_add_form_save">发布</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="activity_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    //$('input[type="radio"][name="useTemplate"]').trigger("click");
+    useTemplateClick();
+	$("#activity_add_form select[name='templateType']").on('change',function(){//模板系列及列表联动
+		var templateType = $(this).val();
+        var optionHtml = '<option value="0">请选择模板</option>';
+        $("tr[templateType]").hide();
+        if(templateType>0){
+            $("tr[templateType='"+templateType+"']").show();
+            $.ajax({
+                url:"/admin/activity/get-template-list?templateType=" + templateType,
+                type:"GET",
+                success:function(ret){
+                    var getdata = eval("("+ret+")");
+				    var rows = getdata.data.rows;
+                    for(var i =0;i<rows.length;i++){
+                       optionHtml += "<option value='"+rows[i].id+"'>"+rows[i].templateName+"</option>";
+                    }
+                    $("#activity_add_form select[name='template']").empty().append(optionHtml);
+                }
+            });
+        }else{
+            $("#activity_add_form select[name='template']").empty().append(optionHtml);
+        }
+	});
+    
+    function useTemplateClick(){
+        var useTemplate = $('input[type="radio"][name="useTemplate"]:checked ').val();
+        if(useTemplate==0){
+            $('.use').hide();
+            $('.unuse').show();
+        }else{
+            $('.use').show();
+            var templateType = $("#activity_add_form select[name='templateType']").val();
+            $("tr[templateType]").hide();
+            if(templateType>0){
+                $("tr[templateType='"+templateType+"']").show();
+            }
+            $('.unuse').hide();
+        }
+    }
+    $('input[type="radio"][name="useTemplate"]').click(useTemplateClick);
+});
+</script>

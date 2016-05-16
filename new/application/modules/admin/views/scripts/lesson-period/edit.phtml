@@ -1,0 +1,48 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+    
+        <form id="lesson_class_edit_form" method="post" enctype="multipart/form-data">
+            <table class='form_table' cellspacing="15">
+                <tr>
+                    <th width="20%">课时标题：</th>
+                    <td width="80%"><input class="easyui-validatebox" type="text" name="ClassTitle" value='<?php echo $this->lessonClassInfo['ClassTitle'];?>' data-options="required:true" size="50" /></td>
+                </tr>
+                <tr>
+                    <th>课时图片：</th>
+                    <td>
+                        <image width="80" height="100" src="<?php echo $this->lessonClassInfo['ClassPic'].'?imageView2/0/w/200/h/200' ?>" />
+                        <input name = "image"  type="file" value='请选择图片'/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>状态：</th>
+                    <td>
+                        <input name="Status" <?php if($this->lessonClassInfo['Status']==0):?> checked="checked" <?php endif;?> type="radio" value="0" />隐藏
+                        <input name="Status" <?php if($this->lessonClassInfo['Status']==1):?> checked="checked" <?php endif;?> type="radio" value="1" />显示
+                    </td>
+                </tr>
+                <?php if($this->lessonClassInfo['LessonType']==2){ ?>
+                <tr>
+                    <th width="20%">视频链接：</th>
+                    <td width="80%">
+                        <input type="text" name="ClassLink" class="easyui-validatebox" value='<?php echo $this->lessonClassInfo['ClassLink'];?>' data-options="required:true" size="50" />
+                    </td>
+                </tr>
+                <?php }elseif($this->lessonClassInfo['IsNative']==0){ ?>
+                <tr>
+                    <th width="20%">链接：</th>
+                    <td width="80%">
+                        <input type="text" name="ClassLink" class="easyui-validatebox" value='<?php echo $this->lessonClassInfo['ClassLink'];?>' data-options="required:true" size="50" />
+                    </td>
+                </tr>
+                <?php } ?>
+            </table>
+            <input type='hidden' name='lesson_class_id' value='<?php echo $this->lessonClassInfo['ClassID'];?>'/>
+        </form>
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_class_edit_form_save">保存</a>
+    </div>
+     
+</div>

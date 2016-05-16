@@ -1,0 +1,139 @@
+<table id="version_list"></table>
+<div id="version_window"></div>
+<div id="version_list_toolbar"></div>
+<div id="version_list_searcher_container">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true"
+	   onclick="versionObj.containerObj.edatagrid('reload');">刷新</a>
+</div>
+<script type="text/javascript">
+	var versionObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'version','action'=>'list'));?>',
+		'editUrl': '<?php echo $this->url(array('controller'=>'version','action'=>'edit'));?>',
+
+		'containerObj': $("#version_list"),
+		'viewWindowObj': $("#version_window"),
+
+		'selfName': 'versionObj',
+
+		'init': function () {
+			this.showData();
+		},
+
+		//编辑
+		editHandler: function (id) {
+			var _THIS_ = this;
+			_THIS_.viewWindowObj.window({
+				'href': _THIS_.editUrl + '?Platform=' + id,
+				'width': 900,
+				'height': 600,
+				'modal': true,
+				'resizable': false,
+				'title': '编辑',
+				'onLoad': function () {
+
+					$("#version_edit_form_save").off().on('click', function () {
+						$("#version_edit_form").attr('action', _THIS_.editUrl).submit();
+					});
+
+					$("#version_edit_form_close").on('click', function () {
+						_THIS_.viewWindowObj.window('close');
+					});
+
+					$("#version_edit_form").myForm(function (ret) {
+						console.info(ret);
+						if (ret.flag) {
+							$.messager.alert("提示信息", '编辑成功！', 'info');
+							_THIS_.viewWindowObj.window('close');
+							_THIS_.containerObj.datagrid('reload');
+						} else {
+							$.messager.alert("提示信息", ret.msg, 'error');
+						}
+					});
+				}
+			});
+		},
+
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitversions:true,
+				rownumbers: true,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'Platform',
+
+				url: _THIS_.loadUrl,
+				//设置列
+				columns: [[
+					{
+						field: 'Platform', title: '平台', width: 70, formatter: function (value, rec, index) {
+						var Platform = '';
+						switch (value) {
+							case '1':
+								Platform = 'android';
+								break;
+							case '2':
+								Platform = 'IOS';
+								break;
+						}
+						return Platform;
+					}
+					},
+					{
+						field: 'UpdateType', title: '更新类型', width: 70, formatter: function (value, rec, index) {
+						var UpdateType = '';
+						switch (value) {
+							case '0':
+								UpdateType = '不更新';
+								break;
+							case '1':
+								UpdateType = '提醒';
+								break;
+							case '2':
+								UpdateType = '强制';
+								break;
+						}
+						return UpdateType;
+					}
+					},
+					{field: 'CurrentVersion', title: '当前版本', width: 60},
+					{field: 'MinVersion', title: '最小版本', width: 40},
+					{field: 'Url', title: '下载连接', width: 150},
+					{field: 'Info', title: '更新提示', width: 150},
+					{field: 'Button', title: '按钮提示', width: 150},
+					{
+						field: 'opt', title: '操作', align: 'center', formatter: function (value, rec, index) {
+						var c = "";
+
+						c += '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" ' +
+							'onclick="' + _THIS_.selfName + '.editHandler(\'' + rec.Platform + '\')">';
+						c += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+						return c;
+					}
+					}
+
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+
+			$("#version_list_toolbar").append($("#version_list_searcher_container"));
+
+		}
+	};
+	versionObj.init();
+</script>

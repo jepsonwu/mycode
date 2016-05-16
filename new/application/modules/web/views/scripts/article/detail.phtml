@@ -1,0 +1,160 @@
+    <div class="main-right fr">
+        <h2 class="content-tit clearfix">
+            文章详情
+
+            <?php if($this->dataList['IsCharge'] == 1):?>
+            <div class="ad2-modifybox">
+                <span>修改金额</span>
+                <div class="ad2-modify hide">
+                    <span class="ad2-modify-arrow"></span>
+                    <p>修改金额</p>
+                    <input class="ad2-modify-text" placeholder="￥<?php echo $this->dataList['Cost'];?>">
+                    <div class="mt20 clearfix">
+                        <span class="ad2-modify-true fl">确认</span>
+                        <span class="ad2-modify-false fr">取消</span>
+                    </div>
+                </div>
+            </div>
+            <?php endif;?>
+
+        </h2>
+
+        <h1 class="article-tit">
+            <?php echo $this->dataList['Title'];?>
+            <span class="icon-original"><?php if($this->dataList['Type'] == 1): ?>原创<?php else :?>转载<?php endif;?></span>
+            <?php if($this->dataList['IsCharge'] == 1):?>
+            <span class="icon-original">收费</span>
+            <?php endif;?>
+            <?php if($this->dataList['IsTimedPublish'] == 1):?>
+                <span class="icon-original">定时发布</span>
+            <?php endif;?>
+        </h1>
+        <div class="article-minor clearfix">
+            <div class="am-data fl">
+                <span class="icon-article-view"><?php echo $this->dataList['ReadNum'];?></span>
+                <span class="icon-article-vote"><?php echo $this->dataList['PraiseNum'];?></span>
+                <span class="icon-article-share"><?php echo $this->dataList['ShareNum'];?></span>
+                <span class="icon-article-comment"><?php echo $this->dataList['CommentNum'];?></span>
+            </div>
+            <div class="am-info fr">
+                <span>发表时间：<?php echo $this->dataList['PublishTime'];?></span>
+                <span class="ml20">发表者：<?php echo $this->dataList['UserName'];?></span>
+            </div>
+        </div>
+
+        <div class="article-detail">
+        <?php echo $this->dataList['Content'];?>
+       </div>
+       <div class="activity-basic-do clearfix">
+            <?php if($this->dataList['IsCharge'] != 1 || ($this->dataList['IsCharge'] == 1 && $this->dataList['Status'] != 1)):?>
+                <a id="article-del" class="abd-del fr" >删除文章</a>
+            <?php endif;?>
+        </div>
+
+    </div>
+<script>
+var articleID = '<?php echo $this->dataList['AID'];?>';
+
+var $articleDel = $('#article-del');
+
+if($articleDel){
+    $articleDel.click(function(){
+
+        $promptBox.find('#ppt-09').removeClass(hide);
+        $promptBox.removeClass(hide);
+
+        $('body').delegate('#ppt-09 .ppt-do span', 'click', function(){
+            $.ajax({
+                url: '/article/delete',
+                type: 'post',
+                dataType :'json',
+                data:{
+                    articleID: articleID
+                },
+                dataType: 'json',
+                success: function(d){
+                    if(d.flag == 1){
+                        window.location.href = '/article/index';
+                    }else{
+                        definedPrompt(d.msg);
+                    }
+                },
+                error: function(){
+                    definedPrompt('网络错误');
+                }
+
+            });
+        });
+
+    });
+}
+
+var $modifyBox = $('.ad2-modifybox'),
+    $modifyBtn,
+    $modify,
+    $modifyTrue,
+    $modifyFalse,
+    $modifyText;
+
+if($modifyBox){
+    $modifyBtn = $modifyBox.children('span');
+    $modify = $modifyBox.children('div');
+    $modifyTrue = $modifyBox.find('.ad2-modify-true');
+    $modifyFalse = $modifyBox.find('.ad2-modify-false');
+    $modifyText = $modifyBox.find('input');
+
+    $modifyFalse.click(function(){
+        $modify.addClass(hide);
+        return false;
+    });
+
+    $modifyBtn.click(function(){
+        var falg;
+        if($modify.hasClass('hide')){
+            $modify.removeClass('hide');
+        }else{
+            $modify.addClass('hide');
+        }
+    });
+
+    $modifyTrue.click(function(){
+
+        var val = $modifyText.val(),
+            reg;
+            //reg = /^\d*$/;
+
+        reg = /^\d+(\.\d{1,2})?$/;
+        if(!val || !reg.test(val)){
+            definedPrompt('收费金额只支持2位小数');
+            return false;
+        }
+
+        $.ajax({
+            url: '/article/modify-money',
+            type: 'get',
+            dataType :'json',
+            data:{
+                articleID: articleID,
+                money: val
+            },
+            dataType: 'json',
+            success: function(d){
+                if(d.flag == 1){
+                    $modify.addClass(hide);
+                    definedPrompt('修改成功');
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(){
+                definedPrompt('网络错误');
+            }
+
+        });
+    });
+
+}
+
+</script>
+
+

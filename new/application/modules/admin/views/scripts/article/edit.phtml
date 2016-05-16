@@ -1,0 +1,67 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 10px;align:center;">
+    
+        <form id="article_edit_form" method="post" action="/admin/article/edit">
+            <table class='form_table'>                
+                <tr>
+                    <th width="11%">分类：</th>
+                    <td width="89%">
+                        <select name="ret[CategoryID]" class="easyui-validatebox" data-options="required:true">
+                    <? foreach($this->cate as $item):?><option value="<?=$item['CategoryID']?>" <?php if($item['CategoryID']==$this->cate1['CategoryID'])echo "selected"; ?>><?=$item['Name']?></option><?endforeach;?>
+                        </select>
+                    </td>
+                </tr>
+                <?php if($this->article['CategoryID']==1):?>
+                    <tr>
+                        <th>平台：</th>
+                        <th>
+                            <input name="ret[platform]" type="radio" value="1" <?php if($this->article['platform']==1):?> checked="checked" <?php endif;?>/>android &nbsp;&nbsp;
+                            <input name="ret[platform]" type="radio" value="2" <?php if($this->article['platform']==2):?> checked="checked" <?php endif;?>/>ios
+                        </th>
+                    </tr>
+                <?php endif;?>
+
+                <tr>
+                    <th width="11%">媒体来源：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="text"  name="ret[MediaSource]" value="<?php echo $this->article['MediaSource']?>"></td>
+                </tr>
+                 <tr>
+                    <th width="11%">标题：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="text"  data-options="required:true" size="80" name="<?php if($this->lang == 1){?>ret[Title]<?php $title_name='Title'; }else{?>ret[TitleEn]<?php $title_name='TitleEn'; }?>" value="<?=$this->article[$title_name]?>"></td>
+                </tr>
+                <tr>
+                    <th width="11%">URL：</th>
+                    <td width="89%"><input class="easyui-validatebox" type="url"  name="ret[Url]" value="<?php echo $this->article['Url']?>" size="80"></td>
+                </tr>
+                <tr>
+                    <th>内容：</th>
+                    <td>
+                            <textarea id="edit_content_<?=$this->article['ArticleID']?>" name="<?php if($this->lang == 1){?>ret[Contents]<?php $contents_name = 'Contents';}else{?>ret[ContentsEn]<?php $contents_name = 'ContentsEn';}?>"    rows='20' cols='100'><?=$this->article[$contents_name]?></textarea>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_config.js"></script>
+    <script type="text/javascript" src="<?=$this->baseUrl()?>/style/ueditor/editor_all_min.js"></script>
+    <script type="text/javascript" >
+        var edit1 = new UE.ui.Editor({
+            initialContent : '',
+            initialFrameWidth : 800
+        });
+        edit1.render("edit_content_<?=$this->article['ArticleID']?>");
+    </script></td>
+                </tr>
+                
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    <input type="hidden" name="ret[ArticleID]"  value="<?=$this->article['ArticleID']?>">
+                    </td>
+                </tr>
+            </table> 
+        </form>
+       
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="article_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="article_edit_form_close">关闭</a>
+    </div>
+     
+</div>

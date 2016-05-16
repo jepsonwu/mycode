@@ -1,0 +1,31 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 10px;align:center;">
+    
+        <form id="feedback_edit_form" method="post" action="/admin/feedback/edit">
+            <table class='form_table'>                
+
+                <tr>
+                    <th>回复内容：</th>
+                    <td>
+                    <!--<input class="easyui-validatebox" type="text"  data-options="required:true" size="50" name="ReplyContent" value="<?=$this->ReplyContent?>">-->
+                    <textarea id="ReplyContent" name="ReplyContent" rows="5" cols="50" class="textarea easyui-validatebox"></textarea>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    <input type="hidden" name="feedback_id"  value="<?=$this->feedback_id?>">
+                    </td>
+                </tr>
+            </table> 
+        </form>
+       
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="feedback_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="feedback_edit_form_close">关闭</a>
+    </div>
+     
+</div>

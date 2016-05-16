@@ -1,0 +1,71 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+    
+        <form id="vote_period_edit_form" method="post" enctype="multipart/form-data">
+           <table class='form_table'>
+                <tr>
+                    <th width="20%">期数名称：</th>
+                    <td width="80%"><input type="text" name="PeriodName" size="53" value="<?php if(!empty($this->periodInfo['PeriodName'])){ echo $this->periodInfo['PeriodName'];}?>" /></td>
+                </tr> 
+                <tr>
+                    <th width="20%">引言：</th>
+                    <td width="80%"><textarea  rows="5" cols="50" name="Introduction"><?php if(!empty($this->periodInfo['Introduction'])){echo $this->periodInfo['Introduction'];} ?></textarea></td>
+                </tr>
+                <tr>
+                    <th>顶部图片：</th>
+                    <td>
+                        <image width="50" height="50" src="<?php if(!empty($this->periodInfo['Image'])){echo $this->periodInfo['Image'].'?imageView2/0/w/200/h/200'; }?>" />
+                        <input name = "Image"  type="file"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>本期话题ID：</th>
+                    <td><input type="text" name="TopicID" size="53" value="<?php if(!empty($this->periodInfo['TopicID'])){ echo $this->periodInfo['TopicID'];}?>" /></td>
+                </tr> 
+                <tr>
+                    <th>本期奖励：</th>
+                    <td>
+                        <input type="text" name="Reward"  size="53" value="<?php if(!empty($this->periodInfo['Reward'])){ echo $this->periodInfo['Reward'];}?>" ></input>
+                    </td>
+                </tr>
+                <tr>
+                    <th>开始时间：</th>
+                    <td>
+                        <input class="easyui-datetimebox" size = "25" type="text" name="StartTime" value="<?php if(!empty($this->periodInfo['StartTime'])){ echo $this->periodInfo['StartTime'];}?>" data-options=""></input>
+                    </td>
+                </tr>
+                <tr>
+                    <th>结束时间：</th>
+                    <td>
+                        <input class="easyui-datetimebox" size = "25" type="text" name="EendTime" value="<?php if(!empty($this->periodInfo['EendTime'])){ echo $this->periodInfo['EendTime'];}?>" data-options=""></input>
+                    </td>
+                </tr>
+                <?php if($this->periodInfo['EendTime']< date('Y-m-d H:i:s',time())):?>
+                    <tr>
+                        <th>获奖观点：</th>
+                        <td>
+                            <select name="WinViewID" >
+                                <?php foreach ($this->voteViewArr as $item):?>
+                                    <option value="<?php echo $item['ViewID']?>" <?php if($item['ViewID']== $this->periodInfo['WinViewID']):?> selected = "selected" <?php endif;?>><?php echo $item['ViewContent']?></option>
+                                <?php endforeach;?>
+                            </select>
+                            <!--<input type="text" name="WinViewID" value="<?php if($this->periodInfo['WinViewID']>0){ echo $this->periodInfo['WinViewID'];}?>" ></input>-->
+                        </td>
+                    </tr> 
+                <?php endif;?>          
+                <tr>
+                    <td colspan='2' class='footbar'>
+                        <input type="hidden" name="PeriodID" value="<?php echo $this->periodInfo['PeriodID']?>" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <div style="text-align:center;padding:5px">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="vote_period_edit_form_save">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="vote_period_edit_form_close">关闭</a>
+    </div>
+     
+</div>

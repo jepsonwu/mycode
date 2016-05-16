@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>
+		财猪管理后台
+	</title>
+	<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/js/jquery-easyui-1.3.5/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/jquery-easyui-1.3.5/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/jquery-easyui-icons/icon.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/admin/admin.css">
+	<script type="text/javascript" src="/static/js/jquery-easyui-1.3.5/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-easyui-1.3.5/plugins/jquery.edatagrid.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-easyui-1.3.5/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+	<script type="text/javascript" src="/static/js/admin/admin.js"></script>
+	<script type="text/javascript" src="/static/js/admin/lang.js"></script>
+	<!-- widget -->
+	<script type="text/javascript" src="/static/js/admin/member.js"></script>
+	<script type="text/javascript" src="/static/js/admin/escrow.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.zclip.min.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+
+</head>
+<body class="easyui-layout">
+<div data-options="region:'west',split:true,title:'财猪功能导航'" style="width:150px;" id="mainMenu">
+	<div class="easyui-accordion" data-options="fit:true,border:false">
+		<?php foreach ($this->features as $group => $members) { ?>
+			<div title="<?php echo $group ?>" style="" data-options="selected:true">
+				<table class="easyui-datagrid" data-options="showHeader:false,fitColumns:true,singleSelect:true"
+				       style="width:262px;">
+					<thead>
+					<tr>
+						<th data-options="field:'code',width:262">操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<?php foreach ($members as $feature) { ?>
+						<tr>
+							<td data-options="field:'code',width:262"><a
+									class="leftBtn"
+									href="javascript:void(0)"
+									url="<?php echo $feature['Url']; ?>"
+									onclick="return openTab(this)"><?= $feature['Feature'] ?></a></td>
+						</tr>
+					<?php } ?>
+					</tbody>
+				</table>
+			</div>
+		<?php } ?>
+	</div>
+
+</div>
+
+<div data-options="region:'center'" style="overflow:visible;">
+	<div class="easyui-tabs" data-options="border:false,fit:true" id='main-tabs'>
+		<div title='Welcome'>
+			<style>
+				.manual_tips {
+					padding: 15px;
+					font-size: 14px;
+					line-height: 1.8em;
+					font-family: '微软雅黑';
+					word-break: break-all;
+					word-wrap: break-word;
+					width: 80%;
+				}
+			</style>
+			<pre class="manual_tips">hello world.</pre>
+		</div>
+	</div>
+</div>
+
+<div data-options="region:'south',border:false" style="height:35px;background:#ddd;padding:10px;">
+	<div style="float: right;margin-top:5px;">当前登录用户:<?php echo $this->userInfo->Username; ?>&nbsp;&nbsp;<a
+			href="<?php echo $this->url(array('controller' => 'index', 'action' => 'logout')) ?>">退出系统</a></div>
+</div>
+</body>
+</html>

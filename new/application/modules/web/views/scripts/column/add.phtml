@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <?php echo $this->headTitle();?>
+    <meta charset="utf-8">
+    <meta name="keywords" content="创建专栏" />
+    <meta name="description" content="创建专栏" />
+    <link rel="shortcut icon" href="/imgs/favicon.ico"/>
+    <link rel="stylesheet" href="/static/css/web/column/main.css" />
+
+    <link rel="stylesheet" href="/static/css/web/column/renzheng.css">
+    <link rel="stylesheet" href="/static/plugin/kingeditor/themes/default/default.css" />
+<style>
+#renzheng-form{padding-left: 50px;}
+</style>
+</head>
+
+<body>
+
+<div class="header-box">
+    <div class="header">
+        <h1><img src="/static/imgs/web/column/logo.png" alt="logo" /></h1>
+    </div>
+</div>
+
+<div class="header-bg"></div>
+
+<div class="header-nav">
+    <a href="/">财猪应用</a> > <a href="">创建理财号</a>
+</div>
+
+<div class="main-box clearfix">
+
+    <div class="avatar-box">
+        <h2 class="content-tit">理财号信息</h2>
+
+        <?php if(!empty($this->columnInfo) && ($this->columnInfo['CheckStatus']) != 1):?>
+        <div class="form-prompt">
+            <span class="form-prompt-close">X</span>
+            审核失败原因：<?php echo $this->columnInfo['CheckRemark']; ?>，请修改后重新提交！
+            </div>
+        <?php endif; ?>
+
+        <div class="renzheng-box">
+
+            <form id="renzheng-form" name="rezheng" method="post" action="">
+            <input type="hidden" id="column-id" name="columnID" value="<?php if(!empty($this->columnInfo)):?><?php echo $this->columnInfo['ColumnID'];?><?php endif;?>"/>
+            <input type="hidden" id ="authID"  name ="authID" value="<?php echo $this->authID;?>">
+            <input type="hidden" id = "quaID" name ="quaID" value="<?php echo $this->quaID;?>">
+                <ul class="zheng-list">
+                    <li class="zheng-one clearfix valid-one" data-type="limit" data-min="2" data-max="10">
+                        <div class="zheng-one00">名称<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请输入2-10字符标题</span></div>
+                            <input class="zheng-text" type="text" name="title" placeholder="请输入标题" value = "<?php if(!empty($this->columnInfo)):?><?php echo $this->columnInfo['Title']; ?><?php endif;?>">
+                        </div>
+                    </li>
+                    <li class="zheng-p02-box">
+                        <p class="zheng-p02">2-10个字符，请勿使用包含特殊符号或含有明显营销推广意图的词组，设置后将无法更改</p>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="pic">
+                        <div class="zheng-one00">封面<span class="xing">*</span></div>
+                        <div class="zheng-one01 valid-one">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span></span>封面不能为空</div>
+                            <ul class="clearfix">
+                                <li class="zm-pic zm-pic3 fl">
+                                <?php if(!empty($this->columnInfo)):?>
+                                <img id="select-pic" src="<?php echo $this->columnInfo['Avatar'];?>" alt="财猪"></li>
+                                <?php else : ?>
+                                <img id="select-pic" src="/static/imgs/web/column/caizhu-120x120.png" alt="财猪"></li>
+                                <?php endif;?>
+                                <li class="zm-select fl">
+                                    <p class="zm-p01">支持jpg、jpeg、png文件，最大5M</p>
+                                    <span id="select-btn" class="select" value="点击上传">点击上传</span>
+                                    <!--<input type="hidden" id="select-text" name="avatar" class="select" value="<?php if(!empty($this->columnInfo)):?><?php echo $this->columnInfo['Avatar']; ?><?php endif;?>">-->
+                                    <input type="hidden" id="select-text" name="avatar"  value="<?php if(!empty($this->columnInfo)):?><?php echo $this->columnInfo['Avatar']; ?><?php endif;?>" >
+
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="limit-label" data-limit="3">
+                        <input id="limit-label" type="hidden" name="label" >
+
+                        <div class="zheng-one00">标签<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>标签不能为空，最多只能选择3个</span></div>
+                            <ul id="zk-label-list" class="zk-label-list clearfix">
+                             <?php foreach ($this->focusArr as $val):?>
+                                <li class="zk-label-one <?php if(in_array($val['FocusID'], $this->focusID)):?> selected <?php endif;?>" data-id="<?php echo $val['FocusID']?>" ><?php echo $val['FocusName']?></li>
+                            <?php endforeach;?>
+                             
+                            </ul>
+
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="textarea">
+                        <div class="zheng-one00">简介<span class="xing">*</span></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请输入10-50个字符描述</span></div>
+                            <div class="zk-textarea">
+                                <textarea id="zk-textarea" name="description"><?php if(!empty($this->columnInfo)):?><?php echo $this->columnInfo['Description'];?><?php endif;?></textarea>
+                                <p>可填写专注方向、行业背景、过往经历、个人感悟，要求内容完整通顺，无特殊符号。10-50个字符。添加联系方式将有可能无法通过审核</p>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="zheng-one clearfix valid-one" data-type="agree">
+                        <div class="zheng-one00"></div>
+                        <div class="zheng-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请阅读服务协议</span></div>
+
+                            <div class="zheng-agree"><input id="agree" type="checkbox" checked = "check" name="agree"><span>同意</span><a href="/api/user/topic-issue" target="_new">《财猪内容发布规范》</a></div>
+
+                        </div>
+                    </li>
+                    <li class="zheng-one clearfix">
+                        <div class="zheng-one00"></div>
+                        <div class="zheng-one01">
+                                <span id="zheng-submit" class="zheng-submit">提交</span>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+
+    </div> <!-- main-right -->
+
+</div>
+
+<div id="prompt-box" class="prompt-box hide">
+    <div class="prompt-bg"></div>
+
+    <ul id="prompt-type" class="prompt-type">
+
+        <li id="ppt-00" class="ppt-box hide">
+            <div class="ppt-tit">
+               <strong>提示</strong>
+               <span class="ppt-close"></span>
+            </div>
+            <div id="ppt-p" class="ppt-des03">
+            </div>
+            <div id="ppt-ok" class="ppt-do">
+               <span>确定</span>
+            </div>
+        </li>
+        <li id="ppt-08" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <!--<span class="ppt-close"></span>-->
+            </div>
+            <div class="ppt-des03">
+                理财号创建成功，请自觉遵守<a href="/api/user/topic-issue" target="_blank">《财猪内容发布规范》</a>,如有违规，立即封号。
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+        
+        <li id="ppt-09" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提示</strong>
+                <span class="ppt-close"></span>
+            </div>
+            <div class="ppt-des03">
+                您创建的理财号已通过审核不能再修改！。
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+        <li id="ppt-10" class="ppt-box hide">
+            <div class="ppt-tit">
+                <strong>提交成功</strong>
+                <!--<span class="ppt-close"></span>-->
+            </div>
+            <div class="ppt-des03">
+                我们将在3个工作日内完成账号主体认证的信息审核工作。若有疑问请邮件联系我们：kf@duomai.com。我们将及时为您解答。     
+            </div>
+            <div class="ppt-do">
+                <span>确定</span>
+            </div>
+
+        </li>
+
+    </ul>
+
+</div>
+
+
+<div class="footer">
+    <p><a href="http://caizhu.com">www.caizhu.com</a> © 2014-2015 All Rights Reserved.</p>
+    <p><a href="http://caizhu.com">财猪</a> 版权所有 浙ICP备15011363号-1</p>
+</div>
+
+<script src="/static/js/web/column/jquery-1.10.2.min.js"></script>
+
+<script src="/static/plugin/kingeditor/kindeditor-min.js"></script>
+<script src="/static/plugin/kingeditor/lang/zh-CN.js"></script>
+
+<script>
+
+$('body').delegate('.ppt-close', 'click', function(){
+    $promptBox.addClass(hide);
+    $promptType.children().addClass(hide);
+});
+
+    // prompt action
+    var hide = 'hide',
+        $promptBox = $('#prompt-box'),
+        $promptType = $('#prompt-type');
+
+    $('body').delegate('.ppt-close', 'click', function(){
+        closePrompt();
+    });
+
+    var $pptP = $('#ppt-p'),
+        $pptOk = $('#ppt-ok'),
+        $ppt00 = $('#ppt-00');
+    $pptOk.click(function(){
+        closePrompt();
+    })
+    function definedPrompt(str){
+        if(!str) return ;
+        $pptP.text(str);
+        $ppt00.removeClass(hide);
+        $promptBox.removeClass(hide);
+    }
+    function closePrompt(){
+        $promptBox.addClass(hide);
+        $promptType.children().addClass(hide);
+    }
+
+    var hide = 'hide',
+            selected = 'selected',
+            $promptBox = $('#prompt-box'),
+            $agree = $('#agree'),
+            $zhengText = $('.zheng-text'),
+            $zhengSubmit = $('#zheng-submit'),
+            $zhengForm = $('#renzheng-form'),
+
+            $validOne = $('.valid-one'),
+            $selectBtn = $('#select-btn'),
+            $selectPic = $('#select-pic'),
+            $selectText = $('#select-text'),
+
+            $zhengCode = $('#zheng-code'),
+            $zhengGet = $('#zheng-get'),
+            $zhengReset = $('#zheng-reset'),
+            $zhengNum = $('#zheng-num'),
+
+            $zkTextArea = $('#zk-textarea');
+    		$selectColumnID = $('#column-id');
+
+    var $validText = $('#valid-text');
+    var $macLabelOne = $('.zk-label-one'),
+            $limitLabel = $('#limit-label');
+
+
+    $validText.blur(function(){
+        var $this = $(this),
+                val = $this.val();
+
+        if(val){
+            $this.prev().addClass(hide);
+        }else{
+            $this.prev().removeClass(hide);
+        };
+    });
+
+    $zhengText.focus(function(){
+        $(this).parents('li').find('.ti-box').addClass(hide);
+    });
+
+    $agree.click(function(){
+        var $this = $(this), isSubmit, $tip;
+        $tip = $this.parents('li').find('.ti-box');
+        isSubmit = $this[0].checked;
+        if(isSubmit){
+            $tip.addClass(hide);
+        }else{
+            $tip.removeClass(hide);
+        }
+    });
+
+    var codeId,
+            codeT,
+            codeTAll= 120;
+  /*  $zhengCode.click(function(){
+        var n,
+                $this = $(this),
+                flag = $this.hasClass(selected);
+
+        if(flag) return false;
+
+        $.ajax({
+            url: '/column/add',
+            type: 'post',
+            dataType: 'json',
+            success: function(){
+
+            },
+            error: function(){
+
+            }
+        })
+
+        codeT = codeTAll;
+        codeTAll.toString();
+
+        n = codeT.toString().length == 1 ? '0'+codeT : codeT;
+        $zhengNum.text(n);
+        $this.addClass(selected);
+
+        codeID = setInterval(function(){
+            if(codeT == 0){
+                clearInterval(codeID);
+                $this.removeClass(selected);
+            }else{
+                codeT--;
+                n = codeT.toString().length == 1 ? '0'+codeT : codeT;
+                $zhengNum.text(n);
+            }
+        }, 1000)
+
+
+    })*/
+
+    $zkTextArea.focus(function(){
+        var $this = $(this);
+        closeTiBox($this);
+    });
+    $zkTextArea.blur(function(){
+        var $this = $(this),
+            val = $this.val(),
+            length = val.length;
+        $tip = $this.parents('li').find('.ti-box');
+        if(length<10 || length>50){
+            $tip.removeClass(hide);
+        }else{
+            $tip.addClass(hide);
+        }
+
+    });
+
+    function closeTiBox(obj){
+        obj.parents('li').find('.ti-box').addClass(hide);
+    }
+
+    $agree.click(function(){
+        var $this = $(this), isSubmit, $tip;
+        $tip = $this.parents('li').find('.ti-box');
+        flag = $this[0].checked;
+        if(isSubmit){
+            $tip.addClass(hide);
+        }else{
+            $tip.removeClass(hide);
+        }
+    });
+
+
+   /*$zhengText.blur(function(){
+        var $this = $(this), val, type, $tip,
+                $parents = $this.parents('li');
+
+        val = $this.val();
+        type = $parents.data('type');
+        $tip = $parents.find('.ti-box');
+
+        switch(type){
+            case 'need':
+                if(val){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+
+            case 'limit':
+                var min = $this.data('min'),
+                    max = $this.data('max');
+
+                if(val<min || val>max){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+
+            case 'identity':
+                var exp = /^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/;
+                if(val && exp.test(val)){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+
+            case 'tel':
+                var exp = /^[1-9]\d{10}$/;
+                if(val && exp.test(val)){
+                    $tip.addClass(hide);
+                }else{
+                    $tip.removeClass(hide);
+                };
+                break;
+        }
+
+    })*/
+
+    $zhengText.focus(function(){
+        $(this).parent().find('.ti-box').addClass('.ti-box');
+    });
+
+    $zhengText.blur(function(){
+        var $this = $(this), val, type, $tip,
+            $parents = $this.parents('li');
+
+        val = $this.val();
+        type = $parents.data('type');
+        $tip = $parents.find('.ti-box');
+
+        switch(type){
+            case 'limit':
+                var min = $this.parents('li').data('min'),
+                    max = $this.parents('li').data('max');
+                var leng = val.toString().length;
+                if(leng<min || leng>max){
+                    $tip.removeClass(hide);
+                }else{
+                    $tip.addClass(hide);
+                };
+                break;
+        }
+    });
+
+    $zhengSubmit.click(function(){
+        var isSubmit = true,
+                i, d, val, type, $tip;
+
+        $limitLabel.parent().find('.ti-box').addClass('hide');
+
+        len = $validOne.length;
+
+        for(i=0; i<len; i++){
+            d = $validOne.eq(i);
+            type = d.data('type');
+            $tip = d.find('.ti-box');
+
+            switch(type){
+                case 'need':
+                    val = d.find('.zheng-text').val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+
+                case 'limit':
+                    var $elem = d.find('.zheng-text');
+                    val = $elem.val();
+                    var min = d.data('min'),
+                        max = d.data('max');
+                    val = val.toString().length;
+                    if(val>=min && val<=max){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+
+                case 'textarea':
+                    val = $zkTextArea.val();
+
+                    var len = val.length;
+
+                    if(len>=10 && len<=50){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+
+                case 'pic':
+                    val = $selectText.val();
+                    if(val){
+                        $tip.addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        $tip.removeClass(hide);
+                    }
+                    break;
+
+                case 'limit-label':
+                    valueLimitLabel();
+                    val = $limitLabel.data('data');
+                    var limit = parseInt(d.data('list'));
+                    if(!(val>0 && val<= 3)) isSubmit = false;
+                    break;
+
+                case 'agree':
+                    val = d.find('input')[0].checked;
+
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+            }
+
+        }
+
+
+        if(isSubmit){
+
+            //$zhengForm.submit();
+            $.ajax({
+                url: '/column/add',
+                type: 'post',
+                dataType :'json',
+                data:{
+                    columnID: $selectColumnID.val() || 0,
+                    authID:$('#authID').val(),
+                    quaID:$('#quaID').val(),
+                    title: $zhengText.val(),
+                    label: $limitLabel.val(),
+                    description: $zkTextArea.val(),
+                    avatar: $selectText.val()
+                },
+                dataType: 'json',
+                success: function(d){
+                    if(d.flag == 1){
+                        if(d.data > 0){
+                            tags='ppt-10';
+                        }else{
+                            tags='ppt-08';
+                        }
+                    	$promptBox.find('#'+tags).removeClass(hide);
+                        $promptBox.removeClass(hide);
+
+                        $('body').delegate('#'+tags+' .ppt-do span', 'click', function(){
+                            window.location.href = '/index';
+                        });
+                        	//alert(d.msg);
+							//location.href = '/index';
+                        
+                    }else{
+                        //alert(d.msg);
+                        definedPrompt(d.msg);
+                        /*
+                    	$promptBox.find('#ppt-09').removeClass(hide);
+                        $promptBox.removeClass(hide);
+                        $('#ppt-09 .ppt-des03').html(d.msg);
+
+                        $('body').delegate('#ppt-09 .ppt-do span', 'click', function(){
+                       	    $promptBox.addClass(hide);
+                        });
+                        */
+                    }
+                },
+                error: function(){
+                    definedPrompt('网络错误');
+                }
+
+            });
+        }
+    });
+
+    /* 选择标签 */
+    $macLabelOne.click(function(){
+        var $this = $(this),
+        isSubmit = $this.hasClass(selected);
+
+        if(isSubmit){
+            $this.removeClass(selected);
+            $this.parent().prev().addClass(hide);
+            valueLimitLabel();
+        }else{
+            var limit, n;
+            limit = $limitLabel.parent().data('limit');
+            limit = parseInt(limit);
+            n = valueLimitLabel();
+
+            if(n < limit){
+                $this.addClass(selected);
+                $this.parent().prev().addClass(hide);
+                valueLimitLabel();
+            }else{
+                $this.parent().prev().removeClass(hide);
+            }
+        }
+
+
+    });
+
+
+    function valueLimitLabel(){
+        var d, arr = [], i,
+                len = $macLabelOne.length,
+                limit = $limitLabel.parent().data('limit');
+        limit = parseInt(limit);
+
+        var m, isSubmit;
+        for(i=0; i<len; i++){
+            d = $macLabelOne.eq(i);
+            isSubmit = d.hasClass(selected);
+            if(isSubmit){
+                arr.push(d.data('id'));
+            }
+        }
+
+        if(arr.length > limit) return arr.length;   // 错误
+        $limitLabel.val(arr).data('data', arr.length);
+        if(arr.length == 0){$limitLabel.next().next().find('.ti-box').removeClass(hide)}
+        return arr.length;
+    }
+
+
+</script>
+
+
+<script>
+
+    KindEditor.ready(function(K) {
+
+   	 var $selectBtn = $('#select-btn');
+     var uploadbutton = K.uploadbutton({
+         button : $selectBtn[0],
+         fieldName : 'imgFile',
+         dataType:'json',
+         url : '/article/upload-file?limit=1',
+         afterUpload : function(data) {
+             if (data.flag == 1) {
+             	$selectPic.parents('li').find('.ti-box').addClass(hide);
+             	$selectText.val(data.data.url);
+             	$selectPic.attr('src', data.data.url);
+             } else {
+                 definedPrompt(data.msg);
+             }
+         },
+         afterError : function(str) {
+             definedPrompt('自定义错误信息: ' + str);
+         }
+     });
+     uploadbutton.fileBox.change(function(e) {
+         uploadbutton.submit();
+     });
+
+    });
+
+    var $ktClose = $('#kt-close'),
+    $kuangBox = $('#kuang-box');
+
+$ktClose.click(function(){
+	 $promptBox.addClass(hide);
+});
+
+</script>
+<script>
+$('.form-prompt-close').click(function(){
+    $(this).parent().addClass('hide');
+});
+</script>
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

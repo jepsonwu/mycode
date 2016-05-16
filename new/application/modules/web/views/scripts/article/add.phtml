@@ -1,0 +1,879 @@
+
+<link rel="stylesheet" href="/static/plugin/kingeditor/themes/default/default.css" />
+<style>
+.ke-icon-czvideo{background-position: 0px -528px; color: #f0f; width: 16px; height: 16px;}
+</style>
+<div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela">
+            创建文章
+            <!--<a class="selected" href="add">文章</a>
+            <a href="/activity/add">活动</a></span>-->
+            <a id="read-draft" class="article-todo">读取草稿</a>
+        </h2>
+
+        <div class="manage-box">
+            <form id="article-form" name="article" method="post" action="">
+            	<input type="hidden" id="article-id" name="articleID" />
+                <ul class="manage-list">
+                    <li class="manage-one clearfix valid-one" data-type="pic">
+                        <div class="manage-one00">封面<span class="xing">*</span></div>
+                        <div class="manage-one01 valid-one">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span></span>封面不能为空</span></div>
+                            <ul class="manage-cover clearfix">
+                                <li class="mac-pic fl"><img id="select-pic" src="/static/imgs/web/column/pic106x160.png" alt="财猪" ></li>
+                                <li class="mac-select fl">
+
+                                    <span id="select-btn" class="select" value="选择文件" >选择文件</span>
+                                    <input type="hidden" id="select-text" class="select" value="" />
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+                    </li>
+
+                    <li class="manage-one clearfix valid-one" data-type="need">
+                        <div class="manage-one00">标题<span class="xing">*</span></div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>标题不能为空</span></div>
+                            <input class="mac-text" id="valid-text" type="text" name="title" placeholder="请输入标题" >
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix">
+                        <div class="manage-one00">作者</div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>标题不能为空</span></div>
+                            <input class="mac-text" type="text" name="author" placeholder="请输入作者" >
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix">
+                        <div class="manage-one00">简介</div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>标题不能为空</span></div>
+                            <!--<input class="mac-text" type="text" name="author" placeholder="请输入作者" >-->
+                            <textarea id="mac-des" class="mac-des" name="description"></textarea>
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one" data-type="limit-label" data-limit="3">
+                        <input id="limit-label" type="hidden" name="label" >
+                        <div class="manage-one00">标签<span class="xing">*</span></div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>标签不能为空最多3个</span></div>
+                            <ul id="mac-label-list" class="mac-label-list clearfix">
+                            <?php foreach ($this->focusArr as $val):?>
+                                <li class="mac-label-one" data-id="<?php echo $val['FocusID']?>"><?php echo $val['FocusName']?></li>
+                            <?php endforeach;?>
+                              
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix maa-zx-10 paybox00 hide">
+                        <div class="manage-one00">费用</div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>收费金额只支持非零整数(单位:元)</span></div>
+                            <div class="mac-chargebox local-pays">
+                                <input class="local-radio" type="radio" name="charge" value=0> 免费
+                                <input class="local-radio" type="radio" name="charge" value=1> 收费
+                                <span class="mac-charge-qbox">
+                                    <div class="mac-charge-q hide">
+                                        <span></span>
+                                        <h3>收费说明</h3>
+                                        <p>文章设置收费权限后，用户只能看到正文前200字。用户支付费用后，将永久享用查看全文的权利</p>
+                                    </div>
+                                </span>
+                                <input class="mac-charge-cost hide" name="cost" placeholder="￥请设置收费金额" >
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one maa-zx-9" data-type="editor">
+                        <div class="manage-one00">正文<span class="xing">*</span></div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>正文、类型不能为空</span></div>
+
+                            <textarea name="content" id="mac-content"></textarea>
+                            <div class="mac-article-class">
+                                <span>分类：</span>
+                                <select id="article-class" class="ml" name="article-class">
+                                    <!--
+                                    <option value="0">请选择</option>
+                                    <option value="1">原创</option>
+                                    <option value="2">转载</option>
+                                    -->
+                                </select>
+                            </div>
+
+                        </div>
+                    </li>
+                    
+                    <li class="manage-one clearfix">
+                        <div class="manage-one00">原文链接</div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"><span>标题不能为空</span></span></div>
+                            <input class="mac-text" type="text" name="articleLink" placeholder="请输入原文链接" >
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix valid-one" data-type="agree">
+                        <div class="manage-one00"></div>
+                        <div class="manage-one01">
+                            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请阅读服务协议</span></div>
+
+                            <div class="mac-agree"><input data-zx="zxzx" type="checkbox" checked = "check" name="agree" /><span>同意</span><a href="/api/user/topic-issue" target="_new">《财猪内容发布规范》</a>
+
+                                <span class="local-more hide fr ">更多设置</span>
+                            </div>
+                            <div class="local-manage p-rela paybox01 hide">
+                                <span class="local-arrow"></span>
+                                <div class="local-line clearfix">
+                                    <span class="local-one00">定时发表：</span>
+                                    <span class="local-one01"><input class="local-timing" type="checkbox" name="radio" > 定时发表</span>
+                                    <input id="publish-time" class="local-one02" name="publishtime" >
+
+                                </div>
+                                <div class="local-line clearfix mt local-pays">
+                                    <span class="local-one00">费用设置：</span>
+                                    <input class="local-radio" type="radio" name="charge" value="0"> 免费
+                                    <input class="local-radio" type="radio" name="charge" value="1"> 收费
+                                    <span class="mac-charge-qbox">
+                                        <div class="mac-charge-q hide">
+                                            <span></span>
+                                            <h3>收费说明</h3>
+                                            <p>文章设置收费权限后，用户只能看到正文前200字。用户支付费用后，将永久享用查看全文的权利</p>
+                                        </div>
+                                    </span>
+                                    <input class="mac-charge-cost hide" name="cost" placeholder="￥请设置收费金额" >
+                                </div>
+                            </div>
+
+                        </div>
+                    </li>
+
+                    <li class="manage-one clearfix">
+                        <div class="manage-one00"></div>
+                        <div class="manage-one01">
+                            <input type="hidden" name="submit-type" id="submit-type" />
+                            <div class="mac-do clearfix">
+                                <span class="mac-submit fl">立即发表</span>
+                                <span class="mac-draft fr">保存草稿</span>
+                                <span class="mac-view fr">手机预览</span>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </form>
+        </div>
+
+
+    </div> <!-- main-right -->
+
+</div>
+
+<div id="kuang-box" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <div id="kuang-draft" class="kuang-draft hide">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">读取草稿</strong>
+            <span class="kuang-close fr"></span>
+        </div>
+        <ul id="kuang-list" class="kuang-list">
+        <?php foreach ($this->draftInfo as $value):?>
+            <li class="kuang-one clearfix">
+                <a data-id="<?php echo $value['AID'];?>"><?php echo $value['Title'];?></a>
+                <span><?php echo $value['CreateTime'];?></span>
+            </li>
+        <?php endforeach;?>
+
+        </ul>
+    </div>
+
+    <div id="kuang-code" class="kuang-code hide">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">手机预览</strong>
+            <span id="kuang-close" class="kuang-close fr"></span>
+        </div>
+        <div class="kuang-code-pic">
+            <img id="code-pic" src="" alt="二维码" />
+        </div>
+        <p class="kuang-code-p">使用财猪手机版扫描二维码</p>
+    </div>
+
+</div>
+
+<script src="/static/js/web/column/common.js"></script>
+
+<script src="/static/js/web/column/jquery-ui.min.js"></script>
+<script src="/static/js/web/column/jquery-ui-timepicker-addon.js"></script>
+<script src="/static/js/web/column/region_select.js"></script>
+
+<script src="/static/plugin/kingeditor/kindeditor-min.js?date=160318"></script>
+<script src="/static/plugin/kingeditor/lang/zh-CN.js"></script>
+
+<script>
+
+    var isSystemMember = "<?php echo $this->isSystemMember;?>";
+    //isSystemMember = 1;
+
+    var editor, editor2;
+
+    var hide = 'hide',
+            selected = 'selected',
+
+            $kuangBox = $('#kuang-box'),
+            $kuangClose = $('.kuang-close'),
+            $kuangCode = $('#kuang-code'),
+            $kuangDraft = $('#kuang-draft'),
+
+
+            $readDraft = $('#read-draft'),
+            $macSubmit = $('.mac-submit'),
+            $macDraft = $('.mac-draft'),
+            $macView = $('.mac-view'),
+            $articleForm = $('#article-form'),
+
+            $macLabelList = $('#mac-label-list'),
+            $macLabelOne = $('.mac-label-one'),
+            $limitLabel = $('#limit-label'),
+            $validOne = $('.valid-one'),
+            $macDes = $('#mac-des'),
+            $selectText = $('#select-text'),
+            $selectPic = $('#select-pic'),
+            $articleClass = $('#article-class'),
+            $submitType = $('#submit-type'),
+
+            $articleId = $("#article-id"),
+
+            $codePic = $('#code-pic'),
+
+            $kuangList = $('#kuang-list');
+
+    var $validText = $('#valid-text');
+
+    /* V2 收费设置 */
+
+    var $paybox,
+        $payFalse,
+        $payTrue,
+        $payCost,
+        $localMore,
+        $localPays,
+        $localTiming;
+
+    if(isSystemMember == 1){
+        $paybox = $('.paybox01');
+        $localMore = $('.local-more');
+
+        $localMore.removeClass(hide);
+        $localMore.click(function(){
+            $paybox.toggle();
+        });
+    }else{
+        $paybox = $('.paybox00');
+        $paybox.removeClass(hide);
+    }
+
+    $localPays = $paybox.find('.local-pays');
+    $localTiming = $('.local-timing');
+    $payFalse = $paybox.find('.local-radio').eq(0);
+    $payTrue = $paybox.find('.local-radio').eq(1);
+    $payCost = $paybox.find('.mac-charge-cost');
+
+    $payFalse.click(function(){
+        $payCost.addClass(hide);
+    });
+
+    $payTrue.click(function(){
+        $payCost.removeClass(hide);
+    });
+
+    $payCost.blur(function(){
+        var payVal, payReg;
+
+        payVal = $payCost.val();
+        //payReg = /^\d+$/;
+        payReg = /^\d+(\.\d{1,2})?$/;
+        $payCost;
+        if(!payReg.test(payVal) || payVal == 0){
+            isSubmit = false;
+            definedPrompt('收费金额只支持2位小数');
+            $paybox.removeClass(hide);
+            //$payCost.parents('li').find('.ti-box').removeClass(hide);
+        }else{
+            //$payCost.parents('li').find('.ti-box').addClass(hide);
+        }
+    });
+
+    $publishTime = $('#publish-time');
+    $publishTime.datetimepicker({
+        dateFormat: "yy/mm/dd",
+        sliderAccessArgs: { touchonly: false }
+    });
+
+    $('.mac-charge-qbox').mouseover(function(){
+        $(this).children().removeClass(hide);
+    }).mouseout(function(){
+        $(this).children().addClass(hide);
+    });
+
+
+    $kuangClose.click(function(){
+        $kuangBox.children().eq(0).siblings().addClass(hide);
+        $kuangBox.addClass(hide);
+    });
+
+    /* $macView.click(function(){
+        $kuangBox.children().eq(0).siblings().addClass(hide);
+        $kuangCode.removeClass(hide);
+        $kuangBox.removeClass(hide);
+    }); */
+
+    $readDraft.click(function(){
+        $kuangBox.children().eq(0).siblings().addClass(hide);
+        $kuangDraft.removeClass(hide);
+        $kuangBox.removeClass(hide);
+    });
+
+    /* 选择标签 */
+    $macLabelOne.click(function(){
+        var $this = $(this),
+                flag = $this.hasClass(selected);
+
+        if(flag){
+            $this.removeClass(selected);
+            $this.parent().prev().addClass(hide);
+            valueLimitLabel();
+        }else{
+            var limit, n;
+            limit = $limitLabel.parent().data('limit');
+            limit = parseInt(limit);
+            n = valueLimitLabel();
+
+            if(n < limit){
+                $this.addClass(selected);
+                $this.parent().prev().addClass(hide);
+                valueLimitLabel();
+            }else{
+                $this.parent().prev().removeClass(hide);
+            }
+        }
+
+
+    });
+
+    $validText.blur(function(){
+        var $this = $(this),
+                val = $this.val();
+
+        if(val){
+            $this.prev().addClass(hide);
+        }else{
+            $this.prev().removeClass(hide);
+        };
+    });
+
+    $macSubmit.click(function(){
+
+        var $this = $(this), flag;
+        flag = $this.data('flag');
+        if(flag){return ;}
+
+        formSubmit(1);
+    });
+
+    $macDraft.click(function(){
+
+        var $this = $(this), flag;
+        flag = $this.data('flag');
+        if(flag){return ;}
+
+        formSubmit(2);
+    });
+
+
+    $macView.click(function(){
+
+        var $this = $(this), flag;
+        flag = $this.data('flag');
+        if(flag){return ;}
+
+        formSubmit(3);
+    });
+
+    function formSubmit(formType){
+        var isSubmit = true,
+                i, d, val, type;
+        len = $validOne.length;
+
+        for(i=0; i<len; i++){
+            d = $validOne.eq(i);
+            type = d.data('type');
+
+            switch(type){
+                case 'pic':
+                    val = $selectText.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'need':
+                    val = $validText.val();
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'limit-label':
+                    valueLimitLabel();
+                    val = $limitLabel.data('data');
+                    var limit = parseInt(d.data('list'));
+                    if(!(val>0 && val<= 3)) isSubmit = false;
+                    break;
+                case 'editor':
+                    val = editor2.html();
+                    var val2 = parseInt($articleClass.val());
+                    if(val && val2){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+                case 'agree':
+                    val = d.find('input')[0].checked;
+                    if(val){
+                        d.find('.ti-box').addClass(hide);
+                    }else{
+                    	isSubmit = false;
+                        d.find('.ti-box').removeClass(hide);
+                    }
+                    break;
+            }
+
+        }
+
+        // 非必须，金额
+        var chargeFlag = $payTrue[0].checked, payVal, payReg;
+        if(chargeFlag){
+            payVal = $payCost.val();
+            //payReg = /^\d+$/;
+            payReg = /^\d+(\.\d{1,2})?$/;
+            $payCost;
+            if(!payReg.test(payVal)){
+                isSubmit = false;
+                definedPrompt('收费金额只支持2位小数');
+                //definedPrompt('收费金额只支持非零整数');
+                $paybox.removeClass(hide);
+                //$payCost.parents('li').find('.ti-box').removeClass(hide);
+            }else{
+                //$payCost.parents('li').find('.ti-box').addClass(hide);
+            }
+        }
+
+        if(isSubmit){
+            $submitType.val(formType);
+            $.ajax({
+                url: '/article/create',
+                type: 'post',
+                dataType :'json',
+                data:{
+                    formType: formType,                  // 1，提交发布 2，保存草稿  3，手机预览
+                    articleID: $articleId.val() || 0,
+                    cover: $selectText.val(),
+                    title: $validText.val(),
+                    author: $('input[name="author"]').val(),
+                    description: $macDes.val(),
+                    focusID: $limitLabel.val(),
+
+                    isCharge: ($localPays.find('input').eq(1)[0].checked === true ? 1 : 0),
+                    publishTime: $publishTime.val(),
+                    isTimedPublish: ( $localTiming[0].checked ? 1 : 0 ),
+                    cost: $payCost.val(),
+
+
+                    articleType: $articleClass.val(),
+                    articleContent: editor2.html(),
+                    articleLink: $('input[name="articleLink"]').val(),
+                },
+                dataType: 'json',
+                success: function(d){
+                    if(d.flag == 1){
+                        $articleId.val(d.data.articleID);
+						if(formType == 1){
+							if($localTiming[0].checked){
+                                definedPrompt(d.msg, function(){
+                                    location.href = '/draft/article';    //草稿列表
+                                });
+							}else{
+							    definedPrompt(d.msg, function(){
+								    location.href = '/article/index';    //文章列表
+								});
+							}
+						}else if(formType == 2){
+							definedPrompt(d.msg, function(){
+							    location.href = '/draft/article';    //草稿列表
+							});
+						}else if(formType == 3){
+							$codePic.attr('src', d.data.qrCodeUrl);
+
+							$kuangBox.children().eq(0).siblings().addClass(hide);
+					        $kuangCode.removeClass(hide);
+					        $kuangBox.removeClass(hide);
+					        
+						}else{
+
+						}
+						
+                        
+                    }else{
+                        definedPrompt(d.msg);
+                    }
+                },
+                error: function(){
+                    definedPrompt('网络错误');
+                },
+                beforeSend: function(){
+                    $sigle01.removeClass(hide);
+
+                    if(formType == 1 ){
+                        $macSubmit.data('flag', 'true');
+                    }else if(formType == 2){
+                        $macDraft.data('flag', 'true');
+                    }else{
+                        $macView.data('flag', 'true');
+                    }
+                },
+                complete: function(){
+                    $sigle01.addClass(hide);
+
+                    if(formType == 1 ){
+                        $macSubmit.data('flag', '');
+                    }else if(formType == 2){
+                        $macDraft.data('flag', '');
+                    }else{
+                        $macView.data('flag', '');
+                    }
+
+                }
+
+            });
+
+            //$articleForm.submit();
+        }
+    }
+
+    function valueLimitLabel(){
+        var d, arr = [], i,
+                len = $macLabelOne.length,
+                limit = $limitLabel.parent().data('limit');
+        limit = parseInt(limit);
+
+        var m, flag;
+        for(i=0; i<len; i++){
+            d = $macLabelOne.eq(i);
+            flag = d.hasClass(selected);
+            if(flag){
+                arr.push(d.data('id'));
+            }
+        }
+
+        if(arr.length > limit) return arr.length;   // 错误
+        $limitLabel.val(arr).data('data', arr.length);
+        if(arr.length == 0){$limitLabel.next().next().find('.ti-box').removeClass(hide)}
+        return arr.length;
+    }
+
+    var articleID = <?php echo $this->articleID;?>;
+    if(articleID){
+    	getArticleInfo(articleID);
+    }else{
+        $payFalse[0].checked = true;
+    }
+
+    selectOn();
+
+    /* view-draft - Action*/
+    $kuangList.delegate('.kuang-one', 'click', function(){
+    	var id = $(this).children().eq(0).data('id');
+    	getArticleInfo(id);
+	});
+    function getArticleInfo(id){
+        var d,
+            url = '/article/get-article-info?articleID=' + id;
+
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            success: function(d){
+                if(d.flag == 1){
+
+                    d = d.data;
+
+                    $articleId.val(id);
+
+                    $selectText.val(d.Cover);
+                    $selectPic.attr('src', d.Cover);
+                    $validText.val(d.Title);
+                    $(':input[name="author"]').val(d.Author);
+                    $macDes.val(d.Description);
+                    $('.mac-label-one').removeClass('selected');
+                    labelAction(d.FocusIDs);
+
+                    $publishTime.val('');
+                    $payCost.val('');
+
+                    if(d.IsCharge == 1){
+                        $localPays.find('input').eq(1)[0].checked = true;
+                        $payCost.val(d.Cost).removeClass(hide);
+                    }else{
+                        $localPays.find('input').eq(0)[0].checked = true;
+                        $payCost.addClass(hide);
+                    }
+
+                    if(d.IsTimedPublish == 1){
+                        $publishTime.val(d.PublishTime);
+                        $localTiming[0].checked = true;
+                    }
+
+                    //$articleClass.children().attr('selected', false);
+                    //$articleClass.children('option[value="'+d.Type+'"]')[0].setAttribute('selected', 'selected);
+
+                    selectOn(d.Type);
+
+                    editor2.html(d.Content);
+                    $(':input[name="articleLink"]').val(d.ArticleLink);
+
+                    $kuangBox.children().eq(0).siblings().addClass(hide);
+                    $kuangBox.addClass(hide);
+
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(){
+                definedPrompt('网络错误，过会儿再试试吧');
+            }
+        });
+}
+
+    function selectOn(n){
+        $articleClass.empty();
+        var str = '';
+
+        str += '<option value="0"';
+        if(n == 0) str += ' selected="selected"';
+        str += ' >请选择</option>';
+
+        str += '<option value="1"';
+        if(n == 1) str += ' selected="selected"';
+        str += ' >原创</option>';
+
+        str += '<option value="2"';
+        if(n == 2) str += ' selected="selected"';
+        str += ' >转载</option>';
+
+        $articleClass.append(str);
+
+    }
+
+    function labelAction(arr){
+        if(!arr) return ;
+        var a, b, c, i=0, len = $macLabelOne.length;
+
+        $limitLabel.val(arr);
+
+        $macLabelOne.removeClass(selected);
+
+        for(; i<len; i++){
+            a = $macLabelOne.eq(i);
+            b = a.data('id').toString();
+
+            var flag = indexOfArr(arr, b);
+            if(flag){a.addClass(selected);}
+        }
+
+    }
+
+    function indexOfArr(arr, n){
+        if(!arr || !n) return ;
+
+        for(var i=0,len=arr.length; i<len; i++){
+            if(n == arr[i]) return true;
+        }
+
+        return false;
+
+    }
+
+
+
+</script>
+
+
+<script>
+
+KindEditor.plugin('czvideo', function(K) {
+	var self = this, name = 'czvideo';
+	self.plugin.czvideo = {
+		edit : function() {
+			var lang = self.lang(name + '.'),
+				html = '<div style="padding:20px;">' +
+					'<div class="ke-dialog-row">' +
+					'<p><label  style="width:60px;">&nbsp;</label>支持腾讯视频iframe分享 <span style="color:#f00">或</span> 远程链接地址(MP4格式)</p>' +
+					'<label for="keUrl" style="width:60px;">' + '地址' + '</label>' +
+					'<input class="ke-input-text" type="text" id="keUrl" name="url00" value="" style="width:260px;" placeholder="例如：<iframe src=\'source.mp4\'></iframe>" />' +
+					'<div style="padding: 4px 0 0;"><label  style="width:60px; padding: 6px 0;">&nbsp;</label>' +
+                    '<span style="">或&nbsp;&nbsp;<span style="color:#f00">(仅可填一项)</span></span>' +
+					'<div style="padding: 4px 0 0;"><label  style="width:60px;">&nbsp;</label>' +
+					'<input class="ke-input-text" type="text" id="keHeight" name="url01" value="" style="width:260px;" placeholder="例如：http://website/source.mp4" />' +
+					'</div>' +
+					'<div style="padding: 4px 0 0;"><label  style="width:60px;">&nbsp;</label>' +
+                    '<input class="ke-input-text" type="text" id="keHeight" name="url02" value="" style="width:150px;" placeholder="" />&nbsp;(封面图片)' +
+                    '</div>' +
+					'</div>' +
+					'<div class="ke-dialog-row" style="margin-top: 15px">' +
+					'<label for="keType" style="width:60px;">' + '高度' + '</label>' +
+					'<input class="ke-input-text" type="text" id="keHeight" name="height" value="" style="width:60px;" /> (px)' +
+					'</div>' +
+					'</div>',
+				dialog = self.createDialog({
+					name : name,
+					width : 450,
+					title : self.lang(name),
+					body : html,
+					yesBtn : {
+						name : self.lang('yes'),
+						click : function(e) {
+                            var url00 = K.trim(urlBox00.val()),
+                                url01 = K.trim(urlBox01.val()),
+                                height = K.trim(heightBox.val()),
+                                url02 = K.trim(urlBox02.val());
+
+                            if(!url00 && !url01){
+                                alert('请填写视频地址');
+                                return ;
+                            }
+                            var type, url, regIframe, mp4Iframe, valH, initH = '200', maxH = '400', minH = '100';
+							if(url00){
+                                regIframe = /^<iframe.*><\/iframe>$/i;
+                                if(!regIframe.test(url00)){
+                                    alert('请输入\'iframe\'格式地址');
+                                    urlBox00[0].focus();
+                                    return;
+                                }
+                                url = url00;
+                                type = 1;
+                            }
+                            if(!url00 && url01){
+                                mp4Iframe = /\.mp4/i;
+                                if(!mp4Iframe.test(url01)){
+                                    alert('请输入mp4格式视频');
+                                    urlBox01[0].focus();
+                                    return;
+                                }
+                                url = url01;
+                                type = 2;
+                            }
+
+                            if(height){
+                                height = parseInt(height);
+                                if(height > maxH || height < minH){
+                                    alert('高度范围：'+ minH +'-'+maxH);
+                                    heightBox[0].focus();
+                                    return;
+                                }
+                                initH = height ? height : initH;
+                            }
+
+                            self.exec('createczvideo', type, url, initH, url02).hideDialog().focus();
+
+						}
+					}
+				}),
+				div = dialog.div,
+				urlBox00 = K('input[name="url00"]', div),
+				urlBox01 = K('input[name="url01"]', div),
+				urlBox02 = K('input[name="url02"]', div),
+				heightBox = K('input[name="height"]', div);
+
+			//urlBox.val('http://');
+
+			self.cmd.selection();
+			var a = self.plugin.getSelectedLink();
+
+			if (a) {
+				self.cmd.range.selectNode(a[0]);
+				self.cmd.select();
+				urlBox.val(a.attr('data-ke-src'));
+				typeBox.val(a.attr('target'));
+			}
+			urlBox00[0].focus();
+			urlBox00[0].select();
+		},
+		'delete' : function() {
+			self.exec('unlink', null);
+		}
+	};
+	self.clickToolbar(name, self.plugin.czvideo.edit);
+});
+
+KindEditor.lang({czvideo: '添加远程视频'});
+
+    KindEditor.ready(function(K) {
+        editor2 = K.create('#mac-content', {
+            resizeType : 1,
+            pasteType: 1,
+            height: 240,
+            width: '99%',
+            pasteType: 1,
+            allowPreviewEmoticons : false,
+            allowImageUpload : true,
+            uploadJson:'/upload/upload_json',
+            items : ['source',
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'image', 'link', 'table', 'czvideo']
+        });
+
+
+        /* 一号K示例 */
+        var $selectBtn = $('#select-btn');
+        var uploadbutton = K.uploadbutton({
+            button : $selectBtn[0],
+            fieldName : 'imgFile',
+            dataType:'json',
+            url : '/article/upload-file',
+            afterUpload : function(data) {
+                if (data.flag == 1) {
+                	$selectPic.parents('li').find('.ti-box').addClass(hide);
+                	$selectText.val(data.data.url);
+                	$selectPic.attr('src', data.data.url);
+                } else {
+                    definedPrompt(data.msg);
+                }
+            },
+            afterError : function(str) {
+                definedPrompt('自定义错误信息: ' + str);
+            }
+        });
+        uploadbutton.fileBox.change(function(e) {
+            uploadbutton.submit();
+        });
+
+
+    });
+</script>
+<script>
+savaDraft('您编辑的文章尚未保存，离开会使内容丢失。<br>您可以选择保存草稿后，再离开此页面');
+</script>

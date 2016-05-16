@@ -1,0 +1,155 @@
+<table id="template_list"></table>
+<div id="template_list_toolbar"></div>
+<div id="template_view_window"></div>
+<div id="template_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="templateObj.addTemplate();">添加</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="templateObj.containerObj.edatagrid('reload');">刷新</a> 
+    模板系列：<select name="templateType" style="width: 100px;">
+                <option value="0">模板系列</option>
+                <?php if(isset($this->TemplateTypeList) && !empty($this->TemplateTypeList)){  foreach ($this->TemplateTypeList as $row){ ?>
+                    <option value="<?php echo $row['Tid']; ?>"><?php echo $row['TemplateName']; ?></option>
+                <?php }} ?>
+            </select>&nbsp;&nbsp;
+    选择模板：&nbsp;&nbsp;<select name="template">
+                                <option value="0">请选择模板</option>
+                            </select>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchTemplateList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="template_add_window"></div>
+
+<script type="text/javascript">
+    $("#template_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchTemplateList();
+        }    
+    });
+    
+    function toSearchTemplateList()
+    {
+        var templateType = $("#template_list_searcher_container select[name='templateType']").val();
+        var templateId = $("#template_list_searcher_container select[name='template']").val();
+        
+        templateObj.containerObj.datagrid('load', {
+            templateType:templateType,
+            templateId:templateId
+        });
+    }
+
+    var templateObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'activity','action'=>'template-list'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'activity','action'=>'template-add'));?>',
+
+        'containerObj':$("#template_list"),
+        'addWindowObj':$("#template_add_window"),
+        
+        'selfName':'templateObj',
+
+        'init':function(){
+            this.showData();
+        },
+        
+        //添加新模板
+        'addTemplate':function() {
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':600,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'title':'添加新模板',
+                'onLoad':function(){
+                    $("#template_add_form_save").off().on('click',function(){
+                        if($("#template_add_form input[name='templateType']").val()==0){
+                            $.messager.alert("提示信息","请选择模板系列!",'error');return false;
+                        }
+                        if($("#template_add_form input[name='templateName']").val()==""){
+                            $.messager.alert("提示信息",'模板名称不能为空!','error');return false;
+                        }
+                        $("#template_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#template_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('close');
+                    });
+
+                    $("#template_add_form").myForm(function(ret){
+                        if(ret.flag){
+                            $.messager.alert("提示信息",'添加成功！','info');
+                            _THIS_.addWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });    
+                }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                //fitColumns:true,
+                rownumbers : true,
+                fit:true, 
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'Lid',
+
+                url:_THIS_.loadUrl,
+
+                toolbar: '#template_list_toolbar',
+
+                //设置列   
+                columns:[[
+                    {field:'CreateTime',title:'创建时间',width:150},
+                    {field:'TemplateType',title:'模板系列',width:250},
+                    {field:'TemplateName',title:'模板名称',width:250},
+                    {field:'View',title:'模板详情',width:200,formatter:function(value,rec,index){
+                            return '<a style="color:red" href="/api/activity/hd?templateId='+rec.id+'" target="_blank">查看</a>';
+                        }
+                    },
+                    {field:'ActivityNum',title:'活动个数',width:250}
+                ]],
+
+                //分页信息
+                pagination:true,
+                //pagePosition:'both',
+                pageList:[20,50,100,150,200],
+                pageSize:20,
+            });
+            $("#template_list_toolbar").append($("#template_list_searcher_container"));
+        },    
+    };
+    templateObj.init();
+    $(function(){
+        $("#template_list_searcher_container select[name='templateType']").on('change',function(){//模板系列及列表联动
+            var templateType = $(this).val();
+            var optionHtml = '<option value="0">请选择模板</option>';
+            if(templateType>0){
+                $.ajax({
+                    url:"/admin/activity/get-template-list?templateType=" + templateType,
+                    type:"GET",
+                    success:function(ret){
+                        var getdata = eval("("+ret+")");
+                        var rows = getdata.data.rows;
+                        for(var i =0;i<rows.length;i++){
+                           optionHtml += "<option value='"+rows[i].id+"'>"+rows[i].templateName+"</option>";
+                        }
+                        $("#template_list_searcher_container select[name='template']").empty().append(optionHtml);
+                    }
+                });
+            }else{
+                $("#template_list_searcher_container select[name='template']").empty().append(optionHtml);
+            }
+        });
+    });
+</script>

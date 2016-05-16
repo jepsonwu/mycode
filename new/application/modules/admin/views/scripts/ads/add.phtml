@@ -1,0 +1,150 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="ads_add_form" method="post" action="<?php echo $this->url(array('controller'=>'ads','action'=>'add'));?>" enctype="multipart/form-data">
+            <table class='form_table'>   
+                <tr>
+                    <th>用户ID:</th>
+                    <td><input type="member" name="MemberID" value="<?php if(isset($this->info['MemberID'])) echo $this->info['MemberID'];?>"></td>
+                </tr>               
+                <tr>
+                    <th width="20%">摘要：</th>
+                    <td width="80%">
+                        <input class="easyui-validatebox" type="text" name="AdsTitle"  size="50" value="<?php if(isset($this->info['AdsTitle'])) echo $this->info['AdsTitle'];?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">广告商：</th>
+                    <td width="80%">
+                        <input class="easyui-validatebox" type="text" name="Name"  size="50" value="<?php if(isset($this->info['Name'])) echo $this->info['Name'];?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">头像：</th>
+                    <td width="80%">
+                        <input name="logo" type="file" />
+                    </td>
+                </tr>
+                 <tr>
+                    <th>广告链接：</th>
+                    <td>
+                        <input class="easyui-validatebox" type="text" name="AdsLink"  size="50" value="<?php if(isset($this->info['AdsLink'])) echo $this->info['AdsLink'];?>"/>
+                    </td>
+                </tr> 
+                <tr>
+                    <th>图片：</th>
+                    <td>
+                        <input name="image" type="file" />
+                    </td>
+                </tr> 
+               
+                <tr>
+                    <th>有效期：</th>
+                    <td>
+                        <input class="easyui-datetimebox" data-options="required:true" type="text" name="ValidFrom" value="<?php if(isset($this->info['ValidFrom']) && ($this->info['ValidFrom'] != '0000-00-00 00:00:00')) echo $this->info['ValidFrom'];?>" />
+                         - 
+                        <input class="easyui-datetimebox" data-options="required:true" type="text" name="ValidEnd" value="<?php if(isset($this->info['ValidEnd']) && ($this->info['ValidEnd'] != '0000-00-00 00:00:00')) echo $this->info['ValidEnd'];?>" />
+                    </td>
+                </tr>               
+                <tr>
+                    <th>状态：</th>
+                    <td>
+                        <?php 
+                        if(isset($this->status) && $this->status) {
+                            foreach ($this->status as $k => $v) {
+                                if( isset($this->info['Status']) )  {?>
+                                    <label><input type="radio" value="<?php echo $k?>" name="Status" <?php if($this->info['Status'] == $k) echo 'checked="checked"';?> />&nbsp;<?php echo $v;?></label>&nbsp;&nbsp;&nbsp;
+                                <?php } else {?>
+                                    <label><input type="radio" value="<?php echo $k?>" name="Status" <?php if(1 == $k) echo 'checked="checked"';?> />&nbsp;<?php echo $v;?></label>&nbsp;&nbsp;&nbsp;
+                               <?php }
+                            }
+                        }?>
+                    </td>
+                </tr>              
+                <tr>
+                    <th>广告位：</th>
+                    <td>
+                        <select name="AdsBar">
+                        <?php 
+                        if(isset($this->adsBar) && $this->adsBar) {
+                            foreach ($this->adsBar as $k => $v) {
+                                if( isset($this->info['AdsBarID']) ) {?>
+                                    <option type="radio" value="<?php echo $v['AdsBarID'];?>"  <?php if($this->info['AdsBarID'] == $v['AdsBarID']) echo 'selected="selected"';?>>&nbsp;<?php echo $v['BarNum'];?>-<?php if( !isset($this->showType[$v['ShowType']]) ) {echo $v['ShowType'];} else {echo $this->showType[$v['ShowType']];}?></option>&nbsp;&nbsp;&nbsp;
+                                <?php } else {?>
+                                    <option type="radio" value="<?php echo $v['AdsBarID'];?>" name="ShowType" <?php if(0 == $k) echo 'selected="selected"';?>>&nbsp;<?php echo $v['BarNum'];?>-<?php if( !isset($this->showType[$v['ShowType']]) ) {echo $v['ShowType'];} else {echo $this->showType[$v['ShowType']];}?></option>&nbsp;&nbsp;&nbsp;
+                                <?php }
+                             }
+                        }?>
+                        </select>
+                        <?php if( isset($this->info['AdsID']) ) {?>
+                            <input type="hidden" value="<?php echo $this->info['AdsID'];?>" name="id" />
+                        <?php }?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>适用平台：</th>
+                    <td>
+                        <?php 
+                        if(isset($this->platform) && $this->platform) {
+                            foreach ($this->platform as $k => $v) {
+                                if( isset($this->info['Platform']) )  {?>
+                                    <label><input type="radio" value="<?php echo $k?>" name="platform" <?php if($this->info['Platform'] == $k) echo 'checked="checked"';?> />&nbsp;<?php echo $v;?></label>&nbsp;&nbsp;&nbsp;
+                                <?php } else {?>
+                                    <label><input type="radio" value="<?php echo $k?>" name="platform" <?php if(0 == $k) echo 'checked="checked"';?> />&nbsp;<?php echo $v;?></label>&nbsp;&nbsp;&nbsp;
+                               <?php }
+                            }
+                        }?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>显示渠道：</th>
+                    <td>
+                        <?php foreach ($this->display as $key => $item):?>
+                            <?php if($key && $key%4==0): ?>
+                                <br/>
+                            <?php endif;?>
+                            <input type = "checkbox" name="displayArr[]" class ="displayArr" value="<?php echo $item['EnName'];?>" <?php if(empty($this->displayChecked) || in_array($item['EnName'], $this->displayChecked)): ?> checked = "checked" <?php endif;?> /><?php echo $item['ZhName']?>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <?php endforeach;?>
+                        <br/><input type="checkbox" name="allChecked" <?php if(empty($this->displayChecked)):?> checked="checked" <?php endif;?> id="selectAllChannels" /> 全选
+
+                    </td>
+                </tr>
+        
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="ads_add_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="ads_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//function DoCheck(){
+    //alert('kitty');
+   // alert($(this).attr("checked"));
+    //alert($("#selectAllChannels").is(':checked'));
+    // var ch=document.getElementsByName("displayArr");
+    // if(document.getElementsByName("allChecked")[0].checked==true){
+    //     for(var i=0;i<ch.length;i++){
+    //         ch[i].checked=true;
+    //     }
+    // }else{
+    //     for(var i=0;i<ch.length;i++){
+    //         ch[i].checked=false;
+    //     }
+    // }
+   //$(".displayArr").attr('checked',allSelected);
+//}
+$(".displayArr").click(function(){
+    var selected = $(this).prop("checked");
+    if(selected == false){
+        $("#selectAllChannels").prop('checked',null);
+    }
+    return;
+});
+$("#selectAllChannels").click(function(){
+    var allSelected = $(this).prop("checked");
+    $(".displayArr").prop('checked',allSelected);
+    return;
+});
+
+</script>

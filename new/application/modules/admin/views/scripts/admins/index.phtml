@@ -1,0 +1,228 @@
+<table id="admin_list"></table>
+<div id="admin_add_window"></div>
+<div id="admin_edit_window"></div>
+<div id="admin_grant_window"></div>
+
+<script type="text/javascript">
+
+var adminObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'admins','action'=>'list'));?>',
+		'saveUrl':'<?php echo $this->url(array('controller'=>'admins','action'=>'add'));?>',
+		'destroyUrl':'<?php echo $this->url(array('controller'=>'admins','action'=>'remove'));?>',
+		'updateUrl': '<?php echo $this->url(array('controller'=>'admins','action'=>'update'));?>',
+        'grantUrl':'<?php echo $this->url(array('controller'=>'admins','action'=>'grant'));?>',
+		'statusUrl':'<?php echo $this->url(array('controller'=>'admins','action'=>'status'));?>',
+		
+		'containerObj':$("#admin_list"),
+		'addWindowObj':$("#admin_add_window"),
+		'editWindowObj':$("#admin_edit_window"),
+		'grantWindowObj':$("#admin_grant_window"),
+		
+		'selfName':'adminObj',
+
+		//删除
+		'delHandler':function(id){
+						var _THIS_ = this;
+						$.messager.confirm('删除','确认要删除吗？',function(d){
+							if(d){
+								$.ajax({
+										url:_THIS_.destroyUrl,
+										type:"POST",
+										data:{admin_id:id},
+										dataType:'json',
+										success:function(ret){
+											if(ret.flag){
+												$.messager.alert("提示信息",'删除成功！','info');
+												_THIS_.containerObj.datagrid('reload');
+											}else{
+												$.messager.alert("提示信息",ret.msg,'error');
+											}
+										}
+								});
+							}
+						});
+					},
+		//启用或禁用
+		'statusHandler':function(id,status){
+            var _THIS_ = this;
+            var title = '禁用';
+            if(parseInt(status) == 1){
+                title = '启用';
+            }
+
+            $.messager.confirm(title,'确定要'+title+'该用户?',function(d){
+                if(d){
+                    $.ajax({
+                        url:_THIS_.statusUrl,
+                        type:'POST',
+                        data:{admin_id:id,status:status},
+                        dataType:'json',
+                        success:function(ret){
+                            if(ret.flag){
+                                $.messager.alert("提示信息",title+'成功！','info');
+                                _THIS_.containerObj.datagrid('reload');
+                            }else{
+                                $.messager.alert("提示信息",ret.msg,'error');
+                            }
+                        }
+                    });
+                }
+            });
+        },
+
+        //分配角色
+		'grantHandler':function(admin_id){
+            var _THIS_ = this;
+            _THIS_.grantWindowObj.window({
+                'href':_THIS_.grantUrl+"?admin_id="+admin_id,
+                'width':500,
+                'height':300,
+                'modal':true,
+                'title':'分配角色',
+                'onLoad':function(){
+                    $("#admin_grant_form_save").off().on('click',function(){
+                        $("#admin_grant_form").attr('action',_THIS_.grantUrl).submit();
+                    });
+
+                    $("#admin_grant_form_close").off().on('click',function(){
+                        _THIS_.grantWindowObj.window('close');
+                    });
+
+                    $("#admin_grant_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.grantWindowObj.window('close');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                }
+            });
+        },
+		
+		//添加
+		'addHandler':function(){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.saveUrl,
+                'width':400,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'title':'添加管理员',
+                'onLoad':function(){
+                    $("#admin_add_form_save").off().on('click',function(){
+                        $("#admin_add_form").attr('action',_THIS_.saveUrl).submit();
+                    });
+
+                    $("#admin_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('close');
+                    });
+
+                    $("#admin_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            $.messager.alert("提示信息",'添加成功！','info');
+                            _THIS_.addWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                }
+            });
+        },
+			
+		//修改
+		'editHandler':function(id){
+            var _THIS_ = this;
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.updateUrl+'?admin_id='+id,
+                'width':400,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'title':'编辑管理员',
+                'onLoad':function(){
+
+                    $("#admin_update_form_save").off().on('click',function(){
+                        $("#admin_update_form").attr('action',_THIS_.updateUrl).submit();
+                    });
+
+                    $("#admin_update_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('close');
+                    });
+
+                    $("#admin_update_form").myForm(function(ret){
+                        if(ret.flag){
+                            $.messager.alert("提示信息",'修改成功！','info');
+                            _THIS_.editWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                }
+            });
+        },
+
+		'init':function(){
+			this.showData();
+		},
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					fitColumns:true,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+					idField:'AdminID',
+	
+				    url:_THIS_.loadUrl,
+		
+				    //设置列   
+				    columns:[[   
+				        {field:'AdminID',title:'ID',width:80},   
+				        {field:'Username',title:'用户名',width:150},
+				        {field:'Empno',title:'工号',width:100},
+				        {field:'Telphone',title:'联系电话',width:100},
+				        {field:'LastLoginTime',title:'最后登录时间',width:150},
+				        {field:'opt',title:'操作',width:200,align:'center',formatter:function(value,rec,index){
+					        	var status = rec.Status=='ENABLE' ? 0 : 1;
+					        	var tips = status == 1 ? '启用':'禁用';
+		                        var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.AdminID+'\')">';
+	                            e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+	                            var d = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-remove" onclick="'+_THIS_.selfName+'.delHandler(\''+rec.AdminID+'\')">';
+	                            d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                                var g = ' <a href="#" onclick="'+_THIS_.selfName+'.grantHandler(\''+rec.AdminID+'\')">分配角色</a>';
+								var s = ' <a href="#" onclick="'+_THIS_.selfName+'.statusHandler('+rec.AdminID+','+status+')">'+tips+'</a>';
+								return e+d+g+s;
+					       }
+					    }   
+				           
+				    ]],
+					  //工具栏
+				    toolbar :[{
+						text:'添加',
+						iconCls:'icon-add',
+						handler:function(){
+							_THIS_.addHandler();
+						}
+					}],
+					//设置分页
+					pageList:[10,50,100,150,200],
+					pageSize:50
+				});
+			}
+};
+adminObj.init();
+</script>

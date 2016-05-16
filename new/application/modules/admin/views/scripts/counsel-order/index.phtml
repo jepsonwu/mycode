@@ -1,0 +1,229 @@
+<table id="counsel_order_list"></table>
+<div id="counsel_order_list_toolbar">
+	<a id="refresh" class="easyui-linkbutton" iconCls="icon-reload" plain="true">刷新</a>
+	订单ID：
+	<input type="text" name="OID"/>&nbsp;&nbsp;
+	订单号：
+	<input type="text" name="OrderNo"/>&nbsp;&nbsp;
+	创建者用户ID：
+	<input type="text" name="SellerID"/>&nbsp;&nbsp;
+	购买者用户ID：
+	<input type="text" name="BuyerID"/>&nbsp;&nbsp;
+	<div></div>
+	订单有效状态：
+	<select name="ValidStatus">
+		<option value="">所有</option>
+		<option value="0">关闭</option>
+		<option value="1">有效</option>
+	</select>&nbsp;&nbsp;
+	订单流水状态：
+	<select name="OrderStatus">
+		<option value="">所有</option>
+		<option value="1">待付款</option>
+		<option value="2">待接单</option>
+		<option value="3">待咨询</option>
+		<option value="4">咨询中</option>
+		<option value="5">待评论</option>
+		<option value="6">完成</option>
+	</select>&nbsp;&nbsp;
+	订单结算状态：
+	<select name="SellerStatus">
+		<option value="">所有</option>
+		<option value="1">咨询中</option>
+		<option value="2">待结算</option>
+		<option value="3">已结算</option>
+	</select>&nbsp;&nbsp;
+	创建时间：
+	<input class="easyui-datetimebox" type="text" name="Start_CreateTime" value="" data-options="" size="25">
+	至&nbsp;<input class="easyui-datetimebox" type="text" name="End_CreateTime" value="" data-options=""
+	              size="25">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-search" id="search">搜索</a>
+</div>
+<div id="counsel_order_view"></div>
+<script type="text/javascript">
+	var counsel_orderObj = {
+		//数据加载url
+		'loadUrl': '<?php echo $this->url(array('controller'=>'counsel-order','action'=>'list'));?>',
+		'postponeSettlementUrl': '<?php echo $this->url(array('controller'=>'counsel-order','action'=>'postpone-settlement'));?>',
+		'refusedSettlementUrl': '<?php echo $this->url(array('controller'=>'counsel-order','action'=>'refused-settlement'));?>',
+		'finishSettlementUrl': '<?php echo $this->url(array('controller'=>'counsel-order','action'=>'finish-settlement'));?>',
+		'selfName': 'counsel_orderObj',
+		showTimeList: function (oid) {
+			var text = $('a[name="showTime' + oid + '"').html();
+			if (text == '显示全部') {
+				$('a[name="showTime' + oid + '"').html('隐藏时间');
+				$('div[name="otherTime' + oid + '"').show();
+			} else {
+				$('a[name="showTime' + oid + '"').html('显示全部');
+				$('div[name="otherTime' + oid + '"').hide();
+			}
+		},
+		'postponeSettlement_feature': {
+			'width': 400,
+			'height': 200,
+			'title': '延期结算'
+		},
+		'refusedSettlement_feature': {
+			'width': 400,
+			'height': 200,
+			'title': '拒绝结算'
+		},
+		'finishSettlement_feature': {
+			'width': 400,
+			'height': 200,
+			'title': '完成结算'
+		},
+		//加载数据
+		'showData': function () {
+			var _THIS_ = this;
+
+			_THIS_.container.datagrid({
+
+				//是否条纹显示
+				striped: true,
+				//加载提示信息
+				loadMsg: '正在加载...',
+				//列是否自适应
+				//fitColumns:true,
+				rownumbers: false,
+				fit: true,
+				//是否单行选择
+				singleSelect: true,
+
+				idField: 'OID',
+
+				url: _THIS_.loadUrl,
+
+				toolbar: '#counsel_order_list_toolbar',
+
+				//设置列
+				columns: [[
+					{field: 'OID', title: '订单ID', width: 70},
+					{field: 'OrderNo', title: '订单编号', width: 150},
+					{field: 'BuyerID', title: '购买者ID', width: 70},
+					{field: 'SellerID', title: '发布者ID', width: 70},
+					{field: 'CID', title: '咨询主题ID', width: 70},
+					{field: 'ConsultDesc', title: '问题描述', width: 200},
+					{field: 'CreateTime', title: '创建时间', width: 130},
+					{field: 'MeetSite', title: '咨询地点', width: 100},
+					{
+						field: 'OrderStatus', title: '订单状态', width: 110, formatter: function (value, rec, index) {
+						var v_status = '';
+						if (rec.LastEvent != '0') {
+							if (rec.ValidStatus == '0')
+								v_status = '已关闭';
+
+							switch (rec.LastEvent) {
+								case '1':
+									v_status += '(买家取消)';
+									break;
+								case '2':
+									v_status += '(买家关闭)';
+									break;
+								case '3':
+									v_status += '(支付过期)';
+									break;
+								case '4':
+									v_status += '(接单过期)';
+									break;
+								case '5':
+									v_status += '(延期结算)';
+									break;
+								case '6':
+									v_status += '(赴约过期)';
+									break;
+								case '7':
+									v_status += '(拒绝结算)';
+									break;
+							}
+						} else {
+							if (rec.OrderStatus == '1') {
+								v_status = '待付款';
+							} else if (rec.OrderStatus == '2') {
+								v_status = '待接单';
+							} else if (rec.OrderStatus == '3') {
+								v_status = '待赴约';
+							} else if (rec.OrderStatus == '4') {
+								v_status = '咨询中';
+							} else if (rec.OrderStatus == '5') {
+								v_status = '待评价';
+							} else if (rec.OrderStatus == '6') {
+								v_status = '已完成';
+							}
+						}
+						return v_status;
+					}
+					},
+					{
+						field: 'SellerStatus',
+						title: '订单状态（理财师）',
+						width: 110,
+						formatter: function (value, rec, index) {
+							var v_status = '';
+							if (rec.SellerStatus == '1') {
+								v_status = '咨询中';
+							} else if (rec.SellerStatus == '2') {
+								v_status = '待结算';
+							} else if (rec.SellerStatus == '3') {
+								v_status = '已结算';
+							}
+							return v_status;
+						}
+					},
+					{
+						field: 'TimeList', title: '时间节点', width: 260, formatter: function (value, rec, index) {
+						var html = html1 = '';
+						html += "<p>付款时间：" + (rec.PayTime == '0000-00-00 00:00:00' ? "---" : rec.PayTime) + "<a style='float: right; color: green;' oid='" + rec.OID + "' onclick='" + _THIS_.selfName + ".showTimeList(" + rec.OID + ")'  name='showTime" + rec.OID + "'>显示全部</a></p>";
+						html1 += "接单时间：" + (rec.ReceiveTime == '0000-00-00 00:00:00' ? "---" : rec.ReceiveTime) + '<br/>';
+						html1 += "预计咨询时间：" + (rec.MeetTime == '0000-00-00 00:00:00' ? "---" : rec.MeetTime) + '<br/>';
+						html1 += "实际开始咨询时间：" + (rec.MeetingTime == '0000-00-00 00:00:00' ? "---" : rec.MeetingTime) + '<br/>';
+						html1 += "预计咨询结束时间：" + (rec.FinishTime == '0000-00-00 00:00:00' ? "---" : rec.FinishTime) + '<br/>';
+						html1 += "实际咨询结束时间：" + (rec.FinishingTime == '0000-00-00 00:00:00' ? "---" : rec.FinishingTime) + '<br/>';
+						html1 += "预计结算时间：" + (rec.SettlementTime == '0000-00-00 00:00:00' ? "---" : rec.SettlementTime) + '<br/>';
+						html1 += "实际结算时间：" + (rec.ClearingTime == '0000-00-00 00:00:00' ? "---" : rec.ClearingTime) + '<br/>';
+						return html + "<div style='display:none;' name='otherTime" + rec.OID + "'>" + html1 + "</div>";
+					}
+					},
+					{field: 'SettlementAmount', title: '结算金额', width: 70},
+					{field: 'DeductedAmount', title: '手续费', width: 60},
+					{field: 'DamagesAmount', title: '违约金', width: 60},
+					{field: 'UpdateTime', title: '修改时间', width: 130},
+					{field: 'CancelReason', title: '取消原因', width: 130},
+					{
+						field: 'Operate', title: '操作', width: 200, formatter: function (value, rec, index) {
+						var opt = "";
+						if (rec.SellerStatus == 2) {
+							postpone = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" ' +
+								'onclick="' + _THIS_.selfName + '.postponeSettlementHandler(\'?oid=' + rec.OID + '\')">' +
+								'<span class="l-btn-left">延期结算</span></a>';
+							refused = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" ' +
+								'onclick="' + _THIS_.selfName + '.refusedSettlementHandler(\'?oid=' + rec.OID + '\')">' +
+								'<span class="l-btn-left">拒绝结算</span></a>';
+							finish = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" ' +
+								'onclick="' + _THIS_.selfName + '.finishSettlementHandler(\'?oid=' + rec.OID + '\')">' +
+								'<span class="l-btn-left">完成结算</span></a>';
+							opt += postpone + '&nbsp;&nbsp;' + refused + '&nbsp;&nbsp;' + finish + '&nbsp;&nbsp;'
+						}
+
+						return opt;
+					}
+					}
+				]],
+
+				//分页信息
+				pagination: true,
+				//pagePosition:'both',
+				pageList: [20, 50, 100, 150, 200],
+				pageSize: 50
+			});
+		}
+	};
+
+</script>
+<script type="text/javascript">
+	var __CONTROLLER__ = '<?php echo $this->CONTROLLER;?>';
+</script>
+<script type="text/javascript" src="/static/js/admin/content.js"></script>
+<script type="text/javascript">
+	orderObj = contentCommon(counsel_orderObj, __CONTROLLER__);
+</script>

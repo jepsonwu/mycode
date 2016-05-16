@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>财猪送流量</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/hd/flow0916/style.css" >
+<script>
+var mobileStyle = <?php echo $this->mobileStyle ;?>;                           // 2表示，显示20M流量
+</script>
+</head>
+<body>
+
+<figure class="t-banner">
+    <img src="/static/imgs/hd/flow0916/banner.png" alt="财猪送流量咯">
+</figure>
+
+<section class="flow-box">
+    <div id="record-more" class="flow-one flow-ten hide">
+        <img src="/static/imgs/hd/flow0916/result-10.png" alt="10M流量" >
+        <p class="hide">流量将在一个工作日内完成充值哦！</p>
+    </div>
+    <div id="record-more20" class="flow-one flow-twenty hide">
+        <img src="/static/imgs/hd/flow0916/result-20.png" alt="20M流量" >
+        <p class="hide">流量将在一个工作日内完成充值哦！</p>
+    </div>
+    <!--
+    <div id="record-nomore" class="flow-one flow-eighty hide">
+        <img src="/static/imgs/hd/flow0916/result-nomore.png" alt="no more" >
+        <p>你怎么才来，流量已经领完了！</p>
+    </div>
+    -->
+</section>
+
+<ul class="action-box">
+    <li class="active hide" id="eighty" data-url="http://a.app.qq.com/o/simple.jsp?pkgname=com.caizhu.caizhu">
+        还有机会获得50M流量
+    </li>
+    <li class="active hide" id="share">
+        分享到朋友圈
+    </li>
+</ul>
+
+<figure class="bg-middle">
+    <img src="/static/imgs/hd/flow0916/middle.png" alt="中间背景">
+</figure>
+
+<section class="result-box p-rela">
+    <figure class="result">
+        <img src="/static/imgs/hd/flow0916/bg-form.png" alt="背景">
+    </figure>
+    <ul class="result-list p-abso" id="result-list">
+       <?php foreach($this->record as $item):?>
+	        <li class="result-one clearfix">
+                <span><?php echo $item['Mobile']?></span>
+                <span></span>
+                <span>已领取<?php echo $item['FlowSize']?>M</span>
+            </li>
+       <?php endforeach;?>
+            
+        </ul>
+</section>
+
+
+<div id="share-prompt" class="share-prompt hide"></div>
+
+
+<script src="/static/js/web/zepto.min.js"></script>
+
+<script>
+var initUa = navigator.userAgent.toLowerCase(),
+    wxFlag=function(){
+        if(initUa.match(/MicroMessenger/i)=="micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }();
+
+if(wxFlag){
+    $('#share').removeClass('hide');
+}
+</script>
+
+<script>
+$(function(){
+
+    // active伪状态
+    var acTime;
+    $('.active').on('touchstart', function(){
+
+        acTime = new Date();
+        $(this).addClass('touch');
+
+    }).on('touchend', function(){
+
+        var $this = $(this), url;
+        $this.removeClass('touch');
+        if((new Date()) - acTime > 500){   // 触摸的时间超过500ms，不触发触摸效果 。。。
+            return ;
+        }
+
+        url = $this.data('url');
+        if(url) location.href = url;
+        return ;
+
+    });
+
+
+    var hide = 'hide',
+        $share = $('#share'),
+        $prompt = $('#share-prompt');
+
+    $share.click(function(){
+        $prompt.removeClass(hide);
+        return false;
+    });
+
+    $prompt.click(function(){
+        $prompt.addClass(hide);
+    });
+
+    resultScroll();
+
+    function resultScroll(){
+        var limit = 6,
+            $resultList = $('#result-list'),
+            len = $resultList.children().length;
+
+        if(len < 6) return ;
+
+        var ani = 'result-ani';
+        setInterval(function(){
+
+        var lastData = $resultList.children().last().addClass(ani).clone();
+        $resultList.children().first().before(lastData);
+        $resultList.children().last().remove();
+
+        }, 2500);
+    }
+
+if(mobileStyle == 2){
+    $('#record-more20').removeClass(hide);
+}else{
+    $('#record-more').removeClass(hide);
+}
+
+
+});
+</script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+</script>
+
+</body>
+</html>

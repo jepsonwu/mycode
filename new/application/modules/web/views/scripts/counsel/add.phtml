@@ -1,0 +1,311 @@
+
+<div class="main-right fr">
+    <h2 class="content-tit clearfix p-rela nobd">
+        内容管理
+        <span class="article-tit-do">
+            <a href="/article/index">头条文章</a>
+            <span class="at-separate">|</span>
+            <a href="/activity/index">线下活动</a>
+            <span class="at-separate">|</span>
+            <a href="/counsel/index">询财服务</a>
+        </span>
+
+        <a class="article-todo" href = "/counsel/add">创建询财</a>
+    </h2>
+
+<div class="counsel-box">
+    <h3 class="manage-info-tit">创建询财服务</h3>
+    <form name="form" id="form" data-url="/api/counsel/add" data-goto="/counsel/index" data-draft-goto="/draft/counsel">
+    <input type="hidden" id="article-id" name="articleID" />
+    <input type="hidden" id="article-cid" name="cid" />
+    <ul class="cadd-list">
+        <li class="cadd-one clearfix validone" data-type="limit" data-max="50" >
+            <div class="cadd-one00">主题<span>*</span></div>
+            <div class="cadd-one01" data-type="need">
+                <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请输入1-50个字符</span></div>
+                <input name="title" class="cadd-text00" placeholder="请输入咨询主题名称">
+            </div>
+        </li>
+        <li class="cadd-one clearfix validone" data-type="select">
+            <div class="cadd-one00">时长<span>*</span></div>
+            <div class="cadd-one01 clearfix">
+                <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请选择时长</span></div>
+                <span class="cadd-unit">小时</span>
+                <select id="select" name="duration">
+                    <option value="">请选择咨询时长</option>
+                    <option value="1.0">1小时</option>
+                    <option value="1.5">1.5小时</option>
+                    <option value="2.0">2小时</option>
+                    <option value="2.5">2.5小时</option>
+                    <option value="3.0">3小时</option>
+                    <option value="3.5">3.5小时</option>
+                    <option value="4.0">4小时</option>
+                    <option value="4.5">4.5小时</option>
+                    <option value="5.0">5小时</option>
+                </select>
+            </div>
+        </li>
+        <li class="cadd-one clearfix validone" data-type="price">
+            <div class="cadd-one00">价格<span>*</span></div>
+            <div class="cadd-one01 clearfix">
+                <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请填写价格</span></div>
+                <span class="cadd-unit">元</span>
+                <input name="price" class="cadd-text00" placeholder="请输入咨询价格">
+            </div>
+        </li>
+        <li class="cadd-one clearfix validone" data-type="city">
+            <div class="cadd-one00">城市<span>*</span></div>
+            <div class="cadd-one01" id="city">
+                <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请选择城市</span></div>
+                <input id="add-city-str" type="hidden" value="" name="city" class="cadd-text00">
+                <div id="add-city" class="cadd-citylist">
+                    <!--<span>合肥<i>x</i></span>-->
+                </div>
+                <span id="add-btn" data-limit="3" class="cadd-btn fm-song">+</span>
+
+            </div>
+        </li>
+        <li class="cadd-one clearfix validone" data-type="limit" data-max="1000">
+            <div class="cadd-one00">详情<span>*</span></div>
+            <div class="cadd-one01">
+                <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请输入主题详情且字数不大于1000</span></div>
+                <textarea name="desc" class="cadd-text01" placeholder="请输入主题详情"></textarea>
+            </div>
+        </li>
+
+        <li class="cadd-one clearfix validone nobd" data-type="agree">
+            <div class="cadd-one02 ml20 p-rela">
+            <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请同意服务协议</span></div>
+                <div class="ti-box hide"><span class="icon-manage-arrow"></span><span>请阅读服务协议</span></div>
+
+                <div class="cadd-agree"><input data-zx="zxzx" type="checkbox" checked="check" name="agree"><span>同意</span><a href="/api/user/topic-issue" target="_new">《财猪内容发布规范》</a>
+
+                    <span class="local-more hide fr ">更多设置</span>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="manage-one clearfix">
+        <input type="hidden" name="submit-type" id="submit-type">
+        <div class="mac-do clearfix">
+            <span class="mac-submit fl">立即发表</span>
+            <span class="mac-draft fr">保存草稿</span>
+            <span class="mac-view fr hide">手机预览</span>
+        </div>
+    </div>
+    </form>
+
+</div>
+
+    <!--<?php  echo $this->isComplete;?>-->
+
+</div> <!-- main-right -->
+
+<div id="kuang-box" class="kuang-box hide">
+    <div class="kuang-bg"></div>
+
+    <div id="kuang-draft" class="kuang-draft hide">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">读取草稿</strong>
+            <span class="kuang-close fr"></span>
+        </div>
+        <ul id="kuang-list" class="kuang-list">
+                    <li class="kuang-one clearfix">
+                <a data-id="19">2</a>
+                <span>2016.04.15</span>
+            </li>
+
+        </ul>
+    </div>
+
+    <div id="kuang-code" class="kuang-code hide">
+        <div class="kuang-draft-tit clearfix">
+            <strong class="fl">手机预览</strong>
+            <span id="kuang-close" class="kuang-close fr"></span>
+        </div>
+        <div class="kuang-code-pic">
+            <img id="code-pic" src="" alt="二维码" />
+        </div>
+        <p class="kuang-code-p">使用财猪手机版扫描二维码</p>
+    </div>
+
+</div>
+
+
+<!--<script src="http://fe.caizhu.com/public/js/pc/city-list.js"></script>-->
+<script src="/static/js/web/column/common.js"></script>
+<script src="/static/js/web/column/city-list.js"></script>
+<script src="/static/js/web/column/counsel.js"></script>
+<script>
+/* 下面是是页面执行代码 - 可分离 */
+
+/* application - counsel + user/information */
+
+CityList.init('add-btn');
+
+var $cityBox = $('.citybox'),
+    $cityClose = $('.city-close'),
+    $addCity = $('#add-city'),
+    $addBtn = $('#add-btn'),
+    $addCityStr = $('#add-city-str'),
+
+    cityLimit = $addBtn.data('limit') || 1;
+
+on = 'on',
+    hide = 'hide',
+    selected = 'selected';
+
+
+$cityClose.click(function(){
+    $cityBox.addClass(hide);
+});
+
+$addBtn.click(function(){
+    $cityBox.removeClass(hide);
+    return false;
+});
+
+$addCity.delegate('i', 'click', function(){
+    var $this = $(this), code;
+    code = $this.parent().data('code');
+
+    $cityBox.find('.citytab a[data-code="'+ code +'"]').click();
+
+})
+
+$cityBox.delegate('.hottab a', 'click', function(){
+    var $this = $(this), code;
+    code = $this.data('code');
+
+    $cityBox.find('.citytab a[data-code="'+ code +'"]').click();
+
+});
+
+$cityBox.delegate('.citytab a', 'click', function(){
+    var $this = $(this),
+        flag = false;
+
+    //CityList.setPos();
+
+    var oneType, oneId, oneName;
+
+    if($this.hasClass(selected)){
+        oneType = 'del';
+        flag = true;
+        $this.removeClass(selected);
+        $cityBox.find('.hottab a[data-code="'+ $this.data('code') +'"]').removeClass(selected);
+    }else{
+        var len;
+        len = $cityBox.find('.citytab .selected').length;
+        if(len >= cityLimit){
+            definedPrompt('最多只能选'+ cityLimit +'个城市', function(){
+                //setTimeout(function(){
+                $cityBox.removeClass('hide');
+            });
+            //});
+        }else{
+            oneType = 'add';
+            flag = true;
+            $this.addClass(selected);
+            $cityBox.find('.hottab a[data-code="'+ $this.data('code') +'"]').addClass(selected);
+        }
+    }
+
+    if(!flag) return false;
+
+    oneId = $this.data('code');
+    oneName = $this.html();
+    doValue(oneType, oneId, oneName);
+
+});
+
+$cityBox.delegate('li', 'click', function(){
+    var $this = $(this);
+
+    $this.addClass(on).siblings().removeClass(on);
+    var $hotCity = $cityBox.find('.hotcity');
+    $hotCity.children().eq($this.index()).removeClass(hide).siblings().addClass(hide);
+
+});
+
+
+function doValue(type, id, name){     // type, add / del
+    //debug(type+': '+id+': '+name);
+
+    var str='';
+    $citytab = $cityBox.find('.citytab');
+
+    $addCity.empty();
+    $addCityStr.val(str);
+    $citytab.find('.selected').each(function(){
+        var $iThis = $(this);
+        str += $iThis.data('code');
+        str += ',';
+        $addCityStr.val(str);
+        $addCity.append('<span data-code="'+ $iThis.data('code') +'">'+ $iThis.html() +'<i>x</i></span>');
+    })
+
+}
+
+$cityBox.click(function(){
+    return false;
+});
+$('body').click(function(){
+    $cityBox.addClass(hide);
+})
+</script>
+
+<script>
+var counselId = parseUrl('counselid');
+if(counselId) getInfo(counselId);
+
+
+function getInfo(id){
+    $.ajax({
+        url: '/api/counsel/detail',
+        dataType: 'json',
+        data: {cid: id},
+        success: function(d){
+            info = d.data;
+            valueOfView(info);
+        },
+        error: function(err){
+            promptDo('show', '网络错误,请过一会再试一试');
+        }
+    });
+}
+
+function valueOfView(data){
+
+    if(data.Photo ==''){
+        data.Photo ='/static/images/web/column/pic180x180.png';
+    }
+
+    var $validOne = $('.validone');
+
+    $('#article-cid').val(counselId);
+
+    $validOne.eq(0).find('input').val(data.Title);
+    $validOne.eq(1).find('select').val(data.Duration);
+    $validOne.eq(2).find('input').val(data.Price);
+    $validOne.eq(0).find('select').val(data.Duration);
+    $validOne.eq(4).find('textarea').val(data.Desc);
+    //$('#add-city').find('span').prepend(data.City);
+    var supportCity = data.SupportCity || [],
+        cityCodeArr = [];
+
+        console.log(supportCity);
+
+    for(var i=0,len=supportCity.length; i<len; i++){
+        cityCodeArr.push(supportCity[i].Code);
+    }
+    for(i=0, len=cityCodeArr.length; i<len; i++){
+        $cityBox.find('.citytab a[data-code="'+ cityCodeArr[i] +'"]').click();   // 选中城市
+    }
+
+}
+</script>
+<script>
+savaDraft('您编辑的询财尚未保存，离开会使内容丢失。<br>您可以选择保存草稿后，再离开此页面');
+</script>

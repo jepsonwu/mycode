@@ -1,0 +1,32 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="template_add_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table'>                
+                <tr>
+                    <td>选择模板系列：&nbsp;&nbsp;<select name="templateType" style="width: 100px;">
+                                                        <option value="0">模板系列</option>
+                                                        <?php if(isset($this->TemplateTypeList) && !empty($this->TemplateTypeList)){  foreach ($this->TemplateTypeList as $row){ ?>
+                                                            <option value="<?php echo $row['Tid']; ?>"><?php echo $row['TemplateName']; ?></option>
+                                                        <?php }} ?>
+                                                    </select>&nbsp;&nbsp;
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan='2'>    
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板名称：&nbsp;&nbsp;<input type="text" name="templateName" value = "" data-options="required:true" size="40" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2'>    
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板上传：&nbsp;&nbsp;<input name="templateFile"  type="file" accept=".zip"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px ">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="template_add_form_save">发布</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="template_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>

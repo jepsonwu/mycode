@@ -1,0 +1,194 @@
+<table id="log_list"></table>
+<div id="log_list_toolbar"></div>
+<div id="log_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="logObj.containerObj.edatagrid('reload');">刷新</a> 
+    
+    <select name="searchType1">
+        <option value="LogID">日志编号</option>
+        <option value="MemberID">会员编号</option>
+    </select><input type="text" value="" name="searchType1Name" size="10" />    
+        管理员:    <?php echo $this->formSelect('admin_id','', array('id'=>"admin_id"), $this->adminOption);?>
+        操作时间：
+        <input class="easyui-datebox" type="text" name="start_date" value="" data-options="onSelect:toSearchMemberList"></input>
+        至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options="onSelect:toSearchMemberList"></input>
+        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchMemberList()" iconCls="icon-search">搜索</a>
+        
+</div>
+<div id="member_view_window"></div>
+<script type="text/javascript">
+    $("#log_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchMemberList();
+        }    
+    });
+    
+    $("#log_list_searcher_container select[name]").change(function(){
+        toSearchMemberList();
+    });
+    
+    function toSearchMemberList()
+    {
+        
+        var fieldOneName     = $("#log_list_searcher_container select[name='searchType1']").val();
+        var fieldOneValue     = $("#log_list_searcher_container input[name='searchType1Name']").val();
+        var admin_id         = $("#log_list_searcher_container select[name='admin_id']").val();
+        var start_date         = $("#log_list_searcher_container input[name='start_date']").val();
+        var end_date         = $("#log_list_searcher_container input[name='end_date']").val();
+        logObj.containerObj.datagrid('load', {
+                                                fieldOneName : fieldOneName,
+                                                fieldOneValue : fieldOneValue,
+                                                admin_id : admin_id,
+                                                start_date : start_date,
+                                                end_date : end_date
+        });
+    }
+
+var logObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'admin-log','action'=>'list'));?>',
+        'viewUrl':'<?php echo $this->url(array('controller'=>'member','action'=>'view'));?>',
+        'containerObj':$("#log_list"),
+        'statusWindowObj':$("#member_view_window"),
+
+        
+        'selfName':'logObj',
+
+        //启用或禁用
+        'statuspass':function(id, status){
+                var _THIS_ = this;
+
+                $.messager.confirm('','确定要更改该用户?',function(d){
+                        if(d){
+                            $.ajax({
+                                    url:_THIS_.updateUrl,
+                                    type:'POST',
+                                    data:{log_id:id,status:status},
+                                    dataType:'json',
+                                    success:function(ret){
+                                        if(ret.flag){
+                                            _THIS_.containerObj.datagrid('reload');
+                                        }else{
+                                            $.messager.alert("提示信息",ret.msg,'error');
+                                        }
+                                    }
+                                });
+                        }
+                    });
+                },
+
+        'init':function(){
+            this.showData();
+        },
+        //修改
+        'editLevelHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.editLevelObj.window({
+                        'href':_THIS_.updateLevelUrl+'?log_id='+id,
+                        'width':400,
+                        'height':300,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑管理员',
+                        'onLoad':function(){
+
+                            $("#level_update_form_save").off().on('click',function(){
+                                $("#level_update_form").attr('action',_THIS_.updateLevelUrl).submit();
+                            });
+
+                            $("#level_update_form_close").off().on('click',function(){
+                                _THIS_.editLevelObj.window('close');
+                            });
+                            
+                            $("#level_update_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.editLevelObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+            //查看详情
+            'viewHandler':function(member_id){
+                var _THIS_ = this;
+                _THIS_.statusWindowObj.window({
+                    'href':_THIS_.viewUrl+'?member_id='+member_id,
+                    'width':640,
+                    'height':410,
+                    'modal':true,
+                    'resizable':false,
+                    'cache':false,
+                    'title':'详情',
+                    'onLoad':function(){
+
+                        }
+                });
+            },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    //是否分页
+                    pagination:true,
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'LogID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#log_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'LogID',title:'ID',width:80},
+                        {field:'MemberID',title:'会员编号',width:100,formatter:function(value,rec,index){
+                            var btn  = value+'&nbsp;&nbsp;&nbsp;&nbsp;';
+                            btn += '<a  href="javascript:void(0);" style="color:#CA2020" onclick="'+_THIS_.selfName+'.viewHandler(\''+rec.MemberID+'\')">查看会员</a>';
+                            return btn;
+                           }
+                        },
+                        {field:'AdminID',title:'管理员',width:100, formatter: function (value,rec,index){
+                            var str = '';
+                            var enum_arr = <?php echo json_encode($this->adminOption); ?>;
+                            return str = enum_arr[value];
+                        }},
+                        
+                        {field:'ActionTable',title:'操作表',width:100},
+                        {field:'ActionField',title:'操作字段',width:100},
+                        {field:'Content',title:'操作详情',width:100},
+                        {field:'Addtime',title:'操作时间',width:100},
+
+                    ]]
+                });
+    
+                
+                //设置分页
+                var pager = _THIS_.containerObj.datagrid('getPager');
+                pager.pagination({
+                    pageList:[10,50,100,150,200],
+                    pageSize:50,
+                    beforePageText:'第',
+                    afterPageText:'页',
+                    displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+                });
+
+
+            $("#log_list_toolbar").append($("#log_list_searcher_container"));
+            },    
+};
+logObj.init();
+</script>

@@ -1,0 +1,37 @@
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:10px 0 10px 60px;align:center;">
+		<form id="admin_update_form" method="post" action="<?=$this->url(array('controller' => 'admin', 'action' => 'add'))?>">
+			<table class='form_table'>
+				<tr>
+					<th>用户名:</th>
+					<td><input class="easyui-validatebox" type="text" name="name" data-options="required:true" value="<?php echo $this->admin->Username;?>"></input></td>
+				</tr>
+				<tr>
+					<th>密码:</th>
+					<td><input class="easyui-validatebox" type="password" name="password" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<th>确认密码:</th>
+					<td><input class="easyui-validatebox" type="password" name="repassword" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<th>工号:</th>
+					<td><input class="easyui_validatebox" type="text" name="empno" value="<?php echo $this->admin->Empno;?>"></input></td>
+				</tr>
+				
+				<tr>
+					<th>联系电话:</th>
+					<td><input class="easyui_validatebox" type="text" name="telphone" value="<?php echo $this->admin->Telphone;?>">
+						<input type="hidden" name="admin_id" value="<?php echo $this->admin->AdminID;?>"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	
+	<div style="text-align:center;padding:5px">
+    	<a href="javascript:void(0)" class="easyui-linkbutton" id="admin_update_form_save">保存</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="admin_update_form_close">关闭</a>
+    </div>
+	
+</div>

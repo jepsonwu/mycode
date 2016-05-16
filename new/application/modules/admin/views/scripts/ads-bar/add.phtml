@@ -1,0 +1,47 @@
+<div class="easyui-panel" style="border:0px;">
+    <div style="align:center;">
+        <form id="adsBar_add_form" method="post" action="<?php echo $this->url(array('controller'=>'ads-bar','action'=>'add'));?>" enctype="multipart/form-data">
+            <table class='form_table'>                
+                <tr>
+                    <th width="40%">广告位：</th>
+                    <td width="60%">
+                        <input class="easyui-validatebox" type="text" name="BarNum" data-options="required:true" size="13" value="<?php if(isset($this->info['BarNum'])) echo $this->info['BarNum'];?>" />
+                    </td>
+                </tr> 
+                <tr>
+                    <th>广告类型：</th>
+                    <td>
+                        <select name="AdsType">
+                            <option value="1" <?php if($this->info['AdsType']==1):?> selected="selected" <?php endif;?>>推广</option>
+                            <option value="2" <?php if($this->info['AdsType']==2):?> selected="selected" <?php endif;?>>活动</option>
+                        </select>
+                    </td>
+                </tr>         
+                <tr>
+                    <th>展示类型：</th>
+                    <td>
+                        <select name="ShowType">
+                        <?php 
+                        if(isset($this->showType) && $this->showType) {
+                            foreach ($this->showType as $k => $v) {
+                                if( isset($this->info['ShowType']) ) {?>
+                                    <option value="<?php echo $k;?>" <?php if($this->info['ShowType'] == $k) echo 'selected="selected"';?> ><?php echo $v;?></option>&nbsp;&nbsp;&nbsp;
+                                <?php } else {?>
+                                    <option value="<?php echo $k;?>" <?php if(1 == $k) echo 'selected="selected"';?> ><?php echo $v;?></op>&nbsp;&nbsp;&nbsp;
+                                <?php }
+                             }
+                        }?>
+                        </select>
+                        <?php if( isset($this->info['AdsBarID']) ) {?>
+                            <input type="hidden" value="<?php echo $this->info['AdsBarID'];?>" name="id" />
+                        <?php }?>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="adsBar_add_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="adsBar_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>

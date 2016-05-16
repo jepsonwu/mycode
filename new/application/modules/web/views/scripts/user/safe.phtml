@@ -1,0 +1,120 @@
+   
+   <div class="main-right fr">
+        <h2 class="content-tit br-none">安全中心</h2>
+		
+        <div class="secure-box">
+          <table class="table-one">
+            <tbody>
+              <tr>
+                <td width="140"><span class="ml20">账号授权</span></td>
+                <td width="778"><p>为理财号添加运营者，运营者只具备内容管理权限</p></td>
+                <td width="40"><a class="add" href="#">添加</a></td>
+              </tr>
+              <tr>
+                <td width="140"><span class="ml20">操作记录</span></td>
+                <td width="778"><p>理财账号内容管理操作记录</p></td>
+                <td width="40"><a href="#">查看</a></td>
+              </tr>
+            </tbody>
+          </table>
+          
+        </div><!--reply-box -->
+
+    </div>
+
+
+   <div id="prompt-box1" class="prompt-box hide">
+       <div class="prompt-bg"></div>
+
+       <ul id="prompt-type1" class="prompt-type hide">
+
+           <li id="ppt-55" class="ppt-box ppt-box1">
+               <div class="ppt-tit br-b">
+                   <p class="add-code">添加运营者账号</p>
+                   <span class="ppt-close ppt-close1"></span>
+               </div>
+               <div id="tap-box "  >
+                 <div class="tap-bar hide">
+                   <div class="ml-205">
+                     <p class="bar-title ">请输入需绑定的运营财猪好</p>
+                     <p class="search-box">
+                       <input type="text" placeholder="请输入财猪号"><button type="button"></button>
+                     </p>
+                   </div>
+                   <div id="person">
+                     <img src="" alt="">
+                   </div>
+                   <div class="ppt-bo">
+                       <button id="ppt-next">下一步</button>
+                   </div>
+                 </div><!--tap-bar-->
+
+                 <div class="tap-bar hide">
+                   <div id="qrcode">
+                   </div>
+                   <p style="text-align: center;margin-bottom:80px;">请用管理员财猪号扫描以上二维码进行验证</p>
+                 </div><!--tap-bar-->
+
+                 <div class="tap-bar hide">
+                   <img class="success" src="/static/imgs/web/column/add_ic_success_normal.png" alt="">
+                   <p style="text-align: center;margin-bottom:80px;">添加成功</p>
+                 </div><!--tap-bar-->
+               </div><!--tap-box-->
+           </li>
+           <li id="ppt-000" class="ppt-box hide">
+               <div class="ppt-tit">
+                   <strong>提示</strong>
+                   <span class="ppt-close"></span>
+               </div>
+               <div id="ppt-p000" class="ppt-des01" align="center">
+               </div>
+               <div class="ppt-do ppt-do2">
+                   <span id="ppt-ok000">确定</span>
+                   <span id="ppt-cancel000" class="ppt-cancel">取消</span>
+               </div>
+           </li>
+
+
+       </ul>
+
+   </div>
+
+
+<script src="/static/js/qrcode.js"></script>
+<script>
+
+$(function () {
+
+  var hide = 'hide',
+      $promptBox = $('#prompt-box1'),
+      $promptType = $('#prompt-type1');
+
+  $('body').delegate('.ppt-close', 'click', function(){
+      $promptBox.addClass('hide');
+  });
+
+  //二维码生成
+  var qrcode = new QRCode(document.getElementById("qrcode"), {
+      width : 210,//设置宽高
+      height : 210
+  });
+  qrcode.makeCode("http://www.caizhu.com");
+
+  //下一步
+  $("#ppt-next").click(function(){
+      if($(this).hasClass('active')){
+        $(".tap-bar").eq(0).hide();
+        $(".tab-bar").eq(1).show();
+      }
+      return;
+  });
+
+  //添加
+  $(".add").click(function(){
+    $promptBox.removeClass('hide');
+    $promptType.removeClass('hide');
+    $(".tap-bar").eq(0).removeClass('hide');
+  })
+});
+
+</script>

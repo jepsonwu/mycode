@@ -1,0 +1,289 @@
+<div class="main-right fr">
+        <h2 class="content-tit clearfix p-rela nobd">
+            内容
+            <span class="article-tit-do">
+                <a href = "/article/add">头条文章</a>
+                <span class="at-separate">|</span>
+                <a href="/activity/index">线下活动</a>
+                <span class="at-separate">|</span>
+                <a class="selected" href="/counsel">询财服务</a>
+
+                <a class="article-todo" href="/counsel/add">创建询财</a>
+            </span>
+        </h2>
+
+        <div class="nav-list">
+            <a href="/counsel/index">首页</a>
+            <span>|</span>
+            <a href="/counsel/my-order">我的订单</a>
+            <span>|</span>
+            <a href="/counsel/my-comment" class="selected">我的评价</a>
+        </div>
+
+        <ul class="corder-list mt20">
+            <!--<li class="corder-one">
+                <div class="corder-minor">
+                    <span>2016-03-09 17:22:02</span>
+                    <span>订单号：<i>Wc20394209340243</i></span>
+                </div>
+                <div class="corder-info clearfix">
+                    <div class="corder-text">
+                        <div class="clearfix">
+                            <img src="">
+                            <div class="corder-itext ccomment-itext">
+                                <strong><span>名字-思密达</span>  <span>手机号：13333333333</span></strong>
+                                <p>咨询注意：思密达思密达思密达</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="corder-det">
+                    <div class="clevel-bxo clearfix">
+                        <div class="clevel-show">
+                            评分
+                            <span ><i style="width: 100%"></i></span>
+                        </div>
+                        <span class="clevel-reply">回复</span>
+                    </div>
+                    <div>评价：老师说的挺好的， 思密达</div>
+                </div>
+                <ul class="cc-replybox">
+                    <li class="cc-replyone">neirong</li>
+                </ul>
+            </li>
+            -->
+        </ul>
+        <div class="pagination" id="pagination"></div>
+    </div> <!-- main-right -->
+
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="/static/js/web/pagination.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/web/column/common.js"></script>
+
+<script>
+(function(){
+    ps = 10;//每页显示的条数
+    var ccOne = 'corder-one',
+        ccDo = 'cc-do',
+        $ccList = $('.corder-list'),
+        errStr = '网络错误',
+        currentId,
+        $current = null;
+
+    getCommentList(0);
+
+    $ccList.delegate('.clevel-reply', 'click', function(){
+        var $this = $(this),
+            str,
+            flag,
+            $parent,
+            $child,
+            disabled = 'disabled';
+
+        if($this.hasClass(disabled)){return false;};
+
+        $parent = $this.parents('.'+ccOne);
+        currentId = $parent.data('id');
+        $current = $parent;
+        $parent.siblings().find('.'+ccDo).remove();
+        $child = $parent.children().last();
+        flag = $child.hasClass(ccDo);
+        if(!flag){
+            str = getEmojiStr();
+            $this.parents('.'+ccOne).append(str);
+        }else{
+            $child.removeClass(hide);
+        }
+    });
+
+    $ccList.delegate('.cc-emojibox', 'click', function(){
+        var $this = $(this),
+            flag,
+            $child;
+
+        $child = $this.children();
+        flag = $child.hasClass(hide);
+
+        if(flag){
+            $child.removeClass(hide);
+        }else{
+            $child.addClass(hide);
+        }
+
+    });
+
+    $ccList.delegate('.cc-select', 'click', function(e){
+        var $this = $(this), str, val, len, initN = 500, emojiLen,
+            $textarea;
+
+        str = $this.data('str');
+        $textarea = $this.parents('.'+ccDo).find('textarea');
+        val = $textarea.val();
+        len = val.length;
+        emojiLen = str.length;
+        if(len > initN - emojiLen) return false;
+        val += str;
+        $textarea.val(val);
+
+        $textarea.change();
+        //$this.parent().addClass(hide);
+        return false;
+    });
+
+    $ccList.delegate('.cc-send', 'click', function(){
+        sendComment();
+    });
+
+    $ccList.delegate('.cc-cancel', 'click', function(){
+        var $this = $(this);
+
+        $current = null;
+        $this.parents('.'+ccDo).remove();
+    });
+
+    $ccList.delegate('textarea', 'focus keyup change', function(){
+        var $this = $(this),
+            len, val, initN = 500,
+            $showNum = $this.parent().find('.shownum');
+
+        val = $this.val();
+        len = val.length;
+        if(len > initN){
+            val = val.substr(0, initN);
+            len = val.length;
+        }
+        $this.val(val);
+        $showNum.text(initN - len);
+    })
+
+    document.onkeydown = function(e){
+        e == e || window.event;
+
+        if(e.shiftKey && e.keyCode == 13){
+            if(!$current) return false;
+            sendComment();
+        }
+    }
+
+    //加载评论列表
+    function getCommentList(p){
+        var curpage = p+1;
+        $.ajax({
+            url: '/api/counsel-order/comments',
+            type: 'get',
+            dataType :'json',
+            data:{pagesize:ps,page:curpage},
+            success: function(d){
+                if(d.flag === 1){
+                    var total = d.data.Total;
+                    var list = d.data.Rows;
+                    var html = '';
+                    if(list.length>0){
+                        for(var i=0;i<list.length;i++){
+                            html += '<li class="corder-one" data-ocid="'+list[i].OCID+'"><div class="corder-minor"><span>'+list[i].CreateTime+'</span><span>订单号：<i>'+list[i].OrderNo+'</i></span></div>';
+                            html += '<div class="corder-info clearfix"><div class="corder-text"><div class="clearfix"><img src="'+(list[i].Avatar || 'http://fe.caizhu.com/public/imgs/avatar-user.png')+'">';
+                            html += '<div class="corder-itext ccomment-itext"><strong><span>'+list[i].UserName+'</span>  <span>手机号：'+list[i].MobileNumber+'</span></strong><p>咨询主题：'+list[i].Title+'</p></div></div></div></div>';
+                            html += '<div class="corder-det"><div class="clevel-bxo clearfix"><div class="clevel-show">评分：<span ><i style="width: '+list[i].Score/10*100+'%"></i></span></div>';
+                            if(list[i].ReplyComment!=''){
+                                html += '</div><div>评价：'+replayEmojiStr(list[i].Comment)+'</div></div><ul class="cc-replybox"><li class="cc-replyone">'+replayEmojiStr(list[i].ReplyComment)+'</li></ul>';
+                            }else{
+                                html += '<span class="clevel-reply">回复</span></div><div>评价：'+replayEmojiStr(list[i].Comment)+'</div></div><ul class="cc-replybox"></ul>';
+                            }
+                            html += '</li>';
+                        }
+                        $("#pagination").show().pagination(total, {
+                            callback : pageselectCallback,
+                            items_per_page : ps,
+                            current_page : p
+                        });
+                    }else{
+                        html = '<li class="counsel-empty"><p>暂无数据</p></li>';
+                        $('#pagination').hide();
+                    }
+                    $('.corder-list').html(html);
+                }else{
+                    definedPrompt(d.msg);
+                }
+            },
+            error: function(){
+                definedPrompt(errStr);
+            }
+        });
+    }
+    
+    //分页回调
+    function pageselectCallback(p){
+		getCommentList(p);
+    }
+
+    //回复评论
+    function sendComment(){
+        var $box = $current.find('.'+ccDo),
+            data = $box.find('textarea').val();
+
+        var commentId = $current.data('ocid');
+        $.ajax({
+            url: '/api/counsel-order/reply-comment',
+            dataType: 'json',
+            data: {
+                ocid: commentId,
+                comment: data
+            },
+            success: function(d){
+                if(d.flag == 1){
+                    var str = '';
+                    $current.find('.'+ccDo).addClass(hide);
+                    data = replayEmojiStr(data);
+                    str += '<li class="cc-replyone">'+ data +'</li>';
+                    $current.find('.cc-replybox').append(str);
+
+                    $current.find('.clevel-reply').addClass('disabled');
+                }else{
+                    definedPrompt(d.msg, function(){$current.remove()});
+                }
+            },
+            error: function(err){
+                definedPrompt(errStr);
+            }
+        });
+    }
+
+    // initial reply emoji
+
+    (function(){
+        $ccList.children().each(function(){
+            var $this = $(this),
+                $childBox = $this.find('.cc-replyone'),
+
+                $commentBox = $this.find('.cc-detbox');
+
+            $commentBox.each(function(){
+                var obj = $(this);
+                modifyContent(obj);
+            });
+
+            $childBox.each(function(){
+                var obj = $(this);
+                modifyContent(obj);
+            })
+
+
+        });
+        function modifyContent(obj){
+            var $inner = obj,
+                val = $inner.children().html();
+
+            val = replayEmojiStr(val);
+            $inner.append(val);
+        }
+    })();
+
+    $('.mac-charge-qbox').mouseover(function(){
+        $(this).children().removeClass(hide);
+    }).mouseout(function(){
+        $(this).children().addClass(hide);
+    });
+
+    })()
+</script>

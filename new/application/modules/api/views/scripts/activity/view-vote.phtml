@@ -1,0 +1,319 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>财猪话题</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="财猪,话题" >
+<meta name="description" content="财猪,话题" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta name="format-detection" content="telephone=no">
+<link href="http://fe.caizhu.com/public/css/m-main.css" rel="stylesheet">
+<link href="http://fe.caizhu.com/public/css/callcaizhu/prompt.css?date=160117" rel="stylesheet">
+<style>
+    body{max-width: 640px; margin: 0 auto; padding: 0 0 20px; background: #EEC956; color: #BA6C3D; font-weight: bold;}
+    .top img{width: 100%;}
+    .box{margin: 20px 10px 0;}
+    .box-t{width: 100%; height: 42px; background: url('/static/imgs/hd/topic0120/box-t.png') no-repeat; background-size: 100% 100%; text-align: center;}
+    .box-m{padding: 10px 20px; background: url('/static/imgs/hd/topic0120/box-m.png') repeat-y; background-size: 100% auto; }
+    .box-b{width: 100%; height: 30px; background: url('/static/imgs/hd/topic0120/box-b.png') no-repeat; background-size: 100% 100%; }
+    .box-tit{width: 86px; height: 36px; background: url('/static/imgs/hd/topic0120/box-tit.png') no-repeat; background-size: 100% 100%; text-align: center; line-height: 36px; font-size: 16px; color: #422c20; display: inline-block; position: relative; top: -7px;}
+
+    .box-standpoint{margin: 10px 0 0;}
+    .box-standpoint li{line-height: 20px; margin: 6px 0 0; color: #BA6C3D; }
+    .box-more{display: block; width: 100%; height: 60px; line-height: 60px; margin: 20px 0 0; text-align: center;color: #fff; font-size: 20px; font-weight: bold; background: url('/static/imgs/hd/topic0120/btn-bg.png') no-repeat; background-size: 100% 100%; cursor: pointer;}
+    .box-ok{color: #422c2d; background-image: url('/static/imgs/hd/topic0120/btn-ok.png');}
+
+    .vote-one{display: -webkit-box; display: box; margin: 10px 0 0; }
+    .vote-one00{display: block; width: 30px; height: 30px; background: url('/static/imgs/hd/topic0120/icon-default.png') no-repeat center center; background-size: 14px 14px; cursor: pointer;}
+    .vote-one00.selected{background-image: url('/static/imgs/hd/topic0120/icon-on.png');}
+    .vote-one01{-webkit-box-flex: 1; box-flex: 1;}
+    .vote-one01 > p{line-height: 30px;}
+
+    .vote-percent{line-height: 16px; font-size: 12px;}
+    .vp-show, .vp-text{display: inline-block;}
+    .vp-show{width: 0; height: 8px; background: #f00;}
+    .vp-text{width: 20px; margin: 0 0 0 4px;}
+
+    .box-winner{margin: 10px 0 0; line-height: 24px; color: #333;}
+    .box-winner li{margin: 6px 0 0;}
+
+
+</style>
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<app-loading></app-loading>
+
+<section id="app1" class="hide">
+
+    <div id="share-pic" class="top">
+        <img :src="topImg" alt="tu">
+    </div>
+    <!-- 引言 -->
+    <div class="box">
+        <div class="box-t">
+            <h3 class="box-tit">引言</h3>
+        </div>
+        <div class="box-m">
+            {{*preface}}
+        </div>
+        <div class="box-b"></div>
+    </div>
+
+    <!-- 观点投票 -->
+    <div class="box">
+        <div class="box-t">
+            <h3 class="box-tit">观点投票</h3>
+        </div>
+        <div class="box-m">
+            <ul class="box-standpoint">
+                <li v-for="one in vList" class="vote-one">
+                    <span class="vote-one00" :class="{selected: vOn === $index?true:false}" @click="vote($index)" data-id="{{*one.id}}"></span>
+                    <div class="vote-one01">
+                        <p>{{*one.name}}</p>
+                        <div class="vote-percent" :class="{hide: vFlag}">
+                            <span class="vp-show" style="width: {{vPercent[$index] | filterChange}}"></span><span class="vp-text">{{vPercent[$index]}}%</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <span class="box-more box-ok boxapp" data-type="home" data-mode="other" @click="ajax">确定</span>
+            <span class="box-more boxapp" data-type="viewlist" data-id="{{publishId}}">我要发表不同观点</span>
+        </div>
+        <div class="box-b"></div>
+    </div>
+
+    <!-- 热门观点 -->
+    <div class="box">
+        <div class="box-t">
+            <h3 class="box-tit">热门观点</h3>
+        </div>
+        <div class="box-m">
+            <ul class="box-standpoint">
+                <li v-for="one in hotStandpointList" class="boxapp" data-type="standpoint" data-id="{{one.id}}">
+                    {{one.name}}
+                </li>
+            </ul>
+            <span class="box-more boxapp boxversion" data-mode="other" data-type="alltopic">更多话题</span>
+        </div>
+        <div class="box-b"></div>
+    </div>
+
+    <!-- 上期获奖 -->
+    <div class="box">
+        <div class="box-t">
+            <h3 class="box-tit">上期获奖</h3>
+        </div>
+        <div class="box-m">
+            <ul class="box-winner">
+                <li>话题：{{*wTopic}}</li>
+                <li>奖励：{{*wPrize}}</li>
+                <li>用户：{{*wUser}}</li>
+                <li class="boxapp" data-type="standpoint" data-id="{{wId}}">观点：{{*wStandpoint}}</li>
+            </ul>
+        </div>
+        <div class="box-b"></div>
+    </div>
+
+</section>
+
+<div id="define-prompt"><app-defineprompt :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+<script src="http://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="http://fe.caizhu.com/public/js/vue.min.js"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160122"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-common.js?date=160117"></script>
+<script src="http://fe.caizhu.com/public/js/callcaizhu/h5-action-v2.js?date=16012517"></script>
+
+<script>
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('#share-pic img');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = '财猪话题';
+        opts.shareDes = '观点详情';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){
+        $('.boxversion').click(function(){
+            var vFlag = detectAppVersion('2.2.1');
+            if(!vFlag){
+                VMPrompt('您的版本低了, 赶紧升级吧!!!');
+            }else{
+                location.href = 'http://caizhukeyjs-alltopic';
+            }
+        });
+    }
+
+    function otherRun(){}
+    function commonRun(){
+
+        Vue.filter('filterChange', function(a){
+            a = parseInt(a) * 2;
+            return a+'px';
+        })
+
+        var mVM = new Vue({
+            el: '#app1',
+            data: {
+                hotStandpointList:<?php echo $this->hotViewList;?>, /*[
+                    {name: '点我试试', id: 1},
+                    {name: '点我试试222', id:2},
+                    {name: '点我试试333', id:3},
+                ],*/
+                topImg : "<?php echo $this->periodInfo['Image'];?>",
+
+                /*  */
+                preface: "<?php echo $this->periodInfo['Introduction'];?>",
+
+                /* 开始时间*/
+                startTime: "<?php echo $this->periodInfo['StartTime'];?>",
+                /* 结束时间*/
+                endTime: "<?php echo $this->periodInfo['EendTime'];?>",
+                
+                /* 是否投票*/
+                isVoted: "<?php echo $this->isVoted;?>",
+
+                /* 用户id*/
+                memberID: "<?php echo $this->memberID;?>",
+                /* vote */
+                vFlag: true,
+                vOn: '',
+                vList: <?php echo $this->voteViewList; ?>,
+                vPercent: [],
+                publishId: <?php echo $this->periodInfo['TopicID']?>,
+                //viewlistId: '22',
+
+                /* winner */
+                wTopic: "<?php echo $this->lastWinInfo['TopicName'];?>",
+                wPrize: "<?php echo $this->lastWinInfo['Reward'];?>",
+                wUser: "<?php echo $this->lastWinInfo['UserName']?>",
+                wStandpoint: "<?php echo $this->lastWinInfo['ViewContent']?>",
+                wId: "<?php echo $this->lastWinInfo['ViewID']?>"
+            },
+            methods: {
+                vote: function(id){
+                    this.vOn = id;
+                },
+                ajax :function(){
+
+                    if(!caizhuAPP){return false;}
+
+                    var _this = this;
+
+                    if(this.vOn === ''){
+                        VMPrompt('请选择投票观点');
+                    }else{
+
+                        var valueOfPercent = function(a){
+                            a = parseInt(a);
+                            _this.vPercent = [];
+                            for(var i=0,count=0, len=_this.vList.length; i<len; i++){
+                                count += parseInt(_this.vList[i].voteCount);
+                                if(i === a){
+                                    count++;
+                                }
+                            };
+
+                            if(count == 0){
+                                count = 1;
+                            }
+
+                            for(i=0; i<len; i++){
+                                if(i === a){
+                                    _this.vPercent[i] = Math.ceil(((parseInt(_this.vList[i].voteCount)+1)/count)*100);
+                                }else{
+                                    _this.vPercent[i] = Math.ceil((parseInt(_this.vList[i].voteCount)/count)*100);
+                                }
+                            }
+
+                            //debug(_this.vPercent);
+
+                        };
+
+                        $.ajax({
+                            url: '/api/activity/save-vote',
+                            dataType: 'json',
+                            data: {
+                                //id: this.vOn
+                                id: ($(_this.$el).find('li').eq(this.vOn).children('span').data('id'))
+
+                            },
+                            success: function(d){
+                                VMPrompt(d.msg);
+                                if(d.flag==1){
+                                    valueOfPercent(_this.vOn);
+                                    _this.vFlag = false;
+                                }else{
+                                    valueOfPercent();
+                                    _this.vFlag = false;
+                                }
+
+                            },
+                            error: function(err){
+                                this.vFlag = false;
+                            }
+                        })
+
+                    }
+
+                }
+            },
+            compiled: function(){
+
+                if(this.isVoted == 1){
+                    this.vPercent = [];
+                    for(var i=0,count=0, len=this.vList.length; i<len; i++){
+                        count += parseInt(this.vList[i].voteCount);
+                    };
+
+                    if(count == 0){count = 1;}
+
+                    for(i=0; i<len; i++){
+                            this.vPercent[i] = Math.ceil((parseInt(this.vList[i].voteCount)/count)*100);
+                    }
+
+                    this.vFlag = false;
+                }
+
+                $(this.$el).removeClass(hide);
+            }
+        });
+
+    }
+
+</script>
+<script src="http://fe.caizhu.com/public/js/apph5-action.js"></script>
+</body>
+</html>
+

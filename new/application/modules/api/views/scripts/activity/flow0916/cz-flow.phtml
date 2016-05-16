@@ -1,0 +1,244 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+<title>财猪送流量</title>
+<meta charset="utf-8" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" >
+<meta name="apple-mobile-web-app-capable" content="yes" >
+<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+<meta content="telephone=no" name="format-detection" >
+<link rel="stylesheet" href="/static/css/hd/flow0916/style.css?a=simida" >
+<script>
+//var isValid = <?php echo $this->isValid ;?>; // 是否微信注册，1是,0否
+</script>
+</head>
+<body>
+
+<figure class="t-banner">
+    <img src="/static/imgs/hd/flow0916/banner.png" alt="财猪送流量咯">
+</figure>
+
+
+<ul class="action-box">
+    <li class="active" id="eighty" data-url="/api/activity/receive">
+        点击领取
+    </li>
+</ul>
+
+<figure class="bg-middle">
+    <img src="/static/imgs/hd/flow0916/middle-2.png" alt="中间背景">
+</figure>
+
+<section class="result-box p-rela" style="margin-top: 80px;">
+    <figure class="result">
+        <img src="/static/imgs/hd/flow0916/bg-form.png" alt="背景">
+    </figure>
+    <ul class="result-list p-abso" id="result-list">
+       <?php foreach($this->record as $item):?>
+	        <li class="result-one clearfix">
+                <span><?php echo $item['Mobile']?></span>
+                <span></span>
+                <span>已领取<?php echo $item['FlowSize']?>M</span>
+            </li>
+       <?php endforeach;?>
+    </ul>
+</section>
+
+
+<figure class="rules">
+    <img src="/static/imgs/hd/flow0916/bg-rule.png" alt="规则">
+</figure>
+
+<ul class="rules-list">
+    <li>1、活动时间：11月2起。</li>
+    <li>2、用户参与应用宝活动注册后可领取流量</li>
+    <li>3、每个手机号、每个设备（含手机、iPad）只能获取一次奖励</li>
+    <li>4、本活动限新用户参加，所获流量奖励将于3个工作日内充到手机账户，请注意查收短信</li>
+    <li>5、欠费用户、或名下存在欠费产品的用户；未办理实名认证、未进行资料返档的用户；携号转网户；其它三网运营商规则限制的用户均无法领取流量；主副卡用户不能共享赠送流量</li>
+
+</ul>
+
+<footer>※本活动由应用宝合作方主办，具体规则以主办方公布为准</footer>
+
+<br>
+
+<section id="vpromptbox" class="vpromptbox hide">
+    <span id="vclose" class="close"><img src="/static/imgs/hd/close.png" alt="关闭" ></span>
+    <span id="vprompt"></span>
+</section>
+
+
+<script src="/static/js/web/zepto.min.js"></script>
+<script>
+$(function(){
+
+    var vPromptId, vError = 'error',
+        $valid = $('.valid'),
+        $tel = $('#tel'),
+        $vPromptBox = $('#vpromptbox');
+
+
+    $valid.blur(function(){
+
+    var $this = $(this),
+        val = $this.val(),
+        msg = $this.data('msg'),
+        type = $this.attr('name');
+
+    switch(type){
+        case 'mobile':
+            if(val == ''){
+                $vPromptBox.removeClass(hide);
+                $vPrompt.empty().html(msg);
+
+                $this.addClass(vError);
+            }else{
+                var reg =  /^1\d{10}$/;
+                if(reg.test(val)){
+                    $vPromptBox.addClass(hide);
+                    $this.removeClass(vError);
+                }else{
+                    $vPromptBox.removeClass(hide);
+                    $vPrompt.empty().html(msg);
+
+                    $this.addClass(vError);
+                }
+            }
+        //closeVPromptBox();
+        break;
+    }
+
+});
+
+function closeVPromptBox(){
+    clearTimeout(vPromptId);
+    vPromptId = setTimeout(function(){
+        $vPromptBox.addClass(hide)
+    }, 3300);
+}
+
+
+	var hide = 'hide', timeoutId;
+    var $vPromptBox = $('#vpromptbox'),
+        $vPrompt = $('#vprompt'),
+        $vClose = $('#vclose');
+
+    // active伪状态
+    var acTime;
+    $('.active').on('touchstart', function(){
+
+        acTime = new Date();
+        $(this).addClass('touch');
+
+    }).on('touchend', function(){
+
+        var $this = $(this), url;
+        $this.removeClass('touch');
+        if((new Date()) - acTime > 500){   // 触摸的时间超过500ms，不触发触摸效果 。。。
+            return ;
+        }
+
+        var telValidFlag;
+
+        $valid.focus();
+        $valid.blur();
+
+        if($tel.hasClass(vError)) telValidFlag = true;
+        else                      telValidFlag = false;
+
+        if(telValidFlag){
+            return ;
+        }
+
+        /*
+        if(!isValid){
+            
+            $vPrompt.empty().html('仅限于活动注册用户领取');
+            $vPromptBox.removeClass(hide);
+            return ;
+        }
+        */
+
+        if($this.data('get') == true) return ;
+        $.ajax({
+            url: '/api/activity/receive',
+            dataType: 'json',
+            data: {mobile: $tel.val()},
+            success: function(d){
+
+                if(d.flag == 1){
+                    url =  '/api/activity/flow-result?mobileStyle=' + d.data.mobileStyle;
+					location.href = url;
+
+                }else{
+                    $vPrompt.empty().html(d.msg);
+                    $vPromptBox.removeClass(hide);
+                }
+
+            },
+            error: function(){
+                $vPrompt.empty().html('网络错误，请稍后再试！');
+                $vPromptBox.removeClass(hide);
+            }
+
+        });
+        clearTimeout(timeoutId);
+        $this.data('get', 'true');
+
+        timeoutId = setTimeout(function(){
+            $this.data('get', '');
+        }, 1000);
+
+    });
+
+    $vClose.click(function(){
+        $vPromptBox.addClass(hide);
+    });
+
+});
+</script>
+
+<script>
+resultScroll();
+
+function resultScroll(){
+    var limit = 6,
+        $resultList = $('#result-list'),
+        len = $resultList.children().length;
+
+    if(len < 6) return ;
+
+    var ani = 'result-ani';
+    setInterval(function(){
+
+    var lastData = $resultList.children().last().addClass(ani).clone();
+    $resultList.children().first().before(lastData);
+    $resultList.children().last().remove();
+
+    }, 2500);
+}
+
+
+</script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?8274693fc4b0b74cc746840db3f22f2f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+    // 监听 id: eighty
+    document.getElementById('eighty').addEventListener('click', function(){
+        _hmt.push(['_trackEvent', '领取流量', 'click', 'receive'])
+    }, false);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+ <?php if( isset($this->error) && $this->error ):?>
+ 	<?php echo $this->error;?>
+<?php else:?>
+<?php if( isset($this->memberInfo) && $this->memberInfo ) {?>
+<table style="width:183px;border-collapse:collapse;">
+	<tbody>
+		<tr style="border: 1px solid #f0f0f0;">
+			<td>会员ID</td>
+			<td><?php echo $this->memberInfo['MemberID'];?></td>
+		</tr>
+		<tr style="border: 1px solid #f0f0f0;">
+			<td>财猪号</td>
+			<td><?php echo $this->memberInfo['MobileNumber'];?></td>
+		</tr>
+		<tr style="border: 1px solid #f0f0f0;">
+			<td>群昵称</td>
+			<td><?php echo $this->memberInfo['UserName'];?></td>
+		</tr>
+		<tr style="border: 1px solid #f0f0f0;">
+			<td>用户状态</td>
+			<td><?php echo $this->memberInfo['Status'];?></td>
+		</tr>
+	</tbody>
+</table>
+<?php }?>
+<?php endif;?>

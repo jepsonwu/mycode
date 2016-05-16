@@ -1,0 +1,35 @@
+
+<div class="easyui-panel" style="border:0px;">
+    <div style="padding:10px 0 10px 30px;align:center;">
+        <form id="lesson_module_add_form" method="post" action="" enctype="multipart/form-data">
+            <table class='form_table' cellspacing="15">                
+                <tr>
+                    <th width="20%">模块名称：</th>
+                    <td width="80%"><input class="easyui-validatebox" type="text" name="ModuleName" data-options="required:true" size="50" /></td>
+                </tr>
+
+                <tr>
+                    <th>模块图片：</th>
+                    <td>
+                        <input name = "image"  type="file"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%">状态：</th>
+                    <td width="80%">
+                        <input type="radio" name="Status" value="0" />隐藏&nbsp;&nbsp;
+                        <input type="radio" name="Status" value="1"   checked="checked" />显示
+                    </td>
+                </tr>               
+                <tr>
+                    <td colspan='2' class='footbar'>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_module_add_form_save">保存</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="lesson_module_add_form_close">关闭</a>
+        </div>
+    </div>
+</div>

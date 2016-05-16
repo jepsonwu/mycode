@@ -1,0 +1,105 @@
+ <div class="main-right fr">
+    <h2 class="content-tit clearfix p-rela">
+        草稿箱<span class="article-tit-do"><a href="article">文章(<?php echo $this->draftNum['articleNum'];?>)</a>
+        <span class="at-separate">|</span><a  href="activity">活动(<?php echo $this->draftNum['activityNum'];?>)</a>
+        <span class="at-separate">|</span><a class="selected" href="counsel">询财服务(<?php echo $this->draftNum['counselNum'];?>)</a>
+        </span>
+    </h2>
+
+	<ul class="cdraft-list">
+	</ul>
+	<ul class="pagination" id="pagination"></ul>
+</div> <!-- main-right -->
+
+<script src="/static/js/web/pagination.js" charset="utf-8"></script>
+<script src="/static/js/web/column/counsel.js" charset="utf-8"></script>
+<script >
+	$(function () {
+		var ps = 10;//每页显示的条数
+		getDraftCounselList(0);
+        
+		function setPaganation(pageCount,page) {
+            $("#pagination").show().pagination(pageCount, {
+                callback: getDraftCounselList,
+                current_page : page,
+                items_per_page: ps
+            });
+		}
+
+		function getDraftCounselList(page) {
+			var curPage = parseInt(page + 1);
+			$.ajax({
+				url: '/draft/get-draft-counsel-list',
+				dataType: 'json',
+				data: {
+					pagesize: ps,
+					page: curPage
+				},
+				success: function (d) {
+					if (d.flag === 1) {
+						var total = d.data.Total;
+						//showTotal(total);
+						var list = d.data.Rows;
+						var html = '';
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								html += '<li class="cdraft-one" data-id="111">' + '<h4 class="counsel-tit"><a href="/counsel/add?counselid='+ list[i].CID +'">' + list[i].Title + '</a></h4>';
+								html += '<div class="cdraft-info clearfix"><div class="cdraft-det"><p class="cdraft-p">' + list[i].CreateTime + '</p><div class="cdraft-text"><span class="cdraft-text">';
+								if (list[i].Desc.length > 300) {
+									html += '<span class="cdraft-text00">' + list[i].Desc.substring(0, 300) + '<span>...</span></span>';
+									html += '<span class="cdraft-text01">' + list[i].Desc + '</span><span class="counsel-showall" href="">显示全部</span></div></div></div>';
+								} else {
+									html += '<span class="cdraft-text00">' + list[i].Desc + '</span>';
+									html += '<span class="cdraft-text01">' + list[i].Desc + '</span></div></div></div>';
+								}
+								html += '<div class="counsel-status clearfix">' + (list[i].Desc.length > 300 ? '<span class="counsel-up">收起</span>' : '');
+								html += '<span>￥' + list[i].Price + '/1次(约' + list[i].Duration + '小时)</span>';
+								var SupportCity = '';
+								for (var j = 0; j < list[i].SupportCity.length; j++) {
+									SupportCity += list[i].SupportCity[j].Name;
+									if (j < (list[i].SupportCity.length - 1)) {
+										SupportCity += " ";
+									}
+								}
+								html += '<span>' + SupportCity + '</span>';
+								html += '<span>' + list[i].ConsultTotal + '人咨询</span><a href="/counsel/add?counselid='+list[i].CID+'">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" name="delCounsel" cid="'+list[i].CID+'">删除</a></li>';
+							}
+                            setPaganation(total,page);
+						} else {
+							html = '<li class="counsel-empty"><p>暂无数据</p></li>';
+							//$('#pagination').hide();
+						}
+						$('.cdraft-list').html(html);
+					} else {
+						definedPrompt(d.msg);
+					}
+				},
+				error: function () {
+					definedPrompt('网络错误');
+				}
+			});
+		}
+        
+        $('.cdraft-list').delegate("a[name='delCounsel']",'click',function(){
+            var cid = $(this).attr('cid');
+            $.ajax({
+				url: '/draft/del-draft-counsel',
+				dataType: 'json',
+				data: {
+					cid: cid
+				},
+				success: function (d) {
+					if (d.flag === 1) {
+						definedPrompt('删除成功',function(){location.href='';});
+					} else {
+						definedPrompt(d.msg);
+					}
+				},
+				error: function () {
+					definedPrompt('网络错误');
+				}
+			});
+        })
+	});
+
+</script>

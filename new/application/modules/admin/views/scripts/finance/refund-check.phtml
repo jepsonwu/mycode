@@ -1,0 +1,32 @@
+<?php $refund = $this->refund; ?>
+<div class="easyui-panel" style="border:0px;">
+	<div style="padding:5px 0 5px 5px;align:center;">
+		<form id="check_refund_form" method="post">
+			<table class='form_table'>				
+				<tr>
+					<th>提现金额:</th>
+					<td>
+						<input type="text" readonly value="<?php echo $refund['ApplicationAmount'];?>" name="application_amount" size=12 >(不可更改)
+					</td>
+				</tr>
+				<tr>
+					<th>手续费:</th>
+					<td><input name="fee_amount" value="<?php echo $refund['FeeAmount'];?>" size=12 /></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="member_id" value="<?php echo $this->member_id;?>"/>
+						<input type="hidden" name="application_id" value="<?php echo $this->application_id;?>" />
+						<input type="hidden" name="status" value="<?php echo $this->status;?>" />
+					</td>
+				<tr>
+			</table>
+		</form>
+	</div>
+	
+	<div style="text-align:center;padding:5px">
+    	<a href="javascript:void(0)" class="easyui-linkbutton" id="check_refund_form_save">审核通过</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" id="check_refund_form_close">关闭</a>
+    </div>
+	
+</div>

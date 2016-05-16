@@ -1,0 +1,481 @@
+@charset "utf-8";
+/**
+*   三思 2012.7.1
+*   Made by 492831343@qq.com
+**/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+img {
+    border: none;
+    vertical-align: middle;
+}
+
+ul, ol, li {
+    list-style: none;
+}
+
+section, article, aside, header, footer, nav, dialog, figure {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    font: 12px/1.5 helvetica, arial, "Microsoft YaHei", "微软雅黑", sans-serif;
+}
+
+.fl, .f_left {
+    float: left;
+}
+
+.fr, .f_right {
+    float: right;
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: "\20";
+    clear: both;
+    height: 0;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+a {
+    outline: none;
+}
+
+a:link, a:visited, a:active {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0ae;
+    text-decoration: none;
+}
+
+.mt {
+    margin-top: 10px;
+}
+
+.mr {
+    margin-right: 10px;
+}
+
+.mb {
+    margin-bottom: 10px;
+}
+
+.ml {
+    margin-left: 10px;
+}
+
+.ml5 {
+    margin-left: 5px;
+}
+
+.mt5 {
+    margin-top: 5px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mr20 {
+    margin-right: 20px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.f_clear {
+    clear: both;
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
+
+.p-rela, .p-relative {
+    position: relative;
+}
+
+.p-abso, .p-absolute {
+    position: absolute;
+}
+
+.fc-000 {
+    color: #000;
+}
+
+.fc-fff {
+    color: #fff;
+}
+
+.fc-333 {
+    color: #333;
+}
+
+.fc-666 {
+    color: #666;
+}
+
+.fc-999 {
+    color: #999;
+}
+
+.fc-ccc {
+    color: #ccc;
+}
+
+.fc-f00 {
+    color: #f00;
+}
+
+.fc-c00 {
+    color: #c00;
+}
+
+.fc-green {
+    color: #009901;
+}
+
+.fc-cheng {
+    color: #FF7800;
+}
+
+.fc-bigred {
+    color: #C00;
+}
+
+.fm-heit {
+    font-family: "SimHei", "STHei";
+}
+
+.fm-song {
+    font-family: "SimSun", "STSong";
+}
+
+.fm-weir {
+    font-family: "Microsoft YaHei", "微软雅黑";
+}
+
+.fs-12 {
+    font-size: 12px;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+
+.fs-16 {
+    font-size: 16px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.fs-20 {
+    font-size: 20px;
+}
+
+.fs-22 {
+    font-size: 22px;
+}
+
+.fw-thin, .fw-normal {
+    font-weight: normal;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+.cursor-point {
+    cursor: pointer;
+}
+
+.login-prompt {
+    position: fixed;
+    width: 40%;
+    height: 45px;
+    line-height: 45px;
+    left: 50%;
+    top: 50%;
+    margin-left: -20%;
+    margin-top: -15px;
+    padding: 15px 0;
+    background: rgba(10, 10, 10, .7);
+    color: #fff;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    z-index: 100;
+}
+
+.lgclose {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    line-height: 26px;
+    background: #aaa;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+/* prompt */
+
+.prompt-box {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 110;
+}
+
+.prompt-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: #000;
+    opacity: .5;
+    filter: alpha(opacity=50);
+}
+
+.sigle-box {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 200px;
+    margin-left: -110px;
+    padding: 20px 10px;
+    line-height: 20px;
+    height: 20px;
+    z-index: 9999;
+    background: #1B1A20;
+    opacity: .8;
+    filter: alpha(opacity=80);
+    border-radius: 5px;
+    color: #fff;
+    text-align: center;
+}
+
+.prompt-type a {
+    color: #0ae;
+}
+
+.ppt-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: url('/static/imgs/web/column/icon-close.png') no-repeat center center;
+    cursor: pointer;
+    -webkit-transition: all .3s linear;
+    -moz-ransition: all .3s linear;
+    transition: all .3s linear;
+}
+
+.ppt-close:hover {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.ppt-tit {
+    position: relative;
+    line-height: 30px;
+    text-align: center;
+}
+
+.ppt-tit strong {
+    display: block;
+    padding: 0 20px;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+}
+
+.ppt-des01 {
+    margin: 10px;
+    line-height: 22px;
+    font-size: 14px;
+    color: #333;
+}
+
+.ppt-des02 {
+    line-height: 24px;
+    padding: 10px 0 20px;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+}
+
+.ppt-des03 {
+    line-height: 24px;
+    padding: 20px 0 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.ppt-des04 {
+    text-indent: 100px;
+}
+
+.ppt-do {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.ppt-do span, a.ppt-btn {
+    display: inline-block;
+    width: 140px;
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+    background: #0ae;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.ppt-do2 span {
+    margin: 0 6px;
+}
+
+.ppt-do2 .ppt-cancel {
+    background: #fff;
+    color: #666;
+    border: #ccc solid 1px;
+    height: 38px;
+    line-height: 38px;
+}
+
+.ppt-box {
+    position: fixed;
+    width: 500px;
+    padding: 20px;
+    left: 50%;
+    top: 40%;
+    margin-left: -255px;
+    margin-top: -110px;
+    background: #fff;
+    border: #e6e6e6 solid 1px;
+    border-radius: 3px;
+}
+
+.ppt-05 {
+    height: 150px;
+    margin-top: -80px;
+}
+
+.ppt-tit-ok, .ppt-tit-wait, .ppt-tit-warning {
+    display: inline-block;
+    width: 63px;
+    height: 63px;
+    margin: 10px 0 0;
+}
+
+.ppt-tit-ok {
+    background: url('/static/imgs/web/column/ppt-ok.png') no-repeat;
+}
+
+.ppt-tit-wait {
+    background: url('/static/imgs/web/column/ppt-wait.png') no-repeat;
+}
+
+.ppt-tit-warning {
+    background: url('/static/imgs/web/column/ppt-warning.png') no-repeat;
+}
+
+.ppt-other00 {
+    line-height: 30px;
+}
+
+.form-prompt {
+    background: #FFFBCD;
+    border: #E7DB54 solid 1px;
+    border-radius: 2px;
+    position: relative;
+    line-height: 26px;
+    padding: 2px 10px;
+    color: #666;
+}
+
+.form-prompt-close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    line-height: 26px;
+    background: #aaa;
+    border-radius: 25px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/*分页*/
+.pagination {
+    margin: 20px 0;
+    text-align: right;
+}
+
+.pagination li {
+    margin-left: 3px;
+}
+
+.pages {
+    display: inline-block;
+    line-height: 30px;
+    border: #e6e6e6 solid 1px;
+    text-align: center;
+    *display: inline;
+    *zoom: 1;
+}
+
+.pagination .pages a {
+    display: block;
+    padding: 0 11px;
+}
+
+.pagination a:hover, .pagination a.selected {
+    background: #0ae;
+    color: #fff;
+}
+
+/*分页end*/

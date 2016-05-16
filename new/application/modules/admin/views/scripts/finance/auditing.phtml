@@ -1,0 +1,118 @@
+<table id="listauditing_list" style="width:500px;height:600px">
+	<thead>
+		<tr>
+		</tr>
+		<tr>
+			<th data-options="field:'CNYbalance',align:'right',formatter:function(value,rowData,index){if(value) return '￥'+value}">可用余额</th>
+			<th data-options="field:'CNYfreeze',align:'right',formatter:function(value,rowData,index){if(value) return '￥'+value}">冻结资金</th>
+		</tr>
+	</thead>
+</table>
+<div id="listauditing_list_toolbar"></div>
+<div id="listauditing_list_toolbar_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="auditingObj.containerObj.edatagrid('reload');">刷新</a>
+    会员编号：<input type="text" value="" name="member_id" size="10" />
+	<!--货币类型：<select name="searchType1">
+                <option value="CNY">人民币</option>
+                <option value="USD">美元</option>
+            </select>-->
+
+	可用余额：
+	<input type="text" name="start_balance" size="8"/>
+	至&nbsp;<input type="text" name="end_balance" size="8"/>
+
+	冻结金额：
+	<input type="text" name="start_freeze" size="8"/>
+	至&nbsp;<input type="text" name="end_freeze" size="8"/>
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchListauditing()" iconCls="icon-search">搜索</a>
+</div>
+
+<script type="text/javascript">
+    //回车查询
+    $("#listauditing_list_toolbar_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchListauditing();
+        }
+    });
+    $("#refund_list_toolbar_container select[name]").change(function(){
+        toSearchListauditing();
+    });
+
+    function toSearchListauditing()
+    {
+        var member_id = $("#listauditing_list_toolbar_container input[name='member_id']").val();
+        //var currency = $("#listauditing_list_toolbar_container select[name='searchType1']").val();
+        var start_balance = $("#listauditing_list_toolbar_container  input[name='start_balance']").val();
+        var end_balance = $("#listauditing_list_toolbar_container input[name='end_balance']").val();
+        var start_freeze = $("#listauditing_list_toolbar_container input[name='start_freeze']").val();
+        var end_freeze = $("#listauditing_list_toolbar_container input[name='end_freeze']").val();
+
+        auditingObj.containerObj.datagrid('load', {
+                                                member_id:member_id,
+                                                //currency:currency,
+                                                start_balance:start_balance,
+                                                end_balance:end_balance,
+                                                start_freeze:start_freeze,
+                                                end_freeze:end_freeze
+        });
+    }
+    var auditingObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'finance','action'=>'auditing'));?>',
+		
+		'containerObj':$("#listauditing_list"),
+				
+		'selfName':'auditingObj',
+
+		'init':function(){
+			this.showData();
+		},
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+                //是否分页
+                pagination:true,
+                pageSize: 50,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                fitColumns:false,
+                fit:true, 
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'MemberID',
+
+                url:_THIS_.loadUrl,
+                toolbar:"#listauditing_list_toolbar",
+                //设置列   
+                columns:[[   
+                    {field:'MemberID',title:'会员ID',sortable:true,width:100},
+                    {field:'Email',title:'邮箱',width:250},
+                    {field:'Balance',title:'可用余额',width:150,formatter:function(value,rowData,rowIndex){
+                            return "￥"+rowData.Balance;
+                    }},
+                    {field:'FreezeAmount',title:'冻结资金',width:150,formatter:function(value,rowData,rowIndex){
+                            return "￥"+rowData.FreezeAmount;
+                    }}
+                ]]
+            });
+				
+            //设置分页
+            var pager = _THIS_.containerObj.datagrid('getPager');
+            pager.pagination({
+                pageList:[10,50,100,150,200],
+                pageSize:50,
+                beforePageText:'第',
+                afterPageText:'页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+            $("#listauditing_list_toolbar").append($("#listauditing_list_toolbar_container"));
+        }
+    };
+    auditingObj.init();
+</script>

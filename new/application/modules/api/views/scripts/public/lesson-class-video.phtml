@@ -1,0 +1,47 @@
+<!DOCTYPE html >
+<html>
+<head>
+<title></title>
+<meta charset="utf-8" >
+<meta name="keywords" content="" >
+<meta name="description" content="" >
+<meta content="telephone=no, address=no" name="format-detection" />
+<meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0328" >
+
+<style>
+section{min-height: 120px; background: url('/static/imgs/api/slow.png') no-repeat center center}
+</style>
+
+</head>
+<body>
+
+<section><iframe id="iframe" frameborder="0"  width="100%" allowfullscreen></iframe></section>
+
+<script>
+
+
+var videoSrc = '<?php echo $this->videoUrl;?>',
+    iframeO = document.getElementById('iframe');
+
+    !function(){
+        var w, h, iW = 16, iH = 9;
+
+        w = window.innerWidth;
+        h = w * iH / iW;
+        h = parseInt(h);
+        iframeO.style.height = h + 'px';
+
+    }();
+
+    videoSrc = videoSrc.replace(/^http:\/\//, 'https://');
+
+    if(videoSrc) iframeO.src = videoSrc;
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>

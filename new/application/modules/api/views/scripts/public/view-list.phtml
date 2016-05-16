@@ -1,0 +1,547 @@
+
+<!DOCTYPE html >
+<html>
+<head>
+    <title><?php echo $this->topicInfo['TopicName'];?></title>
+    <meta charset="utf-8" >
+    <meta name="keywords" content="观点主页" >
+    <meta name="description" content="观点主页" >
+    <meta content="telephone=no, address=no" name="format-detection" />
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="http://fe.caizhu.com/public/css/m-main-schema.css?data=0415" >
+    <link rel="stylesheet" href="http://fe.caizhu.com/160303/api/0310/skin0/css/common.css?data=0407" >
+<style>
+
+body{max-width: 640px;}
+
+/* 适配 */
+
+.view-btn{position: absolute; bottom: 10%; width: 100%; text-align: center;}
+
+@media (max-height: 750px){
+
+    .boxtop{margin-top: 27%;}
+
+    .view-btn{bottom: 18%;}
+    .boxm-list{padding: 0 0 40px;}
+    .user-name{padding: 8px 0 15px;}
+    .ibox p{padding: 16px 0 0;}
+    .view-des{padding: 60px 10px 90px;}
+}
+
+@media (max-height: 670px){
+
+    .view-btn{bottom: 15%;}
+    .boxm-list{padding: 0 0 40px;}
+    .user-name{padding: 8px 0 15px;}
+    .ibox p{padding: 16px 0 0;}
+    .view-des{padding: 60px 10px 90px;}
+}
+
+@media (max-height: 570px){
+
+    .view-btn{bottom: 12%;}
+    .boxm-list{padding: 0 0 40px;}
+    .ibox p{}
+    .view-des{padding: 50px 10px 70px;}
+
+}
+
+@media (max-height: 480px){
+    .view-btn{bottom: 8%;}
+    .boxm-list{padding: 0 0 20px;}
+    .view-des{padding: 40px 10px 60px;}
+    .boxtop{margin-top: 21%;}
+    #appopen00{display: none;}
+}
+
+
+.vlist-top .demo-text00{height: 20px; width: auto; margin: 0 8px 0 0;}
+.half-one{float: left; width: 50%; text-align: right;}
+.half-one img{height: 16px; width: auto;}
+.half-two{float: left; text-align: left; font-size: 16px; width: 50%; text-indent: 10px;}
+.view-des img{width: 70%;}
+
+</style>
+</head>
+<body>
+
+<div id="init-pageshow"><div class="init-pageshow" :class="{hide: pageshowflag}"></div></div>
+
+<div class="full">
+    <div class="fullbox">
+
+        <div class="section page1">
+            <ul id="app00" class="box boxtop">
+                <li class="box-t"></li>
+                <li class="box-m lbox00">
+                    <div class="vlist-top clearfix">
+                        <div>
+                            <p class="to"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-type00.png" alt="pic"><b>{{topicName}}</b></p>
+                            <p class="to"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-type01.png" alt="pic"></p>
+                        </div>
+                        <span class="boxapp" data-type="viewlist" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-04.png"></span>
+                    </div>
+                    <div id="big-box" class="big-box p-rela">
+                        <div id="scroll-big" class="vlist-box">
+                            <ul id="scroll-big-box" class="vlist-list">
+                                <li v-for="one in listD">
+                                    <p>@{{one.UserName | filterAnonymousName}}</p>
+                                    <div class="big-detbox">
+                                    <p>{{{one.ViewContent | filterEmoji}}}</p>
+                                    </div>
+                                    <span class="vlist-btn"  :class="{selected: one.showflag}" @click="pulldo($index)"></span>
+                                </li>
+                                <li class="vlast boxapp" data-type="viewlist" data-id="{{currentId}}" :class="{hide: lastflag}" ><span class="vlist-more" xxclick="getmore">{{btnstr}}</span></li>
+                            </ul>
+                        </div>
+
+                        <div id="scroll-small" class="vlist-det" :class="{hide: smallflag}">
+                            <div id="scroll-small-box">{{{detStr | filterEmoji}}}</div>
+                        </div>
+                        <div class="small-box-b" :class="{hide: smallflag}"><span @click="smalldo"></span></div>
+                    </div> <!-- big-box -->
+                </li>
+                <li class="box-b"></li>
+            </ul>
+
+            <div id="appopen00" class="view-btn">
+                <span class="boxapp" data-type="viewlist" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-03.png" alt="open"></span>
+            </div>
+            <span class="full-pointer"></span>
+        </div>
+
+        <div class="section page2">
+            <ul id="app01" class="box boxtop">
+                <li class="box-t"></li>
+                <li class="box-m boxm-list">
+
+                    <div class="view-do clearfix">
+                        <a class="boxapp" data-type="viewlist" data-id="{{currentId}}"></a>
+                        <a class="boxapp" data-type="viewlist" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-04.png"></a>
+                    </div>
+                    <div class="ibox">
+                        <div class="user-name to clearfix">
+                            <div class="half-one"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-publish.png" alt="pic"></div>
+                            <div class="half-two">{{*userName}}</div>
+                        </div>
+                        <figure class="user-avatar boxapp" data-type="userinfo" data-id="memberId"><img :src="userAvatar | filterAvatar"></figure>
+                        <div class="clearfix">
+                            <div class="half-one"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-member-num.png" alt="pic"></div>
+                            <div class="half-two">{{*replyNum | filterMember}}人</div>
+                        </div>
+                        <div class="clearfix">
+                            <div class="half-one"><img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-list.png" alt="pic"></div>
+                            <div class="half-two">{{*viewNum | filterView}}条</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="box-b"></li>
+            </ul>
+            <div id="appopen01" class="view-btn">
+                <span class="boxapp" data-type="viewlist" data-id="{{currentId}}"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-03.png" alt="open"></span>
+            </div>
+            <span class="full-pointer"></span>
+        </div>
+
+        <div class="section page3">
+            <ul id="app01" class="box boxtop">
+                <li class="box-t"></li>
+                <li class="box-m">
+                    <p class="view-des">
+                        <img class="demo-text00" src="http://fe.caizhu.com/160303/api/0310/skin0/imgs/text-join-list.png" alt="pic">
+                    </p>
+                    <div class="view-btn02">
+                        <span class="boxlink" data-url="http://a.app.qq.com/o/simple.jsp?pkgname=com.caizhu.caizhu"><img src="https://fe.caizhu.com/160303/api/0310/skin0/imgs/btn-02.png" alt="open"></span>
+                    </div>
+                </li>
+                <li class="box-b"></li>
+            </ul>
+
+            <span class="full-pointer"></span>
+        </div>
+
+    </div>
+</div>
+
+<div id="define-prompt"><app-defineprompt :pmodeflag.sync="pmodeflag" :pcallback.sync="pcallback" :pboxflag.sync="pboxflag" :pflag.sync="pflag" :pstr.sync="pstr"></app-defineprompt></div>
+<div id="app-prompt"><app-prompt :wechatflag.sync="wechatflag" :qqbflag.sync="qqbflag" :downflag.sync="downflag"></app-prompt></div>
+
+
+<script src="https://fe.caizhu.com/public/js/zepto.min.js"></script>
+<script src="https://fe.caizhu.com/public/js/vue.min.js"></script>
+
+<script src="https://fe.caizhu.com/public/js/zepto.fullpage.js"></script>
+
+<script src="https://fe.caizhu.com/public/js/callcaizhu/app-url-json.min.js?date=160117"></script>
+<script src="https://fe.caizhu.com/public/plugin/emoji.js"></script>
+<script src="https://fe.caizhu.com/public/js/callcaizhu/h5-common.js"></script>
+
+<script src="https://fe.caizhu.com/public/js/callcaizhu-160310/h5-action-v2.js?date=160428"></script>
+
+
+<script>
+    $('.fullbox').fullpage({
+        drag: true,
+        start: 0,
+        duration: 100,
+        page: '.section',
+        der: 0.3
+    });
+</script>
+
+<script>
+
+var currentId = '<?php echo $this->topicInfo['TopicID'];?>',
+    memberId = '<?php echo $this->topicInfo['MemberID']; ?>',
+    userAvatar = '<?php echo $this->topicInfo['Avatar'];?>',
+    userName = '<?php echo $this->topicInfo['UserName']?>',
+    replyNum = '<?php echo $this->topicInfo['FollowNum'];?>',
+    viewNum = '<?php echo $this->topicInfo['ViewNum'];?>',
+
+    topicName = '<?php echo $this->topicInfo['TopicName'];?>',
+
+    viewDet = $('#view-content').text(),
+
+    listD = [];
+
+var zxzx = 'topicInfo';
+
+var anonymousFlag = '<?php echo $this->topicInfo["IsAnonymous"];?>' == 1 ? true : false;
+
+    function initShareData(){
+        var opts = {},
+                sharePic = $('.sd2-info img');
+        if(sharePic.length>0){
+            sharePic = sharePic[0].src
+        }else{
+            sharePic = '';
+        }
+        opts.sharePic = sharePic;
+        opts.shareTitle = '推荐一个财猪话题给你';
+        opts.shareDes = '我在财猪上讨论“<?php echo $this->topicInfo['TopicName'];?>”话题，你要不要与我一起？';
+        opts.shareLink = location.href;
+
+        return opts;
+    }
+
+    var opts = {};
+
+    opts.caizhuRun = function(){
+        caizhuRun();
+    }
+    opts.otherRun = function(){
+        otherRun();
+    }
+    opts.commonRun = function(){
+        commonRun();
+    }
+
+    //opts.appDebug = true;
+    initAction(opts);
+
+    function caizhuRun(){
+        createPullMeta();
+    }
+
+    function otherRun(){}
+
+    function commonRun() {
+
+        var $pull = $('#ibox-pull'),
+            viewBoxO = document.getElementById('view-box');
+
+        filterAnonymousName(anonymousFlag);
+        filterAnonymousAvatar(anonymousFlag);
+
+        Vue.filter('filterMember', function(a){
+            a = parseInt(a);
+            if(a < 100){
+                return randomNum(200, 100);
+            }
+            return a;
+        });
+
+        Vue.filter('filterView', function(a){
+            a = parseInt(a);
+            if(a < 50){
+                return randomNum(50, 50);
+            }
+            return a;
+        });
+
+
+
+        var app01 = new Vue({
+            el: '#app01',
+            data: {
+                currentId: currentId,
+                memberId: memberId,
+                userAvatar: userAvatar,
+                userName: userName,
+                replyNum: replyNum,
+                viewNum: viewNum,
+                pullflag: false
+            }
+        });
+
+        var appOpen00 = new Vue({
+            el: '#appopen00',
+            data: {
+                currentId: currentId
+            }
+        });
+
+        var appOpen01 = new Vue({
+            el: '#appopen01',
+            data: {
+                currentId: currentId
+            }
+        });
+
+        var $viewList,
+            $detList,
+            scrollBig,
+            scrollSmall;
+
+        var LASTID = 1, ENDFLAG = false;
+
+        var app00 = new Vue({
+            el: '#app00',
+            data: {
+                currentId: currentId,
+                topicName: topicName,
+                listD: [],
+                detStr: '',
+                smallflag: true,
+                lastflag: true,
+                btnstr: '更多'
+            },
+            computed: {
+            },
+            methods: {
+                getList: function(){
+                    getViewList();
+                },
+                pulldo: function(index){
+                    var str = '@';
+                    str += this.listD[index].UserName +'<br>';
+                    str += this.listD[index].ViewContent;
+                    this.detStr = str;
+                    this.smallflag = false;
+                    scrollSmall = new ViewScroll('scroll-small', 'scroll-small-box');
+                    scrollSmall.initTop();
+                },
+                getmore: function(e){
+                    /*if(scrollBig && !ENDFLAG){scrollBig.destroy()}
+                    getViewList();
+                    e.preventDefault();*/
+                },
+                smalldo: function(){
+                    this.smallflag = true;
+                    if(scrollSmall){scrollSmall.destroy()}
+                }
+            },
+            compiled: function(){
+                $viewList = $('#scroll-big-box');
+                $detList = $('#scroll-small-box');
+
+            }
+        });
+
+
+        getViewList();
+        function getViewList(pageSize){
+
+            var getUrl;
+            if(ENDFLAG) return false;
+            if(anonymousFlag){
+                getUrl = '/api/view/topic-newest-view-list';
+            }else{
+                getUrl = '/api/view/topic-hot-view-list';
+            }
+
+            $.ajax({
+                url: getUrl,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    topicID: currentId,
+                    page: LASTID,
+                    pagesize: pageSize || ''
+                },
+                success: function(d){
+                    d = d.data.Rows || [];
+
+                    var i=0, limit = 10,
+                        len=d.length;
+
+                    var startI, endI;
+                    startI= app00.listD.length;
+                    for( ; i<len; i++){
+                        d[i].showflag = true;
+                        app00.listD.push(d[i])
+                    }
+                    endI = startI + len;
+                    setTimeout(function(){initPullBtn(startI, endI, app00); scrollBig = new ViewScroll('scroll-big', 'scroll-big-box');}, 80);
+
+                    if(len < limit){
+                        ENDFLAG = true;
+                        //app00.btnstr = '没更多了';
+                        var range = limit - len;
+                        getViewJson(range);
+                        //if(app00.listD.length == 0) getViewJson(range);
+                    }
+
+                    app00.lastflag = false;
+
+                    LASTID++;
+                    //scrollBig = new ViewScroll('scroll-big', 'scroll-big-box');
+                },
+                error: function(err){
+                    promptDo('show', '网络错误,请过一会再试一试');
+                }
+            });
+        }
+
+        // 未超过3行，下拉隐藏
+        function initPullBtn(start, end, obj){
+            var flag, initH = 22, domH;
+                $viewList = $('#scroll-big-box');
+            for(; start<end; start++){
+                domH = $viewList.children().eq(start).find('.big-detbox').children()[0].offsetHeight;
+                if(domH > (initH*3)){
+                    app00.listD[start].showflag = false;
+                };
+            };
+        }
+        //getViewJson();
+        function getViewJson(range){
+            var i = 0, len = 10, name = '财猪小助理';
+            var hasArr = [];
+            //app00.listD = [];
+
+            if(range) len = range;
+
+            createJs('http://fe.caizhu.com/public/js/callcaizhu-160310/view-json.js', callbackxx);
+            function callbackxx(){
+                var a,
+                    iLen = VIEWJSON.data.length;
+                for(; i<len; i++){
+                    a = randomView(iLen);
+                }
+                valueOfView();
+            }
+            function valueOfView(){
+                var i=0, len = hasArr.length,
+                    vObj = {},
+                    d = VIEWJSON.data;
+                for(; i<len; i++){
+                    app00.listD.push({showflag: true, UserName: name, ViewContent: d[hasArr[i]]});
+                }
+                setTimeout(function(){initPullBtn(len-range, len, app00); if(scrollBig){scrollBig.destroy()};scrollBig = new ViewScroll('scroll-big', 'scroll-big-box');}, 80);
+            }
+            function randomView(range){
+                var index;
+                index = Math.floor(Math.random() * range);
+                if(hasArr.indexOf(index) > -1){
+                    randomView(range);
+                    return ;
+                }
+                hasArr.push(index);
+                return index;
+            }
+        }
+
+    }
+
+function ViewScroll(p, c){
+    if(!p || !c){ return false;}
+    this.MD = {x: 0, y: 0, deltaX: 0, initY: 0, flag: false};
+    this.parent = document.getElementById(p);
+    this.child = document.getElementById(c);
+    this.initE();
+}
+ViewScroll.prototype = {
+    constructor: ViewScroll,
+    initE: function(){
+        this.parent.addEventListener('touchstart', this, false);
+        this.parent.addEventListener('touchmove', this, false);
+        this.parent.addEventListener('touchend', this, false);
+    },
+    destroy: function(){
+        this.parent.removeEventListener('touchstart', this, false);
+        this.parent.removeEventListener('touchmove', this, false);
+        this.parent.removeEventListener('touchend', this, false);
+    },
+    initTop: function(){
+        this.child.style.MozTranform = this.child.style.webkitTransform = 'translate3d(0, 0, 0)';
+    },
+    handleEvent: function(e){
+        var type = e.type;
+
+        var h = this.parent.offsetHeight,
+            cH = this.child.offsetHeight;
+
+        this.MD.pullTop = h - cH;
+
+        if(type == 'touchstart'){
+            this.MD.y = e.touches[0].pageY;
+            this.MD.flag = true;
+            this.MD.initY = this.child.style.webkitTransform || this.child.style.webkitTransform || 0;
+            this.MD.initY = paramFilter(this.MD.initY);
+
+        }
+        if(type == 'touchmove'){
+            var initY,
+                deltaY;
+            if(!this.MD.flag) return false;
+
+            this.MD.deltaY = this.MD.initY + e.touches[0].pageY - this.MD.y;
+            if(this.MD.deltaY > 0){
+                this.MD.initY = 0;
+                this.child.style.MozTranform = this.child.style.webkitTransform = 'translate3d(0, 0, 0)';
+            }else if(this.MD.deltaY < this.MD.pullTop){
+            }else{
+                this.child.style.MozTranform = this.child.style.webkitTransform = 'translate3d(0, '+ this.MD.deltaY +'px, 0)';
+            }
+
+        }
+        if(type == 'touchend'){
+            this.MD.y = 0;
+            this.MD.flag = false;
+        }
+        e.stopPropagation();
+        //e.preventDefault();
+        if(type == 'touchmove'){e.preventDefault();}
+    },
+    paramFilter: function(a){    //'translate3d(0px, -53px, 0px)';
+        if(!a) return 0;
+        a = a.match(/\(.*,(.*),.*\)/);
+        a = a && a[1] || 0;
+        return parseInt(a);
+    }
+}
+
+function paramFilter(a){    //'translate3d(0px, -53px, 0px)';
+    if(!a) return 0;
+    a = a.match(/\(.*,(.*),.*\)/);
+    a = a && a[1] || 0;
+    return parseInt(a);
+}
+
+function randomNum(a, b){
+    return Math.floor(Math.random()*a) + b;
+}
+
+
+</script>
+
+<script src="https://fe.caizhu.com/public/js/apph5-action.js"></script>
+
+</body>
+</html>
+
+
+

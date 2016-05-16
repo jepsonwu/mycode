@@ -1,0 +1,184 @@
+<table id="feedback_list"></table>
+<div id="feedback_list_toolbar"></div>
+<div id="feedback_list_searcher_container">
+	<a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="feedbackObj.containerObj.edatagrid('reload');">刷新</a> 
+	会员ID：<input type="text" name="MemberID" size="15" />&nbsp;&nbsp;		
+    状态:    
+	<select name="IsReply" >
+	        <option value="-1" >所有</option>
+	        <option value="0">未回复</option>
+	        <option value="1">已回复</option>
+	</select> 
+
+    时间范围：
+    <input type='date' class="easyui-datetimebox" name="start_date"> - <input type='date' class="easyui-datetimebox" name="end_date">
+   <input class="easyui-linkbutton" type="button" name="searchbtn" onclick="javascript:toSearchFeedback()"value="搜索"/>
+</div>
+<div id="feedback_edit_window"></div>
+<script type="text/javascript">
+
+    //回车查询
+    $("#feedback_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchFeedback();
+        }    
+    });
+    
+    $("#feedback_list_searcher_container select[name]").change(function(){
+        toSearchFeedback();
+    });
+    
+    //执行查询
+    function toSearchFeedback()
+    {
+        var MemberID     = $("#feedback_list_searcher_container input[name='MemberID']").val();
+        var start_date   = $("#feedback_list_searcher_container input[name='start_date']").val();
+        var end_date     = $("#feedback_list_searcher_container input[name='end_date']").val();
+        var IsReply      = $("#feedback_list_searcher_container select[name='IsReply']").val();
+    
+        feedbackObj.containerObj.datagrid('load', {      
+        	    MemberID:MemberID,                                                
+                start_date: start_date, 
+                end_date: end_date,
+                IsReply:IsReply
+            });
+    }
+
+var feedbackObj = {
+		//数据加载url
+		'loadUrl':'<?php echo $this->url(array('controller'=>'feedback','action'=>'list'));?>',
+		'editUrl':'<?php echo $this->url(array('controller'=>'feedback','action'=>'edit'));?>',
+
+		'containerObj':$("#feedback_list"),
+		'editWindowObj':$("#feedback_edit_window"),
+		
+		'selfName':'feedbackObj',
+		
+
+		'init':function(){
+			this.showData();
+		},
+
+        //编辑回复内容
+        editHandler:function(feedback_id){
+            var _THIS_ = this;
+
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.editUrl+'?feedback_id='+feedback_id,
+                'width':400,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'title':'编辑',
+                
+                'onLoad':function(){
+                    $("#feedback_edit_form_save").off().on('click',function(){
+                        $("#feedback_edit_form").attr('action',_THIS_.editUrl).submit();
+                         _THIS_.containerObj.datagrid('reload');
+                    });
+
+                    $("#feedback_edit_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('close');
+                        _THIS_.containerObj.datagrid('reload');
+                    });
+                    
+                    $("#feedback_edit_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.editWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    }
+            });
+        },
+
+		//加载数据
+		'showData':function(){
+			var _THIS_ = this;
+			_THIS_.containerObj.datagrid({
+					//是否分页
+					pagination:true,
+					//是否条纹显示
+					striped:true,
+					//加载提示信息
+					loadMsg:'正在加载...',
+					//列是否自适应
+					//fitColumns:true,
+					fit:true, 
+					//是否单行选择
+					singleSelect:true,
+	
+					idField:'FeedBackID',
+	
+				    url:_THIS_.loadUrl,
+					toolbar:'#feedback_list_toolbar',
+				    //设置列   
+				    columns:[[   
+				        {field:'FeedBackID',title:'编号',width:'60'},
+				        {field:'MemberID',title:'会员ID',width:'60'},
+				        {field:'Content',title:'反馈内容',width:"380", formatter:function(value,rec,index){
+				               if(value){
+				               		var arr = value.split('');
+				               		for (var i = 30; i < arr.length; i+=30) arr[i] += '<br/>';
+									return arr.join('');     
+				               }
+					        }
+					    },
+					    {field:'DeviceNo',title:'设备号'},
+					    {field:'Platform',title:'平台',width:'50',formatter:function(value,rowData,index){
+                                var platform = '';
+                                switch(value)
+                                {
+                                    case '1':
+                                        platform = 'Android';
+                                        break;
+                                    case '2':
+                                        platform = 'Ios';
+                                        break;
+                                    default:
+                                        platform = '其他';
+                                }
+                                return platform;
+                            }
+
+						},
+				        {field:'AddTime',title:'时间',width:'150'},
+   				        {field:'ReplyContent',title:'回复内容',width:"380", formatter:function(value,rec,index){
+				               if(value){
+				               		var arr = value.split('');
+				               		for (var i = 30; i < arr.length; i+=30) arr[i] += '<br/>';
+									return arr.join('');     
+				               }
+					        }
+					    },
+				        {field:'opt',title:'操作',width:'100',align:'center',formatter:function(value,rec,index){
+					        	var btn = '';
+					        	if(rec.IsReply!=1) {
+					        		btn = '回复';
+					        		var e= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.FeedBackID+'\')">';
+		                        	e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">'+btn+'</span></span></a>';
+									return e;
+					        	} 
+					        }
+                    	}
+				    ]],
+
+				});
+	
+				
+				//设置分页
+				var pager = _THIS_.containerObj.datagrid('getPager');
+				pager.pagination({
+					pageList:[10,50,100,150,200],
+					pageSize:50,
+					beforePageText:'第',
+					afterPageText:'页',
+					displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+				});
+				$("#feedback_list_toolbar").append($("#feedback_list_searcher_container"));
+			}
+};
+feedbackObj.init();
+</script>

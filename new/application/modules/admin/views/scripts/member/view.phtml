@@ -1,0 +1,217 @@
+<div id="cc" class="easyui-layout" data-options="fit:true" >  
+    <div region="west" split="false" title="会员信息" style="width:260px;">
+        <table class="detail-view-table">
+                        
+            <tr>
+                <th width="110">会员编号:</th>
+                <td><?php echo $this->memberInfo->MemberID;?></td>
+            </tr>
+            <tr>
+                <th>用户名:</th>
+                <td><?php echo $this->memberInfo->UserName;?></td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td><?php echo $this->memberInfo->Email;?></td>
+            </tr>
+            <tr>
+                <th>手机:</th>
+                <td><?php echo $this->memberInfo->MobileNumber;?></td>
+            </tr>
+            <tr>
+                <th>姓名:</th>
+                <td><?php echo $this->memberInfo->Name;?></td>
+            </tr> 
+            <tr>
+                <th>注册时间:</th>
+                <td><?php echo $this->memberInfo->RegisterTime;?></td>
+            </tr>
+            <tr>
+                <th>邮箱验证:</th>
+                <td><?php echo $this->memberEnum['email_verify_status'][$this->memberInfo->EmailVerifyStatus];?></td>
+            </tr>  
+            <tr>
+                <th>手机验证:</th>
+                <td><?php echo $this->memberEnum['mobile_verify_status'][$this->memberInfo->MobileVerifyStatus];?></td>
+            </tr>  
+            <tr>
+                <th>用户状态:</th>
+                <td><?php echo $this->memberEnum['status'][$this->memberInfo->Status];?></td>
+            </tr>             
+        </table>
+    </div>  
+    <div region="center">
+        <div class="easyui-accordion" data-options="fit:true" >
+            <div title="状态修改、身份审核">
+
+            <table class="detail-view-table">
+                
+                <tr>
+                    <th>激活邮件：</th>
+                    <td>
+                    <?php if($this->memberInfo->EmailVerifyStatus != 1):?>
+                    未激活&nbsp;&nbsp;<a href="javascript:void(0)" class="easyui-linkbutton" id="send_member_emailActive">发送激活邮件</a>
+                    <?php else:?>
+                    已激活&nbsp;&nbsp;
+                    <?php endif;?>
+                    </td>
+                </tr>
+                <!--<tr>
+                    <th>邮箱验证：</th>
+                    <td>
+                    <?php echo $this->formSelect("EmailVerifyStatus", $this->memberInfo->EmailVerifyStatus, null, $this->memberEnum['email_verify_status']);?>
+                    </td>
+                </tr>
+                
+                
+                <tr>
+                    <th>手机验证：</th>
+                    <td>
+                    <?php echo $this->formSelect("MobileVerifyStatus", $this->memberInfo->MobileVerifyStatus, null, $this->memberEnum['mobile_verify_status']);?>
+                    </td>
+                </tr>-->
+                <tr>
+                    <th>用户状态：</th>
+                    <td>
+                    <?php echo $this->formSelect("Status", $this->memberInfo->Status, null, $this->memberEnum['status']);?>
+                    </td>
+                </tr>
+            
+            </table>
+            </div>
+            
+            
+            
+        </div>
+    </div>  
+</div> 
+<script>
+var member_id = <?php echo $this->memberInfo->MemberID;?>;
+var email = '<?php echo $this->memberInfo->Email;?>';
+
+//发送激活短信url
+var sendSmsUrl = "<?php echo $this->url(array('controller'=>'member','action'=>'send-validate-sms'));?>";
+
+//发送激活Email url
+var sendEmailUrl = "<?php echo $this->url(array('controller'=>'member','action'=>'send-validate-email'));?>";
+
+//启用或禁用
+var statusUrl = "<?php echo $this->url(array('controller'=>'member','action'=>'status'));?>";
+
+//发送手机验证短信
+$("select[name='MobileVerifyStatus']").change(function(){
+    var select = $(this);
+    var statusVal = $(this).val();
+    var text = $(this).find('option:selected').text();
+    $.messager.confirm('修改手机绑定状态','确定将手机状态修改为  <font color="red">'+text+'</font> 吗？',function(d){
+        if(d){
+            $.ajax({
+                    url:"<?php echo $this->url(array('controller'=>'member','action'=>'send-validate-sms'));?>",
+                    type:"POST",
+                    data:{member_id:member_id,status:statusVal},
+                     dataType:'json',
+                     success:function(ret){
+                         if(ret.flag == 1){
+                             $.messager.alert("提示信息",'修改成功','info');
+                             $("#member_list").datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                     },
+                     error:function(){
+                         $.messager.alert("提示信息",'出错啦','error');
+                      }
+            });
+        }else{
+            select.attr('value','<?php echo $this->memberInfo->MobileVerifyStatus?>');
+        }
+    });    
+});
+//更改邮箱激活状态
+$("select[name='EmailVerifyStatus']").change(function(){
+    var select = $(this);
+    var statusVal = $(this).val();
+    var text = $(this).find('option:selected').text();
+    $.messager.confirm('修改邮箱验证状态','确定将邮箱验证状态修改为  <font color="red">'+text+'</font> 吗？',function(d){
+        if(d){
+            $.ajax({
+                    url:"<?php echo $this->url(array('controller'=>'member','action'=>'set-email-validate'));?>",
+                    type:"POST",
+                    data:{member_id:member_id,status:statusVal},
+                     dataType:'json',
+                     success:function(ret){
+                         if(ret.flag == 1){
+                             $.messager.alert("提示信息",'修改成功','info');
+                             $("#member_list").datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                     },
+                     error:function(){
+                         $.messager.alert("提示信息",'出错啦','error');
+                      }
+            });
+        }else{
+            select.attr('value','<?php echo $this->memberInfo->EmailVerifyStatus?>');
+        }
+    });    
+});
+
+//发送激活邮件
+$("#send_member_emailActive").click(function(){
+    $.messager.confirm('发送激活邮件','确定发送吗？',function(d){
+        if(d){
+            $("#send_member_emailActive").hide();
+            $.ajax({
+                    url:sendEmailUrl,
+                    type:"POST",
+                    data:{'email':email,'member_id':member_id},
+                     dataType:'json',
+                     success:function(ret){
+                         if(ret.flag == 1){
+                             $.messager.alert("提示信息",ret.msg,'info');
+                             $("#send_member_emailActive").parent().html('已发送');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                            $("#send_member_emailActive").show();
+                        }
+                     },
+                     error:function(){
+                         $.messager.alert("提示信息",'出错啦','error');
+                         $("#send_member_emailActive").show();
+                      }
+            });
+        }
+    });    
+});
+
+
+        //启用或禁用
+$("#Status").change(function(){
+    var status = $(this).val();
+    var title = '禁用';
+    if(status == 1){
+        title = '启用';
+    }
+
+    $.messager.confirm(title,'确定要'+title+'该用户?',function(d){
+        if(d){
+            $.ajax({
+                url:statusUrl,
+                type:'POST',
+                data:{member_id:member_id,status:status},
+                dataType:'json',
+                success:function(ret){
+                    if(ret.flag){
+                        $.messager.alert("提示信息",ret.msg,'info');
+                        $("#member_list").datagrid('reload');
+                    }else{
+                        $.messager.alert("提示信息",ret.msg,'error');
+                    }
+                }
+            });
+        }
+    });
+});
+
+</script>

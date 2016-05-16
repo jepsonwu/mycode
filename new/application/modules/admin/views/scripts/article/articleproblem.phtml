@@ -1,0 +1,227 @@
+<table id="articleproblem_list"></table>
+<div id="articleproblem_list_toolbar">
+</div>
+<div id="articleproblem_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="articleproblemObj.addHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="articleproblemObj.containerObj.edatagrid('reload');">刷新</a> 
+        关键字：
+        <input type="text" name="title" size="15" />
+        分类:    
+        <select name="cate_id" >
+                <option value="" >所有</option>
+                <? foreach($this->cate as $item):?><option value="<?=$item['CategoryID']?>" ><?=$item['Name']?></option><?endforeach;?>
+        </select>    
+        时间:
+        <input  class="easyui-datebox" type="text" name="start_date" value="" data-options="onSelect:toSearch" size="13"></input>
+        至&nbsp;<input class="easyui-datebox" type="text" name="end_date" value="" data-options="onSelect:toSearch" size="13"></input>
+        
+        <input class="easyui-linkbutton" type="button" name="searchbtn" onclick="javascript:toSearchArticleproblem()"value="搜索"/>
+        
+</div>
+<div id="articleproblem_add_window"></div>
+<div id="articleproblem_edit_window"></div>
+<script type="text/javascript">
+
+    //回车查询
+    $("#articleproblem_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchArticleproblem();
+        }    
+    });
+    
+    $("#articleproblem_list_searcher_container select[name]").change(function(){
+        toSearchArticleproblem();
+    });
+    
+    //执行查询
+    function toSearchArticleproblem()
+    {
+        var cate_id     = $("#articleproblem_list_searcher_container select[name='cate_id']").val();
+        var title     = $("#articleproblem_list_searcher_container input[name='title']").val();
+        var start_date = $("#articleproblem_list_searcher_container input[name='start_date']").val();
+        var end_date = $("#articleproblem_list_searcher_container input[name='end_date']").val();
+    
+        articleproblemObj.containerObj.datagrid('load', {                                                        
+                start_date: start_date, 
+                end_date: end_date,
+                cate_id:cate_id,
+                title:title
+            });
+    }    
+
+    var edit1 = null;
+    var articleproblemObj = {
+
+        deleteUrl:'<?php echo $this->url(array('controller'=>'article','action'=>'delete'));?>',
+        addUrl:'<?php echo $this->url(array('controller'=>'article','action'=>'add','CategoryID'=>2));?>',
+        editUrl:'<?php echo $this->url(array('controller'=>'article','action'=>'edit','CategoryID'=>2));?>',
+           
+        containerObj:$("#articleproblem_list"),
+        addWindowObj:$("#articleproblem_add_window"),
+        editWindowObj:$("#articleproblem_edit_window"),
+        'selfName':'articleproblemObj',
+        'init':function(){
+            this.showData();
+        },
+        
+        //添加文章
+        addHandler:function(){
+            var _THIS_ = this;
+            if(edit1 != null){
+                edit1.destroy();
+            }
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':1000,
+                'height':600,
+                'modal':true,
+                'resizable':false,
+                'title':'添加',
+                'onClose':function(){
+                    _THIS_.addWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#article_add_form_save").off().on('click',function(){
+                         edit1.sync(); 
+                         $("#article_add_form").attr('action',_THIS_.addUrl).submit();
+                         _THIS_.addWindowObj.window('destroy');
+                    });
+
+                    $("#article_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('destroy');
+                    });
+                    $("#article_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+        
+        //编辑文章
+        editHandler:function(article_id,lang){
+            var _THIS_ = this;
+            if(edit1 != null){
+                edit1.destroy();
+            }
+            _THIS_.editWindowObj.window({
+                'href':_THIS_.editUrl+'?edit_id='+article_id+'&lang='+lang,
+                'width':1000,
+                'height':600,
+                'modal':true,
+                'resizable':false,
+                'title':'编辑',
+                
+                'onLoad':function(){
+                    $("#article_edit_form_save").off().on('click',function(){
+                        edit1.sync(); 
+                        $("#article_edit_form").attr('action',_THIS_.editUrl).submit();
+                        _THIS_.editWindowObj.window('close');
+                    });
+
+                    $("#article_edit_form_close").off().on('click',function(){
+                        _THIS_.editWindowObj.window('close');
+                    });
+                    
+                    $("#article_edit_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.editWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    }
+            });
+        },
+        //删除文章
+        deleteHandler:function(article_id,status){
+            var _THIS_ = this;
+            var tip = article_id;
+               var mes = confirm("确定要删除ID为 "+tip+" 的文章吗？");
+                if(mes==true){
+                    $.ajax({
+                            url:_THIS_.deleteUrl,
+                            type:"POST",
+                            data:{article_id:article_id},
+                            dataType:'json',
+                            success:function(ret){
+                                if(ret.flag == 1){
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            }
+                    });
+                }
+        },
+        
+        
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+
+                //是否分页
+                pagination:true,
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                fitColumns:true,
+                rownumbers : true,
+                fit:true,
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'ArticleID',
+
+                //数据加载url
+                url:'<?php echo $this->url(array('controller'=>'article','action'=>'list','CategoryID'=>2));?>',
+                toolbar:'#articleproblem_list_toolbar',
+
+                //设置列
+                columns:[[
+                    {field:'ArticleID',title:'ID',width:30},
+                    {field:'Title',title:'标题',width:138},
+                    {field:'TitleEn',title:'标题[英文]',width:138},
+                    {field:'Name',title:'类型',width:50},
+                    {field:'DataTime',title:'编辑时间', width:78,align:'right'},
+                    {field:'opt',title:'操作',width:200,align:'center',formatter:function(value,rec,index){
+                        var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.ArticleID+'\',1)">';
+                        e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑中文</span></span></a>';
+                        var f= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.ArticleID+'\',2)">';
+                        f += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑英文</span></span></a>';
+                        var d= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.deleteHandler(\''+rec.ArticleID+'\')">';
+                        d += '<span class="l-btn-left"><span class="l-btn-text icon-remove l-btn-icon-left">删除</span></span></a>';
+                        return  e+'&nbsp;&nbsp;'+f+'&nbsp;&nbsp;' + d;
+                       }
+                    }
+                ]],
+                
+            });
+
+
+
+            var pager = _THIS_.containerObj.datagrid('getPager');
+            pager.pagination({
+                pageList:[10,50,100,150,200],
+                pageSize:50,
+                beforePageText:'第',
+                afterPageText:'页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+            });
+
+            $.messager.defaults={ok:"确定",cancel:"取消"};
+            $("#articleproblem_list_toolbar").append($("#articleproblem_list_searcher_container"));
+
+
+           },
+};
+articleproblemObj.init();
+</script> 

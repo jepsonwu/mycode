@@ -1,0 +1,240 @@
+<table id="activity_list"></table>
+<div id="activity_list_toolbar"></div>
+<div id="activity_view_window"></div>
+<div id="activity_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="activityObj.addActivity();">添加</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="activityObj.containerObj.edatagrid('reload');">刷新</a> 
+    活动名称：<input type="text" value="" name="activityName" size="20"/> &nbsp;&nbsp;
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchActivityList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="activity_set_window"></div>
+<div id="activity_add_window"></div>
+
+<script type="text/javascript">
+    $("#activity_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchActivityList();
+        }    
+    });
+    
+    function toSearchActivityList()
+    {
+        var activityName = $("#activity_list_searcher_container input[name='activityName']").val();
+        var start_date      = $("#activity_list_searcher_container input[name='start_date']").val();
+        var end_date        = $("#activity_list_searcher_container input[name='end_date']").val();
+        
+        activityObj.containerObj.datagrid('load', {
+            activityName:activityName,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var activityObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'activity','action'=>'activity-list'));?>',
+        'delUrl':'<?php echo $this->url(array('controller'=>'activity','action'=>'del'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'activity','action'=>'add'));?>',
+
+        'containerObj':$("#activity_list"),
+        'addWindowObj':$("#activity_add_window"),
+        
+        'selfName':'activityObj',
+
+        'init':function(){
+            this.showData();
+        },
+        
+        //删除活动
+        'delTemplate':function(id) {
+            var _THIS_ = this;
+            $.messager.confirm('删除活动','确认要删除吗？',function(d){
+                if(d){
+                    $.ajax({
+                        url:_THIS_.delUrl + '?id=' + id,
+                        type:"GET",
+                        dataType:'json',
+                        success:function(ret){
+                            console.log(ret.flag);
+                            if(ret.flag > 0){
+                                $.messager.alert("提示信息",'删除成功！','info');
+                                _THIS_.containerObj.datagrid('reload');
+                            } else{
+                                $.messager.alert("提示信息",ret.msg,'error');
+                            }
+                        }
+                    });
+                }
+            });
+        },
+        
+        //添加新活动
+        'addActivity':function() {
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':600,
+                'height':350,
+                'modal':true,
+                'resizable':false,
+                'title':'添加新活动',
+                'onLoad':function(){
+                    $("#activity_add_form_save").off().on('click',function(){
+                        if($("#activity_add_form input[name='activityName']").val()==""){
+                            $.messager.alert("提示信息",'活动名称不能为空!','error');return false;
+                        }
+                        var useTemplate = $('input[type="radio"][name="useTemplate"]:checked ').val();
+                        if(useTemplate==0){//不使用模板
+                            if($("#activity_add_form input[name='activityLink']").val()==""){
+                                $.messager.alert("提示信息",'活动链接不能为空!','error');return false;
+                            }
+                        }else{
+                            var templateType = $("#activity_add_form select[name='templateType']").val();
+                            if(templateType==1){//谁是主讲人
+                                if($("#activity_add_form input[name='title']").val()==""){
+                                    $.messager.alert("提示信息",'标题不能为空!','error');return false;
+                                }
+                                if($("#activity_add_form input[name='speakerAccount']").val()==""){
+                                    $.messager.alert("提示信息",'主讲人不能为空!','error');return false;
+                                }
+                                if($("#activity_add_form input[name='describe']").val()==""){
+                                    $.messager.alert("提示信息",'主讲人描述不能为空!','error');return false;
+                                }
+                            }else if(templateType==2){//今日明星
+                                if($("#activity_add_form input[name='star']").val()==""){
+                                    $.messager.alert("提示信息",'明星账号不能为空!','error');return false;
+                                }
+                                if($("#activity_add_form input[name='depict']").val()==""){
+                                    $.messager.alert("提示信息",'明星账号描述不能为空!','error');return false;
+                                }
+                                if($("#activity_add_form input[name='article_link']").val()==""){
+                                    $.messager.alert("提示信息",'推荐文章不能为空!','error');return false;
+                                }
+                                if($("#activity_add_form input[name='abstract']").val()==""){
+                                    $.messager.alert("提示信息",'推荐文章摘要不能为空!','error');return false;
+                                }
+                            }
+                        }
+                        $("#activity_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#activity_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('close');
+                    });
+                    
+                    $("#activity_add_form_preview").off().on('click',function(){//预览
+                        //$("#activity_add_form").attr('action',_THIS_.addUrl).submit();
+                    });
+
+                    $("#activity_add_form").myForm(function(ret){
+                        console.info(ret);
+                        if(ret.flag){
+                            $.messager.alert("提示信息",'添加成功！','info');
+                            _THIS_.addWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });    
+                }
+            });
+        },
+                
+        //广告链接
+        adsHandler:function(id){
+            var _THIS_ = this;
+            _THIS_.checkWindowObj.window({
+                'href':_THIS_.adsLink+'?topic_id='+id,
+                'width':500,
+                'height':150,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'复制链接',
+                'onLoad':function(){
+                    if ( window.clipboardData ) {  
+                        $('.copy_btn').click(function() {  
+                            var tempID = $(this).attr('data-value-id');
+                            window.clipboardData.setData("Text", $("#"+tempID).val());  
+                            alert('复制成功！');  
+                        });  
+                    } else {  
+                        $(".copy_btn").zclip({  
+                            path:'/static/js/ZeroClipboard.swf',  
+                            copy:function(){
+                                var tempID = $(this).attr('data-value-id');
+                                return $("input#"+tempID).val();
+                                //return $(this).prev('input').val();
+                            },  
+                            afterCopy:function(){alert('复制成功！');}  
+                        });  
+                    }              
+                }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                //是否条纹显示
+                striped:true,
+                //加载提示信息
+                loadMsg:'正在加载...',
+                //列是否自适应
+                //fitColumns:true,
+                rownumbers : false,
+                fit:true, 
+                //是否单行选择
+                singleSelect:true,
+
+                idField:'Lid',
+
+                url:_THIS_.loadUrl,
+
+                toolbar: '#activity_list_toolbar',
+
+                //设置列   
+                columns:[[
+                    {field:'Lid',title:'活动编号',width:100},
+                    {field:'CreateTime',title:'创建时间',width:150},
+                    {field:'ActivityName',title:'活动名称',width:250},
+                    {field:'TemplateType',title:'模板系列',width:250,formatter:function(value,rec,index){
+                            return rec.TemplateType==0?"---":rec.TemplateType;
+                        }
+                    },
+                    {field:'TemplateName',title:'模板名称',width:250,formatter:function(value,rec,index){
+                            return rec.TemplateType==0?"---":rec.TemplateName;
+                        }
+                    },
+                    {field:'View',title:'活动详情',width:200,formatter:function(value,rec,index){
+                            if(rec.TemplateType==0){
+                                var link = rec.Path;
+                            }else{
+                                var link = "/api/activity/hd?id="+rec.Lid;
+                            }
+                            return '<a style="color:red" href="'+link+'" target="_blank">查看</a>';
+                        }
+                    },
+                    {field:'opt',title:'操作',align:'center',width:300,formatter:function(value,rec,index){
+                            var del = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.delTemplate(\''+rec.Lid+'\')">';
+                                del += '<span class="l-btn-left">删除</span></a>';
+                            return del;          
+                       }
+                    }
+                ]],
+
+                //分页信息
+                pagination:true,
+                //pagePosition:'both',
+                pageList:[20,50,100,150,200],
+                pageSize:20,
+            });
+            $("#activity_list_toolbar").append($("#activity_list_searcher_container"));
+        },    
+};
+activityObj.init();
+</script>

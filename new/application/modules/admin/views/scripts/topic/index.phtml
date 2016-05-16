@@ -1,0 +1,336 @@
+<table id="topic_list"></table>
+<div id="topic_list_toolbar"></div>
+<div id="topic_view_window"></div>
+<div id="topic_list_searcher_container">
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="topicObj.addHandler();">添加</a> 
+    <a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="topicObj.containerObj.edatagrid('reload');">刷新</a> 
+        <select name="searchType">
+            <option value="TopicName">话题名称</option>
+            <option value="UserName">创建人</option>
+        </select><input type="text" value="" name="searchTypeValue" size="20"/> &nbsp;&nbsp;
+    匿名状态：
+    <select name="IsAnonymous">
+        <option value="-1">所有</option>
+        <option value="0">实名</option>
+        <option value="1">匿名</option>
+    </select>&nbsp;&nbsp;
+
+    审核状态：
+    <select name="CheckStatus">
+        <option value="-1">所有</option>
+        <option value="0">待审核</option>
+        <option value="1">已通过</option>
+        <option value="2">已隐藏</option>
+    </select>&nbsp;&nbsp;
+  
+    创建时间：
+    <input class="easyui-datetimebox" type="text" name="start_date" value="" data-options=""></input>
+    至&nbsp;<input class="easyui-datetimebox" type="text" name="end_date" value="" data-options=""></input>   
+    <a href="javascript:void(0);" class="easyui-linkbutton" onclick="javascript:toSearchTopicList()" iconCls="icon-search">搜索</a>
+</div>
+<div id="topic_add_window"></div>
+<div id="topic_edit_window"></div>
+<div id="topic_check_window"></div>
+
+<script type="text/javascript">
+    $("#topic_list_searcher_container input[name]").keydown(function(event){
+        if(event.keyCode == 13){
+            toSearchTopicList();
+        }    
+    });
+    
+    $("#topic_list_searcher_container select[name]").change(function(){
+        toSearchTopicList();
+    });
+    
+    function toSearchTopicList(flag)
+    {
+        var searchType      = $("#topic_list_searcher_container select[name='searchType']").val();
+        var searchTypeValue = $("#topic_list_searcher_container input[name='searchTypeValue']").val();
+        var IsAnonymous     = $("#topic_list_searcher_container select[name='IsAnonymous']").val();
+        var CheckStatus     = $("#topic_list_searcher_container select[name='CheckStatus']").val();
+        var start_date      = $("#topic_list_searcher_container input[name='start_date']").val();
+        var end_date        = $("#topic_list_searcher_container input[name='end_date']").val();
+        
+        topicObj.containerObj.datagrid('load', {
+            searchType:searchType,
+            searchTypeValue:searchTypeValue,
+            IsAnonymous:IsAnonymous,
+            CheckStatus:CheckStatus,
+            start_date:start_date,
+            end_date:end_date
+        });
+    }
+
+var topicObj = {
+        //数据加载url
+        'loadUrl':'<?php echo $this->url(array('controller'=>'topic','action'=>'list'));?>',
+        'addUrl':'<?php echo $this->url(array('controller'=>'topic','action'=>'add'));?>',
+        'editUrl':'<?php echo $this->url(array('controller'=>'topic','action'=>'edit'));?>',
+        'checkUrl':'<?php echo $this->url(array('controller'=>'topic','action'=>'check'));?>',
+        'viewUrl':'<?php echo $this->url(array('controller'=>'violation','action'=>'view-list'));?>',
+        'adsLink':'<?php echo $this->url(array('controller'=>'topic','action'=>'ads-link'));?>',
+
+        'containerObj':$("#topic_list"),
+        'addWindowObj':$("#topic_add_window"),
+        'editWindowObj':$("#topic_edit_window"),
+        'checkWindowObj':$("#topic_check_window"),
+        
+        'selfName':'topicObj',
+
+        'init':function(){
+            this.showData();
+        },
+
+        //添加话题
+        addHandler:function(){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.addUrl,
+                'width':450,
+                'height':350,
+                'modal':true,
+                'resizable':false,
+                'title':'添加话题',
+                'onClose':function(){
+                    _THIS_.addWindowObj.window('destroy');
+                },
+                'onLoad':function(){
+                    $("#topic_add_form_save").off().on('click',function(){
+                         $("#topic_add_form").attr('action',_THIS_.addUrl).submit();
+                        // _THIS_.addWindowObj.window('destroy');
+                    });
+
+                    $("#topic_add_form_close").off().on('click',function(){
+                        _THIS_.addWindowObj.window('destroy');
+                    });
+                    $("#topic_add_form").myForm(function(ret){
+                        if(ret.flag == 1){
+                            _THIS_.addWindowObj.window('destroy');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",ret.msg,'error');
+                        }
+                    });
+                    
+                }
+            });
+        },
+
+        //编辑话题
+        'editHandler':function(id){
+                var _THIS_ = this;
+                _THIS_.editWindowObj.window({
+                        'href':_THIS_.editUrl+'?topic_id='+id,
+                        'width':450,
+                        'height':300,
+                        'modal':true,
+                        'resizable':false,
+                        'title':'编辑话题',
+                        'onLoad':function(){
+
+                            $("#topic_edit_form_save").off().on('click',function(){
+                                $("#topic_edit_form").attr('action',_THIS_.editUrl).submit();
+                            });
+
+                            $("#topic_edit_form_close").off().on('click',function(){
+                                _THIS_.editWindowObj.window('close');
+                            });
+                            
+                            $("#topic_edit_form").myForm(function(ret){
+                                console.info(ret);
+                                if(ret.flag){
+                                    $.messager.alert("提示信息",'修改成功！','info');
+                                    _THIS_.editWindowObj.window('close');
+                                    _THIS_.containerObj.datagrid('reload');
+                                }else{
+                                    $.messager.alert("提示信息",ret.msg,'error');
+                                }
+                            });    
+                        }
+                    });
+            },
+
+
+        //审核话题
+        checkHandler:function(id,status){
+            var _THIS_ = this;
+            _THIS_.checkWindowObj.window({
+                'href':_THIS_.checkUrl+'?topic_id='+id+'&status='+status,
+                'width':300,
+                'height':200,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'审核话题',
+                'onLoad':function(){
+                    $("#topic_check_form_save").off().on('click',function(){
+                        $("#topic_check_form").attr('action',_THIS_.checkUrl).submit();
+                    });
+
+                    $("#topic_check_form_close").off().on('click',function(){
+                        _THIS_.checkWindowObj.window('close');
+                    });
+                    
+                    $("#topic_check_form").myForm(function(data){
+                        if(data.flag == 1){
+                            _THIS_.checkWindowObj.window('close');
+                            _THIS_.containerObj.datagrid('reload');
+                        }else{
+                            $.messager.alert("提示信息",data.msg,'error');
+                        }
+                    });
+                        
+                }
+            });
+        },
+
+        //查看违规记录
+        'viewHandler':function(member_id){
+            var _THIS_ = this;
+            _THIS_.addWindowObj.window({
+                'href':_THIS_.viewUrl+'?member_id='+member_id,
+                'width':500,
+                'height':300,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'违规记录',
+                'onLoad':function(){
+
+                    }
+            });
+        },
+
+        //广告链接
+        adsHandler:function(id){
+            var _THIS_ = this;
+            _THIS_.checkWindowObj.window({
+                'href':_THIS_.adsLink+'?topic_id='+id,
+                'width':500,
+                'height':150,
+                'modal':true,
+                'resizable':false,
+                'cache':false,
+                'title':'复制链接',
+                'onLoad':function(){
+                    if ( window.clipboardData ) {  
+                        $('.copy_btn').click(function() {  
+                            var tempID = $(this).attr('data-value-id');
+                            window.clipboardData.setData("Text", $("#"+tempID).val());  
+                            alert('复制成功！');  
+                        });  
+                    } else {  
+                        $(".copy_btn").zclip({  
+                            path:'/static/js/ZeroClipboard.swf',  
+                            copy:function(){
+                                var tempID = $(this).attr('data-value-id');
+                                return $("input#"+tempID).val();
+                                //return $(this).prev('input').val();
+                            },  
+                            afterCopy:function(){alert('复制成功！');}  
+                        });  
+                    }              
+                }
+            });
+        },
+
+        //加载数据
+        'showData':function(){
+            var _THIS_ = this;
+            _THIS_.containerObj.datagrid({
+                    
+                    //是否条纹显示
+                    striped:true,
+                    //加载提示信息
+                    loadMsg:'正在加载...',
+                    //列是否自适应
+                    //fitColumns:true,
+                    rownumbers : true,
+                    fit:true, 
+                    //是否单行选择
+                    singleSelect:true,
+    
+                    idField:'TopicID',
+    
+                    url:_THIS_.loadUrl,
+
+                    toolbar: '#topic_list_toolbar',
+        
+                    //设置列   
+                    columns:[[
+                        {field:'TopicID',title:'话题ID',width:50}, 
+                        {field:'TopicName',title:'话题名称',width:150},
+                        {field:'CapitalChar',title:'首字母',width:50}, 
+                        {field:'IsAnonymous',title:'匿名状态',width:60,formatter:function(value,rec,index){
+                                var isAnonymous='';
+                                switch(value){
+                                    case '0':
+                                        isAnonymous = '实名';
+                                        break;
+                                    case '1':
+                                        isAnonymous = '匿名';
+                                        break;
+                                }
+                                return isAnonymous;
+                            }
+                        }, 
+                        {field:'CreateTime',title:'创建时间',width:150},
+                        {field:'UserName',title:'创建人',width:70,formatter:function(value,rowData,rowIndex){
+                                if(value != null){
+                                    return '<a style="color:red" href="javascript:void(0);" onclick="'+_THIS_.selfName+'.viewHandler(\''+rowData.MemberID+'\')">'+value+'</a>';
+                                }
+                            }
+                        },
+                        {field:'FollowNum',title:'关注数',width:70},                       
+                        {field:'ViewNum',title:'观点数',width:70},
+                        {field:'SortWeight',title:'排序权重',width:70},
+                        {field:'CheckStatus',title:'审核状态',width:70,formatter:function(value,rec,index){
+                                var status = '';
+                                switch(value){
+                                    case '0':
+                                        status = '待审核';
+                                        break;
+                                    case '1':
+                                        status = '已通过';
+                                        break;
+                                    case '2':
+                                        status = '已隐藏';
+                                        break;
+                                }
+                                return status;
+                            }
+                        },              
+                        
+                        {field:'CheckTime',title:'审核时间',width:150},
+                        {field:'BackImage',title:'背景图片',width:100,formatter:function(value,rec,index){
+                                return '<img src="'+value+'?imageView2/0/w/200/h/200"/>';
+                            }
+                        },
+                        {field:'Remark',title:'隐藏理由',width:100},  
+                        {field:'opt',title:'操作',align:'center',formatter:function(value,rec,index){
+                                var c = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.checkHandler(\''+rec.TopicID+'\',\''+rec.CheckStatus+'\')">';
+                                    c += '<span class="l-btn-left">审核</span></a>';
+                                var e = '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.editHandler(\''+rec.TopicID+'\')">';
+                                    e += '<span class="l-btn-left"><span class="l-btn-text icon-edit l-btn-icon-left">编辑</span></span></a>';
+                                 var a= '<a href="javascript:void(0);" class="easyui-linkbutton l-btn l-btn-plain" iconcls="icon-edit" onclick="'+_THIS_.selfName+'.adsHandler(\''+rec.TopicID+'\')">';
+                                     a += '<span class="l-btn-left">复制链接</span></a>';
+                                return c+e+a;          
+                           }
+                        }
+
+                    ]],
+
+                    //分页信息
+                    pagination:true,
+                    //pagePosition:'both',
+                    pageList:[20,50,100,150,200],
+                    pageSize:50,
+                });
+
+
+            $("#topic_list_toolbar").append($("#topic_list_searcher_container"));
+            },    
+};
+topicObj.init();
+</script>
