@@ -1,66 +1,39 @@
 <?php
 
 /**
- *
+ * restfull
  * User: jepson <jepson@duomai.com>
  * Date: 16-5-16
  * Time: 下午3:08
  */
-class DM_Controller_Rest extends DM_Controller_Common
+abstract class DM_Controller_Rest extends DM_Controller_Common
 {
-	public function init()
-	{
-		parent::init();
-	}
-
 	// 当前请求类型
-	protected   $_method        =   '';
-	// 当前请求的资源类型
-	protected   $_type          =   '';
+	protected $_method = '';
 	// REST允许的请求类型列表
-	protected   $allowMethod    =   array('get','post','put','delete');
+	protected $_allow_method = array('GET', 'POST', 'PUT', 'DELETE');
 	// REST默认请求类型
-	protected   $defaultMethod  =   'get';
+	protected $_default_method = 'get';
+	// 当前请求的资源类型
+	protected $_request_type = null;
 	// REST允许请求的资源类型列表
-	protected   $allowType      =   array('html','xml','json','rss');
+	protected $_allow_request_type = array('html', 'xml', 'json');
 	// 默认的资源类型
-	protected   $defaultType    =   'html';
-	// REST允许输出的资源类型列表
-	protected   $allowOutputType=   array(
-		'xml' => 'application/xml',
-		'json' => 'application/json',
-		'html' => 'text/html',
-	);
+	protected $_default_request_type = 'json';
 	//API版本号
 	protected $_api_version = "";
 
-	/**
-	 * 架构函数
-	 * @access public
-	 */
-	public function __construct() {
-		// 资源类型检测
-		if(''==__EXT__) { // 自动检测资源类型
-			$this->_type   =  $this->getAcceptType();
-		}elseif(!in_array(__EXT__,$this->allowType)) {
-			// 资源类型非法 则用默认资源类型访问
-			// $this->DResponse(415);  恢复默认值写法，很多请求都不传http_accept  例如支付宝、wap
-			$this->_type   =  $this->defaultType;
-		}else{
-			// 检测实际资源类型
-			$this->_type   =  $this->getAcceptType() == __EXT__ ? __EXT__ : $this->defaultType;
-		}
 
-		//请求类型检测
-		!in_array($this->_type, $this->allowType)&& $this->_type   =  $this->defaultType;
+	public function init()
+	{
+		//资源类型检测
+		$this->_type = $this->getAcceptType();
+		is_null($this->_request_type) && $this->_type = $this->_default_request_type;
+		!in_array($this->_request_type, $this->_allow_request_type) && $this->sendHttpError(405);
 
 		// 请求方式检测
-		$method  =  strtolower(REQUEST_METHOD);
-		if(!in_array($method,$this->allowMethod)) {
-			// 请求方式非法 则用默认请求方法
-			$this->DResponse(405);
-			//$method = $this->defaultMethod;
-		}
+		$method = strtoupper($this->getRequest()->getMethod());
+		!in_array($method, $this->_allow_method) && $this->sendHttpError(405);
 		$this->_method = $method;
 
 		//处理头部，例如API版本 客户端版本
@@ -68,195 +41,51 @@ class DM_Controller_Rest extends DM_Controller_Common
 		isset($version) && $this->_api_version = 'v' . intval($version);
 		unset($version);
 
-		defined("ACTION_NAME_REST") ||
-		define("ACTION_NAME_REST", ACTION_NAME .
-			($this->_api_version ? '_' . $this->_api_version : '') . '_' . $this->_method . '_' . $this->_type);
-
-		parent::__construct();
-	}
-
-	/**
-	 * 魔术方法 有不存在的操作的时候执行
-	 * @access public
-	 * @param string $method 方法名
-	 * @param array $args 参数
-	 * @return mixed
-	 */
-	public function __call($method,$args) {
-		if( 0 === strcasecmp($method,ACTION_NAME.C('ACTION_SUFFIX'))) {
-			//处理api版本
-			$this->_api_version && $method .= "_" . $this->_api_version;
-
-			if(method_exists($this,$method.'_'.$this->_method.'_'.$this->_type)) { // RESTFul方法支持
-				$fun  =  $method.'_'.$this->_method.'_'.$this->_type;
-				$this->$fun();
-			}elseif($this->_method == $this->defaultMethod && method_exists($this,$method.'_'.$this->_type) ){
-				$fun  =  $method.'_'.$this->_type;
-				$this->$fun();
-			}elseif($this->_type == $this->defaultType && method_exists($this,$method.'_'.$this->_method) ){
-				$fun  =  $method.'_'.$this->_method;
-				$this->$fun();
-			}elseif(method_exists($this,'_empty')) {
-				// 如果定义了_empty操作 则调用
-				$this->_empty($method,$args);
-			}elseif(file_exists_case($this->view->parseTemplate())){
-				// 检查是否存在默认模版 如果有直接输出模版
-				$this->display();
-			}else{
-				//请求路由规则之外的方法
-				$this->DResponse(405);
-				//E(L('_ERROR_ACTION_').':'.ACTION_NAME);
-			}
-		}
+		parent::init();
 	}
 
 	/**
 	 * 获取当前请求的Accept头信息
-	 * @return string
+	 * @return int|null|string
 	 */
-	protected function getAcceptType(){
+	protected function getAcceptType()
+	{
 		$type = array(
-			'html'  =>  'text/html,application/xhtml+xml,*/*',
-			'xml'   =>  'application/xml,text/xml,application/x-xml',
-			'json'  =>  'application/json,text/x-json,application/jsonrequest,text/json',
-			'js'    =>  'text/javascript,application/javascript,application/x-javascript',
-			'css'   =>  'text/css',
-			'rss'   =>  'application/rss+xml',
-			'yaml'  =>  'application/x-yaml,text/yaml',
-			'atom'  =>  'application/atom+xml',
-			'pdf'   =>  'application/pdf',
-			'text'  =>  'text/plain',
-			'png'   =>  'image/png',
-			'jpg'   =>  'image/jpg,image/jpeg,image/pjpeg',
-			'gif'   =>  'image/gif',
-			'csv'   =>  'text/csv'
+			'html' => 'text/html,application/xhtml+xml,*/*',
+			'xml' => 'application/xml,text/xml,application/x-xml',
+			'json' => 'application/json,text/x-json,application/jsonrequest,text/json',
+			'js' => 'text/javascript,application/javascript,application/x-javascript',
+			'css' => 'text/css',
+			'rss' => 'application/rss+xml',
+			'yaml' => 'application/x-yaml,text/yaml',
+			'atom' => 'application/atom+xml',
+			'pdf' => 'application/pdf',
+			'text' => 'text/plain',
+			'png' => 'image/png',
+			'jpg' => 'image/jpg,image/jpeg,image/pjpeg',
+			'gif' => 'image/gif',
+			'csv' => 'text/csv'
 		);
 
-		foreach($type as $key=>$val){
-			$array   =  explode(',',$val);
-			foreach($array as $k=>$v){
-				if(stristr($_SERVER['HTTP_ACCEPT'], $v)) {
+		foreach ($type as $key => $val) {
+			$array = explode(',', $val);
+			foreach ($array as $k => $v) {
+				if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
 					return $key;
 				}
 			}
 		}
-		return false;
-	}
-
-	// 发送Http状态信息
-	protected function sendHttpStatus($code) {
-		static $_status = array(
-			// Informational 1xx
-			100 => 'Continue',
-			101 => 'Switching Protocols',
-			// Success 2xx
-			200 => 'OK',
-			201 => 'Created',
-			202 => 'Accepted',
-			203 => 'Non-Authoritative Information',
-			204 => 'No Content',
-			205 => 'Reset Content',
-			206 => 'Partial Content',
-			// Redirection 3xx
-			300 => 'Multiple Choices',
-			301 => 'Moved Permanently',
-			302 => 'Moved Temporarily ',  // 1.1
-			303 => 'See Other',
-			304 => 'Not Modified',
-			305 => 'Use Proxy',
-			// 306 is deprecated but reserved
-			307 => 'Temporary Redirect',
-			// Client Error 4xx
-			400 => 'Bad Request',
-			401 => 'Unauthorized',
-			402 => 'Payment Required',
-			403 => 'Forbidden',
-			404 => 'Not Found',
-			405 => 'Method Not Allowed',
-			406 => 'Not Acceptable',
-			407 => 'Proxy Authentication Required',
-			408 => 'Request Timeout',
-			409 => 'Conflict',
-			410 => 'Gone',
-			411 => 'Length Required',
-			412 => 'Precondition Failed',
-			413 => 'Request Entity Too Large',
-			414 => 'Request-URI Too Long',
-			415 => 'Unsupported Media Type',
-			416 => 'Requested Range Not Satisfiable',
-			417 => 'Expectation Failed',
-			418=>'Timestamp Exceeded',//timestamp 超过15分钟
-			419=>'Request Exceeded',//请求次数受限
-			420=>'Decrypt Failed',//解密错误
-			// Server Error 5xx
-			500 => 'Internal Server Error',
-			501 => 'Not Implemented',
-			502 => 'Bad Gateway',
-			503 => 'Service Unavailable',
-			504 => 'Gateway Timeout',
-			505 => 'HTTP Version Not Supported',
-			509 => 'Bandwidth Limit Exceeded'
-		);
-		if(isset($_status[$code])) {
-			header('HTTP/1.1 '.$code.' '.$_status[$code]);
-			// 确保FastCGI模式下正常
-			header('Status:'.$code.' '.$_status[$code]);
-		}
+		return null;
 	}
 
 	/**
-	 * 编码数据
-	 * @access protected
-	 * @param mixed $data 要返回的数据
-	 * @param String $type 返回类型 JSON XML
-	 * @return string
+	 * 请求错误
+	 * @param $code
 	 */
-	protected function encodeData($data,$type='') {
-		//if(empty($data))  return '';
-		if('json' == $type) {
-			// 返回JSON数据格式到客户端 包含状态信息
-			$data = json_encode($data);
-		}elseif('xml' == $type){
-			// 返回xml格式数据
-			$data = xml_encode($data);
-		}elseif('php'==$type){
-			$data = serialize($data);
-		}// 默认直接输出
-		$this->setContentType($type);
-		//header('Content-Length: ' . strlen($data));
-		return $data;
-	}
-
-	/**
-	 * 设置页面输出的CONTENT_TYPE和编码
-	 * @access public
-	 * @param string $type content_type 类型对应的扩展名
-	 * @param string $charset 页面输出编码
-	 * @return void
-	 */
-	public function setContentType($type, $charset=''){
-		if(headers_sent()) return;
-		if(empty($charset))  $charset = C('DEFAULT_CHARSET');
-		$type = strtolower($type);
-		if(isset($this->allowOutputType[$type])) //过滤content_type
-			header('Content-Type: '.$this->allowOutputType[$type].'; charset='.$charset);
-	}
-
-	/**
-	 * 输出返回数据
-	 * @access protected
-	 * @param mixed $data 要返回的数据
-	 * @param String $type 返回类型 JSON XML
-	 * @param integer $code HTTP状态
-	 * @return void
-	 */
-	protected function response($data,$type='',$code=200) {
+	protected function sendHttpError($code)
+	{
 		$this->sendHttpStatus($code);
-		exit($this->encodeData($data,strtolower($type)));
-	}
-
-	protected function DResponse($code=null){
-		$this->sendHttpStatus($code);
+		//todo 输出数据
 		exit();
 	}
 }

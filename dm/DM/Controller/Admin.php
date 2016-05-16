@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Admin通用控制�?
+ * Admin通用控制�?
  *
  * @author Bruce
  * @since 2014/05/22
  */
-class DM_Controller_Admin extends DM_Controller_Action
+class DM_Controller_Admin extends DM_Controller_Common
 {
 
 	/**
@@ -16,12 +16,12 @@ class DM_Controller_Admin extends DM_Controller_Action
 	const SESSION_NAMESPACE = 'admin';
 
 	/**
-	 * 用户数据�?
+	 * 用户数据�?
 	 * @var string
 	 */
 	protected $_user_db = '';
 
-	/**新增编辑 验证之后的数�?
+	/**新增编辑 验证之后的数�?
 	 * @var array
 	 */
 	protected $_param = array();
@@ -36,7 +36,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 	{
 		parent::init();
 
-		//兼容性代码，防止后台调用API model判断是否登录�?
+		//兼容性代码，防止后台调用API model判断是否登录�?
 		DM_Controller_Front::getInstance()->getAuth()->setSession($this->getSession());
 
 		$this->getStaticUrl();
@@ -54,7 +54,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 		$notCheckArray = array('index_login', 'error_error', 'duomai_login', 'index_yzm', 'index_logout', 'duomai_logout');
 		if (!in_array($this->getRequest()->getControllerName() . '_' . $this->getRequest()->getActionName(), $notCheckArray)) {
 			$this->checkAuth('/admin/index/login');
-//判断IP 2015.02暂时取消，很多人反馈不方便�?�已有七天登录限�?
+//判断IP 2015.02暂时取消，很多人反馈不方便�?�已有七天登录限�?
 //             $request_ip = $this->_request->getClientIp();
 //             if($this->session->login_ip != $request_ip){
 //                 $this->auth->clearIdentity();
@@ -62,7 +62,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 //             }
 			$this->_auth_info = $authInfo = $this->auth->getIdentity();
 			if ($authInfo) {
-				//延长后台登录超时 默认�?周，现在�?出太频繁�?
+				//延长后台登录超时 默认�?周，现在�?出太频繁�?
 				if (time() - $authInfo->Lasttime > 86400 * 7) {
 					$this->auth->clearIdentity();
 				} else {
@@ -76,7 +76,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 
 			if (!$this->checkPrivilege($this->_request->getControllerName(), $this->_request->getActionName())) {
 				if ($this->_request->isXmlHttpRequest()) {
-					$this->returnJson(0, '您无权操�?');
+					$this->returnJson(0, '您无权操�?');
 				} else {
 					header('Content-type:text/javascript;Charset=utf-8');
 					exit('无权查看');
@@ -84,16 +84,16 @@ class DM_Controller_Admin extends DM_Controller_Action
 			}
 		}
 
-		//获取用户数据库名�?
+		//获取用户数据库名�?
 		$this->_user_db = DM_Controller_Front::getInstance()->getConfig()->resources->multidb->udb->dbname;
-		//前台控制器名�?
+		//前台控制器名�?
 		$this->view->CONTROLLER = str_replace("-", "_", $this->_request->getControllerName());
 	}
 
 	/**
 	 * 权限判断
-	 * @param 主标�? $main_sign
-	 * @param 副标�? $sub_sign
+	 * @param 主标 �? $main_sign
+	 * @param 副标 �? $sub_sign
 	 * @return boolean
 	 */
 	protected function checkPrivilege($main_sign, $sub_sign)
@@ -102,11 +102,11 @@ class DM_Controller_Admin extends DM_Controller_Action
 		if (empty($rolesArray) || empty($main_sign) || empty($sub_sign)) {
 			return false;
 		} else {
-			//管理员默认拥有所有权�?
+			//管理员默认拥有所有权�?
 			if (in_array(1, $rolesArray)) {
 				//return true;
 			}
-			//初始化角色对�?
+			//初始化角色对�?
 			$roleModel = new DM_Model_Table_User_Role();
 
 			//根据角色获取权限列表
@@ -154,8 +154,8 @@ class DM_Controller_Admin extends DM_Controller_Action
 	}
 
 	/**
-	 * 获取ID和名称的键�?�对
-	 * @param  $object_name 对象�?
+	 * 获取ID和名称的键�?�对
+	 * @param  $object_name 对象�?
 	 * @param  string $table_name
 	 * @param  string $key_field
 	 * @param  string $value_field
@@ -176,13 +176,13 @@ class DM_Controller_Admin extends DM_Controller_Action
 		$adapter = $model->getAdapter();
 		$result = $adapter->fetchPairs($select);
 
-		$nullable ? $result[''] = '--�?�?--' : '';
+		$nullable ? $result[''] = '--�?�?--' : '';
 		return $result;
 	}
 
 
 	/**
-	 * 管理员后台重写是否登�?
+	 * 管理员后台重写是否登�?
 	 */
 	protected function isLogin()
 	{
@@ -232,7 +232,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 						$field = substr($field, $pos + 1);
 					}
 
-					//取�??
+					//取�??
 					$value = trim($this->_getParam($field));
 
 					if ($value !== '') {
@@ -257,7 +257,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 	}
 
 	/**
-	 * list获取结果�?
+	 * list获取结果�?
 	 * @param $model
 	 * @param $select
 	 * @param $sort
@@ -279,7 +279,7 @@ class DM_Controller_Admin extends DM_Controller_Action
 		$countSql = $select->__toString();
 		$countSql = preg_replace('/SELECT(.*?)FROM/', 'SELECT COUNT(*) AS total FROM', $countSql);
 
-		//总条�?
+		//总条�?
 		$total = $model->getAdapter()->fetchOne($countSql);
 		if ($total) {
 			//排序
@@ -332,12 +332,12 @@ class DM_Controller_Admin extends DM_Controller_Action
 	}
 
 	/**
-	 * 校验前台提交的数�?
+	 * 校验前台提交的数�?
 	 * @param null $keys
 	 */
 	protected function filterParam($keys = null)
 	{
-		//获取待过滤参�?
+		//获取待过滤参�?
 		!isset($this->filter_fields) && $this->filter_fields = array();
 		$filter_fields = array();
 		if ($keys && is_array($keys)) {

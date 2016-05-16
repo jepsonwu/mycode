@@ -8,6 +8,7 @@
  * 多语言处理
  * 获取配置文件
  * 获取数据适配器
+ * 常用功能模块
  * User: jepson <jepson@duomai.com>
  * Date: 16-5-16
  * Time: 下午2:57
@@ -15,18 +16,22 @@
 abstract class DM_Controller_Common extends Zend_Controller_Action
 {
 	/**
-	 * Zend_Auth
-	 *
-	 * @access protected
-	 * @var Zend_Auth
-	 */
-	protected $auth = null;
-
-	/**
 	 * 静态地址信息
 	 * @var null
 	 */
 	protected $_static_url = null;
+
+	/**
+	 * 请求参数
+	 * @var null
+	 */
+	protected $_param = null;
+
+	protected $_header_type = array(
+		'xml' => 'application/xml',
+		'json' => 'application/json',
+		'html' => 'text/html',
+	);
 
 	public function init()
 	{
@@ -51,6 +56,26 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 		}
 
 		return true;
+	}
+
+	/**
+	 * 获取请求参数
+	 * @return array
+	 */
+	protected function getRunParamsInfo()
+	{
+		$info = $this->_getAllParams();
+		if (isset($info['error_handler'])) {
+			unset($info['error_handler']);
+		}
+		if (isset($_SERVER['REQUEST_URI'])) {
+			$info['uri'] = $_SERVER['REQUEST_URI'];
+		}
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$info['referer'] = $_SERVER['HTTP_REFERER'];
+		}
+
+		return $info;
 	}
 
 	/**
@@ -114,16 +139,6 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	}
 
 	/**
-	 * 获取HOST
-	 */
-	protected function getFullHost()
-	{
-		$schema = $_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http';
-		return $schema . '://' . $_SERVER['HTTP_HOST'];
-	}
-
-
-	/**
 	 * 获取翻译对象
 	 * @param null $locale
 	 * @return Zend_Translate
@@ -182,295 +197,160 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 		$this->_helper->viewRenderer->setNoRender();
 	}
 
+
+	abstract protected function failReturn($message, $code);
+
+	abstract protected function succReturn($data);
+
 	/**
-	 * 获取图片验证码信息
-	 *
-	 * /get-captcha
-	 *
-	 * return: {"flag":1,"msg":"ok","data":{"url":"\/captcha\/c6cbb91fd6d9aa6b688ca263bd5ef35a.png","width":"160","height":"50"}}
+	 * 输出返回数据
+	 * @access protected
+	 * @param mixed $data 要返回的数据
+	 * @param String $type 返回类型 JSON XML
+	 * @param integer $code HTTP状态
+	 * @return void
 	 */
-	public function getCaptchaAction()
+	protected function response($data, $type = '', $code = 200)
 	{
-		Zend_Captcha_Word::$V = array("a", "e", "u", "y");
-		Zend_Captcha_Word::$VN = array("a", "e", "u", "y", "2", "3", "4", "5", "6", "7", "8", "9");
-		Zend_Captcha_Word::$C = array("b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "z");
-		Zend_Captcha_Word::$CN = array("b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "z", "2", "3", "4", "5", "6", "7", "8", "9");
-
-		if (empty($this->getConfig()->settings->captcha)) {
-			$this->renderFailure($this->getLang()->_('secure.captcha.config.null'));
-		}
-
-		$captcha = new Zend_Captcha_Image($this->getConfig()->settings->captcha);
-		if (!$captcha->getFont()) {
-			$captcha->setFont(APPLICATION_PATH . '/data/fonts/verdana.ttf');
-		}
-		if (!$captcha->getImgAlt()) {
-			$captcha->setImgDir(APPLICATION_PATH . '/../public/captcha/');
-		}
-		if (!$captcha->getImgUrl()) {
-			$captcha->setImgUrl('/captcha/');
-		}
-		if (!$captcha->getFontSize()) {
-			$captcha->setFontSize(28);
-		}
-		if (!$captcha->getWordlen()) {
-			$captcha->setWordlen(4);
-		}
-		if (!$captcha->getExpiration()) {
-			$captcha->setExpiration(60);
-		}
-		if (!$captcha->getGcFreq()) {
-			$captcha->setGcFreq(20);  //删除旧文件
-		}
-
-		$this->disableView();
-
-		$id = $captcha->generate();
-		$session = $this->getSession();
-		$session->Captcha = $captcha->getWord();
-		if ($this->getConfig()->settings->captcha->timeout) {
-			$session->CaptchaTimeout = time() + $this->getConfig()->settings->captcha->timeout;
-		}
-
-		$data = array('url' => $captcha->getImgUrl() . $id . $captcha->getSuffix(), 'width' => $captcha->getWidth(), 'height' => $captcha->getHeight());
-
-		$this->returnJson(self::STATUS_OK, 'ok', $data);
+		$this->sendHttpStatus($code);
+		exit($this->encodeData($data, strtolower($type)));
 	}
 
 	/**
-	 * 验证图片验证码
-	 *
-	 * 以Captcha字段传回
+	 * 编码数据
+	 * @access protected
+	 * @param mixed $data 要返回的数据
+	 * @param String $type 返回类型 JSON XML
+	 * @return string
 	 */
-	protected function verifyCaptcha()
+	protected function encodeData($data, $type = '')
 	{
-		$session = $this->getSession();
-		$captcha = strtolower(trim($this->_getParam('Captcha', '')));
-
-		//默认半小时有效期
-		if (empty($captcha) || empty($session->Captcha) || $session->Captcha !== $captcha || $session->CaptchaTimeout && time() - $session->CaptchaTimeout > 0) {
-			return false;
-		} else {
-			return true;
+		if ('json' == $type) {
+			$data = json_encode($data);
+		} elseif ('xml' == $type) {
+			$data = $this->xmlEncode($data);
+		} elseif ('php' == $type) {
+			$data = serialize($data);
 		}
+		$this->setContentType($type);
+		return $data;
 	}
 
 	/**
-	 * 验证图片验证码，远程调用校验api
+	 * XML编码
+	 * @param mixed $data 数据
+	 * @param string $root 根节点名
+	 * @param string $item 数字索引的子节点名
+	 * @param string $attr 根节点属性
+	 * @param string $id 数字索引子节点key转换的属性名
+	 * @param string $encoding 数据编码
+	 * @return string
 	 */
-	public function verifyCaptchaAction()
+	protected function xmlEncode($data, $root = 'think', $item = 'item', $attr = '', $id = 'id', $encoding = 'utf-8')
 	{
-		if (!$this->verifyCaptcha()) {
-			$this->returnJson(self::STATUS_FAILURE, $this->getLang()->_('secure.captcha.error'));
-		} else {
-			$this->returnJson(self::STATUS_OK, 'ok');
-		}
-	}
-
-	/**
-	 * 获取Csrf验证码
-	 */
-	public function createCsrfCode()
-	{
-		$session = $this->getSession();
-		if (!isset($session->LastCsrfCodeUpdate)) {
-			$session->LastCsrfCodeUpdate = 0;
-		}
-		if (!isset($session->CsrfCode) || time() - $session->LastCsrfCodeUpdate > self::CSRF_TIMEOUT) {
-			//默认16位，太长没用
-			$length = 16;
-			$session->CsrfCode = DM_Helper_Utility::createHash($length);
-			$session->LastCsrfCodeUpdate = time();
-		}
-		return $session->CsrfCode;
-	}
-
-	/**
-	 * 验证Csrf验证码
-	 *
-	 * 以CsrfCode字段传回
-	 */
-	protected function verifyCsrfCode()
-	{
-		$session = $this->getSession();
-		$submitHash = trim($this->_getParam('CsrfCode', ''));
-		//默认半小时有效期
-		if (empty($submitHash) || empty($session->CsrfCode) || $session->CsrfCode !== $submitHash || time() - $session->LastCsrfCodeUpdate > self::CSRF_TIMEOUT) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 * 是否ajax请求
-	 */
-	protected function isAjax()
-	{
-		if (!$this->getRequest()->isXmlHttpRequest()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 * 构建返回数组
-	 */
-	protected function returnJsonArray($flag = true, $msg = '', $data = NULL, $extra = NULL)
-	{
-		$arr = array('flag' => $flag, 'msg' => $msg);
-		if ($flag < 0 && APPLICATION_ENV != 'production') {
-			$params = $this->_request->getParams();
-			$arr['param'] = $params;
-		}
-		if ($data !== NULL) {
-			$arr['data'] = $data;
-		}
-		if ($extra !== NULL) {
-			$arr['extra'] = $extra;
-		}
-
-		return $arr;
-	}
-
-	/**
-	 * Render Ajax response with JSON encode
-	 */
-	protected function returnJson($flag = true, $msg = '', $data = array(), $extra = NULL)
-	{
-		if ($extra === NULL) {
-			//extra默认对象
-			$extra = new stdClass();
-		}
-
-		if (is_array($data) && empty($data)) {
-			$data = new stdClass();
-		}
-
-		$arr = $this->returnJsonArray($flag, $msg, $data, $extra);
-		return $this->returnResult($arr);
-	}
-
-	/**
-	 * Render JSON，数组模式
-	 *
-	 * $result['extra']['forward']='/account/login'; //该定义可以使前台跳转
-	 * 通过_callback兼容jsonp请求
-	 */
-	protected function returnResult($result)
-	{
-		if (!isset($result['flag'])) $result['flag'] = self::STATUS_FAILURE;
-		if (!isset($result['msg'])) $result['msg'] = '';
-		if (!isset($result['data'])) $result['data'] = array();
-		if (!isset($result['extra'])) $result['extra'] = new stdClass();
-
-		if (isset($result['param'])) {
-			$this->escapeVar($result['param']);
-		}
-
-		//由于api没有返回值，将输出放到session中以便检验数据
-		if (defined('UNIT_TEST_API') && UNIT_TEST_API === true) {
-			//防止一个接口有多次输出
-			if (empty($_SESSION['UNIT_TEST_API'])) {
-				$_SESSION['UNIT_TEST_API'] = json_encode($result);
-				throw new Exception('API已返回结果，后面代码无需执行。', 8888);
+		if (is_array($attr)) {
+			$_attr = array();
+			foreach ($attr as $key => $value) {
+				$_attr[] = "{$key}=\"{$value}\"";
 			}
-		} else {
-			if (DM_Controller_Front::getInstance()->getHttpRequest()->isGet() && $this->_getParam('_callback')) {
-				$callback = $this->_getParam('_callback');
-				echo $callback . '(' . json_encode($result) . ');';
-			} else {
-				echo json_encode($result);
-			}
+			$attr = implode(' ', $_attr);
+		}
+		$attr = trim($attr);
+		$attr = empty($attr) ? '' : " {$attr}";
+		$xml = "<?xml version=\"1.0\" encoding=\"{$encoding}\"?>";
+		$xml .= "<{$root}{$attr}>";
+		$xml .= data_to_xml($data, $item, $id);
+		$xml .= "</{$root}>";
+		return $xml;
+	}
 
-			exit;
+	/**
+	 * 设置页面输出的CONTENT_TYPE和编码
+	 * @access public
+	 * @param string $type content_type 类型对应的扩展名
+	 * @param string $charset 页面输出编码
+	 * @return void
+	 */
+	public function setContentType($type, $charset = 'UTF-8')
+	{
+		if (headers_sent()) return;
+		header('Content-Type: ' . $this->_header_type[$type] . '; charset=' . $charset);
+	}
+
+	/**
+	 * 发送Http状态信息
+	 * @param $code
+	 */
+	protected function sendHttpStatus($code)
+	{
+		static $_status = array(
+			// Informational 1xx
+			100 => 'Continue',
+			101 => 'Switching Protocols',
+			// Success 2xx
+			200 => 'OK',
+			201 => 'Created',
+			202 => 'Accepted',
+			203 => 'Non-Authoritative Information',
+			204 => 'No Content',
+			205 => 'Reset Content',
+			206 => 'Partial Content',
+			// Redirection 3xx
+			300 => 'Multiple Choices',
+			301 => 'Moved Permanently',
+			302 => 'Moved Temporarily ',  // 1.1
+			303 => 'See Other',
+			304 => 'Not Modified',
+			305 => 'Use Proxy',
+			// 306 is deprecated but reserved
+			307 => 'Temporary Redirect',
+			// Client Error 4xx
+			400 => 'Bad Request',
+			401 => 'Unauthorized',
+			402 => 'Payment Required',
+			403 => 'Forbidden',
+			404 => 'Not Found',
+			405 => 'Method Not Allowed',
+			406 => 'Not Acceptable',
+			407 => 'Proxy Authentication Required',
+			408 => 'Request Timeout',
+			409 => 'Conflict',
+			410 => 'Gone',
+			411 => 'Length Required',
+			412 => 'Precondition Failed',
+			413 => 'Request Entity Too Large',
+			414 => 'Request-URI Too Long',
+			415 => 'Unsupported Media Type',
+			416 => 'Requested Range Not Satisfiable',
+			417 => 'Expectation Failed',
+			418 => 'Timestamp Exceeded',//timestamp 超过15分钟
+			419 => 'Request Exceeded',//请求次数受限
+			420 => 'Decrypt Failed',//解密错误
+			// Server Error 5xx
+			500 => 'Internal Server Error',
+			501 => 'Not Implemented',
+			502 => 'Bad Gateway',
+			503 => 'Service Unavailable',
+			504 => 'Gateway Timeout',
+			505 => 'HTTP Version Not Supported',
+			509 => 'Bandwidth Limit Exceeded'
+		);
+		if (isset($_status[$code])) {
+			header('HTTP/1.1 ' . $code . ' ' . $_status[$code]);
+			// 确保FastCGI模式下正常
+			header('Status:' . $code . ' ' . $_status[$code]);
 		}
 	}
 
 	/**
-	 * 操作成功
+	 * 这个方法不是必须的
+	 * @return mixed
 	 */
-	protected function renderSuccess($msg = '')
-	{
-		$this->returnJson(true, $msg);
-	}
-
-	/**
-	 * 操作失败
-	 */
-	protected function renderFailure($msg = '')
-	{
-		$this->returnJson(false, $msg);
-	}
-
-
-	/**
-	 * 转义变量
-	 *
-	 * added by Mark
-	 * @param string | array | object $var
-	 */
-	public function escapeVar(&$var)
-	{
-		if (!empty($var)) {
-			if (is_array($var)) {
-				array_walk_recursive($var, array($this, 'escapeVar'));
-			} elseif (is_string($var)) {
-				$var = htmlspecialchars($var, ENT_COMPAT, 'UTF-8');
-			} elseif (is_object($var)) {
-				if (method_exists($var, 'toArray')) {
-					$arr = $var->toArray();
-					$this->escapeVar($arr);
-					foreach ($arr as $k => $v) {
-						$var->$k = $v;
-					}
-				}
-			}
-		}
-	}
-
-	/*远程读取页面
-	*/
-	public function getstringurl($url, $fields = Array())
-	{
-		return DM_Controller_Front::getInstance()->curl($url, $fields);
-	}
-
-	/**
-	 * 判断是否是post请求
-	 */
-	protected final function isPostOutput()
-	{
-		if (!DM_Controller_Front::getInstance()->getHttpRequest()->isPost()) {
-			$this->returnJson(false, $this->getLang()->_("api.base.error.notPostRequest"));
-		} else {
-			return true;
-		}
-	}
-
 	protected function isGet()
 	{
-		if (!DM_Controller_Front::getInstance()->getHttpRequest()->isGet())
-			$this->returnJson(false, "请使用GET提交！");
+		return $this->getRequest()->isGet();
 	}
 
-
-	private function getRunParamsInfo()
-	{
-		$info = $this->_getAllParams();
-		if (isset($info['error_handler'])) {
-			unset($info['error_handler']);
-		}
-		if (isset($_SERVER['REQUEST_URI'])) {
-			$info['uri'] = $_SERVER['REQUEST_URI'];
-		}
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$info['referer'] = $_SERVER['HTTP_REFERER'];
-		}
-
-		return $info;
-	}
 
 	/**
 	 * 创建日志对象
@@ -490,21 +370,20 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	}
 
 	/**
-	 * 当初没想好 傻逼了
+	 * 常用列表分页 支持page 和last_id两种模式
 	 * @param $model
 	 * @param $select
 	 * @param $sort
 	 * @param bool|true $desc
 	 * @param null $primary
-	 * @param bool|true $isEscape
 	 * @return array
 	 */
-	protected function listResultsNew($model, $select, $sort, $desc = true, $primary = null, $isEscape = true)
+	protected function listResult($model, $select, $sort, $desc = true, $primary = null)
 	{
 		$results = array();
 
 		//解析查询条件
-//		$select = $this->parseListWhere($select);
+		$select = $this->listParseWhere($select);
 
 		//关闭视图
 		$this->disableView();
@@ -532,9 +411,41 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 
 			//列表
 			$results = $model->fetchAll($select)->toArray();
-			$isEscape && $this->escapeVar($results);
 		}
 
 		return array("Rows" => $results, "Total" => $total);
+	}
+
+	/**
+	 * 解析查询条件 管理后台模块可以重写
+	 * @param $select
+	 * @return mixed
+	 */
+	protected function listParseWhere($select)
+	{
+		return $select;
+	}
+
+	/**
+	 * 转义变量
+	 * @param $var
+	 */
+	protected function escapeVar(&$var)
+	{
+		if (!empty($var)) {
+			if (is_array($var)) {
+				array_walk_recursive($var, array($this, 'escapeVar'));
+			} elseif (is_string($var)) {
+				$var = htmlspecialchars($var, ENT_COMPAT, 'UTF-8');
+			} elseif (is_object($var)) {
+				if (method_exists($var, 'toArray')) {
+					$arr = $var->toArray();
+					$this->escapeVar($arr);
+					foreach ($arr as $k => $v) {
+						$var->$k = $v;
+					}
+				}
+			}
+		}
 	}
 }
