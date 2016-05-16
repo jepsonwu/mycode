@@ -1,0 +1,48 @@
+提醒：
+负责更新的用户至少要有创建网站根目录的用户的权限。
+
+环境假设：
+假设服务器域名：www.duomai.com
+远程git服务端在：/home/git/dn.git
+网站部署在：/home/production/dn
+以上两个目录在同台服务器。
+
+1、在远程服务器创建git bare中转库/home/git/dn.git
+mkdir -p /home/git/dn.git
+cd /home/git/dn.git
+git init --bare
+
+2、设置自动更新hook
+cd /home/git/dn.git/hooks
+#创建文件 post-receive
+vim post-receive
+# 添加内容，请注意相应容易对应：
+#!/bin/sh
+cd /home/production/dn && env -i git pull;
+#添加执行权限
+chmod a+x ./post-receive
+
+3、克隆这个库到网站根目录
+cd /home/production/
+git clone /home/git/dn.git
+
+4、push本地到远程服务器
+git push ssh://bruce@www.duomai.com/home/git/dn.git --all
+
+5、进入/home/production/dn
+查看是否有内容，如果出现了项目文件，则大功告成。
+
+6、配置本地git config快捷链接：
+# 编辑project/.git/config
+# 添加以下内容
+[remote "online"]
+	url = ssh://bruce@www.duomai.com/home/git/dn.git 
+	fetch = refs/heads/*:refs/remotes/bonline/*
+	push = refs/heads/*:refs/heads/*
+	push = refs/tags/*:refs/tags/*
+# 然后就可以通过以下快捷命名推送更新了
+git push online
+
+
+
+

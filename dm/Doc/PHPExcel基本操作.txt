@@ -1,0 +1,139 @@
+PHPExcel基本操作：
+
+引入PHPExcel
+DM_PHPExcel::init();//触发导入
+
+定义EXCEL实体
+即定义一个PHPEXCEL对象，并设置EXCEL对象内显示内容
+
+// Excel开始
+// 准备EXCEL的包括文件
+// Error reporting 
+error_reporting(0);
+// PHPExcel 
+require_once dirname(__FILE__) . 'PHPExcel.php';
+// 生成新的excel对象
+$objPHPExcel = new PHPExcel();
+// 设置excel文档的属性
+$objPHPExcel->getProperties()->setCreator("Sam.c")
+             ->setLastModifiedBy("Sam.c Test")
+             ->setTitle("Microsoft Office Excel Document")
+             ->setSubject("Test")
+             ->setDescription("Test")
+             ->setKeywords("Test")
+             ->setCategory("Test result file");
+// 开始操作excel表
+// 操作第一个工作表
+$objPHPExcel->setActiveSheetIndex(0);
+// 设置工作薄名称
+$objPHPExcel->getActiveSheet()->setTitle(iconv('gbk', 'utf-8', 'phpexcel测试'));
+// 设置默认字体和大小
+$objPHPExcel->getDefaultStyle()->getFont()->setName(iconv('gbk', 'utf-8', '宋体'));
+$objPHPExcel->getDefaultStyle()->getFont()->setSize(10);
+
+
+三、输出文件
+// 如果需要输出EXCEL格式
+if($m_exportType=="excel"){   
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+    // 从浏览器直接输出$filename
+    header("Pragma: public");
+    header("Expires: 0");
+    header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+    header("Content-Type:application/force-download");
+    header("Content-Type: application/vnd.ms-excel;");
+    header("Content-Type:application/octet-stream");
+    header("Content-Type:application/download");
+    header("Content-Disposition:attachment;filename=".$filename);
+    header("Content-Transfer-Encoding:binary");
+    $objWriter->save("php://output"); 
+}
+// 如果需要输出PDF格式
+if($m_exportType=="pdf"){
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'PDF');
+    $objWriter->setSheetIndex(0);
+    header("Pragma: public");
+    header("Expires: 0");
+    header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+    header("Content-Type:application/force-download");
+    header("Content-Type: application/pdf");
+    header("Content-Type:application/octet-stream");
+    header("Content-Type:application/download");
+    header("Content-Disposition:attachment;filename=".$m_strOutputPdfFileName);
+    header("Content-Transfer-Encoding:binary");
+    $objWriter->save("php://output"); 
+}
+设置一列的宽度：
+$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(15);
+
+设置一行的高度：
+$objPHPExcel->getActiveSheet()->getRowDimension('6')->setRowHeight(30);
+
+合并单元格：
+$objPHPExcel->getActiveSheet()->mergeCells('A1:P1');
+设置A1单元格加粗，居中：
+$styleArray1 = array(
+  'font' => array(
+    'bold' => true,
+    'size'=>12,
+    'color'=>array(
+      'argb' => '00000000',
+    ),
+  ),
+  'alignment' => array(
+    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+  ),
+);
+
+// 将A1单元格设置为加粗，居中
+$objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleArray1);
+ 
+$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setBold(true);
+
+给特定单元格中写入内容：
+$objPHPExcel->getActiveSheet()->setCellValue('A1', 'Hello Baby');
+设置单元格样式（水平/垂直居中）：
+$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+设置单元格样式（黑色字体）：
+$objPHPExcel->getActiveSheet()->getStyle('H5')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLACK); // 黑色
+
+设置单元格格式（背景）：
+$objPHPExcel->getActiveSheet()->getStyle('H5')->getFill()->getStartColor()->setARGB('00ff99cc'); // 将背景设置为浅粉色
+
+设置单元格格式（数字格式）：
+$objPHPExcel->getActiveSheet()->getStyle('F'.$iLineNumber)->getNumberFormat()->setFormatCode('0.000');
+给单元格中放入图片：
+// 将数据中心图片放在J1单元格内
+$objDrawing = new PHPExcel_Worksheet_Drawing();
+$objDrawing->setName('Logo');
+$objDrawing->setDescription('Logo');
+$objDrawing->setPath('test.jpg');
+$objDrawing->setWidth(400);
+$objDrawing->setHeight(123);
+$objDrawing->setCoordinates('J1');
+$objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+
+在单元格中设置超链接：
+$objPHPExcel->getActiveSheet()->setCellValue('H8', iconv('gbk', 'utf-8', '燕南天'));
+$objPHPExcel->getActiveSheet()->getCell('H8')->getHyperlink()->setUrl('http://www.test.net/');
+
+设置单元格边框
+$styleThinBlackBorderOutline = array(
+    'borders' => array (
+       'outline' => array (
+          'style' => PHPExcel_Style_Border::BORDER_THIN,  //设置border样式
+          //'style' => PHPExcel_Style_Border::BORDER_THICK, 另一种样式
+          'color' => array ('argb' => 'FF000000'),     //设置border颜色
+      ),
+   ),
+);
+$objPHPExcel->getActiveSheet()->getStyle( 'A4:E10')->applyFromArray($styleThinBlackBorderOutline);
+ 
+//添加一个新的worksheet 
+$objExcel->createSheet(); 
+$objActSheet = $objExcel->getSheet($s); 
+$objActSheet->setTitle('表'.$GSheet);
+
+来源：http://www.jb51.net/article/53895.htm

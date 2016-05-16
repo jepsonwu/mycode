@@ -1,0 +1,37 @@
+部署环境：
+
+开发环境：development 具体开发用户可以继承development，提倡开发自己搭建环境在本地数据库 ，例如： [Mark : development]
+测试环境：testing 目前主要部署在局域网测试服务器94上，主要供测试用。
+预演环境：staging 部署在线上服务器，环境和线上一致，但是不是直接面向用户的，便于内部用户先确认问题是否解决，然后上线。
+线上环境：production 真正面向用户的线上环境。
+
+各项目可以根据实际需要灵活设置几个环境。不一定非得完全创建四个环境。
+
+环境配置方法：
+bin/cli执行方式：
+设置服务器系统profile文件(推荐，尽量单台服务器单个环境)，添加APPLICATION_ENV变量并导出。交易Bin执行的环境变量问题，因为是没有环境参数的。
+
+apache：
+<VirtualHost *:80>
+   DocumentRoot "D:\Wamp\www\dn\public"
+   ServerName duomai.dn
+   # 开发环境设置，在php中可以获取常量
+   SetEnv APPLICATION_ENV development
+   <Directory "D:\Wamp\www\dn\public">
+       Options Indexes MultiViews FollowSymLinks
+       AllowOverride All
+       Order allow,deny
+       Allow from all
+   </Directory>
+</VirtualHost>
+
+nginx：
+ location ~ .*\.php?$ {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    #设置php环境常量 后面的fastcgi配置文件不能少
+    fastcgi_param APPLICATION_ENV production;
+    include        fastcgi.conf;
+}
+

@@ -1,0 +1,47 @@
+主从数据库查询实现教程
+
+2015.01.15 更新：
+	在Zend中做了强制限制，从库不做增删改。尝试增删改则抛异常Zend_Db_Adapter_Exception.
+	从库尝试调用beginTransaction抛出异常Zend_Db_Adapter_Exception.
+
+一、配置
+[bruce-home : bruce]
+resources.multidb.db.adapter = "pdo_mysql"
+resources.multidb.db.host = "192.168.1.94"
+resources.multidb.db.username = "root"
+resources.multidb.db.password = "duomai!@#"
+resources.multidb.db.dbname = "haitao"
+; default的默认是master数据库 负责写入
+resources.multidb.db.default = true
+
+; 从数据库会自动从pool中hash出一个，为了避免完全随机带来的影响。
+; 优先采用ip，daemon等无ip的采用php的process id自动hash，这样保证同一个用户基本能连到同一个slave数据库。另外如果从服务器连接失败，会自动切换到master，并在data/log目录中的error中记录。
+resources.multidb.slave.adapter = "pdo_mysql"
+resources.multidb.slave.charset = UTF8
+resources.multidb.slave.host = "127.0.0.1"
+resources.multidb.slave.username = "root"
+resources.multidb.slave.password = ""
+resources.multidb.slave.dbname = "haitao-slave"
+resources.multidb.slave.role = 'slave'
+
+resources.multidb.slave1.adapter = "pdo_mysql"
+resources.multidb.slave1.charset = UTF8
+resources.multidb.slave1.host = "192.168.99.108"
+resources.multidb.slave1.username = "root"
+resources.multidb.slave1.password = ""
+resources.multidb.slave1.dbname = "haitao"
+resources.multidb.slave1.role = 'slave'
+
+二、读取，三个获取从连接方法
+1，基本控制器中
+ $this->getHashSlaveDB()->query($select->__toString())->fetchAll();
+2，Table对象中，调用fromSalveDB()方法后会自动设置从数据库为adapter，但是新连接到master需要新创建 一个对象。这个为静态方法，非全局对象，针对单个对象生效，非常方便。
+	 设置后，从table中衍生出的select对象，也会自动切换到从数据库，非常方便。
+$castModel=new App_Model_Table_liveCasts();
+$castList = $castModel->fromSalveDB()->getAssocListByCastIds($CastIDs);
+3，在任何地方自动获取从数据库连接
+DM_Controller_Front::getInstance()->getHashSlaveDB();
+4, 调用从库后可以调用restoreOriginalAdapter恢复原来的适配器
+$castModel->restoreOriginalAdapter();
+
+以上，就是这么简单。
