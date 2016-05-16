@@ -4,7 +4,7 @@
  *
  * Class Api_TestController
  */
-class Api_TestController extends Action_Api
+class Api_TestController extends DM_Controller_Api
 {
 	public function indexAction()
 	{

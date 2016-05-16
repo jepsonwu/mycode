@@ -1,11 +1,18 @@
 <?php
 
 /**
- * DM\Controller\Action
- *
- * @since 2014/05/19
+ * 控制器公共抽象类
+ * 请求方法
+ * 错误日志
+ * 返回数据
+ * 多语言处理
+ * 获取配置文件
+ * 获取数据适配器
+ * User: jepson <jepson@duomai.com>
+ * Date: 16-5-16
+ * Time: 下午2:57
  */
-abstract class DM_Controller_Action extends Zend_Controller_Action
+abstract class DM_Controller_Common extends Zend_Controller_Action
 {
 	/**
 	 * Zend_Auth
@@ -16,90 +23,94 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 	protected $auth = null;
 
 	/**
-	 * StaticUrl
-	 *
-	 * @access protected
-	 * @var String
+	 * 静态地址信息
+	 * @var null
 	 */
-	protected $_staticUrl;
-
-	/**
-	 * session默认命名空间
-	 * @var string
-	 */
-	const SESSION_NAMESPACE = 'default';
-
-	/**
-	 * 返回状态码总体说明：
-	 * >=0 表示返回结果正常
-	 * <0 表示错误方式
-	 */
-	// 操作成功
-	const STATUS_OK = 1;
-	// 操作失败
-	const STATUS_FAILURE = -1;
-	// 需登录(未登录或者session失效)
-	const STATUS_NEED_LOGIN = -100;
-	// HTTP/1.1 403 Forbidden
-	const STATUS_FORBIDDEN = -403;
-
-	//非好友关系
-	const STATUS_NEED_FRIENDS = -108;
-
-	
-	//群组已解散
-	const STATUS_GROUP_DISSOLVE = -300;
-	
-	//话题不存在
-	const STATUS_TOPIC_NOTEXIST = -109;
-	
-	const CHECK_PAY_PWD_SUCCESS = 1;
-	
-	const CHECK_PAY_PWD_FAILURE = -1;
-	
-	const CHECK_PAY_PWD_FAILURE_ONE = -2;//错误一次
-	
-	const CHECK_PAY_PWD_FAILURE_TWO = -3;//错误两次
-	
-	const CHECK_PAY_PWD_FAILURE_FREEZE = -4;//冻结
-	
-	const STATUS_BALANCE_NOT_ENOUGH = -5;//余额不足
-	
-	//钱包状态
-	const WALLET_STATUS_OK = 1;//正常
-	
-	const WALLET_STATUS_INVALID = 0;//无效
-	
-	const WALLET_STATUS_FREEZE = 2;//冻结
-
-	//----------------------------------------
-	//csrf验证码有效期 跟API状态返回值无关
-	const CSRF_TIMEOUT = 1800;
-
-	//异常报错后的日志保存
-	const ERROR_LOG_SERVICE = "error";
+	protected $_static_url = null;
 
 	public function init()
 	{
 		parent::init();
-
-		//记录错误
-		register_shutdown_function(array($this, 'dmErrorHandler'));
+		$this->getStaticUrl();
+		register_shutdown_function(array($this, 'errorHandler'));
 	}
 
 	/**
+	 * 错误日志机制
+	 * @return bool
+	 * @throws Zend_Log_Exception
+	 */
+	public function errorHandler()
+	{
+		$error = error_get_last();
+		if (!empty ($error ['type'])) {
+			$log = $this->createLogger("process", "error");
+			$message = "ERROR detect " . $this->errorType($error['type']) . ": " . $error['message'] . "\nIn file  " . $error['file'] . "(" . $error['line'] . ")\n";
+			$message .= "Params: " . json_encode($this->getRunParamsInfo()) . "\n";
+			$log->log($message, Zend_Log::ERR);
+		}
+
+		return true;
+	}
+
+	/**
+	 * 获取错误类型字符描述
+	 * @param $type
+	 * @return string
+	 */
+	protected function errorType($type)
+	{
+		switch ($type) {
+			case E_ERROR: // 1 //
+				return 'E_ERROR';
+			case E_WARNING: // 2 //
+				return 'E_WARNING';
+			case E_PARSE: // 4 //
+				return 'E_PARSE';
+			case E_NOTICE: // 8 //
+				return 'E_NOTICE';
+			case E_CORE_ERROR: // 16 //
+				return 'E_CORE_ERROR';
+			case E_CORE_WARNING: // 32 //
+				return 'E_CORE_WARNING';
+			case E_COMPILE_ERROR: // 64 //
+				return 'E_COMPILE_ERROR';
+			case E_COMPILE_WARNING : // 128 //
+				return 'E_COMPILE_WARNING';
+			case E_USER_ERROR: // 256 //
+				return 'E_USER_ERROR';
+			case E_USER_WARNING: // 512 //
+				return 'E_USER_WARNING';
+			case E_USER_NOTICE: // 1024 //
+				return 'E_USER_NOTICE';
+			case E_STRICT: // 2048 //
+				return 'E_STRICT';
+			case E_RECOVERABLE_ERROR: // 4096 //
+				return 'E_RECOVERABLE_ERROR';
+			case E_DEPRECATED: // 8192 //
+				return 'E_DEPRECATED';
+			case E_USER_DEPRECATED: // 16384 //
+				return 'E_USER_DEPRECATED';
+		}
+		return "";
+	}
+
+
+	/**
 	 * 获取静态文件url地址
+	 * @return null
+	 * @throws Exception
 	 */
 	protected function getStaticUrl()
 	{
-		if ($this->_staticUrl === null) {
+		if ($this->_static_url === null) {
 			$this->_staticUrl = DM_Controller_Front::getInstance()->getStaticUrl();
 
-			$this->view->staticUrl = $this->_staticUrl;
+			$this->view->staticUrl = $this->_static_url;
 			$this->view->staticLocal = $this->getConfig()->static->local;
 			$this->view->staticVersion = $this->getConfig()->static->version;
 		}
-		return $this->_staticUrl;
+		return $this->_static_url;
 	}
 
 	/**
@@ -111,21 +122,13 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 		return $schema . '://' . $_SERVER['HTTP_HOST'];
 	}
 
-	/**
-	 * 判断接口是否调用成功
-	 *
-	 * @param array $result json接口数据
-	 * @return boolean
-	 */
-	protected function isSuccess($result)
-	{
-		return isset($result['flag']) && $result['flag'] >= 0;
-	}
 
 	/**
 	 * 获取翻译对象
-	 *
-	 * @param string $locale
+	 * @param null $locale
+	 * @return Zend_Translate
+	 * @throws DM_Exception_Lang
+	 * @throws Exception
 	 */
 	protected function getLang($locale = NULL)
 	{
@@ -134,18 +137,11 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 
 	/**
 	 * 获取当前语言
+	 * @return mixed
 	 */
 	protected function getLocale()
 	{
 		return DM_Controller_Front::getInstance()->getLocale();
-	}
-
-	/**
-	 * 获取Session对象
-	 */
-	protected function getSession()
-	{
-		return DM_Controller_Front::getInstance()->getSession(static::SESSION_NAMESPACE);
 	}
 
 	/**
@@ -156,23 +152,6 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 		return DM_Controller_Front::getInstance()->getConfig();
 	}
 
-	/**
-	 * 判断是否登录
-	 */
-	protected function isLogin()
-	{
-		return DM_Module_Auth::getInstance()->setSession($this->getSession())->isLogin();
-	}
-
-	/**
-	 * 获取当前登录的用户信息
-	 *
-	 * @return DM_Model_Row_Member
-	 */
-	protected function getLoginUser()
-	{
-		return DM_Controller_Front::getInstance()->getAuth()->getLoginUser();
-	}
 
 	/**
 	 * 获取数据库适配器
@@ -196,30 +175,8 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 	}
 
 	/**
-	 * 判断是否登录并进行跳转
-	 *
-	 * @param string $url
-	 * @param string $from
+	 * 关闭视图
 	 */
-	protected function checkAuth($url, $from = null)
-	{
-		if (!$this->isLogin()) {
-			// store the current uri in session for redirecting on login
-			if (is_null($from)) {
-				$this->session->loginRedirectUri = $_SERVER['REQUEST_URI'];
-			} else {
-				$this->session->loginRedirectUri = $from;
-			}
-
-			// redirect to login page
-			if ($this->_request->isXmlHttpRequest()) {
-				$this->returnJson(-100, $this->getLang()->_("api.base.error.notLogin"));
-			} else {
-				$this->_redirect($url);
-			}
-		}
-	}
-
 	protected function disableView()
 	{
 		$this->_helper->viewRenderer->setNoRender();
@@ -386,11 +343,11 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 			//extra默认对象
 			$extra = new stdClass();
 		}
-		
-		if(is_array($data) && empty($data)){
+
+		if (is_array($data) && empty($data)) {
 			$data = new stdClass();
 		}
-		
+
 		$arr = $this->returnJsonArray($flag, $msg, $data, $extra);
 		return $this->returnResult($arr);
 	}
@@ -498,38 +455,6 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 			$this->returnJson(false, "请使用GET提交！");
 	}
 
-	/**
-	 * 异常报错后的日志保存
-	 */
-	protected function logExceptionInfo(Exception $e)
-	{
-		$log = DM_Module_Log::create(self::ERROR_LOG_SERVICE);
-
-		$log->add("[IP" . DM_Controller_Front::getInstance()->getClientIp() . "]发现异常：" . $e->getMessage() . PHP_EOL . "Params: " . json_encode($this->getRunParamsInfo()) . "\n" . 'INFO: ' . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . $e->getTraceAsString() . PHP_EOL);
-	}
-
-	/**
-	 * 错误日志一般是写在application/data/log文件夹中 请确保可写
-	 *
-	 * @return boolean
-	 */
-	public function dmErrorHandler()
-	{
-		//$errno, $errstr, $errfile, $errline
-		// PHP错误处理
-		$error = error_get_last();
-		if (!empty ($error ['type'])) {
-			//将常见错误类型转换为文字
-			$error ['type'] = str_replace(array(4096, 2048, 1024, 512, 256, 8, 4, 2, 1), array('E_DEPRECATED', 'E_STRICT', 'E_USER_NOTICE', 'E_USER_WARNING', 'E_USER_ERROR', 'E_NOTICE', 'E_PARSE', 'E_WARNING', 'E_ERROR'), $error ['type']);
-
-			$log = DM_Module_Log::create(self::ERROR_LOG_SERVICE);
-			$message = "ERROR detect " . $error['type'] . ": " . $error['message'] . "\nIn file  " . $error['file'] . "(" . $error['line'] . ")\n";
-			$message .= "Params: " . json_encode($this->getRunParamsInfo()) . "\n";
-			$log->add($message);
-		}
-
-		return true;
-	}
 
 	private function getRunParamsInfo()
 	{
@@ -547,4 +472,69 @@ abstract class DM_Controller_Action extends Zend_Controller_Action
 		return $info;
 	}
 
+	/**
+	 * 创建日志对象
+	 * @param $path
+	 * @param $filename
+	 * @return Zend_Log
+	 */
+	protected function createLogger($path, $filename)
+	{
+		$dir = APPLICATION_PATH . "/data/log/{$path}/";
+		!is_dir($dir) && mkdir($dir, 0777, true) && chown($dir, posix_getuid());
+
+		$fp = fopen($dir . date("Y-m-d") . ".{$filename}.log", "a", false);
+		$writer = new Zend_Log_Writer_Stream($fp);
+		$logger = new Zend_Log($writer);
+		return $logger;
+	}
+
+	/**
+	 * 当初没想好 傻逼了
+	 * @param $model
+	 * @param $select
+	 * @param $sort
+	 * @param bool|true $desc
+	 * @param null $primary
+	 * @param bool|true $isEscape
+	 * @return array
+	 */
+	protected function listResultsNew($model, $select, $sort, $desc = true, $primary = null, $isEscape = true)
+	{
+		$results = array();
+
+		//解析查询条件
+//		$select = $this->parseListWhere($select);
+
+		//关闭视图
+		$this->disableView();
+
+		//获取sql
+		$countSql = $select->__toString();
+		$countSql = preg_replace('/SELECT(.*?)FROM/', 'SELECT COUNT(*) AS total FROM', $countSql);
+
+		//总条数
+		$total = $model->getAdapter()->fetchOne($countSql);
+		if ($total) {
+			//排序
+			$select->order("{$sort} " . ($desc ? "desc" : "asc"));
+
+			//分页 支持last_id参数
+			if (isset($this->_param['page'])) {
+				$select->limitPage($this->_param['page'], $this->_param['pagesize']);
+			} else {
+				is_null($primary) && $primary = $model->getPrimary();
+				if ($this->_param['last_id'] > 0) {
+					$select->where("{$primary} " . ($desc ? "<" : ">") . "?", $this->_param['last_id']);
+				}
+				$select->limit($this->_param['pagesize']);
+			}
+
+			//列表
+			$results = $model->fetchAll($select)->toArray();
+			$isEscape && $this->escapeVar($results);
+		}
+
+		return array("Rows" => $results, "Total" => $total);
+	}
 }
