@@ -6,7 +6,7 @@
  * Date: 16-5-16
  * Time: 下午3:08
  */
-class DM_Controller_Api extends DM_Controller_Rest
+abstract class DM_Controller_Api extends DM_Controller_Rest
 {
 	//返回数据对称加密key
 	protected $_return_encrypt_key;
