@@ -1,14 +1,14 @@
 <?php
 
 /**
- * 控制器公共抽象类
- * 请求方法
- * 错误日志
- * 返回数据
- * 多语言处理
- * 获取配置文件
- * 获取数据适配器
- * 常用功能模块
+ * 控制器公共抽象类，包含如下功能：
+ * 1.请求方法
+ * 2.错误日志
+ * 3.返回数据
+ * 4.多语言处理
+ * 5.获取配置文件
+ * 6.获取数据适配器
+ * 7.常用功能模块
  * User: jepson <jepson@duomai.com>
  * Date: 16-5-16
  * Time: 下午2:57
@@ -16,10 +16,16 @@
 abstract class DM_Controller_Common extends Zend_Controller_Action
 {
 	/**
+	 * 配置参数
+	 * @var null
+	 */
+	protected $_config = null;
+
+	/**
 	 * 静态地址信息
 	 * @var null
 	 */
-	protected $_static_url = null;
+	protected $_static_url = '';
 
 	/**
 	 * 请求参数
@@ -27,6 +33,10 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	 */
 	protected $_param = null;
 
+	/**
+	 * response类型
+	 * @var array
+	 */
 	protected $_header_type = array(
 		'xml' => 'application/xml',
 		'json' => 'application/json',
@@ -36,90 +46,13 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	public function init()
 	{
 		parent::init();
-		$this->getStaticUrl();
+		//错误机制
 		register_shutdown_function(array($this, 'errorHandler'));
+		//配置文件
+		$this->getConfig();
+		//静态地址
+		$this->getStaticUrl();
 	}
-
-	/**
-	 * 错误日志机制
-	 * @return bool
-	 * @throws Zend_Log_Exception
-	 */
-	public function errorHandler()
-	{
-		$error = error_get_last();
-		if (!empty ($error ['type'])) {
-			$log = $this->createLogger("process", "error");
-			$message = "ERROR detect " . $this->errorType($error['type']) . ": " . $error['message'] . "\nIn file  " . $error['file'] . "(" . $error['line'] . ")\n";
-			$message .= "Params: " . json_encode($this->getRunParamsInfo()) . "\n";
-			$log->log($message, Zend_Log::ERR);
-		}
-
-		return true;
-	}
-
-	/**
-	 * 获取请求参数
-	 * @return array
-	 */
-	protected function getRunParamsInfo()
-	{
-		$info = $this->_getAllParams();
-		if (isset($info['error_handler'])) {
-			unset($info['error_handler']);
-		}
-		if (isset($_SERVER['REQUEST_URI'])) {
-			$info['uri'] = $_SERVER['REQUEST_URI'];
-		}
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$info['referer'] = $_SERVER['HTTP_REFERER'];
-		}
-
-		return $info;
-	}
-
-	/**
-	 * 获取错误类型字符描述
-	 * @param $type
-	 * @return string
-	 */
-	protected function errorType($type)
-	{
-		switch ($type) {
-			case E_ERROR: // 1 //
-				return 'E_ERROR';
-			case E_WARNING: // 2 //
-				return 'E_WARNING';
-			case E_PARSE: // 4 //
-				return 'E_PARSE';
-			case E_NOTICE: // 8 //
-				return 'E_NOTICE';
-			case E_CORE_ERROR: // 16 //
-				return 'E_CORE_ERROR';
-			case E_CORE_WARNING: // 32 //
-				return 'E_CORE_WARNING';
-			case E_COMPILE_ERROR: // 64 //
-				return 'E_COMPILE_ERROR';
-			case E_COMPILE_WARNING : // 128 //
-				return 'E_COMPILE_WARNING';
-			case E_USER_ERROR: // 256 //
-				return 'E_USER_ERROR';
-			case E_USER_WARNING: // 512 //
-				return 'E_USER_WARNING';
-			case E_USER_NOTICE: // 1024 //
-				return 'E_USER_NOTICE';
-			case E_STRICT: // 2048 //
-				return 'E_STRICT';
-			case E_RECOVERABLE_ERROR: // 4096 //
-				return 'E_RECOVERABLE_ERROR';
-			case E_DEPRECATED: // 8192 //
-				return 'E_DEPRECATED';
-			case E_USER_DEPRECATED: // 16384 //
-				return 'E_USER_DEPRECATED';
-		}
-		return "";
-	}
-
 
 	/**
 	 * 获取静态文件url地址
@@ -128,61 +61,31 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	 */
 	protected function getStaticUrl()
 	{
-		if ($this->_static_url === null) {
-			$this->_staticUrl = DM_Controller_Front::getInstance()->getStaticUrl();
-
-			$this->view->staticUrl = $this->_static_url;
-			$this->view->staticLocal = $this->getConfig()->static->local;
-			$this->view->staticVersion = $this->getConfig()->static->version;
-		}
-		return $this->_static_url;
+		isset($this->_config['static']['url']) && $this->_static_url = $this->_config['static']['url'];
 	}
 
 	/**
-	 * 获取翻译对象
-	 * @param null $locale
-	 * @return Zend_Translate
-	 * @throws DM_Exception_Lang
-	 * @throws Exception
-	 */
-	protected function getLang($locale = NULL)
-	{
-		return DM_Controller_Front::getInstance()->getLang($locale);
-	}
-
-	/**
-	 * 获取当前语言
-	 * @return mixed
-	 */
-	protected function getLocale()
-	{
-		return DM_Controller_Front::getInstance()->getLocale();
-	}
-
-	/**
-	 * 获取Config对象
+	 * 获取Config
 	 */
 	protected function getConfig()
 	{
-		return DM_Controller_Front::getInstance()->getConfig();
+		$this->_config = DM_Controller_Front::getInstance()->getConfig()->toArray();
 	}
-
 
 	/**
 	 * 获取数据库适配器
-	 *
-	 * @param string $db The adapter to retrieve. Null to retrieve the default connection
+	 * @param null $db
 	 * @return Zend_Db_Adapter_Abstract
 	 */
-	public function getDb($db = NULL)
+	public function getDb($db = null)
 	{
 		return DM_Controller_Front::getInstance()->getDb($db);
 	}
 
 	/**
 	 * 获取从库数据库适配器
-	 *
 	 * @return Zend_Db_Adapter_Abstract
+	 * @throws Exception
 	 */
 	public function getHashSlaveDB()
 	{
@@ -197,11 +100,7 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 		$this->_helper->viewRenderer->setNoRender();
 	}
 
-
-	abstract protected function failReturn($message, $code);
-
-	abstract protected function succReturn($data);
-
+	/**--------------------------------------------response----------------------------------------------**/
 	/**
 	 * 输出返回数据
 	 * @access protected
@@ -217,6 +116,17 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	}
 
 	/**
+	 * 输出错误数据
+	 * 支持重写
+	 * @param $code
+	 */
+	protected function responseError($code)
+	{
+		$this->sendHttpStatus($code);
+		exit();
+	}
+
+	/**
 	 * 编码数据
 	 * @access protected
 	 * @param mixed $data 要返回的数据
@@ -225,13 +135,24 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 	 */
 	protected function encodeData($data, $type = '')
 	{
-		if ('json' == $type) {
-			$data = json_encode($data);
-		} elseif ('xml' == $type) {
-			$data = $this->xmlEncode($data);
-		} elseif ('php' == $type) {
-			$data = serialize($data);
+		$type = strtolower($type);
+		switch ($type) {
+			case "json":
+				$data = json_encode($data);
+				break;
+			case "xml":
+				$data = $this->xmlEncode($data);
+				break;
+			case "php":
+				$data = serialize($data);
+				break;
+			case "html":
+				break;
+			default:
+				return $data;
+				break;
 		}
+
 		$this->setContentType($type);
 		return $data;
 	}
@@ -342,16 +263,7 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 		}
 	}
 
-	/**
-	 * 这个方法不是必须的
-	 * @return mixed
-	 */
-	protected function isGet()
-	{
-		return $this->getRequest()->isGet();
-	}
-
-
+	/**-------------------------------------------------基础功能------------------------------------------------------**/
 	/**
 	 * 创建日志对象
 	 * @param $path
@@ -447,5 +359,108 @@ abstract class DM_Controller_Common extends Zend_Controller_Action
 				}
 			}
 		}
+	}
+
+	/**----------------------------------------------------------错误处理机制--------------------------------------------**/
+	/**
+	 * 错误日志机制
+	 * @return bool
+	 * @throws Zend_Log_Exception
+	 */
+	public function errorHandler()
+	{
+		$error = error_get_last();
+		if (!empty ($error ['type'])) {
+			$log = $this->createLogger("process", "error");
+			$message = "ERROR detect " . $this->errorType($error['type']) . ": " . $error['message'] . "\nIn file  " . $error['file'] . "(" . $error['line'] . ")\n";
+			$message .= "Params: " . json_encode($this->getParamsInfo()) . "\n";
+			$log->log($message, Zend_Log::ERR);
+		}
+
+		return true;
+	}
+
+	/**
+	 * 获取请求参数
+	 * @return array
+	 */
+	protected function getParamsInfo()
+	{
+		$info = $this->_getAllParams();
+		if (isset($info['error_handler'])) {
+			unset($info['error_handler']);
+		}
+		if (isset($_SERVER['REQUEST_URI'])) {
+			$info['uri'] = $_SERVER['REQUEST_URI'];
+		}
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$info['referer'] = $_SERVER['HTTP_REFERER'];
+		}
+
+		return $info;
+	}
+
+	/**
+	 * 获取错误类型字符描述
+	 * @param $type
+	 * @return string
+	 */
+	protected function errorType($type)
+	{
+		switch ($type) {
+			case E_ERROR: // 1 //
+				return 'E_ERROR';
+			case E_WARNING: // 2 //
+				return 'E_WARNING';
+			case E_PARSE: // 4 //
+				return 'E_PARSE';
+			case E_NOTICE: // 8 //
+				return 'E_NOTICE';
+			case E_CORE_ERROR: // 16 //
+				return 'E_CORE_ERROR';
+			case E_CORE_WARNING: // 32 //
+				return 'E_CORE_WARNING';
+			case E_COMPILE_ERROR: // 64 //
+				return 'E_COMPILE_ERROR';
+			case E_COMPILE_WARNING : // 128 //
+				return 'E_COMPILE_WARNING';
+			case E_USER_ERROR: // 256 //
+				return 'E_USER_ERROR';
+			case E_USER_WARNING: // 512 //
+				return 'E_USER_WARNING';
+			case E_USER_NOTICE: // 1024 //
+				return 'E_USER_NOTICE';
+			case E_STRICT: // 2048 //
+				return 'E_STRICT';
+			case E_RECOVERABLE_ERROR: // 4096 //
+				return 'E_RECOVERABLE_ERROR';
+			case E_DEPRECATED: // 8192 //
+				return 'E_DEPRECATED';
+			case E_USER_DEPRECATED: // 16384 //
+				return 'E_USER_DEPRECATED';
+		}
+		return "";
+	}
+
+	/**-------------------------------------------------------多语言处理-----------------------------------------**/
+	/**
+	 * 获取翻译对象
+	 * @param null $locale
+	 * @return Zend_Translate
+	 * @throws DM_Exception_Lang
+	 * @throws Exception
+	 */
+	protected function getLang($locale = NULL)
+	{
+		return DM_Controller_Front::getInstance()->getLang($locale);
+	}
+
+	/**
+	 * 获取当前语言
+	 * @return mixed
+	 */
+	protected function getLocale()
+	{
+		return DM_Controller_Front::getInstance()->getLocale();
 	}
 }

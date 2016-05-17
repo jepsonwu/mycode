@@ -1,4 +1,29 @@
 <?php
+include_once 'dm/DM/Authorize/AuthorizeAbstract.php';
+include_once 'dm/DM/Authorize/Md5.php';
+$url = "http://myzend.com/api/test/index";
+$get_param = array(
+	"sign_type" => "MD5",
+	"timestamp" => time(),
+	"name" => "jepson",
+);
+
+$sign_md5_key = "ee7daa0c94574bee62b5f79d2b447de6";
+$md5SignModel = DM_Authorize_Md5::getInstance();
+$sign = $md5SignModel->sign($get_param, $sign_md5_key);
+$get_param['sign'] = $sign;
+
+
+$get_param = "?" . http_build_query($get_param);
+
+try {
+	$result = curlFunc($url . $get_param, array(), false);
+	echo $result;
+} catch (Exception $e) {
+	echo $e->getMessage();
+}
+
+exit;
 include_once 'Authorize/Rsa.php';
 include_once 'Authorize/Mcrypt.php';
 include_once 'Authorize/CryptAES.php';
@@ -186,6 +211,36 @@ exit;
 //$result=curl("http://dev.hapigou.com/V2/upload/wap_logs","POST",$data);
 //var_dump($result);
 
+function curlFunc($url, $fields, $ispost = true)
+{
+	$ch = curl_init();
+
+	curl_setopt($ch, CURLOPT_URL, $url);
+	if ($ispost) {
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+	}
+	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36');
+
+	//禁止ssl验证
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+	//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+	$response = curl_exec($ch);
+	if (curl_errno($ch)) {
+		throw new Exception(curl_error($ch), 0);
+	} else {
+		$httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if (200 !== $httpStatusCode) {
+			throw new Exception("http status code exception :{$httpStatusCode}", 0);
+		}
+	}
+	curl_close($ch);
+	return $response;
+}
 
 function curl($url, $type = "GET", $data = null, $header = null, $option = null)
 {

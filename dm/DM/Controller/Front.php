@@ -273,18 +273,6 @@ class DM_Controller_Front
 		return NULL;
 	}
 
-	/**
-	 * 获取Session对象
-	 */
-	public function getSession($namespace = NULL)
-	{
-		if ($this->session === NULL) {
-			if ($namespace === NULL) $namespace = 'default';
-			$this->session = new Zend_Session_Namespace($namespace);
-		}
-
-		return $this->session;
-	}
 
 	/**
 	 * 获取枚举字段配置文件的信息

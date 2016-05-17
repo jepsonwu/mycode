@@ -42,7 +42,11 @@ abstract class DM_Authorize_AuthorizeAbstract
 	 */
 	protected function filterData($data)
 	{
-		return array_diff_key($data, $this->_filter_key);
+		foreach ($this->_filter_key as $key) {
+			if (isset($data[$key]))
+				unset($data[$key]);
+		}
+		return $data;
 	}
 
 	/**
