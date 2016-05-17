@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="088e5df3-a110-42c5-aedb-e571b46aa96c" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Controller/ErrorHandler.php" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Controller/Admin.php" afterPath="$PROJECT_DIR$/dm/DM/Controller/Admin.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Controller/Api.php" afterPath="$PROJECT_DIR$/dm/DM/Controller/Api.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Controller/Common.php" afterPath="$PROJECT_DIR$/dm/DM/Controller/Common.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Controller/Rest.php" afterPath="$PROJECT_DIR$/dm/DM/Controller/Rest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/TestController.php" afterPath="$PROJECT_DIR$/new/application/modules/api/controllers/TestController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Controller/Web.php" afterPath="$PROJECT_DIR$/dm/DM/Controller/Web.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="088e5df3-a110-42c5-aedb-e571b46aa96c" name="Default" comment="" />
     <ignored path="mycode.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -34,7 +25,7 @@
       <file leaf-file-name="Api.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dm/DM/Controller/Api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.985437">
+            <state vertical-scroll-proportion="-3.9453883">
               <caret line="102" column="5" selection-start-line="102" selection-start-column="5" selection-end-line="102" selection-end-column="5" />
               <folding />
             </state>
@@ -835,7 +826,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dm/DM/Controller/Api.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.985437">
+        <state vertical-scroll-proportion="-3.9453883">
           <caret line="102" column="5" selection-start-line="102" selection-start-column="5" selection-end-line="102" selection-end-column="5" />
           <folding />
         </state>
