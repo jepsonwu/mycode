@@ -5,7 +5,7 @@
  * @author Bruce
  * @since 2014/05/28
  */
-class DM_Module_EDM_Email extends DM_Module_Base
+class DM_Module_EDM_Email
 {
     /**
      * 发送邮件

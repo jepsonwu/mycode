@@ -6,7 +6,7 @@
  * Date: 16-1-20
  * Time: 上午9:37
  */
-class Model_Common_Common extends Zend_Db_Table
+class DM_Model_Common extends Zend_Db_Table
 {
 	/**
 	 * 根据查询条件获取信息
@@ -130,23 +130,6 @@ class Model_Common_Common extends Zend_Db_Table
 	}
 
 	/**
-	 * 创建logger对象
-	 * @param $dir
-	 * @param $filename
-	 * @return Zend_Log
-	 */
-	public function createLogger($dir, $filename)
-	{
-		$dir = APPLICATION_PATH . "/data/log/{$dir}/";
-		!is_dir($dir) && mkdir($dir, 0777, true) && chown($dir, posix_getuid());
-
-		$fp = fopen($dir . date("Y-m-d") . ".{$filename}.log", "a", false);
-		$writer = new Zend_Log_Writer_Stream($fp);
-		$logger = new Zend_Log($writer);
-		return $logger;
-	}
-
-	/**
 	 * 根据最后查询ID查找待统计数据
 	 * 这种方案只适用于自增ID和时间同为递增的  例如创建订单到支付，两者师同为递增的  但是订单结算就不是这样了
 	 * @param $key |缓存最后ID的key
@@ -180,29 +163,5 @@ class Model_Common_Common extends Zend_Db_Table
 		$last_id > 0 && $redis->set($key, $last_id);
 
 		return $result;
-	}
-
-	/**
-	 * 生成二维码
-	 * @param $content
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function createQrCode($content)
-	{
-		$filename = APPLICATION_PATH . '/../public/upload/' . md5($content) . '.png';
-		DM_Module_QRcode::png($content, $filename, "L", '6', 0);
-
-		$qiniu = new Model_Qiniu();
-		$token = $qiniu->getUploadToken();
-		$uploadMgr = $qiniu->getUploadManager();
-
-		$filename = realpath($filename);
-		list($ret, $err) = $uploadMgr->putFile($token['token'], null, $filename);
-		if (!is_null($err))
-			throw new Exception("操作失败！");
-
-		unlink($filename);
-		return $ret['hash'];
 	}
 }

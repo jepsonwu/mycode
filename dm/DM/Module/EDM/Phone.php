@@ -13,7 +13,7 @@
  * @author 
  * @since 2014/05/28
  */
-class DM_Module_EDM_Phone extends DM_Module_Base
+class DM_Module_EDM_Phone
 {
     /**
      * 发送手机短信

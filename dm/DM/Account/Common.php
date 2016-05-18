@@ -39,7 +39,7 @@ abstract class DM_Account_Common
 	 */
 	protected $_config = null;
 
-	protected $_is_login = false;
+	protected $_is_login = null;
 
 	/**
 	 * 获取用户信息

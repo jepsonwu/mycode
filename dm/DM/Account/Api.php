@@ -67,7 +67,7 @@ class DM_Account_Api extends DM_Account_Common
 	 */
 	public function login()
 	{
-		$userModel = new DM_Model_Account_Members();
+		$userModel = new DM_Model_Account_Member();
 		$user_info = array();
 
 		//状态判断
@@ -102,43 +102,42 @@ class DM_Account_Api extends DM_Account_Common
 		return true;
 	}
 
-	protected function resetPassword()
+	public function resetPassword()
 	{
 
 	}
 
-	protected function getLoginUser()
+	public function getLoginUser()
 	{
 
 	}
 
 	public function isLogin()
 	{
-		if ($this->isLogin === NULL) {
-			$authCookie = DM_Controller_Front::getInstance()->getInstance()->getHttpRequest()->getCookie(self::AUTH_COOKIE, '');
+		if (is_null($this->_is_login)) {
+			$authCookie = DM_Controller_Front::getInstance()->getInstance()->getHttpRequest()->getCookie(self::ACCOUNT_COOKIE, '');
 			if (empty($authCookie)) {
-				$this->isLogin = false;
-				if ($this->getSession()->MemberID) {
+				$this->_is_login = false;
+				if ($this->_session->MemberID)
 					$this->logout();
-				}
 			} else {
 				$cookieUser = explode("\t", DM_Helper_Utility::authcode($authCookie));
-				if (count($cookieUser) == 3 && $cookieUser[0] == $this->getSession()->MemberID
-					&& $cookieUser[1] == $this->getSession()->Email
-					&& $cookieUser[2] == $this->getSession()->Password
+				if (count($cookieUser) == 3 && $cookieUser[0] == $this->_session->MemberID
+					&& $cookieUser[1] == $this->_session->Email
+					&& $cookieUser[2] == $this->_session->Password
 				) {
-					$this->loginUser = DM_Model_Account_Members::create()->getByPrimaryId($this->getSession()->MemberID);
-					if (!$this->loginUser) {
+					$this->_member_info = DM_Model_Account_Members::create()->getByPrimaryId($this->_session->MemberID);
+					if (!$this->_member_info) {
 						$this->logout();
 					} else {
-						$this->isLogin = true;
+						$this->_is_login = true;
 					}
 				} else {
-					$this->isLogin = false;
+					$this->_is_login = false;
 				}
 			}
 		}
 
-		return $this->isLogin;
+		return $this->_is_login;
 	}
 }

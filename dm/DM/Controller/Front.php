@@ -11,20 +11,6 @@ class DM_Controller_Front
 	protected static $instance = NULL;
 
 	/**
-	 * Zend_Auth
-	 *
-	 * @var Zend_Auth
-	 */
-	private $auth = null;
-
-	/**
-	 * Application session namespace
-	 *
-	 * @var Zend_Session_Namespace
-	 */
-	private $session = null;
-
-	/**
 	 * @var Zend_Translate
 	 */
 	private $translate = null;
@@ -32,7 +18,7 @@ class DM_Controller_Front
 	/**
 	 * @var Zend_Config
 	 */
-	private $config = null;
+	private $_config = null;
 
 	/**
 	 * Associative array containing all configured salve db's
@@ -57,6 +43,47 @@ class DM_Controller_Front
 	 */
 	protected $_hasSlaveDB = NULL;
 
+
+	/**
+	 * 创建logger对象
+	 * @param $dir
+	 * @param $filename
+	 * @return Zend_Log
+	 */
+	public function createLogger($dir, $filename)
+	{
+		$dir = APPLICATION_PATH . "/data/log/{$dir}/";
+		!is_dir($dir) && mkdir($dir, 0777, true) && chown($dir, posix_getuid());
+
+		$fp = fopen($dir . date("Y-m-d") . ".{$filename}.log", "a", false);
+		$writer = new Zend_Log_Writer_Stream($fp);
+		$logger = new Zend_Log($writer);
+		return $logger;
+	}
+
+	/**
+	 * 生成二维码
+	 * @param $content
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function createQrCode($content)
+	{
+		$filename = APPLICATION_PATH . '/../public/upload/' . md5($content) . '.png';
+		DM_Module_QRcode::png($content, $filename, "L", '6', 0);
+
+		$qiniu = new Model_Qiniu();
+		$token = $qiniu->getUploadToken();
+		$uploadMgr = $qiniu->getUploadManager();
+
+		$filename = realpath($filename);
+		list($ret, $err) = $uploadMgr->putFile($token['token'], null, $filename);
+		if (!is_null($err))
+			throw new Exception("操作失败！");
+
+		unlink($filename);
+		return $ret['hash'];
+	}
 
 	/**
 	 * @return Zend_Application_Bootstrap_BootstrapAbstract
@@ -87,11 +114,12 @@ class DM_Controller_Front
 	 *
 	 * 有时cli调用，不存在情况下返回空字符串
 	 *
+	 * @param bool $checkProxy
 	 * @return string
 	 */
 	public function getClientIp($checkProxy = true)
 	{
-		$ip = $this->getHttpRequest()->getClientIp($checkProxy = true);
+		$ip = $this->getHttpRequest()->getClientIp($checkProxy);
 		if ($ip === NULL) {
 			return '';
 		}
@@ -104,22 +132,17 @@ class DM_Controller_Front
 	 */
 	public function getConfig()
 	{
-		if ($this->config === NULL) {
-			$this->config = new Zend_Config($this->getBootstrap()->getOptions());
+		if (is_null($this->_config)) {
+			$this->_config = new Zend_Config($this->getBootstrap()->getOptions());
 		}
-		return $this->config;
+		return $this->_config;
 	}
 
 	/**
 	 * 获取翻译对象
-	 *
-	 * Zend_Translate通过__call转发的，自动支持参数
-	 *
-	 * zend translate有坑，如果是不存在的语言这里直接返回设置的默认语言
-	 * 配置总这个选项resources.translate.locale
-	 *
-	 * @param string $locale
-	 * @return Zend_Translate
+	 * @param null $locale
+	 * @return DM_Helper_Translate|Zend_Translate
+	 * @throws Exception
 	 */
 	public function getLang($locale = NULL)
 	{
@@ -150,7 +173,7 @@ class DM_Controller_Front
 		}
 		$config = $this->getConfig()->resources->translate;
 		if (!$config) {
-			throw new DM_Exception_Lang('applicationi.ini translate section is needed.');
+			throw new Exception('applicationi.ini translate section is needed.');
 		}
 		//默认语言
 		if ($lang === NULL) {
@@ -203,33 +226,6 @@ class DM_Controller_Front
 		return $this->getLang()->getLocale();
 	}
 
-	/**
-	 * 获取登录验证Auth对象
-	 *
-	 * @return DM_Module_Auth
-	 */
-	public function getAuth()
-	{
-		return DM_Module_Auth::getInstance();
-	}
-
-	/**
-	 * 是否登录状态
-	 */
-	public function isLogin()
-	{
-		return self::getAuth()->isLogin();
-	}
-
-	/**
-	 * 获取当前登录用户
-	 *
-	 * @return DM_Model_Row_Member
-	 */
-	public function getLoginUser()
-	{
-		return self::getAuth()->getLoginUser();
-	}
 
 	/**
 	 * 获取系统cache配置
@@ -302,8 +298,8 @@ class DM_Controller_Front
 
 	/**
 	 * 获取数据库适配器
-	 *
 	 * @return Zend_Db_Adapter_Abstract
+	 * @throws Exception
 	 */
 	public function getHashSlaveDB()
 	{
@@ -369,29 +365,36 @@ class DM_Controller_Front
 	}
 
 	/**
-	 * curl
+	 * curl 函数
+	 * @param $url
+	 * @param $fields
+	 * @param bool|true $ispost
+	 * @return mixed
+	 * @throws Exception
 	 */
-	public static function curl($url, $fields, $ispost = true)
+	public function curl($url, $fields, $ispost = true)
 	{
 		$ch = curl_init();
 
 		curl_setopt($ch, CURLOPT_URL, $url);
-		if ($ispost) curl_setopt($ch, CURLOPT_POST, true);
+		if ($ispost) {
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+		}
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36');
 
 		//禁止ssl验证
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 
 		$response = curl_exec($ch);
 		if (curl_errno($ch)) {
-			throw new Zend_Exception(curl_error($ch), 0);
+			throw new Exception(curl_error($ch), 0);
 		} else {
 			$httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			if (200 !== $httpStatusCode) {
-				throw new Zend_Exception("http status code exception :{$httpStatusCode}", 0);
+				throw new Exception("http status code exception :{$httpStatusCode}", 0);
 			}
 		}
 		curl_close($ch);
