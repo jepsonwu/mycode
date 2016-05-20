@@ -1,274 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="088e5df3-a110-42c5-aedb-e571b46aa96c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dm/DM/Model/Account/Member.php" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Exception/Abstract.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Exception/Lang.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Account/Location.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Account/MemberGranted.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Account/MemberLogs.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Account/Members.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Account/QrCodes.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Account/Sensitive.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/RedisExchangerate.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Row.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Row/Member.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/AdminLogs.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Article/Article.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Article/Category.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/ExchangeRate/ExchangeRate.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Amount.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/AmountLog.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Banks.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Freezes.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Funds.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Logs.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Order.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Finance/Refund.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/InviteCodes.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Levels.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Member/RefundBanks.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/MemberConnect.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/MemberLogs.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/MemberVerifys.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Members.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Message/Broadcast.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Message/Membernews.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Message/Room.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Message/Type.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/Tickets/Tickets.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/User/Abstract.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/User/Admin.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/User/Privilege.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Model/Table/User/Role.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Daemon/Base.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Daemon/MemoryCheck.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Daemon/ReleaseCheck.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Daemon/SampleModule.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Daemon/SingleProcessGuard.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Log.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/MobileParam.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/MobileVerson.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/Region.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/ShutCall.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dm/DM/Module/ZendRedis.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ActivityController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ActivityDisneyController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ActivityMoneyAttitudeController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ActivityWishController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ArticleCommentController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ArticleController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/BestController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/BonusController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ChannelController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ColumnController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/CounselController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ErrorController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/FavoriteController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/FocusController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/FollowController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/FriendController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/GiftController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/GroupController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ImageUploadController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/IndexController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/LectureController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/LessonController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/LocationController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/MemberController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/MessageController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/PublicController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/RefundController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/SearchSugController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ShuoshuoController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/SystemController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/TestController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/TopicController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/UserController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/application/modules/api/controllers/ViewController.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/a.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/b.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/bonusBack.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/caiYouQuan.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/clearBonusPreset.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/dayStatic.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/deleteLocation.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/handViews.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/publishArticle.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/queryOrder.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/recharge.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/static.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/syncCityCode.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/syncFriend.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/syncFriendCache.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/syncGroup.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/syncShuoshuoData.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/topicStatic.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/dev/unFreeze.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/bonusBack.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/caiYouQuan.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/callbackYouqian.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/clearBonusPreset.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/dayStatic.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/deleteLocation.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/handViews.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/historyFriendView.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/noticeMember.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/publishArticle.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/queryOrder.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/recharge.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/static.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/syncCityCode.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/syncFriend.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/syncFriendCache.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/syncGroup.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/syncShuoshuoData.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/topicStatic.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/production/unFreeze.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/bonusBack.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/caiYouQuan.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/clearBonusPreset.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/dayStatic.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/deleteLocation.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/handViews.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/historyFriendView.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/static.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/syncCityCode.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/syncFriend.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/syncFriendCache.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/syncGroup.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/syncShuoshuoData.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/topicStatic.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/bin/staging/unFreeze.sh" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Action/Member.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Action/Web.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/Disney.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/MoneyAttitude.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/MoneyAttitudeAnswer.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/MoneyAttitudeQuestion.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/Wish.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/WishCoupons.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/WishGift.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Activity/WishInfo.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ActivityTemplate.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Ads.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/AdsBar.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Article.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Authenticate.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/AuthenticateTemp.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Best/Best.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Best/BestTitle.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Bonus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Cexcel.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Channel.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ChannelFocus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/Activity.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/ActivityEnroll.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/Article.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/ArticleComment.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/ArticleFocus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/ArticleGift.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/Column.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/ColumnFocus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/MemberSubscribe.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Column/Notice.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/CryptAES.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/DayStatic.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/DisplayChannel.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/EntityTags.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Famous.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Favorite.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Feature.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FeatureGroup.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Feedback.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Financial/FinancialPlannerInfo.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FlowActivity.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FlowNew.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FlowOrder.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FlowSDK.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Focus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ForceActivity.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FriendApply.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/FriendApplyRelation.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Gift.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/Easemob.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/Friend.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/Group.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/GroupAnnouncement.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/GroupApply.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/GroupFocus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/GroupMember.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/GroupTopic.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/IM/MessageReport.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Image.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/JSSDK.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Lecture/Comment.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Lecture/Video.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Lesson.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/LessonClass.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/LessonClassDetail.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/LessonModule.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Member.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MemberChannel.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MemberFocus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MemberFollow.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MemberLocation.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MemberNotes.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MemberScore.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Message.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/MessageHelper.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Oauth.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Openlogs.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Opensummary.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/OwnerIdfa.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/PartnerIdfa.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Pinyin.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Qiniu.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Qualification.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/QualificationTemp.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Refund.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Region.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ShuoComment.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ShuoCommentReply.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ShuoImage.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/ShuoPraise.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Shuoshuo.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/SpecialContent.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Static.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/StockGuess.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/System/Version.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Tags.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Tools.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Focus.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Follow.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Praise.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Reply.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/ReplyPraise.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/SearchKeyWords.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Sign.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Static.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Topic.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/TopicVote.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/View.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/ViewGift.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/ViewImage.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/Violations.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Topic/VoteList.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/Types.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/VotePeriod.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/VoteViewList.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/WordsAds.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/new/library/Model/shuoRelation.php" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/new/library/Model/Common/Common.php" afterPath="$PROJECT_DIR$/dm/DM/Model/Common.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Account/Api.php" afterPath="$PROJECT_DIR$/dm/DM/Account/Api.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Account/Common.php" afterPath="$PROJECT_DIR$/dm/DM/Account/Common.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Module/EDM/Email.php" afterPath="$PROJECT_DIR$/dm/DM/Module/EDM/Email.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Controller/Front.php" afterPath="$PROJECT_DIR$/dm/DM/Controller/Front.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dm/DM/Module/EDM/Phone.php" afterPath="$PROJECT_DIR$/dm/DM/Module/EDM/Phone.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="088e5df3-a110-42c5-aedb-e571b46aa96c" name="Default" comment="" />
     <ignored path="mycode.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -415,7 +148,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="new" />
+              <option name="myItemId" value="go" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -429,121 +166,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="new" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="bin" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="new" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="new" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="modules" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="new" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="modules" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="new" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="modules" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="api" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mycode" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dm" />
+              <option name="myItemId" value="go" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -556,7 +179,7 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../websocket-php" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/go" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -627,7 +250,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="28" width="1922" height="1020" extended-state="6" />
+    <frame x="-1" y="28" width="1922" height="1020" extended-state="7" />
     <editor active="false" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
