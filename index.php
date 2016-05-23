@@ -1,32 +1,7 @@
 <?php
-include_once 'dm/DM/Authorize/AuthorizeAbstract.php';
-include_once 'dm/DM/Authorize/Md5.php';
-$url = "http://myzend.com/api/test/index";
-$get_param = array(
-	"sign_type" => "MD5",
-	"timestamp" => time(),
-	"name" => "jepson",
-);
-
-$sign_md5_key = "ee7daa0c94574bee62b5f79d2b447de6";
-$md5SignModel = DM_Authorize_Md5::getInstance();
-$sign = $md5SignModel->sign($get_param, $sign_md5_key);
-$get_param['sign'] = $sign;
-
-
-$get_param = "?" . http_build_query($get_param);
-
-try {
-	$result = curlFunc($url . $get_param, array(), false);
-	echo $result;
-} catch (Exception $e) {
-	echo $e->getMessage();
-}
-
-exit;
-include_once 'Authorize/Rsa.php';
-include_once 'Authorize/Mcrypt.php';
-include_once 'Authorize/CryptAES.php';
+//include_once 'Authorize/Rsa.php';
+//include_once 'Authorize/Mcrypt.php';
+//include_once 'Authorize/CryptAES.php';
 //include_once 'Yee/yeepayMPay.php';
 
 $private_key = '-----BEGIN PRIVATE KEY-----
@@ -52,6 +27,45 @@ FdsHOOwXntC2JawH1LtBSyM+7G3c3/t1gq7QvYWe0g80jNxoLRu274vkrmcUD4f1
 kckg5jOK2bBI4DfK9wIDAQAB
 -----END PUBLIC KEY-----';
 
+
+include_once 'dm/DM/Authorize/AuthorizeAbstract.php';
+include_once 'dm/DM/Authorize/Md5.php';
+include_once 'dm/DM/Authorize/Rsa.php';
+include_once 'dm/DM/Authorize/Mcrypt.php';
+$url = "http://myzend.com/api/demo/demo-test";
+
+$crypt_data = array(
+	"name" => "jepson",
+	"password" => "12312",
+	"encrypt_key" => "fsdf"
+);
+
+$md5SignModel = DM_Authorize_Md5::getInstance();
+$rsaModel = DM_Authorize_Rsa::getInstance();
+
+$get_param = array(
+	"sign_type" => "MD5",
+	"timestamp" => time(),
+	"name" => "jepson",
+	"password" => "sadfas",
+	//"encrypt_type" => "HTTPS",
+	//"encrypt_data" => $rsaModel->encrypt(json_encode($crypt_data), $public_key),
+);
+
+$sign_md5_key = "ee7daa0c94574bee62b5f79d2b447de6";
+$sign = $md5SignModel->sign($get_param, $sign_md5_key);
+$get_param['sign'] = $sign;
+
+$get_param = "?" . http_build_query($get_param);
+
+try {
+	$result = curlFunc($url . $get_param, array(), false);
+	echo $result;
+} catch (Exception $e) {
+	echo $e->getMessage();
+}
+
+exit;
 //$pwd="caizhuwjp13671142513";
 //$aes=new Model_CryptAES();
 //var_dump($aes->encrypt($pwd));exit;

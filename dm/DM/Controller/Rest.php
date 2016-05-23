@@ -5,6 +5,8 @@
  * 1.请求方法类型处理
  * 2.请求资源类型处理
  * 3.API版本号
+ *
+ * 405  请求方式错误
  * User: jepson <jepson@duomai.com>
  * Date: 16-5-16
  * Time: 下午3:08
@@ -24,7 +26,7 @@ abstract class DM_Controller_Rest extends DM_Controller_Common
 	protected $_default_request_type = 'json';
 
 	//API版本号
-	protected $_api_version = "";
+	protected $_api_version = null;
 
 	/**
 	 * init
@@ -42,6 +44,7 @@ abstract class DM_Controller_Rest extends DM_Controller_Common
 		$this->_method = $method;
 
 		//处理头部，例如API版本 客户端版本
+		$this->_api_version = $this->getRequest()->getHeader("API_VERSION");
 
 		parent::init();
 	}

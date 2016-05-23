@@ -8,6 +8,7 @@
  *      (1)field如果为fields时支持取反,取反格式为：！name,avator在查询列表接口时很有用
  *      (2)当type为confirm时，可以验证field和rule字段的值是否相等，在验证密码时很有用
  *      (3)当使用function类型时，如果方法不存在则不过滤。callback为使用控制器类的方法过滤。
+ *      (4)defaule 支持取反!
  * User: jepson <jepson@duomai.com>
  * Date: 15-11-13
  * Time: 下午4:42
@@ -17,10 +18,6 @@ class DM_Helper_Filter
 	const MUST_VALIDATE = 1;      // 必须验证
 	const EXISTS_VALIDATE = 0;      // 存在字段则验证,默认值
 	const VALUE_VALIDATE = 2;      // 字段值不为空则验证,这种情况则允许用户输入空值
-
-	public function __construct()
-	{
-	}
 
 	/**
 	 * 使用正则验证数据
@@ -53,69 +50,57 @@ class DM_Helper_Filter
 	 * @access protected
 	 * @param array $data 创建数据
 	 * @param $validate
+	 * @param bool $strict 严格校验 参数数目一致
 	 * @return bool
-	 *
 	 */
-	static public function autoValidation($data, $validate)
+	static public function autoValidation($data, $validate, $strict = false)
 	{
 		//验证成功返回值
 		$default = array();
 
+		//参数严格校验
+		$data_count = count($data);
+
 		// 属性验证
 		foreach ($validate as $key => $val) {
-			//fields 支持取反和默认 $val[1]：支持  $val[5]：默认
-			if ($val[0] == 'fields') {
-				if (!isset($val[5]))
-					$val[5] = $val[1];
-				elseif ($val[5]{0} == "!")
-					$val[5] = implode(",", array_diff(explode(",", $val[1]), explode(",", substr($val[5], 1))));
-			}
-
-			$res = "";
-			$tmp = false;
-
-//			if (0 == strpos($val[2], '{%') && strpos($val[2], '}'))
-//				// 支持提示信息的多语言 使用 {%语言定义} 方式
-//				$val[2] = L(substr($val[2], 2, -1));
+			unset($result);
+			isset($val[5]) && $val[5]{0} == "!" &&
+			$val[5] = implode(",", array_diff(explode(",", $val[1]), explode(",", substr($val[5], 1))));
 
 			$val[3] = isset($val[3]) ? $val[3] : self::EXISTS_VALIDATE;
 			$val[4] = isset($val[4]) ? $val[4] : 'regex';
 
-			// 判断验证条件
+			//判断验证条件
 			switch ($val[3]) {
-				case self::MUST_VALIDATE:   // 必须验证
-					if (!isset($data[$val[0]]))
-						$res = false;
-					else
-						$res = self::_validationFieldItem($data, $val);
-					$tmp = true;
+				case self::MUST_VALIDATE://必须验证
+					$result = !isset($data[$val[0]]) ? false : self::_validationFieldItem($data, $val);
 					break;
-				default:    //存在该字段就验证
+				default://存在该字段就验证
 					if (isset($data[$val[0]])) {
-						$res = self::_validationFieldItem($data, $val);
-						$tmp = true;
-					} else
+						$result = self::_validationFieldItem($data, $val);
+					} else {
+						$data_count++;
 						isset($val[5]) && $default[$val[0]] = $val[5];
+					}
 			}
 
-			if ($tmp) {
-				//支持函数返回值
-				if ($res === false) {
+			//支持函数返回值
+			if (isset($result)) {
+				if ($result === false) {
 					return $val[2];
 				} else {
-					//判断允许为空  is_string
-					if (!isset($val[6]) || (isset($val[6]) && !$val[6])) {
-						if ($data[$val[0]] === '')
-							return $val[2];
-					}
+					//判断允许为空 默认不允许为空
+					if ($data[$val[0]] === '' && !(isset($val[6]) && $val[6]))
+						return $val[2];
 
-					if (is_bool($res))
-						$default[$val[0]] = $data[$val[0]];
-					else
-						$default[$val[0]] = $res;
+					$default[$val[0]] = is_bool($result) ? $data[$val[0]] : $result;
 				}
 			}
 		}
+
+		//参数数目不一致
+		if ($strict && $data_count != count($validate))
+			return false;
 
 		return $default;
 	}
@@ -200,10 +185,6 @@ class DM_Helper_Filter
 				if (!is_numeric($start)) $start = strtotime($start);
 				if (!is_numeric($end)) $end = strtotime($end);
 				return $time >= $start && $time <= $end;
-//			case 'ip_allow': // IP 操作许可验证
-//				return in_array(get_client_ip(), explode(',', $rule));
-//			case 'ip_deny': // IP 操作禁止验证
-//				return !in_array(get_client_ip(), explode(',', $rule));
 			case 'regex':
 			default:    // 默认使用正则验证 可以使用验证类中定义的验证名称
 				// 检查附加规则
