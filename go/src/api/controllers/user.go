@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego"
+	"fmt"
+	"reflect"
 )
 
 // Operations about Users
@@ -20,7 +22,15 @@ type UserController struct {
 // @router / [post]
 func (u *UserController) Post() {
 	var user models.User
-	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+	if (err != nil) {
+		fmt.Printf("error %v", err)
+	}
+	value := reflect.ValueOf(user)
+	for i := 0; i < value.NumField(); i++ {
+		fmt.Printf("user %v\n\n", value.Field(i))
+	}
+
 	uid := models.AddUser(user)
 	u.Data["json"] = map[string]string{"uid": uid}
 	u.ServeJSON()
@@ -39,6 +49,7 @@ func (u *UserController) GetAll() {
 // @Title Get
 // @Description get user by uid
 // @Param	uid		path 	string	true		"The key for staticblock"
+// @Param	name		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.User
 // @Failure 403 :uid is empty
 // @router /:uid [get]

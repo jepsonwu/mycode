@@ -1,4 +1,26 @@
 <?php
+echo '<pre>';
+$uids = array();
+$info = array(
+	1 => array("uid" => 1,),
+	8 => array("uid" => 8,),
+	2 => array("uid" => 2,),
+	10 => array("uid" => 10,),
+);
+foreach ($info as $key => $val)
+	$uids[] = $key;
+
+$info_temp = array(
+	3 => array("uid" => 3),
+);
+
+$info[key($info_temp)] = current($info_temp);
+
+print_r($uids);
+print_r($info);
+exit;
+
+
 //include_once 'Authorize/Rsa.php';
 //include_once 'Authorize/Mcrypt.php';
 //include_once 'Authorize/CryptAES.php';
