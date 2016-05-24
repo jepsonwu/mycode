@@ -1,0 +1,25 @@
+2016-05-23T10:55:28+08:00 ERR (3): ERROR detect E_NOTICE: Undefined index: encrypt_data
+In file  /data/mycode/dm/DM/Helper/Filter.php(98)
+Params: {"module":"api","controller":"demo","action":"demo-test","api\/demo\/demo-test":"","sign_type":"MD5","timestamp":"1463972128","name":"jepson","sign":"16e4de1562ae01ab86d974ba0d5783a7","add":"daf","uri":"\/api\/demo\/demo-test?sign_type=MD5&timestamp=1463972128&name=jepson&sign=16e4de1562ae01ab86d974ba0d5783a7&add=daf"}
+
+2016-05-23T11:10:38+08:00 ERR (3): ERROR detect E_NOTICE: Undefined index: encrypt_data
+In file  /data/mycode/dm/DM/Helper/Filter.php(91)
+Params: {"module":"api","controller":"demo","action":"demo-test","api\/demo\/demo-test":"","sign_type":"MD5","timestamp":"1463973038","name":"jepson","sign":"541fc91b850a0fadd92f3ca8441aefd5","add":"daf","uri":"\/api\/demo\/demo-test?sign_type=MD5&timestamp=1463973038&name=jepson&sign=541fc91b850a0fadd92f3ca8441aefd5&add=daf"}
+
+2016-05-23T11:11:30+08:00 ERR (3): ERROR detect E_NOTICE: Undefined index: encrypt_data
+In file  /data/mycode/dm/DM/Helper/Filter.php(91)
+Params: {"module":"api","controller":"demo","action":"demo-test","api\/demo\/demo-test":"","sign_type":"MD5","timestamp":"1463973090","name":"jepson","sign":"f1d2420f7d6688ef8daf3cea0ef5a34d","add":"daf","uri":"\/api\/demo\/demo-test?sign_type=MD5&timestamp=1463973090&name=jepson&sign=f1d2420f7d6688ef8daf3cea0ef5a34d&add=daf"}
+
+2016-05-23T13:55:24+08:00 ERR (3): ERROR detect E_ERROR: Uncaught exception 'Zend_Controller_Action_Exception' with message 'Method "createCsrfCode" does not exist and was not trapped in __call()' in /data/mycode/dm/Zend/Controller/Action.php:491
+Stack trace:
+#0 /data/mycode/dm/DM/Controller/Web.php(29): Zend_Controller_Action->__call('createCsrfCode', Array)
+#1 /data/mycode/dm/DM/Controller/Web.php(29): Web_ErrorController->createCsrfCode()
+#2 /data/mycode/dm/Zend/Controller/Action.php(134): DM_Controller_Web->init()
+#3 /data/mycode/dm/Zend/Controller/Dispatcher/Standard.php(268): Zend_Controller_Action->__construct(Object(Zend_Controller_Request_Http), Object(Zend_Controller_Response_Http), Array)
+#4 /data/mycode/dm/Zend/Controller/Front.php(954): Zend_Controller_Dispatcher_Standard->dispatch(Object(Zend_Controller_Request_Http), Object(Zend_Controller_Response_Http))
+#5 /data/mycode/dm/Zend/Application/Bootstrap/Bootstrap.php(101): Zend_Controller_Front->dispatch()
+#6 /data/mycode/dm/Zend/Application.php(366): Zend_Application_Bootstrap_Bootstrap->run()
+#7 /data
+In file  /data/mycode/dm/Zend/Controller/Plugin/Broker.php(336)
+Params: {"module":"api","controller":"demo","action":"demo-test","api\/demo\/demo-test":"","sign_type":"MD5","timestamp":"1463982924","name":"jepson","password":"sadfas","sign":"1bf4f9a4139afc67f5e6283a7226c79e","uri":"\/api\/demo\/demo-test?sign_type=MD5&timestamp=1463982924&name=jepson&password=sadfas&sign=1bf4f9a4139afc67f5e6283a7226c79e"}
+
