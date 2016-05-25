@@ -11,7 +11,6 @@ import (
 	"api/controllers"
 
 	"github.com/astaxie/beego"
-	"api/controllers/v2"
 )
 
 func init() {
@@ -26,15 +25,20 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
-	)
-	beego.AddNamespace(ns)
-
-	ns_v2 := beego.NewNamespace("/v2",
-		beego.NSNamespace("/user",
+		beego.NSNamespace("/demo",
 			beego.NSInclude(
-				&v2.UserController{},
+				&controllers.DemoController{},
 			),
 		),
 	)
-	beego.AddNamespace(ns_v2)
+	beego.AddNamespace(ns)
+
+	//ns_v2 := beego.NewNamespace("/v2",
+	//	beego.NSNamespace("/user",
+	//		beego.NSInclude(
+	//			&v2.UserController{},
+	//		),
+	//	),
+	//)
+	//beego.AddNamespace(ns_v2)
 }

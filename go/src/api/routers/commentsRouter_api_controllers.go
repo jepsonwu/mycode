@@ -6,6 +6,20 @@ import (
 
 func init() {
 
+	beego.GlobalControllerRouter["api/controllers:DemoController"] = append(beego.GlobalControllerRouter["api/controllers:DemoController"],
+		beego.ControllerComments{
+			"GetAll",
+			`/`,
+			[]string{"get"},
+			nil})
+
+	beego.GlobalControllerRouter["api/controllers:DemoController"] = append(beego.GlobalControllerRouter["api/controllers:DemoController"],
+		beego.ControllerComments{
+			"Post",
+			`/`,
+			[]string{"post"},
+			nil})
+
 	beego.GlobalControllerRouter["api/controllers:ObjectController"] = append(beego.GlobalControllerRouter["api/controllers:ObjectController"],
 		beego.ControllerComments{
 			"Post",
