@@ -8,13 +8,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//valid 参数校验 正则不支持 \w格式
-//orm 模型参数
+
 type Demo struct {
-	Uid        int64 `orm:"pk"`
-	Nickname   string `orm:"unique"valid:"Required;MaxSize(50)"` //unique varchar 50
+	Uid        uint32 `orm:"pk"`
+	Nickname   string `orm:"unique"valid:"Required;MaxSize(50)"` //unique 没用 varchar 50
 	Password   string `valid:"Match(/^[A-Za-z0-9_]{32}$/)"`      //char 32
-	Age        int   `valid:"Range(1,140)"`                      //没有tint么
+	Age        uint8   `valid:"Range(1,140)"`
 	Phone      string `valid:"Mobile"`
 	CreateTime int    `valid:"Match(/^[0-9]+$/)"`
 }
@@ -33,6 +32,20 @@ func init() {
 	orm.RegisterModel(new(Demo))
 	//debug 打印sql语句
 	//orm.Debug = true
+}
+
+func GetDemo(uid int64) (*Demo, error) {
+	o := orm.NewOrm()
+	o.Using(beego.AppConfig.String("db.name"))
+
+	demo := Demo{Uid:uid}
+
+	err := o.Read(&demo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &demo, nil
 }
 
 func GetAllDemos() []*Demo {

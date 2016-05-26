@@ -1,17 +1,16 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
+	//"github.com/astaxie/beego"
 	"api/models"
 	"encoding/json"
 	"fmt"
-	//"reflect"
 	"github.com/astaxie/beego/validation"
-	//"reflect"
+	"strconv"
 )
 
 type DemoController struct {
-	beego.Controller
+	BaseController
 }
 
 // @Title Get
@@ -20,8 +19,29 @@ type DemoController struct {
 // @router / [get]
 func (d *DemoController)GetAll() {
 	demos := models.GetAllDemos()
-	d.Data["json"] = demos
-	d.ServeJSON()
+	d.SuccessJson(demos)
+}
+
+// @Title get demo
+// @Description get demo
+// @Param uid path string true "demo by uid"
+// @Success 200 {object} models.Demo
+// @Failure 403 :uid is empty
+// @router /:uid [get]
+func (d *DemoController)Get() {
+	uid := d.GetString(":uid")
+
+	if uid == "" {
+		d.FailedJson("1001", "uid is empty")
+	}
+
+	uidInt, _ := strconv.ParseInt(uid, 0, 64)
+	demo, err := models.GetDemo(uidInt)
+	if err != nil {
+		d.FailedJson("1002", err.Error())
+	}
+
+	d.SuccessJson(demo)
 }
 
 // @Title create demo
