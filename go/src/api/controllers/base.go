@@ -11,6 +11,7 @@ type BaseController struct {
 func (c *BaseController)FailedJson(code, msg string) {
 	c.Data["json"] = map[string]string{"code":code, "msg":msg}
 	c.ServeJSON()
+	//c.StopRun()
 }
 
 func (c *BaseController)SuccessJson(data interface{}) {

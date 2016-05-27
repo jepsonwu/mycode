@@ -15,6 +15,8 @@ type DemoController struct {
 
 // @Title Get
 // @Description get all Demos
+// @Param page query int false "list page"
+// @Param pagesize query int false "list pagesize"
 // @Success 200 {object} models.Demo
 // @router / [get]
 func (d *DemoController)GetAll() {
@@ -29,14 +31,15 @@ func (d *DemoController)GetAll() {
 // @Failure 403 :uid is empty
 // @router /:uid [get]
 func (d *DemoController)Get() {
+	//todo 参数校验、签名、
 	uid := d.GetString(":uid")
 
 	if uid == "" {
 		d.FailedJson("1001", "uid is empty")
 	}
 
-	uidInt, _ := strconv.ParseInt(uid, 0, 64)
-	demo, err := models.GetDemo(uidInt)
+	uidInt, _ := strconv.Atoi(uid)
+	demo, err := models.GetDemo(uint32(uidInt))
 	if err != nil {
 		d.FailedJson("1002", err.Error())
 	}
@@ -51,6 +54,8 @@ func (d *DemoController)Get() {
 // @Failure 403 body is empty
 // @router / [post]
 func (d *DemoController)Post() {
+	page := d.GetString("page")
+	fmt.Printf("page value:%v,type:%T", page, page);
 	var demo models.Demo
 	//todo unmarshal报错怎么办 定义interface{}基本类型结构 json解析成基本类型结构之后再解析成model结构
 	err := json.Unmarshal(d.Ctx.Input.RequestBody, &demo)
@@ -82,7 +87,5 @@ func (d *DemoController)Post() {
 
 	uid := models.AddDemo(demo)
 
-	//todo common 错误和正确处理
-	d.Data["json"] = map[string]int64{"uid":uid}
-	d.ServeJSON()
+	d.SuccessJson(map[string]uint32{"uid":uid})
 }
