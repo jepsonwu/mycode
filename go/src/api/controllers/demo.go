@@ -20,6 +20,11 @@ type DemoController struct {
 // @Success 200 {object} models.Demo
 // @router / [get]
 func (d *DemoController)GetAll() {
+	//todo
+	/**
+	name paramType dataType isRequire desc （rule message default）
+	名称 参数类型 数据类型 是否必填 描述 过滤规则 提示消息 默认值
+	 */
 	demos := models.GetAllDemos()
 	d.SuccessJson(demos)
 }
