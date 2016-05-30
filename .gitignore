@@ -1,1 +1,4 @@
 /.idea
+/go/src/api/api
+/go/src/api/docs/docs.go
+/go/src/api/lastupdate.tmp
