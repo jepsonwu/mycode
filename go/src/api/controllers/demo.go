@@ -15,23 +15,18 @@ type DemoController struct {
 
 // @Title Get
 // @Description get all Demos
-// @Param page query int false "list page"
-// @Param pagesize query int false "list pagesize"
+// @Param page query int false "list page" "Required;Min(1)" "list page is error" dfa
+// @dParam pagesize query int false "list pagesize"
 // @Success 200 {object} models.Demo
 // @router / [get]
 func (d *DemoController)GetAll() {
-	//todo
-	/**
-	name paramType dataType isRequire desc （rule message default）
-	名称 参数类型 数据类型 是否必填 描述 过滤规则 提示消息 默认值
-	 */
 	demos := models.GetAllDemos()
 	d.SuccessJson(demos)
 }
 
 // @Title get demo
 // @Description get demo
-// @Param uid path string true "demo by uid"
+// @dParam uid path string true "demo by uid"
 // @Success 200 {object} models.Demo
 // @Failure 403 :uid is empty
 // @router /:uid [get]
@@ -54,7 +49,7 @@ func (d *DemoController)Get() {
 
 // @Title create demo
 // @Description create demo
-// @Param body body models.Demo true "demo content"
+// @dParam body body models.Demo true "demo content"
 // @Success 200 {int} models.Demo.Id
 // @Failure 403 body is empty
 // @router / [post]
