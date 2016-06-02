@@ -14,7 +14,7 @@ type ObjectController struct {
 
 // @Title create
 // @Description create object
-// @Param	body		body 	models.Object	true		"The object content"
+// @pParam	body		body 	models.Object	true		"The object content"
 // @Success 200 {string} models.Object.Id
 // @Failure 403 body is empty
 // @router / [post]
@@ -28,7 +28,7 @@ func (o *ObjectController) Post() {
 
 // @Title Get
 // @Description find object by objectid
-// @Param	objectId		path 	string	true		"the objectid you want to get"
+// @pParam	objectId		path 	string	true		"the objectid you want to get"
 // @Success 200 {object} models.Object
 // @Failure 403 :objectId is empty
 // @router /:objectId [get]
@@ -58,8 +58,8 @@ func (o *ObjectController) GetAll() {
 
 // @Title update
 // @Description update the object
-// @Param	objectId		path 	string	true		"The objectid you want to update"
-// @Param	body		body 	models.Object	true		"The body"
+// @pParam	objectId		path 	string	true		"The objectid you want to update"
+// @pParam	body		body 	models.Object	true		"The body"
 // @Success 200 {object} models.Object
 // @Failure 403 :objectId is empty
 // @router /:objectId [put]
@@ -79,7 +79,7 @@ func (o *ObjectController) Put() {
 
 // @Title delete
 // @Description delete the object
-// @Param	objectId		path 	string	true		"The objectId you want to delete"
+// @pParam	objectId		path 	string	true		"The objectId you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 objectId is empty
 // @router /:objectId [delete]

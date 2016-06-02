@@ -15,7 +15,7 @@ type DemoController struct {
 
 // @Title Get
 // @Description get all Demos
-// @Param page query int false "list page" "Required;Min(1)" "list page is error" dfa
+// @Param page query int false "list page" "Required;Min(1)" "list page is error" 1
 // @dParam pagesize query int false "list pagesize"
 // @Success 200 {object} models.Demo
 // @router / [get]

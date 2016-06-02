@@ -3,8 +3,8 @@ package main
 import (
 	_ "api/docs"
 	_ "api/routers"
-
 	"github.com/astaxie/beego"
+	"api/prepare"
 )
 
 func main() {
@@ -12,5 +12,9 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
+
+	//解析controller注释
+	prepare.ParseParamFilters()
+
 	beego.Run()
 }

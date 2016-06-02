@@ -16,7 +16,7 @@ type UserController struct {
 
 // @Title createUser
 // @Description create users
-// @Param	body		body 	models.User	true		"body for user content"
+// @pParam	body		body 	models.User	true		"body for user content"
 // @Success 200 {int} models.User.Id
 // @Failure 403 body is empty
 // @router / [post]
@@ -48,8 +48,8 @@ func (u *UserController) GetAll() {
 
 // @Title Get
 // @Description get user by uid
-// @Param	uid		path 	string	true		"The key for staticblock"
-// @Param	name		path 	string	true		"The key for staticblock"
+// @pParam	uid		path 	string	true		"The key for staticblock"
+// @pParam	name		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.User
 // @Failure 403 :uid is empty
 // @router /:uid [get]
@@ -68,8 +68,8 @@ func (u *UserController) Get() {
 
 // @Title update
 // @Description update the user
-// @Param	uid		path 	string	true		"The uid you want to update"
-// @Param	body		body 	models.User	true		"body for user content"
+// @pParam	uid		path 	string	true		"The uid you want to update"
+// @pParam	body		body 	models.User	true		"body for user content"
 // @Success 200 {object} models.User
 // @Failure 403 :uid is not int
 // @router /:uid [put]
@@ -90,7 +90,7 @@ func (u *UserController) Put() {
 
 // @Title delete
 // @Description delete the user
-// @Param	uid		path 	string	true		"The uid you want to delete"
+// @pParam	uid		path 	string	true		"The uid you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 uid is empty
 // @router /:uid [delete]
@@ -103,8 +103,8 @@ func (u *UserController) Delete() {
 
 // @Title login
 // @Description Logs user into the system
-// @Param	username		query 	string	true		"The username for login"
-// @Param	password		query 	string	true		"The password for login"
+// @pParam	username		query 	string	true		"The username for login"
+// @pParam	password		query 	string	true		"The password for login"
 // @Success 200 {string} login success
 // @Failure 403 user not exist
 // @router /login [get]
