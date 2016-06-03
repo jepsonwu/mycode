@@ -1,0 +1,827 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: v1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-12-25 13:29+0800\n"
+"PO-Revision-Date: 2016-04-19 15:09+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.5\n"
+"X-Poedit-KeywordsList: _;translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ../../..\n"
+"X-Poedit-SearchPath-1: ../../../../caizhu.dm/DM\n"
+
+#: ../../../public/static/js/web/column/jquery-ui.min.js:8
+msgid "'"
+msgstr ""
+
+#: ../../../public/style/ueditor/editor_all_min.js:1
+msgid "#"
+msgstr ""
+
+#: ../../../public/style/ueditor/editor_all_min.js:1
+msgid "p"
+msgstr ""
+
+#: ../../../public/style/ueditor/editor_all_min.js:1
+msgid "a"
+msgstr ""
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:65
+#: ../../../application/modules/api/controllers/FocusController.php:73
+#: ../../../application/modules/api/controllers/UserController.php:591
+msgid "api.user.msg.username.format"
+msgstr "请输入正确的账号格式！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:68
+msgid "api.user.msg.username.existed"
+msgstr "该账号已存在，请重新输入！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:75
+#: ../../../../caizhu.dm/DM/Api/Account.php:224
+#: ../../../../caizhu.dm/DM/Api/Account.php:755
+#: ../../../../caizhu.dm/DM/Api/Account.php:851
+#: ../../../../caizhu.dm/DM/Api/Member.php:54
+#: ../../../../caizhu.dm/DM/Api/Member.php:573
+#: ../../../../caizhu.dm/DM/Api/Member.php:605
+#: ../../../../caizhu.dm/DM/Api/Member.php:701
+msgid "api.user.msg.password.format"
+msgstr "密码6-20位，同时包含字母和数字！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:78
+#: ../../../../caizhu.dm/DM/Api/Account.php:191
+#: ../../../../caizhu.dm/DM/Api/Account.php:288
+#: ../../../../caizhu.dm/DM/Api/Account.php:307
+#: ../../../../caizhu.dm/DM/Api/Account.php:333
+#: ../../../../caizhu.dm/DM/Api/Account.php:435
+msgid "api.user.param.error"
+msgstr "参数错误！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:83
+#: ../../../../caizhu.dm/DM/Api/Account.php:387
+#: ../../../../caizhu.dm/DM/Api/Account.php:421
+#: ../../../../caizhu.dm/DM/Api/Account.php:571
+#: ../../../../caizhu.dm/DM/Api/Account.php:598
+#: ../../../../caizhu.dm/DM/Api/Account.php:621
+#: ../../../../caizhu.dm/DM/Api/Account.php:824
+#: ../../../../caizhu.dm/DM/Api/Account.php:896
+#: ../../../../caizhu.dm/DM/Api/Member.php:48
+#: ../../../../caizhu.dm/DM/Api/Member.php:87
+#: ../../../../caizhu.dm/DM/Api/Member.php:194
+#: ../../../../caizhu.dm/DM/Api/Member.php:220
+#: ../../../../caizhu.dm/DM/Api/Member.php:247
+#: ../../../../caizhu.dm/DM/Api/Member.php:273
+#: ../../../../caizhu.dm/DM/Api/Member.php:299
+#: ../../../../caizhu.dm/DM/Api/Member.php:674
+#: ../../../../caizhu.dm/DM/Api/Member.php:746
+msgid "api.user.msg.email.format"
+msgstr "请输入正确的邮箱！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:86
+#: ../../../../caizhu.dm/DM/Api/Member.php:51
+#: ../../../../caizhu.dm/DM/Api/Member.php:90
+msgid "api.user.msg.email.existed"
+msgstr "对不起，邮箱已存在！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:95
+msgid "api.user.msg.phone.format"
+msgstr "请输入正确的手机号码！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:98
+msgid "api.user.msg.phone.existed"
+msgstr "该手机号码已被注册，请换一个！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:104
+#: ../../../../caizhu.dm/DM/Api/Account.php:336
+#: ../../../../caizhu.dm/DM/Api/Account.php:444
+#: ../../../../caizhu.dm/DM/Api/Account.php:837
+#: ../../../../caizhu.dm/DM/Api/Account.php:909
+#: ../../../../caizhu.dm/DM/Api/Account.php:964
+#: ../../../../caizhu.dm/DM/Api/Member.php:303
+#: ../../../../caizhu.dm/DM/Api/Member.php:408
+#: ../../../../caizhu.dm/DM/Api/Member.php:687
+#: ../../../../caizhu.dm/DM/Api/Member.php:759
+#: ../../../../caizhu.dm/DM/Api/Member.php:814
+msgid "api.user.msg.verifycode.format"
+msgstr "验证码错误，请重新输入！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:110
+#: ../../../../caizhu.dm/DM/Api/Account.php:341
+#: ../../../../caizhu.dm/DM/Api/Account.php:451
+#: ../../../../caizhu.dm/DM/Api/Account.php:844
+#: ../../../../caizhu.dm/DM/Api/Account.php:916
+#: ../../../../caizhu.dm/DM/Api/Account.php:976
+#: ../../../../caizhu.dm/DM/Api/Member.php:317
+#: ../../../../caizhu.dm/DM/Api/Member.php:422
+#: ../../../../caizhu.dm/DM/Api/Member.php:694
+#: ../../../../caizhu.dm/DM/Api/Member.php:766
+#: ../../../../caizhu.dm/DM/Api/Member.php:826
+msgid "api.user.msg.verifycode.wrong"
+msgstr "验证码错误，请重新输入！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:114
+#: ../../../../caizhu.dm/DM/Api/Account.php:345
+#: ../../../../caizhu.dm/DM/Api/Account.php:455
+#: ../../../../caizhu.dm/DM/Api/Account.php:847
+#: ../../../../caizhu.dm/DM/Api/Account.php:919
+#: ../../../../caizhu.dm/DM/Api/Account.php:980
+#: ../../../../caizhu.dm/DM/Api/Member.php:321
+#: ../../../../caizhu.dm/DM/Api/Member.php:426
+#: ../../../../caizhu.dm/DM/Api/Member.php:697
+#: ../../../../caizhu.dm/DM/Api/Member.php:769
+#: ../../../../caizhu.dm/DM/Api/Member.php:830
+msgid "api.user.msg.verifycode.expired"
+msgstr "验证码已过期，请重新获取！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:119
+#: ../../../../caizhu.dm/DM/Api/Account.php:352
+#: ../../../../caizhu.dm/DM/Api/Account.php:463
+#: ../../../../caizhu.dm/DM/Api/Account.php:466
+#: ../../../../caizhu.dm/DM/Api/Account.php:858
+#: ../../../../caizhu.dm/DM/Api/Account.php:930
+#: ../../../../caizhu.dm/DM/Api/Account.php:987
+#: ../../../../caizhu.dm/DM/Api/Member.php:329
+#: ../../../../caizhu.dm/DM/Api/Member.php:333
+#: ../../../../caizhu.dm/DM/Api/Member.php:434
+#: ../../../../caizhu.dm/DM/Api/Member.php:708
+#: ../../../../caizhu.dm/DM/Api/Member.php:780
+#: ../../../../caizhu.dm/DM/Api/Member.php:837
+msgid "api.user.msg.verify.failed"
+msgstr "验证失败！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:126
+msgid "api.user.msg.choice.register.mode"
+msgstr "请选择注册模式！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:227
+msgid "api.user.msg.password"
+msgstr "密码6-20位，同时包含字母和数字！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:244
+#: ../../../../caizhu.dm/DM/Api/Account.php:772
+#: ../../../../caizhu.dm/DM/Api/Account.php:876
+#: ../../../../caizhu.dm/DM/Api/Member.php:593
+#: ../../../../caizhu.dm/DM/Api/Member.php:622
+#: ../../../../caizhu.dm/DM/Api/Member.php:726
+msgid "api.user.msg.password.updated"
+msgstr "修改成功！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:266
+#: ../../../../caizhu.dm/DM/Api/Account.php:317
+#: ../../../../caizhu.dm/DM/Api/Member.php:380
+#: ../../../../caizhu.dm/DM/Api/Member.php:399
+msgid "api.user.msg.mobile.format"
+msgstr "请输入正确的手机号码!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:269
+#: ../../../../caizhu.dm/DM/Api/Account.php:324
+#: ../../../../caizhu.dm/DM/Api/Account.php:390
+#: ../../../../caizhu.dm/DM/Api/Account.php:428
+#: ../../../../caizhu.dm/DM/Api/Account.php:579
+#: ../../../../caizhu.dm/DM/Api/Member.php:228
+#: ../../../../caizhu.dm/DM/Api/Member.php:311
+#: ../../../../caizhu.dm/DM/Api/Member.php:416
+msgid "api.user.msg.verified"
+msgstr "您的账号已绑定！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:275
+msgid "api.user.msg.mobile.verified.byOther"
+msgstr "该手机已被绑定，请换一个！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:279
+#: ../../../../caizhu.dm/DM/Api/Account.php:284
+#: ../../../../caizhu.dm/DM/Api/Account.php:328
+msgid "api.user.msg.mobile.noVerified"
+msgstr "该手机未绑定，无法进行解绑操作！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:312
+#: ../../../../caizhu.dm/DM/Api/Member.php:413
+msgid "api.user.msg.user.not.exist"
+msgstr "该用户不存在！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:320
+#: ../../../../caizhu.dm/DM/Api/Member.php:403
+msgid "api.user.mobile.existed"
+msgstr "该手机号码已被绑定，请重新输入！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:355
+#: ../../../../caizhu.dm/DM/Api/Member.php:438
+msgid "api.user.msg.verifystatus.failed"
+msgstr "验证失败！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:382
+#: ../../../../caizhu.dm/DM/Api/Account.php:432
+msgid "api.user.msg.email.noVerified"
+msgstr "该邮箱未绑定！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:396
+msgid "api.user.msg.email.verified.byOther"
+msgstr "该邮箱已被绑定，请换一个！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:425
+msgid "api.user.email.existed"
+msgstr ""
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:502
+msgid "api.params.error"
+msgstr "参数错误!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:576
+#: ../../../../caizhu.dm/DM/Api/Account.php:603
+#: ../../../../caizhu.dm/DM/Api/Account.php:626
+#: ../../../../caizhu.dm/DM/Api/Member.php:199
+#: ../../../../caizhu.dm/DM/Api/Member.php:225
+#: ../../../../caizhu.dm/DM/Api/Member.php:252
+#: ../../../../caizhu.dm/DM/Api/Member.php:278
+#: ../../../../caizhu.dm/DM/Api/Oauth.php:78
+#: ../../../../caizhu.dm/DM/Module/Account.php:73
+#: ../../../../caizhu.dm/DM/Module/Auth.php:60
+msgid "api.user.login.userInfo.null"
+msgstr "该用户不存在，请先注册再登录！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:651
+#: ../../../../caizhu.dm/DM/Api/Member.php:138
+#: ../../../../caizhu.dm/DM/Api/Member.php:472
+msgid "api.user.msg.name.illegal"
+msgstr "姓名不能为空"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:657
+#: ../../../../caizhu.dm/DM/Api/Member.php:478
+msgid "api.user.msg.idcardcode.empty"
+msgstr "卡号不能为空！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:669
+#: ../../../../caizhu.dm/DM/Api/Account.php:678
+#: ../../../../caizhu.dm/DM/Api/Account.php:683
+#: ../../../../caizhu.dm/DM/Api/Account.php:692
+#: ../../../../caizhu.dm/DM/Api/Member.php:490
+#: ../../../../caizhu.dm/DM/Api/Member.php:499
+#: ../../../../caizhu.dm/DM/Api/Member.php:504
+#: ../../../../caizhu.dm/DM/Api/Member.php:513
+msgid "api.user.msg.idcardimg.empty"
+msgstr "邮箱地址无效!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:697
+#: ../../../../caizhu.dm/DM/Api/Member.php:518
+#, fuzzy
+msgid "api.user.msg.idcardverify.succeed"
+msgstr "验证码已发送，请检查您的邮箱！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:699
+#: ../../../../caizhu.dm/DM/Api/Member.php:520
+msgid "api.user.msg.idcardverify.failed"
+msgstr "验证失败!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:728
+#: ../../../../caizhu.dm/DM/Api/Member.php:549
+msgid "api.user.google.wrongkey"
+msgstr "密钥有误"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:734
+#: ../../../../caizhu.dm/DM/Api/Member.php:555
+msgid "api.user.google.verifyfaild"
+msgstr "验证失败"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:741
+#: ../../../../caizhu.dm/DM/Api/Member.php:562
+msgid "api.user.google.bindsuccess"
+msgstr "绑定成功"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:761
+#: ../../../../caizhu.dm/DM/Api/Member.php:611
+msgid "api.user.setnewpwd.oldpwd.exist"
+msgstr "该邮箱已被使用，请尝试另外一个!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:767
+#: ../../../../caizhu.dm/DM/Api/Account.php:865
+#: ../../../../caizhu.dm/DM/Api/Account.php:937
+#: ../../../../caizhu.dm/DM/Api/Member.php:587
+#: ../../../../caizhu.dm/DM/Api/Member.php:617
+#: ../../../../caizhu.dm/DM/Api/Member.php:715
+#: ../../../../caizhu.dm/DM/Api/Member.php:787
+msgid "api.user.msg.password.inCommonWithRefundPassword"
+msgstr "密码6到40位，包含字母和数字!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:785
+#: ../../../../caizhu.dm/DM/Api/Account.php:862
+#: ../../../../caizhu.dm/DM/Api/Account.php:923
+#: ../../../../caizhu.dm/DM/Api/Account.php:934
+#: ../../../../caizhu.dm/DM/Api/Member.php:160
+#: ../../../../caizhu.dm/DM/Api/Member.php:635
+#: ../../../../caizhu.dm/DM/Api/Member.php:712
+#: ../../../../caizhu.dm/DM/Api/Member.php:773
+#: ../../../../caizhu.dm/DM/Api/Member.php:784
+msgid "api.user.msg.resetpassword.failed"
+msgstr "密码6到40位，包含字母和数字!"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:788
+#: ../../../../caizhu.dm/DM/Api/Member.php:576
+#: ../../../../caizhu.dm/DM/Api/Member.php:638
+msgid "api.user.msg.password.newSameToOld"
+msgstr "新密码不能和旧密码相同！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:796
+#: ../../../../caizhu.dm/DM/Api/Member.php:582
+#: ../../../../caizhu.dm/DM/Api/Member.php:646
+msgid "api.user.restpwd.oldpwd.unmatch"
+msgstr "原密码错误"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:800
+#: ../../../../caizhu.dm/DM/Api/Member.php:164
+#: ../../../../caizhu.dm/DM/Api/Member.php:650
+msgid "api.user.msg.refundpassword.inCommonWithPassword"
+msgstr "提现密码不能和登录密码相同！"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:833
+#: ../../../../caizhu.dm/DM/Api/Account.php:905
+#: ../../../../caizhu.dm/DM/Api/Account.php:969
+#: ../../../../caizhu.dm/DM/Api/Member.php:308
+#: ../../../../caizhu.dm/DM/Api/Member.php:683
+#: ../../../../caizhu.dm/DM/Api/Member.php:755
+#: ../../../../caizhu.dm/DM/Api/Member.php:819
+msgid "api.user.msg.email.not.exist"
+msgstr "邮箱地址不存在"
+
+#: ../../../../caizhu.dm/DM/Api/Account.php:948
+#: ../../../../caizhu.dm/DM/Api/Account.php:999
+#: ../../../../caizhu.dm/DM/Api/Member.php:798
+#: ../../../../caizhu.dm/DM/Api/Member.php:849
+msgid "api.user.msg.refundpassword.updated"
+msgstr "密码6到40位，包含字母和数字!"
+
+#: ../../../../caizhu.dm/DM/Api/Member.php:61
+msgid "api.user.msg.referralcode.fail"
+msgstr "该邀请码无效!"
+
+#: ../../../../caizhu.dm/DM/Api/Member.php:144
+msgid "api.user.msg.ename.illegal"
+msgstr "英文名只能包含字母、空格、-、_，4-40字符"
+
+#: ../../../../caizhu.dm/DM/Api/Member.php:150
+msgid "api.user.msg.mobile.illegal"
+msgstr "手机号码无效"
+
+#: ../../../../caizhu.dm/DM/Api/Member.php:345
+#: ../../../../caizhu.dm/DM/Api/Member.php:454
+msgid "api.user.msg.verify.success"
+msgstr "绑定成功！"
+
+#: ../../../../caizhu.dm/DM/Api/Oauth.php:32
+msgid "front.account.oauth.state.illegal"
+msgstr ""
+
+#: ../../../../caizhu.dm/DM/Api/Oauth.php:41
+msgid "front.account.oauth.access.fail"
+msgstr ""
+
+#: ../../../../caizhu.dm/DM/Api/Oauth.php:48
+#: ../../../../caizhu.dm/DM/Api/Oauth.php:72
+msgid "front.account.oauth.profile.fail"
+msgstr ""
+
+#: ../../../../caizhu.dm/DM/Controller/Account.php:34
+#: ../../../../caizhu.dm/DM/Controller/Api.php:34
+msgid "secure.csrf.hack"
+msgstr "您发送了一个未经验证的请求，请刷新页面后重新提交。"
+
+#: ../../../../caizhu.dm/DM/Controller/Account.php:48
+#: ../../../../caizhu.dm/DM/Controller/Action.php:193
+#: ../../../../caizhu.dm/DM/Controller/Api.php:47
+msgid "api.base.error.notLogin"
+msgstr "登录后才能继续操作!"
+
+#: ../../../../caizhu.dm/DM/Controller/Action.php:220
+msgid "secure.captcha.config.null"
+msgstr "配置文件验证码配置为空。"
+
+#: ../../../../caizhu.dm/DM/Controller/Action.php:284
+msgid "secure.captcha.error"
+msgstr "验证码错误。"
+
+#: ../../../../caizhu.dm/DM/Controller/Action.php:461
+msgid "api.base.error.notPostRequest"
+msgstr "请使用POST提交！"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:124
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:175
+msgid "user.edm.account.activate.title"
+msgstr "财猪系统邮件_邮箱绑定"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:126
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:128
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:177
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:179
+msgid "user.edm.account.activate.content"
+msgstr ""
+"尊敬的%s：<br/>你好！这是一封邮箱绑定确认邮件，现在可以通过邮件中的验证"
+"码完成财猪帐号与本邮箱的绑定。<br/>验证码：%s <br/>如果你并未操作邮箱绑"
+"定，请忽略本邮件。该验证码30分钟内有效。<br/><br/>财猪使用过程中遇到任何"
+"问题，请随时联系我们：<br/>客服邮箱：kf@caizhu.com<br/>财猪微信："
+"caizhu（财猪）<br/>财猪网站：www.caizhu.com<br/>"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:132
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:209
+msgid "user.edm.password.reset.title"
+msgstr "财猪系统邮件_密码重置"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:133
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:210
+msgid "user.edm.password.reset.content"
+msgstr ""
+"尊敬的%s：<br>你好！这是一封密码重置确认邮件，现在可以通过邮件中的验证码"
+"重置你的帐号密码。<br/>验证码：%s<br/>如果你并未操作密码重置，请忽略本邮"
+"件。该验证码30分钟内有效。<br/><br/>财猪使用过程中遇到任何问题，请随时联"
+"系我们：<br/>客服邮箱：kf@caizhu.com<br/>财猪微信：caizhu（财猪）<br/>财"
+"猪网站：www.caizhu.com<br/>"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:136
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:239
+msgid "user.edm.refundpassword.reset.title"
+msgstr "找回支付密码--财猪"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:137
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:240
+msgid "user.edm.refundpassword.reset.content"
+msgstr ""
+"%s：<br>您好，你在Dcoin系统注册了会员，请点击链接<a href='http://domin/"
+"member/reset-refund-password' target='_blank'>http://domin/member/reset-"
+"refund-password</a>输入以下验证码,找回支付密码。<br/>验证码：%s<br>客服"
+"邮箱: coin@duomai.com"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:140
+msgid "user.edm.account.unbind.title"
+msgstr "财猪系统邮件_邮箱解绑"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:141
+msgid "user.edm.account.unbind.content"
+msgstr ""
+"尊敬的%s：<br/>你好！这是一封邮箱解绑确认邮件，现在可以通过邮件中的验证"
+"码完成财猪帐号与本邮箱的解绑。<br/>验证码：%s <br/>如果你并未操作邮箱解"
+"绑，请忽略本邮件。该验证码30分钟内有效。<br/><br/>财猪使用过程中遇到任何"
+"问题，请随时联系我们：<br/>客服邮箱：kf@caizhu.com<br/>财猪微信："
+"caizhu（财猪）<br/>财猪网站：www.caizhu.com<br/>"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:268
+msgid "user.edm.googlekey.reset.title"
+msgstr "重置谷歌验证码--Dcoin"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:268
+msgid "user.edm.googlekey.reset.content"
+msgstr ""
+"%s：<br>您好，请点击链接<a href='http://domin/member/reset-google-key' "
+"target='_blank'>http://domin/member/reset-google-key</a>输入以下验证码以"
+"重置您的Dcoin谷歌验证码。<br/>验证码：%s<br>客服邮箱: coin@duomai.com"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:286
+msgid "user.edm.bind.phone.content"
+msgstr "您好，您正在申请绑定手机操作，验证码：%s"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:289
+msgid "user.edm.unbind.phone.content"
+msgstr "您好，您正在申请解绑手机操作，验证码：%s"
+
+#: ../../../../caizhu.dm/DM/Model/Row/Member.php:292
+msgid "user.edm.payPassword.phone.content"
+msgstr "您好，您正在修改财猪支付密码，验证码：%s"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:37
+#: ../../../../caizhu.dm/DM/Module/Auth.php:43
+msgid "api.user.login.user.null"
+msgstr "请输入邮箱或手机号码！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:40
+#: ../../../../caizhu.dm/DM/Module/Auth.php:46
+msgid "api.user.login.password.null"
+msgstr "请输入密码！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:49
+msgid "api.user.login.email.noVerified"
+msgstr "您的邮箱未绑定，请使用账户名登录！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:57
+msgid "api.user.login.mobile.noVerified"
+msgstr "您的手机未绑定，请使用账号名登录！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:79
+#: ../../../../caizhu.dm/DM/Module/Auth.php:66
+msgid "api.user.msg.login.other.logged"
+msgstr "您已登录，请先退出，再登录！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:81
+#: ../../../../caizhu.dm/DM/Module/Account.php:155
+#: ../../../../caizhu.dm/DM/Module/Auth.php:68
+#: ../../../../caizhu.dm/DM/Module/Auth.php:104
+msgid "api.user.msg.login.ok"
+msgstr "登录成功！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:87
+#: ../../../../caizhu.dm/DM/Module/Auth.php:75
+msgid "api.user.msg.login.failed"
+msgstr "用户名或密码错误，请重新输入！"
+
+#: ../../../../caizhu.dm/DM/Module/Account.php:176
+#: ../../../../caizhu.dm/DM/Module/Auth.php:121
+msgid "api.user.msg.logout.ok"
+msgstr "退出成功！"
+
+#: ../../../../caizhu.dm/DM/Module/Auth.php:40
+#, fuzzy
+msgid "api.user.login.flood.detect"
+msgstr "用户名或密码错误，请重新输入！"
+
+#: ../../../application/modules/api/controllers/ArticleController.php:113
+msgid "article.detail.error.idEmpty"
+msgstr "文章ID不能为空"
+
+#: ../../../application/modules/member/controllers/Finance/DepositController.php:8
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:8
+msgid "member.finance.index.amountview"
+msgstr "账户总览"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:14
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:83
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:59
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:263
+msgid "member.user.verifyidentity.idcardorrefundpwdisnoset"
+msgstr "身份未认证或提现密码未设置！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:17
+msgid "member.finance.index.usdaccount.setting"
+msgstr "设置账号"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:35
+msgid "member.finance.error.currency_type.illeagal"
+msgstr "提现币种类型错误"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:40
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:48
+msgid "member.finance.index.fillbankinfo"
+msgstr "请输入银行账户信息！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:43
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:51
+msgid "member.finance.index.fillarea"
+msgstr "请输入正确的地址信息！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:57
+msgid "member.finance.index.cardnum"
+msgstr "请输入账号！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:60
+msgid "member.finance.index.cardnumformat"
+msgstr "账号格式不正确！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:63
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:100
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:287
+msgid "member.finance.index.paypassword"
+msgstr "请输入支付密码！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:70
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:107
+msgid "member.finance.index.setting.success"
+msgstr "设置成功！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:86
+msgid "member.finance.index.coinaccount.setting"
+msgstr "设置钱包地址"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:94
+msgid "member.finance.index.currency.type.error"
+msgstr "币种错误！"
+
+#: ../../../application/modules/member/controllers/Finance/IndexController.php:97
+msgid "member.finance.index.setcoin.fillaccount"
+msgstr "请输入提现账户/钱包地址！"
+
+#: ../../../application/modules/member/controllers/Finance/RecordController.php:8
+msgid "member.finance.record.page"
+msgstr "资金记录"
+
+#: ../../../application/modules/member/controllers/Finance/RecordController.php:56
+msgid "member.finance.record.charge.records"
+msgstr "充值记录"
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:8
+msgid "member.finance.refund.pagetitle"
+msgstr "提现"
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:62
+msgid "common.finance.refund"
+msgstr "提现"
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:74
+msgid "member.finance.refund.amount.error"
+msgstr "提现额度错误！"
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:91
+msgid "member.finance.refund.submit.select.type"
+msgstr "请选择货币类型！"
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:127
+msgid "member.finance.USD.charge"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:145
+msgid "member.finance.refund.remit.notice"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:164
+msgid "member.finance.refund.remit.commit.success"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:187
+msgid "common.error.upload"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:198
+msgid "member.finance.coin.charge"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:206
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:322
+msgid "member.finance.charge.stop"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:269
+msgid "common.error.not.empty"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:275
+msgid "member.finance.refund.error.name.empty"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:281
+msgid "member.finance.transfer.error.amount"
+msgstr ""
+
+#: ../../../application/modules/member/controllers/Finance/RefundController.php:322
+msgid "member.finance.refund.stop"
+msgstr ""
+
+#: ../../../library/Model/IM/MessageReport.php:32
+msgid "api.system.msg.report.noByMemberID"
+msgstr "被举报会员ID为空"
+
+#: ../../../library/Model/IM/MessageReport.php:35
+msgid "api.system.msg.report.noByMember"
+msgstr "被举报会员不存在"
+
+#: ../../../library/Model/IM/MessageReport.php:41
+msgid "api.system.msg.report.noReason"
+msgstr "举报原因为空"
+
+#: ../../../application/modules/member/views/scripts/index/index.phtml:1
+msgid "view.member.home.title"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/index.phtml:8
+msgid "view.member.index.welcome"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/index.phtml:9
+msgid "view.member.index.lastlogin"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/index.phtml:15
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:5
+msgid "view.member.menu.trade.new"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/index.phtml:15
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:23
+msgid "view.member.menu.finance.exchange"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:3
+msgid "view.member.menu.trade"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:8
+msgid "view.member.menu.trade.unfinish"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:11
+msgid "view.member.menu.trade.history"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:15
+msgid "view.member.menu.finance"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:17
+msgid "view.member.menu.finance.deposit"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:20
+msgid "view.member.menu.finance.widthdrawal"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:26
+msgid "view.member.menu.finance.record"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:30
+msgid "view.member.menu.account"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:32
+msgid "view.member.menu.account.bank"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:35
+#, fuzzy
+msgid "view.member.menu.account.activate"
+msgstr "激活你的帐号--Dcoin"
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:38
+msgid "view.member.menu.account.profile"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/index/menu.phtml:42
+msgid "view.member.menu.account.change.password"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:3
+msgid "member.tpl.page.perpage"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:11
+msgid "member.tpl.page.item"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:11
+msgid "member.tpl.page.page"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:12
+msgid "member.tpl.page.first"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:13
+msgid "member.tpl.page.last"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:17
+msgid "member.tpl.page.next"
+msgstr ""
+
+#: ../../../application/modules/member/views/scripts/page.phtml:18
+msgid "member.tpl.page.end"
+msgstr ""
+
+#~ msgid "api.system.msg.report.noMemberID"
+#~ msgstr "举报会员ID为空"
+
+#~ msgid "api.system.msg.report.noMember"
+#~ msgstr "举报会员不存在"
+
+#~ msgid "api.system.msg.report.noContent"
+#~ msgstr "举报内容为空"
+
+#~ msgid "article.detail.error.detailEmpty"
+#~ msgstr "文章不存在或已被删除"
+
+#~ msgid "api.user.msg.email.notsame"
+#~ msgstr "您输入的的邮箱与注册邮箱不一致！"
+
+#~ msgid "api.user.msg.phone.notsame"
+#~ msgstr "您输入的手机号与注册手机号不一致！"
+
+#~ msgid "user.edm.phone.register.content"
+#~ msgstr "%s：<br/>您好，你在财猪记账本注册了会员，验证码：%s "
+
+#~ msgid "api.user.msg.refundpassword.format"
+#~ msgstr "密码6到40位，包含字母和数字。"
+
+#~ msgid "member.user.checkpaypw.confirmpasswordnotunify"
+#~ msgstr "两次输入密码不一致！"
+
+#~ msgid "front.account.register.error.pwdDiff"
+#~ msgstr "两次输入密码不一致！"
+
+#~ msgid "api.user.msg.password.reseted"
+#~ msgstr "密码6到20位，包含字母和数字。"
+
+#~ msgid "api.user.msg.mail.sended"
+#~ msgstr "验证码已发送，请检查您的邮箱！"
+
+#, fuzzy
+#~ msgid "api.user.msg.account.activated"
+#~ msgstr "激活你的帐号--Dcoin"
+
+#, fuzzy
+#~ msgid "api.user.msg.mobile.binded"
+#~ msgstr "验证码已发送，请检查您的邮箱！"
+
+#~ msgid "request.post.need"
+#~ msgstr "必须使用post方式才能继续请求。"
+
+#~ msgid "site.title"
+#~ msgstr "网站标题，现在时间%s。"

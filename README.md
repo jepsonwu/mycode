@@ -1,6 +1,7 @@
 # mycode
 项目开发：
-服务器配置
+【服务器配置】
+见自动部署脚本
 
 【git仓库配置】
 yum install git
@@ -26,5 +27,7 @@ git commit -am "test"
 git push origin master
 
 
-框架配置
+【框架配置】
+见project1
+
 产品原型 设计 前端 服务端开发
