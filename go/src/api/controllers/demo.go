@@ -31,7 +31,6 @@ func (d *DemoController)GetAll() {
 // @Failure 403 :uid is empty
 // @router /:uid [get]
 func (d *DemoController)Get() {
-	//todo 参数校验、签名、
 	uid := d.GetString(":uid")
 
 	if uid == "" {
@@ -57,7 +56,7 @@ func (d *DemoController)Post() {
 	page := d.GetString("page")
 	fmt.Printf("page value:%v,type:%T", page, page);
 	var demo models.Demo
-	//todo unmarshal报错怎么办 定义interface{}基本类型结构 json解析成基本类型结构之后再解析成model结构
+	//todo
 	err := json.Unmarshal(d.Ctx.Input.RequestBody, &demo)
 	if err != nil {
 		fmt.Println("demo post body error:", err)
@@ -68,7 +67,7 @@ func (d *DemoController)Post() {
 	//	fmt.Printf("user %v\n\n", value.Field(i))
 	//}
 
-	//todo 异常捕获
+	//todo
 	//panic(403)
 
 	//参数校验
