@@ -1,9 +1,4 @@
 <?php
-//include_once 'Authorize/Rsa.php';
-//include_once 'Authorize/Mcrypt.php';
-//include_once 'Authorize/CryptAES.php';
-//include_once 'Yee/yeepayMPay.php';
-
 $private_key = '-----BEGIN PRIVATE KEY-----
 MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAM85HJf8a/XqFfPl
 R4LjJPeNGT4V2wc47Bee0LYlrAfUu0FLIz7sbdzf+3WCrtC9hZ7SDzSM3GgtG7bv
@@ -35,21 +30,21 @@ include_once 'dm/DM/Authorize/Mcrypt.php';
 $url = "http://myzend.com/api/demo/demo-test";
 
 $crypt_data = array(
-	"name" => "jepson",
-	"password" => "12312",
-	"encrypt_key" => "fsdf"
+    "name" => "jepson",
+    "password" => "12312",
+    "encrypt_key" => "fsdf"
 );
 
 $md5SignModel = DM_Authorize_Md5::getInstance();
 $rsaModel = DM_Authorize_Rsa::getInstance();
 
 $get_param = array(
-	"sign_type" => "MD5",
-	"timestamp" => time(),
-	"name" => "jepson",
-	"password" => "sadfas",
-	//"encrypt_type" => "HTTPS",
-	//"encrypt_data" => $rsaModel->encrypt(json_encode($crypt_data), $public_key),
+    "sign_type" => "MD5",
+    "timestamp" => time(),
+    "name" => "jepson",
+    "password" => "sadfas",
+    //"encrypt_type" => "HTTPS",
+    //"encrypt_data" => $rsaModel->encrypt(json_encode($crypt_data), $public_key),
 );
 
 $sign_md5_key = "ee7daa0c94574bee62b5f79d2b447de6";
@@ -59,10 +54,10 @@ $get_param['sign'] = $sign;
 $get_param = "?" . http_build_query($get_param);
 
 try {
-	$result = curlFunc($url . $get_param, array(), false);
-	echo $result;
+    $result = curlFunc($url . $get_param, array(), false);
+    echo $result;
 } catch (Exception $e) {
-	echo $e->getMessage();
+    echo $e->getMessage();
 }
 
 exit;
@@ -108,12 +103,12 @@ exit;
 //储蓄卡充值
 $recharage_url = "http://test.caizhu.com/api/wallet-recharge/debit-card-recharge";
 $param = array(
-	"cardno" => '6222081202004444038',
-	"idcard" => "41130219861118341X",
-	"owner" => "蒋纪托",
-	"phone" => '18806711513',
-	"amount" => "1",
-	"terminalid" => "00-EO-4C-6C-08-75"
+    "cardno" => '6222081202004444038',
+    "idcard" => "41130219861118341X",
+    "owner" => "蒋纪托",
+    "phone" => '18806711513',
+    "amount" => "1",
+    "terminalid" => "00-EO-4C-6C-08-75"
 );
 
 //绑卡充值
@@ -161,9 +156,9 @@ $param = array(
 $result = json_decode($result, true);
 //var_dump($result);exit;
 if ($result['flag'] > 0) {
-	$aes = new Model_CryptAES($param['encrypt_key']);
-	$result = $aes->decrypt($result['data']['data']);
-	$result = json_decode($result, true);
+    $aes = new Model_CryptAES($param['encrypt_key']);
+    $result = $aes->decrypt($result['data']['data']);
+    $result = json_decode($result, true);
 }
 var_dump($result);
 exit;
@@ -227,89 +222,89 @@ exit;
 
 function curlFunc($url, $fields, $ispost = true)
 {
-	$ch = curl_init();
+    $ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, $url);
-	if ($ispost) {
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-	}
-	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36');
+    curl_setopt($ch, CURLOPT_URL, $url);
+    if ($ispost) {
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+    }
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36');
 
-	//禁止ssl验证
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    //禁止ssl验证
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-	//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    //curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
-	$response = curl_exec($ch);
-	if (curl_errno($ch)) {
-		throw new Exception(curl_error($ch), 0);
-	} else {
-		$httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		if (200 !== $httpStatusCode) {
-			throw new Exception("http status code exception :{$httpStatusCode}", 0);
-		}
-	}
-	curl_close($ch);
-	return $response;
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        throw new Exception(curl_error($ch), 0);
+    } else {
+        $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (200 !== $httpStatusCode) {
+            throw new Exception("http status code exception :{$httpStatusCode}", 0);
+        }
+    }
+    curl_close($ch);
+    return $response;
 }
 
 function curl($url, $type = "GET", $data = null, $header = null, $option = null)
 {
-	$ch = curl_init();
+    $ch = curl_init();
 
-	$options = array(
-		CURLOPT_URL => $url,
-		CURLOPT_TIMEOUT => 0,
-		CURLOPT_RETURNTRANSFER => true,
-	);
+    $options = array(
+        CURLOPT_URL => $url,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_RETURNTRANSFER => true,
+    );
 
-	!is_null($option) && is_array($option) && $options = array_merge($options, $option);
+    !is_null($option) && is_array($option) && $options = array_merge($options, $option);
 
-	curl_setopt_array($ch, $options);
+    curl_setopt_array($ch, $options);
 
-	switch (strtoupper($type)) {
-		case 'GET':
-			curl_setopt($ch, CURLOPT_HTTPGET, true);
-			break;
-		case 'POST':
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			break;
-		case 'HEAD':
+    switch (strtoupper($type)) {
+        case 'GET':
+            curl_setopt($ch, CURLOPT_HTTPGET, true);
+            break;
+        case 'POST':
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            break;
+        case 'HEAD':
 
-			break;
-		case 'PUT':
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			break;
-		case 'DELETE':
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			break;
-	}
+            break;
+        case 'PUT':
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            break;
+        case 'DELETE':
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            break;
+    }
 
-	if (!is_null($header) && is_array($header)) {
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-	}
+    if (!is_null($header) && is_array($header)) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    }
 
-	// if(is_null($header))
-	// 	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type:text/json"));
-	// else
-	// 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    // if(is_null($header))
+    // 	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type:text/json"));
+    // else
+    // 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
-	$return = curl_exec($ch);
-	if ($return !== false) {
-		echo curl_getinfo($ch)['http_code'];
-	} else {
-		$return = "ERR:(" . curl_errno($ch) . ")" . curl_error($ch);
-	}
+    $return = curl_exec($ch);
+    if ($return !== false) {
+        echo curl_getinfo($ch)['http_code'];
+    } else {
+        $return = "ERR:(" . curl_errno($ch) . ")" . curl_error($ch);
+    }
 
-	curl_close($ch);
+    curl_close($ch);
 
-	return $return;
+    return $return;
 }
 
 function curl_multi()
@@ -340,79 +335,79 @@ function curl_proxy()
 //pkcs1
 function rsaEncrypt($content, $public_key_path)
 {
-	$public_key = file_get_contents($public_key_path);
-	$public_key = openssl_pkey_get_public($public_key);
+    $public_key = file_get_contents($public_key_path);
+    $public_key = openssl_pkey_get_public($public_key);
 
-	$result = "";
-	openssl_public_encrypt($content, $result, $public_key);
+    $result = "";
+    openssl_public_encrypt($content, $result, $public_key);
 
-	return base64_encode($result);
+    return base64_encode($result);
 }
 
 function createParamUrlencode($data)
 {
-	$param = "";
-	while (list ($key, $val) = each($data)) {
-		$param .= $key . "=" . urlencode($val) . "&";
-	}
-	//去掉最后一个&字符
-	$param = substr($param, 0, count($param) - 2);
+    $param = "";
+    while (list ($key, $val) = each($data)) {
+        $param .= $key . "=" . urlencode($val) . "&";
+    }
+    //去掉最后一个&字符
+    $param = substr($param, 0, count($param) - 2);
 
-	//如果存在转义字符，那么去掉转义
-	if (get_magic_quotes_gpc()) {
-		$param = stripslashes($param);
-	}
+    //如果存在转义字符，那么去掉转义
+    if (get_magic_quotes_gpc()) {
+        $param = stripslashes($param);
+    }
 
-	return $param;
+    return $param;
 }
 
 function rsaSign($data, $private_key_path)
 {
-	$private_key = file_get_contents($private_key_path);
+    $private_key = file_get_contents($private_key_path);
 
-	$res = openssl_pkey_get_private($private_key);
-	openssl_sign($data, $sign, $res);
-	openssl_free_key($res);
+    $res = openssl_pkey_get_private($private_key);
+    openssl_sign($data, $sign, $res);
+    openssl_free_key($res);
 
-	//base64编码
-	$sign = base64_encode($sign);
-	return $sign;
+    //base64编码
+    $sign = base64_encode($sign);
+    return $sign;
 }
 
 function createParam($data)
 {
-	$param = "";
+    $param = "";
 
-	foreach ($data as $key => $value) {
-		$param .= $key . "=" . $value . "&";
-	}
-	$param = trim($param, "&");
+    foreach ($data as $key => $value) {
+        $param .= $key . "=" . $value . "&";
+    }
+    $param = trim($param, "&");
 
-	//转义字符
+    //转义字符
 
-	return $param;
+    return $param;
 }
 
 function filterParam($data)
 {
-	$return = array();
+    $return = array();
 
-	foreach ($data as $key => $value) {
-		if ($key == "sign" || $key == "sign_type" || $key == "")
-			continue;
-		else
-			$return[$key] = trim($value);
-	}
+    foreach ($data as $key => $value) {
+        if ($key == "sign" || $key == "sign_type" || $key == "")
+            continue;
+        else
+            $return[$key] = trim($value);
+    }
 
-	return $return;
+    return $return;
 }
 
 function sortParam($data)
 {
-	ksort($data);
-	reset($data);
+    ksort($data);
+    reset($data);
 
-	return $data;
+    return $data;
 }
 
 
